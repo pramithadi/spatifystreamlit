@@ -1,6 +1,7 @@
 [theme]
 backgroundColor="#fdfaf6"
 secondaryBackgroundColor="#ecf6b9"
+primaryColor="#496605"
 
 [theme.sidebar]
 backgroundColor="#dce4c9"
