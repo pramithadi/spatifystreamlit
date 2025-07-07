@@ -81,21 +81,21 @@ st.markdown(
 
 tab1, tab2, tab3, tab4 = st.tabs(
     [
-        "**Prapengolahan Data**",
+        "**Prapengolahan**",
         "**Time-Series**",
-        "**Pemodelan Prediksi**",
+        "**Prediksi**",
         "**Validasi**",
     ]
 )
 
 with tab1:
-    st.subheader("Prapengolahan Data")
+    st.subheader("Prapengolahan")
     # Scaling Factor
     st.badge("**Scaling Factor**", color="primary")
     st.markdown(
         """
         <div class="justified-text">
-        <strong>Scaling Factor</strong> digunakan untuk mengembalikan nilai reflektansi citra Landsat Surface Reflectance yang sebelumnya berformat <em>integer</em> menjadi <em>float</em> agar hasil pengolahan data memiliki ketelitian hingga tingkat desimal (USGS, 2020).
+        <strong>Scaling Factor</strong> digunakan untuk mengembalikan nilai reflektansi citra Landsat Surface Reflectance yang sebelumnya berformat integer menjadi float agar hasil pengolahan data memiliki ketelitian hingga tingkat desimal (USGS, 2020).
         </div>
         """,
         unsafe_allow_html=True,
@@ -157,7 +157,7 @@ function maskLsr(image) {
     st.markdown(
         """
         <div class="justified-text">
-        <strong>Penyaringan</strong> bertujuan untuk menyortir citra sesuai dengan <em>snippet</em>, lokasi kajian (Kawasan Perkotaan Yogyakarta dan sekitarnya), periode musim kemarau; pengaplikasian <em>function scaling factor, cloud masking,</em> <em>median composite</em>; dan pemotongan <em>(clip)</em> citra.
+        <strong>Penyaringan</strong> bertujuan untuk menyortir citra sesuai dengan snippet, lokasi kajian (Kawasan Perkotaan Yogyakarta dan sekitarnya), periode musim kemarau; penerapan function scaling factor, cloud masking, median composite; dan pemotongan (clip) citra.
         </div>
         """,
         unsafe_allow_html=True,
@@ -176,10 +176,201 @@ var landsat = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
 
 with tab2:
     st.subheader("Time-Series")
+    option = st.selectbox(
+        "Pilih Parameter:",
+        ("LST", "NDBI", "NDMI", "NDVI", "Penutup Lahan", "Elevasi dan Slope"),
+    )
+    if option == "LST":
+        st.markdown(
+            """
+            <div class="justified-text">
+            Ekstraksi LST dalam penelitian ini menggunakan metode <strong>Single-Channel</strong> yang dikembangkan oleh Jiménez-Muñoz & Sobrino (2009). Metode ini terdiri atas empat tahapan utama yaitu:
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Perhitungan Nilai Radiansi Spektral
+        st.badge("**Perhitungan Nilai Radiansi Spektral**", color="primary")
+        st.markdown(
+            """
+        <div class="justified-text">
+        Pada citra Landsat Surface Reflectance, nilai radiansi spektral telah dikalibrasi secara otomatis melalui penerapan <strong>Scaling Factor</strong> dalam tahapan prapengolahan data.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Perhitungan Emisivitas Permukaan
+        st.badge("**Perhitungan Emisivitas Permukaan**", color="primary")
+        st.markdown(
+            """
+        <div class="justified-text">
+        Emisivitas permukaan (ε) adalah kemampuan objek dalam menyerap radiasi matahari dan memancarkan radiasi termal (Mallick et al., 2012).
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Function Emisivitas Permukaan
+        def display_equation(title, equation):
+            st.markdown(f"**{title}**")
+            st.latex(equation)
+            # st.markdown(
+            #     "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+            # )
+
+        display_equation(
+            "Formula Emisivitas Permukaan (ε)",
+            r"\epsilon = 0.004 \times \text{Pv} + 0.986",
+        )
+
+        # Function Proporsi Vegetasi
+        def display_equation(title, equation):
+            st.markdown(f"**{title}**")
+            st.latex(equation)
+            # st.markdown(
+            #     "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+            # )
+
+        display_equation(
+            "Formula Proporsi Vegetasi (Pv)",
+            r"Pv = \left( \frac{NDVI - NDVI_{min}}{NDVI_{max} - NDVI_{min}} \right)^2",
+        )
+
+        # Function NDVI
+        def display_equation(title, equation):
+            st.markdown(f"**{title}**")
+            st.latex(equation)
+            # st.markdown(
+            #     "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+            # )
+
+        display_equation(
+            "Formula NDVI",
+            r"NDVI = \frac{NIR - Red}{NIR + Red}",
+        )
+
+        codeEmisivitasPermukaan = """
+// Perhitungan NDVI
+var ndvi = landsat.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi');
+
+// Perhitungan Proporsi Vegetasi (Pv)
+var ndviMin = ee.Number(ndvi.reduceRegion({
+  reducer: ee.Reducer.min(),
+  geometry: loc,
+  scale: 30,
+  maxPixels: 1e9
+}).values().get(0));
+
+var ndviMax = ee.Number(ndvi.reduceRegion({
+  reducer: ee.Reducer.max(),
+  geometry: loc,
+  scale: 30,
+  maxPixels: 1e9
+}).values().get(0));
+
+var pv = (ndvi.subtract(ndviMin).divide(ndviMax.subtract(ndviMin))).pow(ee.Number(2)).rename('pv');
+
+// Perhitungan Emisivitas Permukaan (ε)
+var k1 = ee.Number(0.004);
+var k2 = ee.Number(0.986);
+var emisivitas = pv.multiply(k1).add(k2).rename('emisivitas');
+"""
+        st.code(codeEmisivitasPermukaan, language="javascript", line_numbers=True)
+
+        st.badge("**Perhitungan Brightness Temperature**", color="primary")
+        st.markdown(
+            """
+        <div class="justified-text">
+        Brightness Temperature adalah representasi suhu permukaan dari pancaran radiasi termal objek yang direkam oleh sensor termal dalam format kelvin (Jatayu & Susetyo, 2017). Nilai saluran termal pada citra Landsat Surface Reflectance telah dikonversi ke satuan Kelvin melalui penerapan Scaling Factor sehingga dapat langsung digunakan dalam estimasi Brightness Temperature. Saluran termal yang digunakan berasal dari band 6 untuk citra Landsat 5 dan Landsat 7, serta band 10 untuk citra Landsat 8.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        codeBrightnessTemperature = """
+// Pemilihan Saluran Termal untuk Brightness Temperature
+var btLandsat5 = landsat5.select('ST_B6');
+var btLandsat7 = landsat7.select('ST_B6');
+var btLandsat8 = landsat8.select('ST_B10');
+"""
+        st.code(codeBrightnessTemperature, language="javascript", line_numbers=True)
+
+        st.badge("**Perhitungan LST**", color="primary")
+        st.markdown(
+            """
+        <div class="justified-text">
+        Perhitungan LST melibatkan nilai brightness temperature, emisivitas permukaan, panjang gelombang elektromagnetik saluran termal, dan radiasi emisivitas yang didapatkan dari estimasi konstanta Planck, konstanta Stefan-Boltzmann, dan kecepatan cahaya (Waleed & Sajjad, 2021).
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Function NDVI
+        def display_equation(title, equation):
+            st.markdown(f"**{title}**")
+            st.latex(equation)
+            # st.markdown(
+            #     "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+            # )
+
+        display_equation(
+            "Formula LST",
+            r"LST = \left( \frac{B_T}{1 + \left( \frac{\lambda \cdot B_T}{\rho} \right) \cdot \ln \epsilon} \right) - 273.15",
+        )
+
+        codeLST = """
+// Pemilihan LST
+var lst = btLandsat8.expression(
+  '(Bt/(1+(0.00115*(Bt/1.438))*log(Ep)))-273.15', {
+    'Bt': bt,
+    'Ep': emisi
+  }).rename('lst');
+"""
+        st.code(codeLST, language="javascript", line_numbers=True)
+
+    elif option == "NDBI":
+        st.badge("**Normalized Difference Built-Up Index (NDBI)**", color="primary")
+        st.write("NDBI adalah indeks kerapatan bangunan")
+    elif option == "NDMI":
+        st.badge("**Normalized Difference Moisture Index (NDMI)**", color="primary")
+        st.write("NDBI adalah indeks kelembapan vegetasi")
+    elif option == "NDVI":
+        st.badge("**Normalized Difference Vegetation Index (NDVI)**", color="primary")
+        st.write("NDBI adalah indeks kerapatan vegetasi")
+    elif option == "Penutup Lahan":
+        st.badge("**Penutup Lahan**", color="primary")
+        st.write("Proses Penutup Lahan menggunakan citra Sentinel-2.")
+    elif option == "Elevasi dan Slope":
+        st.badge("**Elevasi**", color="primary")
+        st.write("Proses Elevasi dan Slope menggunakan citra SRTM.")
+        st.badge("**Slope**", color="primary")
 
 
 with tab3:
-    st.subheader("Pemodelan Prediksi")
+    st.subheader("Prediksi")
+    option = st.selectbox(
+        "Pilih Pemodelan:",
+        ("Prediksi LST 2029", "Prediksi Penutup Lahan 2029"),
+    )
+    if option == "Prediksi LST 2029":
+        st.write("**Land Surface Temperature (LST)**")
+        st.markdown(
+            """
+            <div class="justified-text">
+            LST adalah ukuran kuantitatif mengenai seberapa panas permukaan bumi (Ahyar et al., 2024). Ekstraksi LST dalam penelitian ini menggunakan metode <strong>Single-Channel</strong> yang dikembangkan oleh Jiménez-Muñoz & Sobrino (2009). Metode ini terdiri atas empat tahapan utama yaitu:
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    elif option == "Prediksi Penutup Lahan 2029":
+        st.badge("**Normalized Difference Built-Up Index (NDBI)**", color="primary")
+        st.write("NDBI adalah indeks kerapatan bangunan")
 
 with tab4:
     st.subheader("Validasi")
