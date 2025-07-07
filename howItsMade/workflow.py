@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_image_comparison import image_comparison
 
 st.markdown(
     """
@@ -115,7 +116,7 @@ function applyScaleFactors(image) {
     st.markdown(
         """
         <div class="justified-text">
-        <strong>Cloud Masking</strong> metode <strong><em>Quality Assesment (QA)</em></strong> merupakan metode untuk mengurangi tutupan awan dalam citra (Sinabutar, 2020). Metode ini bekerja otomatis dengan memberi tanda pada piksel-piksel awan kemudian menyortir piksel tersebut agar tidak digunakan dalam analisis. Celah yang kosong lantas diisi dengan piksel lain yang lebih bersih melalui teknik <strong><em>Median Composite</em></strong>.
+        <strong>Cloud Masking</strong> metode <strong>Quality Assesment (QA)</strong> merupakan metode untuk mengurangi tutupan awan dalam citra (Sinabutar, 2020). Metode ini bekerja otomatis dengan memberi tanda pada piksel-piksel awan kemudian menyortir piksel tersebut agar tidak digunakan dalam analisis. Celah yang kosong lantas diisi dengan piksel lain yang lebih bersih melalui teknik <strong>Median Composite</strong>.
         </div>
         """,
         unsafe_allow_html=True,
@@ -135,12 +136,28 @@ function maskLsr(image) {
 """
     st.code(codeScalingFactor, language="javascript", line_numbers=True)
 
+    # Hasil Prapengolahan Data
+    st.write("Tampilan citra sebelum dan sesudah Cloud Masking:")
+    from streamlit_image_comparison import image_comparison
+
+    image_comparison(
+        img1="./assets/before.png",
+        img2="./assets/after.png",
+        label1="Sebelum",
+        label2="Sesudah",
+        width=700,
+        starting_position=50,
+        show_labels=True,
+        make_responsive=True,
+    )
+    st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
+
     # Filtering Citra
     st.badge("**Penyaringan Citra**", color="primary")
     st.markdown(
         """
         <div class="justified-text">
-        <strong>Penyaringan</strong> bertujuan untuk menyortir citra sesuai dengan <em>snippet</em>, lokasi kajian (Kawasan Perkotaan Yogyakarta dan sekitarnya), dan periode musim kemarau; penerapan <em>function scaling factor, cloud masking,</em> dan <em>median composite</em>; serta pemotongan <em>(clip)</em> citra.
+        <strong>Penyaringan</strong> bertujuan untuk menyortir citra sesuai dengan <em>snippet</em>, lokasi kajian (Kawasan Perkotaan Yogyakarta dan sekitarnya), periode musim kemarau; pengaplikasian <em>function scaling factor, cloud masking,</em> <em>median composite</em>; dan pemotongan <em>(clip)</em> citra.
         </div>
         """,
         unsafe_allow_html=True,
@@ -159,3 +176,10 @@ var landsat = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
 
 with tab2:
     st.subheader("Time-Series")
+
+
+with tab3:
+    st.subheader("Pemodelan Prediksi")
+
+with tab4:
+    st.subheader("Validasi")
