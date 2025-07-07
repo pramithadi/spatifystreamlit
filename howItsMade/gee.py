@@ -15,8 +15,7 @@ st.markdown(
             margin-bottom: 8px !important;
         }
         .stSubheader {
-            font-size: 16px !important;
-            margin-bottom: 12px !important;
+            margin-top: -3rem !important;
         }
         div[data-testid="stVerticalBlockBorderWrapper"] {
             padding: 12px !important;
@@ -37,105 +36,84 @@ st.markdown(
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
             border-color: #fdfaf6 !important;
         }
+        
+        .main {
+            padding: 0 !important;
+        }
+
+        .block-container {
+            padding: 0.5rem 1rem !important;
+            margin-top: 1.5rem !important;
+        }
+
+        /* Mengurangi space header toolbar */
+        div[data-testid="stToolbar"] {
+            min-height: 40px !important;
+        }
     </style>
 """,
     unsafe_allow_html=True,
 )
 
-st.markdown(
-    """
-<style>
-    .stTabs [data-baseweb="tab-highlight"] {
-        background-color: #705c53 !important;
-    }
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        color: #705c53 !important;
-    }
-    .stTabs [data-baseweb="tab-list"] button:hover {
-        color: #705c53 !important;
-    }
-    .stTabs [data-baseweb="tab-list"] button:hover [data-baseweb="tab-highlight"] {
-        background-color: #705c53 !important;
-    }
-    .stTabs {
-        margin-top: -5rem !important;
-    }
-</style>
-""",
-    unsafe_allow_html=True,
-)
+st.subheader("Google Earth Engine Projects")
+col1, col2, col3 = st.columns(3, gap="small")
+with col1:
+    with st.container(border=False):
+        st.write("**LST**")
+        st.image("./assets/lst.png")
+        st.link_button(
+            label="Project",
+            url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
+            icon=":material/touch_double:",
+        )
 
-tab1, tab2, tab3 = st.tabs(["**Projects**", "**Code**", "**Pipeline**"])
+with col2:
+    with st.container(border=False):
+        st.write("**NDBI**")
+        st.image("./assets/ndbi.png")
+        st.link_button(
+            label="Project",
+            url="",
+            icon=":material/touch_double:",
+        )
 
-with tab1:
-    st.subheader("Projects")
-    st.write("Projects Google Earth Engine tersedia di:")
-    col1, col2, col3 = st.columns(3, gap="small")
-    with col1:
-        with st.container(border=True):
-            st.write("**LST**")
-            st.image("./assets/lst.png")
-            st.link_button(
-                label="Proyek",
-                url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
-                icon=":material/touch_double:",
-            )
+with col3:
+    with st.container(border=False):
+        st.write("**NDMI**")
+        st.image("./assets/ndmi.png")
+        st.link_button(
+            label="Project",
+            url="",
+            icon=":material/touch_double:",
+        )
 
-    with col2:
-        with st.container(border=True):
-            st.write("**NDBI**")
-            st.image("./assets/lst.png")
-            st.link_button(
-                label="Proyek",
-                url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
-                icon=":material/touch_double:",
-            )
+col4, col5, col6 = st.columns(3, gap="small")
+with col4:
+    with st.container(border=False):
+        st.write("**NDVI**")
+        st.image("./assets/ndvi.png")
+        st.link_button(
+            label="Project",
+            url="",
+            icon=":material/touch_double:",
+        )
 
-    with col3:
-        with st.container(border=True):
-            st.write("**NDMI**")
-            st.image("./assets/lst.png")
-            st.link_button(
-                label="Proyek",
-                url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
-                icon=":material/touch_double:",
-            )
+with col5:
+    with st.container(border=False):
+        st.write("**Penutup Lahan**")
+        st.image("./assets/lulc.png")
+        st.link_button(
+            label="Project",
+            url="",
+            icon=":material/touch_double:",
+        )
 
-    col4, col5, col6 = st.columns(3, gap="small")
-    with col4:
-        with st.container(border=True):
-            st.write("**NDVI**")
-            st.image("./assets/lst.png")
-            st.link_button(
-                label="Proyek",
-                url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
-                icon=":material/touch_double:",
-            )
-
-    with col5:
-        with st.container(border=True):
-            st.write("**Penutup Lahan**")
-            st.image("./assets/lst.png")
-            st.link_button(
-                label="Proyek",
-                url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
-                icon=":material/touch_double:",
-            )
-
-    with col6:
-        with st.container(border=True):
-            st.write("**Elevasi dan Slope**")
-            st.image("./assets/lst.png")
-            st.link_button(
-                label="Proyek",
-                url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
-                icon=":material/touch_double:",
-            )
-
-with tab2:
-    st.subheader("Processing Pipeline")
-    st.write("Page under construction")
-
-with tab3:
-    st.subheader("Processing Pipeline")
-    st.write("Page under construction")
+with col6:
+    with st.container(border=False):
+        st.write("**Elevasi dan Slope**")
+        st.image("./assets/elevasi.png")
+        st.link_button(
+            label="Project",
+            url="",
+            icon=":material/touch_double:",
+        )

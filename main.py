@@ -25,6 +25,11 @@ ndvi = st.Page("maps/ndvi.py", title="NDVI", icon=":material/psychiatry:")
 dataSource = st.Page(
     "howItsMade/dataSource.py", title="Dataset", icon=":material/database:"
 )
+workflow = st.Page(
+    "howItsMade/workflow.py",
+    title="Workflow",
+    icon=":material/flowchart:",
+)
 gee = st.Page(
     "howItsMade/gee.py",
     title="Google Earth Engine",
@@ -48,7 +53,7 @@ pg = st.navigation(
     {
         "": [home],
         "Maps": [lst, lulc, ndbi, ndmi, ndvi],
-        "How It's Made": [dataSource, gee, colab],
+        "How It's Made": [dataSource, workflow, gee, colab],
         "Get Results": [downloadMaps, generateReports],
     }
 )
