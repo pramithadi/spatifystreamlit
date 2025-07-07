@@ -1,8 +1,8 @@
 [theme]
 backgroundColor="#fdfaf6"
-secondaryBackgroundColor="#ecf6b9"
+secondaryBackgroundColor="#ebe5dd"
 primaryColor="#496605"
 
 [theme.sidebar]
 backgroundColor="#dce4c9"
-secondaryBackgroundColor="white"
+secondaryBackgroundColor="black"
