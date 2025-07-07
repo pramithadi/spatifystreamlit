@@ -13,6 +13,8 @@ st.markdown(
         .stMarkdown p {
             font-size: 14px !important;
             margin-bottom: 8px !important;
+            text-align: justify !important;
+            line-height: 1.6 !important;
         }
         .stSubheader {
             font-size: 16px !important;
@@ -35,6 +37,15 @@ st.markdown(
             transform: translateY(-4px) !important;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
             border-color: #fdfaf6 !important;
+        }
+        
+        /* Custom class for justified text */
+        .justified-text {
+            text-align: justify !important;
+            line-height: 1.6 !important;
+            font-size: 14px !important;
+            margin-bottom: 8px !important;
+            font-family: 'Poppins', sans-serif !important;
         }
     </style>
 """,
@@ -67,132 +78,84 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-tab1, tab2 = st.tabs(["**Catalog**", "**Snippets**"])
+tab1, tab2, tab3, tab4 = st.tabs(
+    [
+        "**Prapengolahan Data**",
+        "**Time-Series**",
+        "**Pemodelan Prediksi**",
+        "**Validasi**",
+    ]
+)
 
 with tab1:
-    st.subheader("Catalog")
-    col1, col2 = st.columns(2, gap="small")
-    with col1:
-        st.badge("**Citra Landsat 5 TM**", color="primary")
-        with st.container(border=False):
-            st.write("**Koleksi:** Collection 2 Level 2 Tier 1 (Surface Reflectance)")
-            st.write("**Penyedia:** USGS")
-            st.write("**Resolusi:** 30m")
-            st.write(
-                "**Bands:** Band 3 (Red), Band 4 (NIR), Band 5 (SWIR-1), Band 6 (Thermal)"
-            )
-            st.write("**Tahun:** 1999, 2009")
-            st.write("**Kegunaan:** LST, NDBI, NDMI, NDVI, Penutup Lahan")
-            st.link_button(
-                label="Detail",
-                url="https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C02_T1_L2",
-                icon=":material/touch_double:",
-            )
+    st.subheader("Prapengolahan Data")
+    # Scaling Factor
+    st.badge("**Scaling Factor**", color="primary")
+    st.markdown(
+        """
+        <div class="justified-text">
+        <strong>Scaling Factor</strong> digunakan untuk mengembalikan nilai reflektansi citra Landsat Surface Reflectance yang sebelumnya berformat <em>integer</em> menjadi <em>float</em> agar hasil pengolahan data memiliki ketelitian hingga tingkat desimal (USGS, 2020).
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    with col2:
-        st.badge("**Citra Landsat 7 ETM+**", color="primary")
-        with st.container(border=True):
-            st.write("**Koleksi:** Collection 2 Level 2 Tier 1 (Surface Reflectance)")
-            st.write("**Penyedia:** USGS")
-            st.write("**Resolusi:** 30m")
-            st.write(
-                "**Bands:** Band 3 (Red), Band 4 (NIR), Band 5 (SWIR-1), Band 6 (Thermal)"
-            )
-            st.write("**Tahun:** 2004")
-            st.write("**Kegunaan:** LST, NDBI, NDMI, NDVI, Penutup Lahan")
-            st.link_button(
-                label="Detail",
-                url="https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LE07_C02_T1_L2",
-                icon=":material/touch_double:",
-            )
+    codeScalingFactor = """
+function applyScaleFactors(image) {
+  var opticalBands = image.select('SR_B.').multiply(0.0000275).add(-0.2);
+  var thermalBands = image.select('ST_B.*').multiply(0.00341802).add(149.0);
+  return image.addBands(opticalBands, null, true)
+              .addBands(thermalBands, null, true);
+}
+"""
+    st.code(codeScalingFactor, language="javascript", line_numbers=True)
 
-    col3, col4 = st.columns(2, gap="small")
-    with col3:
-        st.badge("**Citra Landsat 8 OLI/TIRS**", color="primary")
-        with st.container(border=True):
-            st.write("**Koleksi:** Collection 2 Level 2 Tier 1 (Surface Reflectance)")
-            st.write("**Penyedia:** USGS")
-            st.write("**Resolusi:** 30m")
-            st.write(
-                "**Bands:** Band 4 (Red), Band 5 (NIR), Band 6 (SWIR-1), Band 10 (TIRS-1)"
-            )
-            st.write("**Tahun:** 2014, 2019, 2024")
-            st.write("**Kegunaan:** LST, NDBI, NDMI, NDVI, Penutup Lahan")
-            st.link_button(
-                label="Detail",
-                url="https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2",
-                icon=":material/touch_double:",
-            )
+    # Cloud Masking
+    st.badge("**Cloud Masking**", color="primary")
+    st.markdown(
+        """
+        <div class="justified-text">
+        <strong>Cloud Masking</strong> metode <strong><em>Quality Assesment (QA)</em></strong> merupakan metode untuk mengurangi tutupan awan dalam citra (Sinabutar, 2020). Metode ini bekerja otomatis dengan memberi tanda pada piksel-piksel awan kemudian menyortir piksel tersebut agar tidak digunakan dalam analisis. Celah yang kosong lantas diisi dengan piksel lain yang lebih bersih melalui teknik <strong><em>Median Composite</em></strong>.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    with col4:
-        st.badge("**Citra Radar NASA SRTM**", color="primary")
-        with st.container(border=True):
-            st.write(
-                "**Koleksi:** Shuttle Radar Topography Mission (SRTM) Digital Elevation"
-            )
-            st.write("**Penyedia:** NASA/USGS/JPL-Caltech")
-            st.write("**Resolusi:** 1 arc-second (30m)")
-            st.write("**Tahun:** 2000")
-            st.write("**Kegunaan:** Elevasi, Kemiringan Lereng (Slope)")
-            st.link_button(
-                label="Detail",
-                url="https://developers.google.com/earth-engine/datasets/catalog/USGS_SRTMGL1_003",
-                icon=":material/touch_double:",
-            )
+    codeScalingFactor = """
+function maskLsr(image) {
+  var cloudShadowBitMask = (1 << 4);
+  var cloudsBitMask = (1 << 3);
+  var cirrus = (1 << 2);
+  var qa = image.select('QA_PIXEL');
+  var mask = qa.bitwiseAnd(cloudShadowBitMask).eq(0)
+             .and(qa.bitwiseAnd(cloudsBitMask).eq(0))
+             .and(qa.bitwiseAnd(cirrus).eq(0));
+  return image.updateMask(mask);
+}
+"""
+    st.code(codeScalingFactor, language="javascript", line_numbers=True)
 
-    col5, col6 = st.columns(2, gap="small")
-    with col5:
-        st.badge("**Citra Sentinel-2 MSI**", color="primary")
-        with st.container(border=True):
-            st.write("**Koleksi:** Level-2A (Surface Reflectance) ")
-            st.write("**Penyedia:** European Union/ESA/Copernicus")
-            st.write("**Resolusi:** 10m")
-            st.write("**Bands:** Band 4 (Red), Band 8 (NIR), Band 11 (SWIR-1)")
-            st.write("**Tahun:** 2024")
-            st.write("**Kegunaan:** Validasi NDBI, NDMI, NDVI")
-            st.link_button(
-                label="Detail",
-                url="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
-                icon=":material/touch_double:",
-            )
+    # Filtering Citra
+    st.badge("**Penyaringan Citra**", color="primary")
+    st.markdown(
+        """
+        <div class="justified-text">
+        <strong>Penyaringan</strong> bertujuan untuk menyortir citra sesuai dengan <em>snippet</em>, lokasi kajian (Kawasan Perkotaan Yogyakarta dan sekitarnya), dan periode musim kemarau; penerapan <em>function scaling factor, cloud masking,</em> dan <em>median composite</em>; serta pemotongan <em>(clip)</em> citra.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    with col6:
-        st.badge("**SHP Batas Administrasi**", color="primary")
-        with st.container(border=True):
-            st.write("**Penyedia:** Badan Informasi Geospasial")
-            st.write("**Cakupan**: Kabupaten Bantul, Kabupaten Sleman, Kota Yogyakarta")
-            st.write(
-                "**Referensi**: Perda Daerah Istimewa Yogyakarta Nomor 5 Tahun 2019"
-            )
-            st.write(
-                "**Kegunaan:** Area of Interest (AOI) Kawasan Perkotaan Yogyakarta dan Sekitarnya"
-            )
-            st.link_button(
-                label="Detail",
-                url="https://tanahair.indonesia.go.id/portal-web/",
-                icon=":material/touch_double:",
-            )
+    codeScalingFactor = """
+var landsat = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
+    .filterDate('2024-04-21', '2024-10-31') // berdasarkan kajian periode normal rata-rata klimatologi 1991-2020 yang dikeluarkan oleh BMKG
+    .filterBounds(loc)
+    .map(applyScaleFactors8)
+    .map(maskLsr)
+    .median()
+    .clip(loc);
+"""
+    st.code(codeScalingFactor, language="javascript", line_numbers=True)
 
 with tab2:
-    st.subheader("Snippets")
-    st.badge("**Citra Landsat 5 TM Surface Reflectance**", color="primary")
-    snippetLandsat5 = """var dataset = ee.ImageCollection('LANDSAT/LT05/C02/T1_L2')"""
-    st.code(snippetLandsat5, language="javascript", line_numbers=True)
-
-    st.badge("**Citra Landsat 7 ETM+ Surface Reflectance**", color="primary")
-    snippetLandsat7 = """var dataset = ee.ImageCollection('LANDSAT/LE07/C02/T1_L2')"""
-    st.code(snippetLandsat7, language="javascript", line_numbers=True)
-
-    st.badge("**Citra Landsat 8 OLI/TIRS Surface Reflectance**", color="primary")
-    snippetLandsat8 = """var dataset = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')"""
-    st.code(snippetLandsat8, language="javascript", line_numbers=True)
-
-    st.badge("**Citra Radar NASA SRTM**", color="primary")
-    snippetRadar = """var dataset = ee.Image('USGS/SRTMGL1_003')"""
-    st.code(snippetRadar, language="javascript", line_numbers=True)
-
-    st.badge("**Citra Sentinel-2 MSI Surface Reflectance**", color="primary")
-    snippetSentinel = (
-        """var dataset = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')"""
-    )
-    st.code(snippetSentinel, language="javascript", line_numbers=True)
+    st.subheader("Time-Series")
