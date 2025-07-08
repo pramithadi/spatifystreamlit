@@ -2,6 +2,7 @@
 backgroundColor="#fdfaf6"
 secondaryBackgroundColor="#ebe5dd"
 primaryColor="#496605"
+secondaryColor="#ebe5dd"
 
 [theme.sidebar]
 backgroundColor="#dce4c9"
