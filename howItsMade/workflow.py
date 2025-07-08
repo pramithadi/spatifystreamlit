@@ -138,7 +138,7 @@ function applyScaleFactors(image) {
     st.markdown(
         """
         <div class="justified-text">
-        <strong>Cloud Masking</strong> metode <strong>Quality Assesment (QA)</strong> merupakan teknik untuk mengurangi tutupan awan dalam citra (Sinabutar, 2020). Metode ini bekerja otomatis dengan memberi tanda pada piksel-piksel awan kemudian menyortir piksel tersebut agar tidak digunakan dalam analisis. Celah yang kosong lantas diisi dengan piksel lain yang lebih bersih melalui teknik <strong>Median Composite</strong>.
+        <strong>Cloud Masking</strong> metode <strong>Quality Assesment (QA)</strong> merupakan teknik untuk mengurangi tutupan awan dalam citra (Sinabutar <em>et al.</em>, 2020). Metode ini bekerja otomatis dengan memberi tanda pada piksel-piksel awan kemudian menyortir piksel tersebut agar tidak digunakan dalam analisis. Celah yang kosong lantas diisi dengan piksel lain yang lebih bersih melalui teknik <strong>Median Composite</strong>.
         </div>
         """,
         unsafe_allow_html=True,
@@ -223,7 +223,7 @@ with tab2:
         st.markdown(
             """
         <div class="justified-text">
-        Emisivitas permukaan (ε) adalah kemampuan suatu objek dalam menyerap radiasi matahari dan memancarkan radiasi termal (Mallick et al., 2012). Penelitian ini menggunakan pendekatan NDVI dan Proportion of Vegetation (Pv) untuk mendapatkan nilai emisivitas permukaan. Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
+        Emisivitas permukaan (ε) adalah kemampuan suatu objek dalam menyerap radiasi matahari dan memancarkan radiasi termal (Mallick <em>et al.</em>, 2012). Penelitian ini menggunakan pendekatan NDVI dan Proportion of Vegetation (Pv) untuk mendapatkan nilai emisivitas permukaan. Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -423,7 +423,7 @@ var lst2024 = bt2024.expression(
         st.markdown(
             """
             <div class="justified-text">
-            Perhitungan NDBI diestimasi dengan memanfaatkan saluran reflektif inframerah-dekat (NIR) dan inframerah-gelombang pendek (SWIR) yang sangat sensitif terhadap area terbangun (Wicaksono et al., 2021). Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
+            Perhitungan NDBI diestimasi dengan memanfaatkan saluran reflektif inframerah-dekat (NIR) dan inframerah-gelombang pendek (SWIR) yang sangat sensitif terhadap area terbangun (Wicaksono <em>et al.</em>, 2021). Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -481,7 +481,7 @@ var ndbi2024 = landsat2024.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndbi
             unsafe_allow_html=True,
         )
 
-        # Rumus NDBI
+        # Rumus NDMI
         def display_equation(title, equation):
             st.markdown(f"**{title}**")
             st.latex(equation)
@@ -518,13 +518,63 @@ var ndmi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B6']).rename('ndbi
         with st.expander("Lihat Referensi"):
             st.markdown(
                 """
-                - Gao, B. C. (1996). NDWI - a Normalized Difference Water Indeks for Remote Sensing of Liquid Water from Space. *Remote Sensing of Environment*, 58, 257-266. https://doi.org/10.1016/S0034-4257(96)00067-3 
+                - Gao, B. C. (1996). NDWI - A Normalized Difference Water Indeks for Remote Sensing of Liquid Water from Space. *Remote Sensing of Environment*, 58, 257-266. https://doi.org/10.1016/S0034-4257(96)00067-3 
                 """
             )
 
     elif option == "NDVI":
-        st.badge("**Normalized Difference Vegetation Index (NDVI)**", color="primary")
-        st.write("NDBI adalah indeks kerapatan vegetasi")
+        st.subheader("**Normalized Difference Vegetation Index (NDVI)**")
+        st.markdown(
+            """
+            <div class="justified-text">
+            Perhitungan NDVI dilakukan dengan memanfaatkan reflektansi saluran inframerah-dekat (NIR) dan saluran merah (red) (Estoque <em>et al.</em>, 2017). Kedua saluran ini sensitif terhadap pigmen klorofil dan struktur sel daun sehingga dapat memetakan perbedaan kecerahan antara lahan bervegetasi dan non-vegetasi (‘Ain, 2021). Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Rumus NDVI
+        def display_equation(title, equation):
+            st.markdown(f"**{title}**")
+            st.latex(equation)
+            # st.markdown(
+            #     "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+            # )
+
+        display_equation(
+            "Rumus NDVI",
+            r"NDVI = \frac{NIR - Red}{NIR + Red}",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        <strong>Keterangan:</strong><br>
+        NDVI = Normalized Difference Vegetation Index<br>
+        NIR = Band 4 (Landsat 5 dan Landsat 7), Band 5 (Landsat 8)<br>
+        Red = Band 3 (Landsat 5 dan Landsat 7), Band 4 (Landsat 8)
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode NDVI
+        codeNDVI = """
+// Perhitungan NDVI
+var ndvi1999 = landsat1999.normalizedDifference(['SR_B4', 'SR_B3']).rename('ndvi1999'); // Landsat 5
+var ndvi2004 = landsat2004.normalizedDifference(['SR_B4', 'SR_B3']).rename('ndvi2004'); // Landsat 7
+var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi2024'); // Landsat 8
+"""
+        st.code(codeNDVI, language="javascript", line_numbers=True)
+
+        with st.expander("Lihat Referensi"):
+            st.markdown(
+                """
+                - Estoque, Ronald, C., Murayama, Yuji. (2017). Landscape Pattern and Ecosystem Service Value Changes: Implications for Environmental Sustainability Planning for the Rapidly Urbanizing Summer Capital of the Philippines. *Landscape Urban Plan*, 116, 60-72. https://doi.org/10.1016/j.landurbplan.2013.04.008
+                - ‘Ain, S. S. (2022). *Analisis Spasio-Temporal Suhu Permukaan Lahan di Provinsi DKI Jakarta Tahun 1991-2021 berbasis Cloud GIS: Google Earth Engine*. Tugas Akhir, Sekolah Vokasi. Yogyakarta: Universitas Gadjah Mada.
+                """
+            )
+
     elif option == "Penutup Lahan":
         st.badge("**Penutup Lahan**", color="primary")
         st.write("Proses Penutup Lahan menggunakan citra Sentinel-2.")
