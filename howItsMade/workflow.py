@@ -439,7 +439,7 @@ var lst2024 = bt2024.expression(
 
         display_equation(
             "Rumus NDBI",
-            r"NDVI = \frac{SWIR - NIR}{SWIR + NIR}",
+            r"NDBI = \frac{SWIR - NIR}{SWIR + NIR}",
         )
 
         st.markdown(
@@ -448,7 +448,7 @@ var lst2024 = bt2024.expression(
         <strong>Keterangan:</strong><br>
         NDBI = Normalized Difference Built-Up Index<br>
         SWIR = Band 5 (Landsat 5 dan Landsat 7), Band 6 (Landsat 8)<br>
-        NIR = Band 4 (Landsat 5 dan Landsat 7), Band 5 (Landsat 8)<br>
+        NIR = Band 4 (Landsat 5 dan Landsat 7), Band 5 (Landsat 8)
         </div>
         """,
             unsafe_allow_html=True,
@@ -457,9 +457,9 @@ var lst2024 = bt2024.expression(
         # Kode NDBI
         codeNDBI = """
 // Perhitungan NDBI
-var ndbiLandsat5 = landsat5.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndbiLandsat5');
-var ndbiLandsat7 = landsat7.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndbiLandsat7');
-var ndbiLandsat8 = landsat8.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndbiLandsat8');
+var ndbi1999 = landsat1999.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndbi1999'); // Landsat 5
+var ndbi2004 = landsat2004.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndbi2004'); // Landsat 7
+var ndbi2024 = landsat2024.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndbi2024'); // Landsat 8
 """
         st.code(codeNDBI, language="javascript", line_numbers=True)
 
@@ -471,8 +471,57 @@ var ndbiLandsat8 = landsat8.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndb
             )
 
     elif option == "NDMI":
-        st.badge("**Normalized Difference Moisture Index (NDMI)**", color="primary")
-        st.write("NDBI adalah indeks kelembapan vegetasi")
+        st.subheader("**Normalized Difference Moisture Index (NDMI)**")
+        st.markdown(
+            """
+            <div class="justified-text">
+            NDMI dihitung dengan memanfaatkan saluran near-infrared (NIR) dan shortwave infrared (SWIR) serupa dengan NDBI. Namun, terdapat perbedaan urutan saluran reflektif yang digunakan dalam formula sebagaimana dirumuskan oleh Gao (1996). Perhitungan NDMI menempatkan saluran NIR sebagai pengurang, berbeda dengan NDBI yang menggunakan SWIR di posisi tersebut. Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Rumus NDBI
+        def display_equation(title, equation):
+            st.markdown(f"**{title}**")
+            st.latex(equation)
+            # st.markdown(
+            #     "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+            # )
+
+        display_equation(
+            "Rumus NDMI",
+            r"NDMI = \frac{NIR - SWIR}{NIR + SWIR}",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        <strong>Keterangan:</strong><br>
+        NDMI = Normalized Difference Moisture Index<br>
+        NIR = Band 4 (Landsat 5 dan Landsat 7), Band 5 (Landsat 8)<br>
+        SWIR = Band 5 (Landsat 5 dan Landsat 7), Band 6 (Landsat 8)
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode NDMI
+        codeNDMI = """
+// Perhitungan NDMI
+var ndmi1999 = landsat1999.normalizedDifference(['SR_B4', 'SR_B5']).rename('ndbi1999'); // Landsat 5
+var ndmi2004 = landsat2004.normalizedDifference(['SR_B4', 'SR_B5']).rename('ndbi2004'); // Landsat 7
+var ndmi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B6']).rename('ndbi2024'); // Landsat 8
+"""
+        st.code(codeNDMI, language="javascript", line_numbers=True)
+
+        with st.expander("Lihat Referensi"):
+            st.markdown(
+                """
+                - Gao, B. C. (1996). NDWI - a Normalized Difference Water Indeks for Remote Sensing of Liquid Water from Space. *Remote Sensing of Environment*, 58, 257-266. https://doi.org/10.1016/S0034-4257(96)00067-3 
+                """
+            )
+
     elif option == "NDVI":
         st.badge("**Normalized Difference Vegetation Index (NDVI)**", color="primary")
         st.write("NDBI adalah indeks kerapatan vegetasi")
