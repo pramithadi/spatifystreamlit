@@ -672,7 +672,7 @@ Map.addLayer(lulc2024, {palette: landcoverPalette, min: 0, max:3}, 'Klasifikasi 
 """
         st.code(codeKlasifikasiSupervised, language="javascript", line_numbers=True)
 
-        # Sebaran Training Area
+        # Hasil Klasifikasi Penutup Lahan
         st.write(
             "Visualisasi dari hasil klasifikasi penutup lahan di lokasi penelitian tahun 2024 ditunjukkan berikut ini:"
         )
@@ -684,6 +684,69 @@ Map.addLayer(lulc2024, {palette: landcoverPalette, min: 0, max:3}, 'Klasifikasi 
         st.markdown(
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
         )
+
+        # Uji Akurasi Klasifikasi
+        st.badge("**3. Uji Akurasi Klasifikasi (Confusion Matrix)**", color="primary")
+        st.markdown(
+            """
+        <div class="justified-text">        
+        Uji akurasi ini membandingkan hasil klasifikasi model CART dengan data training dan testing yang dibagi dengan skema split <strong>80% untuk training</strong> dan <strong>20% untuk testing</strong>. Hasil <strong>Confusion Matrix</strong> menunjukkan akurasi keseluruhan mencapai <strong>91,43%</strong>. Berikut contoh implementasi kode dalam Google Earth Engine.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        codeUjiAkurasi = """
+// Uji Akurasi 
+var confusionMatrix = ee.ConfusionMatrix(testSet.classify(classifier)
+    .errorMatrix({
+      actual: 'Class',
+      predicted: 'classification'
+    }));
+
+print('Confusion Matrix:', confusionMatrix);
+print('Overall Accuracy:', confusionMatrix.accuracy());
+print('Producers Accuracy:', confusionMatrix.producersAccuracy());
+print('Consumers Accuracy:', confusionMatrix.consumersAccuracy());
+"""
+        st.code(codeUjiAkurasi, language="javascript", line_numbers=True)
+
+        # Hasil Uji Akurasi Klasifikasi
+        st.markdown(
+            """
+        <div class="justified-text">        
+        Nilai <strong>Producers Accuracy</strong> dan <strong>Consumers Accuracy</strong>:<br>
+        • <strong>Kelas 0 (Vegetasi)</strong>: produsen 100%, konsumen 93%<br>
+        • <strong>Kelas 1 (Tubuh Air)</strong>: produsen 100%, konsumen 100%<br>
+        • <strong>Kelas 2 (Lahan Terbangun)</strong>: produsen 75%, konsumen 85,71%<br>
+        • <strong>Kelas 3 (Lahan Terbuka)</strong>: produsen 83,33%, konsumen 83,33%<br>
+        Dengan demikian, dapat disimpulkan bahwa model CART tergolong baik untuk klasifikasi penutup lahan tahun 2024 di lokasi penelitian meski masih terdapat ruang untuk perbaikan pada kelas lahan terbangun dan lahan terbuka.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        st.image(
+            "./assets/confusion_matrix.png",
+            caption="Hasil Confusion Matrix Model CART pada Klasifikasi Penutup Lahan Tahun 2024",
+        )
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        with st.expander("Lihat Referensi"):
+            st.markdown(
+                """
+                - Krzywinski, M., & Altman, N. (2017). Classification and Regression Trees. *Nature Methods*, 14(8), 757-758. https://doi.org/10.1038/nmeth.4370 
+                """
+            )
 
     elif option == "Elevasi dan Slope":
         st.subheader("**Elevasi dan Slope**")
