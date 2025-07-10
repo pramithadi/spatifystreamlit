@@ -5,12 +5,12 @@ st.markdown(
     """
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        # .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
-        #     font-family: 'Poppins', sans-serif !important;
-        # }
-        # div[data-testid="stMarkdownContainer"] * {
-        #     font-family: 'Poppins', sans-serif !important;
-        # }
+        .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
+            font-family: 'Poppins', sans-serif !important;
+        }
+        div[data-testid="stMarkdownContainer"] * {
+            font-family: 'Poppins', sans-serif !important;
+        }
         .stMarkdown p {
             font-size: 14px !important;
             margin-bottom: 8px !important;
@@ -46,7 +46,7 @@ st.markdown(
             line-height: 1.6 !important;
             font-size: 14px !important;
             margin-bottom: 8px !important;
-            # font-family: 'Poppins', sans-serif !important;
+            font-family: 'Poppins', sans-serif !important;
         }
     </style>
 """,
@@ -82,7 +82,7 @@ st.markdown(
 tab1, tab2, tab3, tab4 = st.tabs(
     [
         "**Prapengolahan Data**",
-        "**Pengolahan Time-Series**",
+        "**Pengolahan Data**",
         "**Pemodelan Prediksi**",
         "**Validasi Data**",
     ]
@@ -160,7 +160,7 @@ function maskLsr(image) {
 
     # Hasil Prapengolahan Data
     st.write(
-        "Berikut ini merupakan contoh tampilan citra **Landsat 8 Surface Reflectance** tahun 2024 **sebelum** dan **sesudah** dilakukan tahap pembersihan awan:"
+        "Berikut merupakan contoh tampilan citra **Landsat 8 Surface Reflectance** tahun 2024 **sebelum** dan **sesudah** dilakukan tahap pembersihan awan:"
     )
     from streamlit_image_comparison import image_comparison
 
@@ -186,7 +186,7 @@ function maskLsr(image) {
 
 # tab 2
 with tab2:
-    st.header("Pengolahan Time-Series")
+    st.header("Pengolahan Data")
     option = st.pills(
         "Pilih Pengolahan Data:",
         ["LST", "NDBI", "NDMI", "NDVI", "Penutup Lahan", "Elevasi dan Slope"],
@@ -223,7 +223,7 @@ with tab2:
         st.markdown(
             """
         <div class="justified-text">
-        Emisivitas permukaan (ε) adalah kemampuan suatu objek dalam menyerap radiasi matahari dan memancarkan radiasi termal (Mallick <em>et al.</em>, 2012). Penelitian ini menggunakan pendekatan NDVI dan Proportion of Vegetation (Pv) untuk mendapatkan nilai emisivitas permukaan. Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
+        Emisivitas permukaan (ε) adalah kemampuan suatu objek dalam menyerap radiasi matahari dan memancarkan radiasi termal (Mallick <em>et al.</em>, 2012). Penelitian ini menggunakan pendekatan NDVI dan Proportion of Vegetation (Pv) untuk mendapatkan nilai emisivitas permukaan. Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -365,7 +365,7 @@ var bt2024 = landsat2024.select('ST_B10');
         st.markdown(
             """
         <div class="justified-text">
-        Perhitungan LST melibatkan nilai brightness temperature, emisivitas permukaan, panjang gelombang saluran termal, serta nilai radiasi emisivitas yang diestimasi dari konstanta Planck, Stefan-Boltzmann, dan kecepatan cahaya (Waleed & Sajjad, 2022). Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
+        Perhitungan LST melibatkan nilai brightness temperature, emisivitas permukaan, panjang gelombang saluran termal, serta nilai radiasi emisivitas yang diestimasi dari konstanta Planck, Stefan-Boltzmann, dan kecepatan cahaya (Waleed & Sajjad, 2022). Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -423,7 +423,7 @@ var lst2024 = bt2024.expression(
         st.markdown(
             """
             <div class="justified-text">
-            Perhitungan NDBI diestimasi dengan memanfaatkan saluran reflektif inframerah-dekat (NIR) dan inframerah-gelombang pendek (SWIR) yang sangat sensitif terhadap area terbangun (Wicaksono <em>et al.</em>, 2021). Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
+            Perhitungan NDBI diestimasi dengan memanfaatkan saluran reflektif inframerah-dekat (NIR) dan inframerah-gelombang pendek (SWIR) yang sangat sensitif terhadap area terbangun (Wicaksono <em>et al.</em>, 2021). Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -475,7 +475,7 @@ var ndbi2024 = landsat2024.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndbi
         st.markdown(
             """
             <div class="justified-text">
-            NDMI dihitung dengan memanfaatkan saluran near-infrared (NIR) dan shortwave infrared (SWIR) serupa dengan NDBI. Namun, terdapat perbedaan urutan saluran reflektif yang digunakan dalam formula sebagaimana dirumuskan oleh Gao (1996). Perhitungan NDMI menempatkan saluran NIR sebagai pengurang, berbeda dengan NDBI yang menggunakan SWIR di posisi tersebut. Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
+            NDMI dihitung dengan memanfaatkan saluran near-infrared (NIR) dan shortwave infrared (SWIR) serupa dengan NDBI. Namun, terdapat perbedaan urutan saluran reflektif yang digunakan dalam formula sebagaimana dirumuskan oleh Gao (1996). Perhitungan NDMI menempatkan saluran NIR sebagai pengurang, berbeda dengan NDBI yang menggunakan SWIR di posisi tersebut. Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -527,7 +527,7 @@ var ndmi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B6']).rename('ndbi
         st.markdown(
             """
             <div class="justified-text">
-            Perhitungan NDVI dilakukan dengan memanfaatkan reflektansi saluran inframerah-dekat (NIR) dan saluran merah (red) (Estoque <em>et al.</em>, 2017). Kedua saluran ini sensitif terhadap pigmen klorofil dan struktur sel daun sehingga dapat memetakan perbedaan kecerahan antara lahan bervegetasi dan non-vegetasi (‘Ain, 2021). Berikut ini rumus dan contoh implementasi kode dalam Google Earth Engine.
+            Perhitungan NDVI dilakukan dengan memanfaatkan reflektansi saluran inframerah-dekat (NIR) dan saluran merah (red) (Estoque <em>et al.</em>, 2017). Kedua saluran ini sensitif terhadap pigmen klorofil dan struktur sel daun sehingga dapat memetakan perbedaan kecerahan antara lahan bervegetasi dan non-vegetasi (‘Ain, 2021). Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -576,13 +576,136 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
             )
 
     elif option == "Penutup Lahan":
-        st.badge("**Penutup Lahan**", color="primary")
-        st.write("Proses Penutup Lahan menggunakan citra Sentinel-2.")
-    elif option == "Elevasi dan Slope":
-        st.badge("**Elevasi**", color="primary")
-        st.write("Proses Elevasi dan Slope menggunakan citra SRTM.")
-        st.badge("**Slope**", color="primary")
+        st.subheader("**Penutup Lahan**")
+        st.markdown(
+            """
+            <div class="justified-text">
+            Penutup lahan dipetakan menggunakan <strong>klasifikasi supervised</strong> pada citra multispektral. Metode ini memanfaatkan sampel dari tiap kelas penutup lahan untuk melatih model klasifikasi. Prosedur klasifikasi penutup lahan di Google Earth Engine ditunjukkan berikut:
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
 
+        # Pembuatan Training Area
+        st.badge("**1. Pembuatan Training Area**", color="primary")
+        st.markdown(
+            """
+        <div class="justified-text">        
+        <strong>Training area</strong> adalah kumpulan sampel dari setiap kelas penutup lahan yang akan diklasifikasi. Klasifikasi penutup lahan mengacu pada sistem <strong>SNI 7645:2010</strong> yang telah disesuaikan dengan kondisi penutup lahan di lokasi penelitian. Kelas yang digunakan dalam penelitian ini meliputi <strong>vegetasi, badan air, lahan terbangun, dan lahan terbuka</strong>. Berikut contoh implementasi kode dalam Google Earth Engine.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        codeTrainingArea = """
+// Pembuatan Training Area
+var label = 'Class';
+var bands = ['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7'];
+var input = landsat2024.select(bands);
+
+// Penggabungan Training Area
+var training = vegetasi
+              .merge(tubuh_air)
+              .merge(lahan_terbangun)
+              .merge(lahan_terbuka);
+print(training);
+
+var trainImage = input.sampleRegions({
+  collection: training,
+  properties: [label],
+  scale: 30
+})
+print(trainImage)
+"""
+        st.code(codeTrainingArea, language="javascript", line_numbers=True)
+
+        # Sebaran Training Area
+        st.write(
+            "Di bawah ini merupakan visualisasi sebaran training area pada citra Landsat 8 Surface Reflectance tahun 2024:"
+        )
+        st.image(
+            "./assets/training_area.png",
+            caption="Persebaran Sampel Kelas Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya Tahun 2024",
+        )
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Klasifikasi Supervised
+        st.badge("**2. Klasifikasi Supervised**", color="primary")
+        st.markdown(
+            """
+        <div class="justified-text">        
+        Training area dilatih menggunakan algoritma <strong>Classification and Regression Tree (CART)</strong>, yakni algoritma machine learning dengan skema decision tree (pohon keputusan) yang umum digunakan dalam klasifikasi penutup lahan (Krzywinski & Altman, 2017). Algoritma ini membangun aturan klasifikasi dari sampel training area yang ada lalu menerapkannya untuk memetakan kelas penutup lahan pada setiap piksel citra. Berikut contoh implementasi kode dalam Google Earth Engine.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        codeKlasifikasiSupervised = """
+// Training Data pada Model CART
+var trainingData = trainImage.randomColumn();
+var trainSet = trainingData.filter(ee.Filter.lessThan('random', 0.8)); // Training Data 
+var testSet = trainingData.filter(ee.Filter.greaterThanOrEquals('random', 0.8)); // Testing Data 
+
+var classifier = ee.Classifier.smileCart().train(trainSet, label, bands);
+
+// Klasifikasi Citra
+var lulc2024 = input.classify(classifier);
+print(lulc2024.getInfo());
+
+// Visualisasi
+var landcoverPalette = [
+  '#294b29', // vegetasi
+  '#69c3dd', // tubuh_air
+  '#cd9a4d', // lahan_terbangun
+  '#faf5d9', // lahan_terbuka
+  ];
+Map.addLayer(lulc2024, {palette: landcoverPalette, min: 0, max:3}, 'Klasifikasi Penutup Lahan');
+"""
+        st.code(codeKlasifikasiSupervised, language="javascript", line_numbers=True)
+
+        # Sebaran Training Area
+        st.write(
+            "Visualisasi dari hasil klasifikasi penutup lahan di lokasi penelitian tahun 2024 ditunjukkan berikut ini:"
+        )
+        st.image(
+            "./assets/hasil_klasifikasi.png",
+            caption="Visualisasi Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya Tahun 2024",
+        )
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+    elif option == "Elevasi dan Slope":
+        st.subheader("**Elevasi dan Slope**")
+        st.markdown(
+            """
+            <div class="justified-text">
+           Citra radar NASA SRTM telah tersedia dalam format <em>digital elevation model</em> (DEM) sehingga data elevasi yang dibutuhkan dapat langsung diekstraksi tanpa memerlukan proses konversi tambahan. Sementara data slope dapat diturunkan melalui Google Earth Engine API <strong>ee.Terrain.slope()</strong> yang akan menghitung kemiringan lereng berdasarkan nilai elevasi. Berikut contoh implementasi kode dalam Google Earth Engine.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Elevasi dan Slope
+        codeDEM = """
+// Pemanggilan Citra Radar NASA SRTM
+dem = ee.Image("USGS/SRTMGL1_003");
+
+// Ekstraksi Data Elevasi dan Slope
+var elevation = dem.clip(loc);
+var slope = ee.Terrain.slope(elevation);
+"""
+        st.code(codeDEM, language="javascript", line_numbers=True)
 
 with tab3:
     st.subheader("Prediksi")
