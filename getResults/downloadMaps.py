@@ -421,7 +421,7 @@ with tab4:
 with tab5:
     st.header("Download Peta Penutup Lahan")
 
-    col1, col2, col3 = st.columns(3, gap="small")
+    col1, col2 = st.columns(2, gap="small")
     with col1:
         column_download_section("Penutup Lahan 1999")
         with st.container(border=False):
@@ -444,6 +444,7 @@ with tab5:
                 "lulc_2004",
             )
 
+    col3, col4, col5 = st.columns(3, gap="small")
     with col3:
         column_download_section("Penutup Lahan 2009")
         with st.container(border=False):
@@ -455,7 +456,6 @@ with tab5:
                 "lulc_2009",
             )
 
-    col4, col5, col6 = st.columns(3, gap="small")
     with col4:
         column_download_section("Penutup Lahan 2014")
         with st.container(border=False):
@@ -478,6 +478,7 @@ with tab5:
                 "lulc_2019",
             )
 
+    col6, col7 = st.columns(2, gap="small")
     with col6:
         column_download_section("Penutup Lahan 2024")
         with st.container(border=False):
@@ -487,4 +488,15 @@ with tab5:
                 "./downloads/Penutup Lahan 2024.pdf",
                 "Penutup Lahan 2024.pdf",
                 "lulc_2024",
+            )
+
+    with col7:
+        column_download_section("Penutup Lahan 2029")
+        with st.container(border=False):
+            create_download_section(
+                "Penutup Lahan 2029",
+                "./assets/lulc.png",
+                "./downloads/Penutup Lahan 2029.pdf",
+                "Penutup Lahan 2029.pdf",
+                "lulc_2029",
             )
