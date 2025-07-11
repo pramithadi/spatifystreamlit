@@ -1,9 +1,9 @@
 [theme]
 backgroundColor="#fdfaf6"
 secondaryBackgroundColor="#ebe5dd"
-primaryColor="#496605"
+primaryColor="#3c5e51"
 secondaryColor="#ebe5dd"
 
 [theme.sidebar]
-backgroundColor="#dce4c9"
+backgroundColor="#E4EFE7"
 secondaryBackgroundColor="black"

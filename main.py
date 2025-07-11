@@ -16,10 +16,10 @@ home = st.Page("home.py", title="Home", icon=":material/home:", default=True)
 
 # Maps Section
 lst = st.Page("maps/lst.py", title="LST", icon=":material/thermometer:")
-lulc = st.Page("maps/lulc.py", title="Penutup Lahan", icon=":material/landscape_2:")
 ndbi = st.Page("maps/ndbi.py", title="NDBI", icon=":material/apartment:")
 ndmi = st.Page("maps/ndmi.py", title="NDMI", icon=":material/water_voc:")
 ndvi = st.Page("maps/ndvi.py", title="NDVI", icon=":material/psychiatry:")
+lulc = st.Page("maps/lulc.py", title="Penutup Lahan", icon=":material/landscape_2:")
 
 # How It's Made Section
 dataSource = st.Page(
@@ -43,18 +43,13 @@ colab = st.Page(
 downloadMaps = st.Page(
     "getResults/downloadMaps.py", title="Download Maps", icon=":material/download:"
 )
-generateReports = st.Page(
-    "getResults/generateReports.py",
-    title="Generate Reports",
-    icon=":material/file_save:",
-)
 
 pg = st.navigation(
     {
         "": [home],
-        "Maps": [lst, lulc, ndbi, ndmi, ndvi],
+        "Maps": [lst, ndbi, ndmi, ndvi, lulc],
         "How It's Made": [dataSource, workflow, gee, colab],
-        "Get Results": [downloadMaps, generateReports],
+        "Get Results": [downloadMaps],
     }
 )
 pg.run()
