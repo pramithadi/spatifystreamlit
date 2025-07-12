@@ -131,7 +131,7 @@ with tab1:
         with st.container(border=False):
             create_download_section(
                 "LST 1999",
-                "./assets/LST1999.png",
+                "./assets/LST 1999.png",
                 "./downloads/LST 1999.pdf",
                 "LST 1999.pdf",
                 "lst_1999",
@@ -142,7 +142,7 @@ with tab1:
         with st.container(border=False):
             create_download_section(
                 "LST 2004",
-                "./assets/lst.png",
+                "./assets/LST 2004.png",
                 "./downloads/LST 2004.pdf",
                 "LST 2004.pdf",
                 "lst_2004",
@@ -154,7 +154,7 @@ with tab1:
         with st.container(border=False):
             create_download_section(
                 "LST 2009",
-                "./assets/lst.png",
+                "./assets/LST 2009.png",
                 "./downloads/LST 2009.pdf",
                 "LST 2009.pdf",
                 "lst_2009",
@@ -165,7 +165,7 @@ with tab1:
         with st.container(border=False):
             create_download_section(
                 "LST 2014",
-                "./assets/lst.png",
+                "./assets/LST 2014.png",
                 "./downloads/LST 2014.pdf",
                 "LST 2014.pdf",
                 "lst_2014",
@@ -176,7 +176,7 @@ with tab1:
         with st.container(border=False):
             create_download_section(
                 "LST 2019",
-                "./assets/lst.png",
+                "./assets/LST 2019.png",
                 "./downloads/LST 2019.pdf",
                 "LST 2019.pdf",
                 "lst_2019",
@@ -188,7 +188,7 @@ with tab1:
         with st.container(border=False):
             create_download_section(
                 "LST 2024",
-                "./assets/lst.png",
+                "./assets/LST 2024.png",
                 "./downloads/LST 2024.pdf",
                 "LST 2024.pdf",
                 "lst_2024",
