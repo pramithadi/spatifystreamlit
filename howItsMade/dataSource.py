@@ -113,7 +113,7 @@ with tab1:
             st.write("**Tahun:** 1999, 2009")
             st.write("**Fungsi:** Ekstraksi LST, NDBI, NDMI, NDVI, dan Penutup Lahan")
             st.link_button(
-                label="Detail",
+                label="Lihat Detail",
                 url="https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LT05_C02_T1_L2",
                 icon=":material/touch_double:",
             )
@@ -131,7 +131,7 @@ with tab1:
             st.write("**Tahun:** 2004")
             st.write("**Fungsi:** Ekstraksi LST, NDBI, NDMI, NDVI, dan Penutup Lahan")
             st.link_button(
-                label="Detail",
+                label="Lihat Detail",
                 url="https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LE07_C02_T1_L2",
                 icon=":material/touch_double:",
             )
@@ -149,7 +149,7 @@ with tab1:
             st.write("**Tahun:** 2014, 2019, 2024")
             st.write("**Fungsi:** Ekstraksi LST, NDBI, NDMI, NDVI, dan Penutup Lahan")
             st.link_button(
-                label="Detail",
+                label="Lihat Detail",
                 url="https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2",
                 icon=":material/touch_double:",
             )
@@ -167,7 +167,7 @@ with tab1:
             st.write("**Tahun:** 2000")
             st.write("**Fungsi:** Ekstraksi Elevasi dan Slope")
             st.link_button(
-                label="Detail",
+                label="Lihat Detail",
                 url="https://developers.google.com/earth-engine/datasets/catalog/USGS_SRTMGL1_003",
                 icon=":material/touch_double:",
             )
@@ -183,7 +183,7 @@ with tab1:
             st.write("**Tahun:** 2024")
             st.write("**Fungsi:** Validasi Data NDBI, NDMI, NDVI")
             st.link_button(
-                label="Detail",
+                label="Lihat Detail",
                 url="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
                 icon=":material/touch_double:",
             )
@@ -198,7 +198,7 @@ with tab1:
                 "**Fungsi:** Area of Interest (AOI) Kawasan Perkotaan Yogyakarta dan Sekitarnya"
             )
             st.link_button(
-                label="Detail",
+                label="Lihat Detail",
                 url="https://tanahair.indonesia.go.id/portal-web/",
                 icon=":material/touch_double:",
             )

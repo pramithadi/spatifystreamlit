@@ -214,7 +214,7 @@ with tab2:
         with st.container(border=False):
             create_download_section(
                 "NDBI 1999",
-                "./assets/ndbi.png",
+                "./assets/NDBI 1999.png",
                 "./downloads/NDBI 1999.pdf",
                 "NDBI 1999.pdf",
                 "ndbi_1999",
@@ -225,7 +225,7 @@ with tab2:
         with st.container(border=False):
             create_download_section(
                 "NDBI 2004",
-                "./assets/ndbi.png",
+                "./assets/NDBI 2004.png",
                 "./downloads/NDBI 2004.pdf",
                 "NDBI 2004.pdf",
                 "ndbi_2004",
@@ -236,7 +236,7 @@ with tab2:
         with st.container(border=False):
             create_download_section(
                 "NDBI 2009",
-                "./assets/ndbi.png",
+                "./assets/NDBI 2009.png",
                 "./downloads/NDBI 2009.pdf",
                 "NDBI 2009.pdf",
                 "ndbi_2009",
@@ -248,7 +248,7 @@ with tab2:
         with st.container(border=False):
             create_download_section(
                 "NDBI 2014",
-                "./assets/ndbi.png",
+                "./assets/NDBI 2014.png",
                 "./downloads/NDBI 2014.pdf",
                 "NDBI 2014.pdf",
                 "ndbi_2014",
@@ -259,7 +259,7 @@ with tab2:
         with st.container(border=False):
             create_download_section(
                 "NDBI 2019",
-                "./assets/ndbi.png",
+                "./assets/NDBI 2019.png",
                 "./downloads/NDBI 2019.pdf",
                 "NDBI 2019.pdf",
                 "ndbi_2019",
@@ -270,7 +270,7 @@ with tab2:
         with st.container(border=False):
             create_download_section(
                 "NDBI 2024",
-                "./assets/ndbi.png",
+                "./assets/NDBI 2024.png",
                 "./downloads/NDBI 2024.pdf",
                 "NDBI 2024.pdf",
                 "ndbi_2024",
@@ -285,7 +285,7 @@ with tab3:
         with st.container(border=False):
             create_download_section(
                 "NDMI 1999",
-                "./assets/ndmi.png",
+                "./assets/NDMI 1999.png",
                 "./downloads/NDMI 1999.pdf",
                 "NDMI 1999.pdf",
                 "ndmi_1999",
@@ -296,7 +296,7 @@ with tab3:
         with st.container(border=False):
             create_download_section(
                 "NDMI 2004",
-                "./assets/ndmi.png",
+                "./assets/NDMI 2004.png",
                 "./downloads/NDMI 2004.pdf",
                 "NDMI 2004.pdf",
                 "ndmi_2004",
@@ -307,7 +307,7 @@ with tab3:
         with st.container(border=False):
             create_download_section(
                 "NDMI 2009",
-                "./assets/ndmi.png",
+                "./assets/NDMI 2009.png",
                 "./downloads/NDMI 2009.pdf",
                 "NDMI 2009.pdf",
                 "ndmi_2009",
@@ -319,7 +319,7 @@ with tab3:
         with st.container(border=False):
             create_download_section(
                 "NDMI 2014",
-                "./assets/ndmi.png",
+                "./assets/NDMI 2014.png",
                 "./downloads/NDMI 2014.pdf",
                 "NDMI 2014.pdf",
                 "ndmi_2014",
@@ -330,7 +330,7 @@ with tab3:
         with st.container(border=False):
             create_download_section(
                 "NDMI 2019",
-                "./assets/ndmi.png",
+                "./assets/NDMI 2019.png",
                 "./downloads/NDMI 2019.pdf",
                 "NDMI 2019.pdf",
                 "ndmi_2019",
@@ -341,7 +341,7 @@ with tab3:
         with st.container(border=False):
             create_download_section(
                 "NDMI 2024",
-                "./assets/ndmi.png",
+                "./assets/NDMI 2024.png",
                 "./downloads/NDMI 2024.pdf",
                 "NDMI 2024.pdf",
                 "ndmi_2024",
@@ -356,7 +356,7 @@ with tab4:
         with st.container(border=False):
             create_download_section(
                 "NDVI 1999",
-                "./assets/ndvi.png",
+                "./assets/NDVI 1999.png",
                 "./downloads/NDVI 1999.pdf",
                 "NDVI 1999.pdf",
                 "ndvi_1999",
@@ -367,7 +367,7 @@ with tab4:
         with st.container(border=False):
             create_download_section(
                 "NDVI 2004",
-                "./assets/ndvi.png",
+                "./assets/NDVI 2004.png",
                 "./downloads/NDVI 2004.pdf",
                 "NDVI 2004.pdf",
                 "ndvi_2004",
@@ -378,7 +378,7 @@ with tab4:
         with st.container(border=False):
             create_download_section(
                 "NDVI 2009",
-                "./assets/ndvi.png",
+                "./assets/NDVI 2009.png",
                 "./downloads/NDVI 2009.pdf",
                 "NDVI 2009.pdf",
                 "ndvi_2009",
@@ -390,7 +390,7 @@ with tab4:
         with st.container(border=False):
             create_download_section(
                 "NDVI 2014",
-                "./assets/ndvi.png",
+                "./assets/NDVI 2014.png",
                 "./downloads/NDVI 2014.pdf",
                 "NDVI 2014.pdf",
                 "ndvi_2014",
@@ -401,7 +401,7 @@ with tab4:
         with st.container(border=False):
             create_download_section(
                 "NDVI 2019",
-                "./assets/ndvi.png",
+                "./assets/NDVI 2019.png",
                 "./downloads/NDVI 2019.pdf",
                 "NDVI 2019.pdf",
                 "ndvi_2019",
@@ -412,7 +412,7 @@ with tab4:
         with st.container(border=False):
             create_download_section(
                 "NDVI 2024",
-                "./assets/ndvi.png",
+                "./assets/NDVI 2024.png",
                 "./downloads/NDVI 2024.pdf",
                 "NDVI 2024.pdf",
                 "ndvi_2024",
@@ -427,7 +427,7 @@ with tab5:
         with st.container(border=False):
             create_download_section(
                 "Penutup Lahan 1999",
-                "./assets/lulc.png",
+                "./assets/Penutup Lahan 1999.png",
                 "./downloads/Penutup Lahan 1999.pdf",
                 "Penutup Lahan 1999.pdf",
                 "lulc_1999",
@@ -438,7 +438,7 @@ with tab5:
         with st.container(border=False):
             create_download_section(
                 "Penutup Lahan 2004",
-                "./assets/lulc.png",
+                "./assets/Penutup Lahan 2004.png",
                 "./downloads/Penutup Lahan 2004.pdf",
                 "Penutup Lahan 2004.pdf",
                 "lulc_2004",
@@ -450,7 +450,7 @@ with tab5:
         with st.container(border=False):
             create_download_section(
                 "Penutup Lahan 2009",
-                "./assets/lulc.png",
+                "./assets/Penutup Lahan 2009.png",
                 "./downloads/Penutup Lahan 2009.pdf",
                 "Penutup Lahan 2009.pdf",
                 "lulc_2009",
@@ -461,7 +461,7 @@ with tab5:
         with st.container(border=False):
             create_download_section(
                 "Penutup Lahan 2014",
-                "./assets/lulc.png",
+                "./assets/Penutup Lahan 2014.png",
                 "./downloads/Penutup Lahan 2014.pdf",
                 "Penutup Lahan 2014.pdf",
                 "lulc_2014",
@@ -472,7 +472,7 @@ with tab5:
         with st.container(border=False):
             create_download_section(
                 "Penutup Lahan 2019",
-                "./assets/lulc.png",
+                "./assets/Penutup Lahan 2019.png",
                 "./downloads/Penutup Lahan 2019.pdf",
                 "Penutup Lahan 2019.pdf",
                 "lulc_2019",
@@ -484,7 +484,7 @@ with tab5:
         with st.container(border=False):
             create_download_section(
                 "Penutup Lahan 2024",
-                "./assets/lulc.png",
+                "./assets/Penutup Lahan 2024.png",
                 "./downloads/Penutup Lahan 2024.pdf",
                 "Penutup Lahan 2024.pdf",
                 "lulc_2024",

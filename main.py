@@ -12,10 +12,12 @@ st.markdown(
 )
 
 # Home Page
-home = st.Page("home.py", title="Home", icon=":material/home:", default=True)
+home = st.Page("home.py", title="Beranda", icon=":material/home:", default=True)
 
 # Maps Section
-lst = st.Page("maps/lst.py", title="LST", icon=":material/thermometer:")
+lst = st.Page(
+    "maps/lst.py", title="Suhu Permukaan Lahan", icon=":material/thermometer:"
+)
 ndbi = st.Page("maps/ndbi.py", title="NDBI", icon=":material/apartment:")
 ndmi = st.Page("maps/ndmi.py", title="NDMI", icon=":material/water_voc:")
 ndvi = st.Page("maps/ndvi.py", title="NDVI", icon=":material/psychiatry:")
@@ -27,7 +29,7 @@ dataSource = st.Page(
 )
 workflow = st.Page(
     "howItsMade/workflow.py",
-    title="Workflow",
+    title="Alur Pemrosesan",
     icon=":material/flowchart:",
 )
 gee = st.Page(
@@ -41,13 +43,13 @@ colab = st.Page(
 
 # Get Results Section
 downloadMaps = st.Page(
-    "getResults/downloadMaps.py", title="Download Maps", icon=":material/download:"
+    "getResults/downloadMaps.py", title="Download Peta", icon=":material/download:"
 )
 
 pg = st.navigation(
     {
         "": [home],
-        "Maps": [lst, ndbi, ndmi, ndvi, lulc],
+        "Peta": [lst, ndbi, ndmi, ndvi, lulc],
         "How It's Made": [dataSource, workflow, gee, colab],
         "Get Results": [downloadMaps],
     }

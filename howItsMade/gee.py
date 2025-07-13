@@ -80,14 +80,14 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.subheader("Google Earth Engine Projects")
+st.subheader("Proyek Google Earth Engine")
 col1, col2, col3 = st.columns(3, gap="small")
 with col1:
     with st.container(border=False):
         st.write("**LST**")
         st.image("./assets/lst.png")
         st.link_button(
-            label="Project",
+            label="Buka di GEE",
             url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
             icon=":material/touch_double:",
         )
@@ -97,7 +97,7 @@ with col2:
         st.write("**NDBI**")
         st.image("./assets/ndbi.png")
         st.link_button(
-            label="Project",
+            label="Buka di GEE",
             url="",
             icon=":material/touch_double:",
         )
@@ -107,7 +107,7 @@ with col3:
         st.write("**NDMI**")
         st.image("./assets/ndmi.png")
         st.link_button(
-            label="Project",
+            label="Buka di GEE",
             url="",
             icon=":material/touch_double:",
         )
@@ -118,7 +118,7 @@ with col4:
         st.write("**NDVI**")
         st.image("./assets/ndvi.png")
         st.link_button(
-            label="Project",
+            label="Buka di GEE",
             url="",
             icon=":material/touch_double:",
         )
@@ -128,7 +128,7 @@ with col5:
         st.write("**Penutup Lahan**")
         st.image("./assets/lulc.png")
         st.link_button(
-            label="Project",
+            label="Buka di GEE",
             url="",
             icon=":material/touch_double:",
         )
@@ -138,7 +138,7 @@ with col6:
         st.write("**Elevasi dan Slope**")
         st.image("./assets/elevasi.png")
         st.link_button(
-            label="Project",
+            label="Buka di GEE",
             url="",
             icon=":material/touch_double:",
         )

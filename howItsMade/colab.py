@@ -84,14 +84,14 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.subheader("Google Colaboratory Projects")
+st.subheader("Proyek Google Colaboratory")
 col1, col2 = st.columns(2, gap="small")
 with col1:
     with st.container(border=False):
         st.write("**Prediksi Penutup Lahan 2029**")
         st.image("./assets/lst.png")
         st.link_button(
-            label="Project",
+            label="Buka di Colab",
             url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
             icon=":material/touch_double:",
         )
@@ -99,9 +99,9 @@ with col1:
 with col2:
     with st.container(border=False):
         st.write("**Prediksi LST 2029**")
-        st.image("./assets/ndbi.png")
+        st.image("./assets/lulc.png")
         st.link_button(
-            label="Project",
+            label="Buka di Colab",
             url="",
             icon=":material/touch_double:",
         )

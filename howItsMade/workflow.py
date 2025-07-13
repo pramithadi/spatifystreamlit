@@ -79,8 +79,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-tab1, tab2, tab3, tab4 = st.tabs(
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
     [
+        "**Diagram Alir**",
         "**Prapengolahan Data**",
         "**Pengolahan Data**",
         "**Pemodelan Prediksi**",
@@ -89,6 +90,14 @@ tab1, tab2, tab3, tab4 = st.tabs(
 )
 
 with tab1:
+    st.header("Diagram Alir")
+    with st.container(border=False):
+        st.image(
+            "./assets/diagram_alir2.svg",
+            caption="Diagram Alir Penelitian",
+        )
+
+with tab2:
     st.header("Prapengolahan Data")
     # Penyaringan Citra
     st.badge("**Penyaringan Citra**", color="primary")
@@ -184,11 +193,11 @@ function maskLsr(image) {
                 """
         )
 
-# tab 2
-with tab2:
+# tab 3
+with tab3:
     st.header("Pengolahan Data")
     option = st.pills(
-        "Pilih Pengolahan Data:",
+        "**Pilih Jenis Pengolahan**",
         ["LST", "NDBI", "NDMI", "NDVI", "Penutup Lahan", "Elevasi dan Slope"],
         default="LST",
     )
@@ -770,8 +779,8 @@ var slope = ee.Terrain.slope(elevation);
 """
         st.code(codeDEM, language="javascript", line_numbers=True)
 
-with tab3:
-    st.subheader("Prediksi")
+with tab4:
+    st.header("Prediksi")
     option = st.selectbox(
         "Pilih Pemodelan:",
         ("Prediksi LST 2029", "Prediksi Penutup Lahan 2029"),
@@ -791,5 +800,5 @@ with tab3:
         st.badge("**Normalized Difference Built-Up Index (NDBI)**", color="primary")
         st.write("NDBI adalah indeks kerapatan bangunan")
 
-with tab4:
-    st.subheader("Validasi")
+with tab5:
+    st.header("Validasi")
