@@ -87,9 +87,14 @@ with col1:
         st.write("**LST**")
         st.image("./assets/lst.png")
         st.link_button(
-            label="Buka di GEE",
-            url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
-            icon=":material/touch_double:",
+            label="Source Code",
+            url="",
+            icon=":material/code_blocks:",
+        )
+        st.link_button(
+            label="GEE Apps",
+            url="",
+            icon=":material/map:",
         )
 
 with col2:
@@ -97,9 +102,14 @@ with col2:
         st.write("**NDBI**")
         st.image("./assets/ndbi.png")
         st.link_button(
-            label="Buka di GEE",
+            label="Source Code",
             url="",
-            icon=":material/touch_double:",
+            icon=":material/code_blocks:",
+        )
+        st.link_button(
+            label="GEE Apps",
+            url="",
+            icon=":material/map:",
         )
 
 with col3:
@@ -107,9 +117,14 @@ with col3:
         st.write("**NDMI**")
         st.image("./assets/ndmi.png")
         st.link_button(
-            label="Buka di GEE",
+            label="Source Code",
             url="",
-            icon=":material/touch_double:",
+            icon=":material/code_blocks:",
+        )
+        st.link_button(
+            label="GEE Apps",
+            url="",
+            icon=":material/map:",
         )
 
 col4, col5, col6 = st.columns(3, gap="small")
@@ -118,9 +133,14 @@ with col4:
         st.write("**NDVI**")
         st.image("./assets/ndvi.png")
         st.link_button(
-            label="Buka di GEE",
-            url="",
-            icon=":material/touch_double:",
+            label="Source Code",
+            url="https://code.earthengine.google.com/d11ea47e61998873658e922ad1c8bdef",
+            icon=":material/code_blocks:",
+        )
+        st.link_button(
+            label="GEE Apps",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatifyndvi",
+            icon=":material/map:",
         )
 
 with col5:
@@ -128,9 +148,14 @@ with col5:
         st.write("**Penutup Lahan**")
         st.image("./assets/lulc.png")
         st.link_button(
-            label="Buka di GEE",
+            label="Source Code",
             url="",
-            icon=":material/touch_double:",
+            icon=":material/code_blocks:",
+        )
+        st.link_button(
+            label="GEE Apps",
+            url="",
+            icon=":material/map:",
         )
 
 with col6:
@@ -138,7 +163,7 @@ with col6:
         st.write("**Elevasi dan Slope**")
         st.image("./assets/elevasi.png")
         st.link_button(
-            label="Buka di GEE",
+            label="Source Code",
             url="",
-            icon=":material/touch_double:",
+            icon=":material/code_blocks:",
         )

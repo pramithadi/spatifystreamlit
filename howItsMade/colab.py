@@ -88,7 +88,7 @@ st.subheader("Proyek Google Colaboratory")
 col1, col2 = st.columns(2, gap="small")
 with col1:
     with st.container(border=False):
-        st.write("**Prediksi Penutup Lahan 2029**")
+        st.write("**Prediksi LST 2029**")
         st.image("./assets/lst.png")
         st.link_button(
             label="Buka di Colab",
@@ -98,7 +98,7 @@ with col1:
 
 with col2:
     with st.container(border=False):
-        st.write("**Prediksi LST 2029**")
+        st.write("**Prediksi Penutup Lahan 2029**")
         st.image("./assets/lulc.png")
         st.link_button(
             label="Buka di Colab",
