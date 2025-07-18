@@ -203,11 +203,11 @@ with tab3:
     )
 
     if option == "LST":
-        st.subheader("**Land Surface Temperature (LST)**")
+        st.subheader("**Suhu Permukaan Lahan (LST)**")
         st.markdown(
             """
             <div class="justified-text">
-            Ekstraksi Land Surface Temperature (LST) dalam penelitian ini menggunakan metode <strong>Single-Channel</strong> yang dikembangkan oleh Jiménez-Muñoz & Sobrino (2010). Metode ini terdiri atas empat tahap perhitungan, yaitu:
+            Ekstraksi <strong>suhu permukaan lahan</strong> atau <strong>land surface temperature</strong> (LST) dalam penelitian ini menggunakan metode <strong>Single-Channel</strong> yang dikembangkan oleh Jiménez-Muñoz & Sobrino (2010). Metode ini terdiri atas empat tahap perhitungan, yaitu:
         </div>
         """,
             unsafe_allow_html=True,

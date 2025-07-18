@@ -176,7 +176,7 @@ with tab1:
         st.badge("**Citra Sentinel-2 MSI**", color="primary")
         with st.container(border=True):
             st.image("./assets/sentinel2cover.png")
-            st.write("**Koleksi:** Level-2A (Surface Reflectance) ")
+            st.write("**Koleksi:** Level-2A (Surface Reflectance)")
             st.write("**Penyedia:** European Union/ESA/Copernicus")
             st.write("**Resolusi:** 10m")
             st.write("**Bands:** Band 4 (Red), Band 8 (NIR), Band 11 (SWIR-1)")
