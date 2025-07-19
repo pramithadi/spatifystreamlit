@@ -13,6 +13,7 @@ import base64
 from io import BytesIO
 from PIL import Image
 import matplotlib.pyplot as plt
+import geopandas as gpd
 
 st.set_page_config(
     page_title="Peta Suhu Permukaan Lahan",
@@ -135,6 +136,66 @@ threshold_dict = {
         "high": 41.219,
     },  # Data 2029 menggunakan 2024
 }
+
+
+def add_shapefile_to_map(map_obj, shapefile_path):
+    """Fungsi untuk menambahkan shapefile batas administrasi ke peta"""
+    try:
+        # Baca shapefile menggunakan geopandas
+        gdf = gpd.read_file(shapefile_path)
+
+        # Konversi ke WGS84 jika perlu
+        if gdf.crs != "EPSG:4326":
+            gdf = gdf.to_crs("EPSG:4326")
+
+        # Buat custom tooltip berdasarkan WADMKK
+        def create_tooltip_text(row):
+            namobj = row.get("NAMOBJ", "Unknown")
+            wadmkk = row.get("WADMKK", "")
+
+            if "Sleman" in wadmkk or "Bantul" in wadmkk:
+                return f"Kapanewon {namobj}"
+            elif "Yogyakarta" in wadmkk:
+                return f"Kemantren {namobj}"
+            else:
+                return namobj
+
+        # Tambahkan kolom tooltip custom
+        gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
+
+        # Konversi ke GeoJSON
+        geojson_data = gdf.to_json()
+
+        # Tambahkan ke peta dengan tooltip custom
+        geojson_layer = folium.GeoJson(
+            geojson_data,
+            style_function=lambda feature: {
+                "fillColor": "white",  # Gunakan warna putih
+                "color": "black",
+                "weight": 2,
+                "fillOpacity": 0.05,  # Opacity sangat rendah tapi masih responsif
+                "opacity": 1,
+            },
+            highlight_function=lambda feature: {
+                "weight": 3,
+                "fillOpacity": 0.1,  # Sedikit lebih terlihat saat hover
+            },
+            tooltip=folium.features.GeoJsonTooltip(
+                fields=["tooltip_text"],
+                aliases=[""],
+                style=(
+                    "background-color: white; color: black; font-family: 'Poppins', sans-serif; font-size: 12px; padding: 8px; border: 1px solid black; border-radius: 3px;"
+                ),
+                sticky=True,
+            ),
+            name="Batas Administrasi",
+        )
+
+        geojson_layer.add_to(map_obj)
+
+        return True
+    except Exception as e:
+        return False
 
 
 def add_legend_to_map(map_obj, thresholds):
@@ -283,9 +344,16 @@ with tab1:
             st.metric("Suhu Rata-rata", f"{selected_data['mean']:.2f} °C")
 
     # Buat peta tanpa basemap default
-    m = folium.Map(location=[-7.764326411862208, 110.3721676814108], zoom_start=10.5)
+    m = folium.Map(
+        location=[-7.764326411862208, 110.3721676814108], zoom_start=10.5, tiles=None
+    )
 
-    # Tambahkan berbagai basemap sebagai layer
+    # Tambahkan OpenStreetMap dengan nama title case
+    folium.TileLayer(
+        tiles="OpenStreetMap", name="OpenStreetMap", overlay=False, control=True
+    ).add_to(m)
+
+    # Tambahkan berbagai basemap lainnya sebagai layer
     folium.TileLayer(
         tiles="CartoDB positron", name="CartoDB Positron", overlay=False, control=True
     ).add_to(m)
@@ -326,6 +394,11 @@ with tab1:
     if os.path.exists(tif_path):
         add_geotiff_to_map(m, tif_path, thresholds)
 
+    # Tambahkan shapefile batas administrasi
+    shapefile_path = "shp/aoi_kpy.shp"
+    if os.path.exists(shapefile_path):
+        add_shapefile_to_map(m, shapefile_path)
+
     # Tambahkan legenda ke peta
     add_legend_to_map(m, thresholds)
 
@@ -353,7 +426,7 @@ with tab1:
     """
     m.get_root().html.add_child(folium.Element(css))
 
-    st_data = st_folium(m, width=1110)
+    st_data = st_folium(m, use_container_width=True)
 
 with tab2:
     st.header("Suhu Permukaan Lahan (Split Map)")
