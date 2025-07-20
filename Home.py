@@ -1,6 +1,7 @@
 import streamlit as st
 
-st.markdown("""
+st.markdown(
+    """
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Hanya memengaruhi konten, bukan elemen kontrol */
@@ -12,6 +13,8 @@ st.markdown("""
             font-family: 'Poppins', sans-serif !important;
         }
     </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-st.write("🎯 Thanks for exploring Spatify! 🎉")
+st.write("Coming Soon :)")

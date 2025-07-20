@@ -197,12 +197,19 @@ function maskLsr(image) {
 with tab3:
     st.header("Pengolahan Data")
     option = st.pills(
-        "**Pilih Jenis Pengolahan**",
-        ["LST", "NDBI", "NDMI", "NDVI", "Penutup Lahan", "Elevasi dan Slope"],
-        default="LST",
+        "**Pilih Pengolahan:**",
+        [
+            "🌡️ LST",
+            "🏭 NDBI",
+            "💧 NDMI",
+            "🌳 NDVI",
+            "🗾 Penutup Lahan",
+            "⛰️ Elevasi dan Slope",
+        ],
+        default="🌡️ LST",
     )
 
-    if option == "LST":
+    if option == "🌡️ LST":
         st.subheader("**Suhu Permukaan Lahan (LST)**")
         st.markdown(
             """
@@ -427,7 +434,7 @@ var lst2024 = bt2024.expression(
                 """
             )
 
-    elif option == "NDBI":
+    elif option == "🏭 NDBI":
         st.subheader("**Normalized Difference Built-Up Index (NDBI)**")
         st.markdown(
             """
@@ -479,7 +486,7 @@ var ndbi2024 = landsat2024.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndbi
                 """
             )
 
-    elif option == "NDMI":
+    elif option == "💧 NDMI":
         st.subheader("**Normalized Difference Moisture Index (NDMI)**")
         st.markdown(
             """
@@ -531,7 +538,7 @@ var ndmi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B6']).rename('ndbi
                 """
             )
 
-    elif option == "NDVI":
+    elif option == "🌳 NDVI":
         st.subheader("**Normalized Difference Vegetation Index (NDVI)**")
         st.markdown(
             """
@@ -584,7 +591,7 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
                 """
             )
 
-    elif option == "Penutup Lahan":
+    elif option == "🗾 Penutup Lahan":
         st.subheader("**Penutup Lahan**")
         st.markdown(
             """
@@ -757,7 +764,7 @@ print('Consumers Accuracy:', confusionMatrix.consumersAccuracy());
                 """
             )
 
-    elif option == "Elevasi dan Slope":
+    elif option == "⛰️ Elevasi dan Slope":
         st.subheader("**Elevasi dan Slope**")
         st.markdown(
             """
