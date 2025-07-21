@@ -52,23 +52,19 @@ st.markdown(
             font-size: 16px !important;
             margin-bottom: 12px !important;
         }
-        /* Khusus untuk st.header */
+        
         div[data-testid="stMarkdownContainer"] h1 {
             color: #000000 !important;
             font-weight: 600 !important;
         }
         
-        /* Untuk elemen header Streamlit */
         .stApp > header {
             color: #000000 !important;
         }
-        
-        /* Untuk semua text di Streamlit */
         .stApp {
             color: #000000 !important;
         }
         
-        /* Paksa warna hitam untuk markdown */
         .stMarkdown {
             color: #000000 !important;
         }
@@ -106,7 +102,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Dictionary Statistik LST
+# Dictionary Statistik LST per tahun
 stats_by_year = {
     "1999": {"min": 4.31, "max": 69.76, "mean": 34.53},
     "2004": {"min": 15.30, "max": 57.40, "mean": 35.48},
@@ -114,7 +110,11 @@ stats_by_year = {
     "2014": {"min": 17.68, "max": 52.44, "mean": 36.63},
     "2019": {"min": 18.54, "max": 49.67, "mean": 35.74},
     "2024": {"min": 20.72, "max": 72.32, "mean": 37.26},
-    "2029": {"min": 20.72, "max": 72.32, "mean": 37.26},  # Data 2029 menggunakan 2024
+    "2029": {
+        "min": 20.72,
+        "max": 72.32,
+        "mean": 37.26,
+    },  # 2029 Sementara Menggunakan Data 2024
 }
 
 # Dictionary Threshold
@@ -129,175 +129,56 @@ threshold_dict = {
         "low": 33.193,
         "medium": 37.206,
         "high": 41.219,
-    },  # Data 2029 Sementara Menggunakan 2024
-}
-
-# Dictionary dummy LST per kecamatan (nanti akan diganti dengan data real)
-lst_per_kecamatan = {
-    "1999": {
-        "Cangkringan": {"min": 32.1, "max": 45.3, "mean": 38.7, "wadmkk": "Sleman"},
-        "Pakem": {"min": 30.5, "max": 42.8, "mean": 36.2, "wadmkk": "Sleman"},
-        "Kalasan": {"min": 33.2, "max": 48.1, "mean": 40.5, "wadmkk": "Sleman"},
-        "Prambanan": {"min": 31.8, "max": 44.6, "mean": 38.1, "wadmkk": "Sleman"},
-        "Bantul": {"min": 34.5, "max": 49.2, "mean": 41.8, "wadmkk": "Bantul"},
-        "Sewon": {"min": 32.9, "max": 46.7, "mean": 39.4, "wadmkk": "Bantul"},
-        "Mergangsan": {"min": 35.1, "max": 50.3, "mean": 42.6, "wadmkk": "Yogyakarta"},
-        "Umbulharjo": {"min": 34.8, "max": 49.9, "mean": 42.1, "wadmkk": "Yogyakarta"},
-    },
-    "2004": {
-        "Cangkringan": {"min": 32.8, "max": 46.1, "mean": 39.2, "wadmkk": "Sleman"},
-        "Pakem": {"min": 31.2, "max": 43.5, "mean": 36.8, "wadmkk": "Sleman"},
-        "Kalasan": {"min": 33.8, "max": 48.9, "mean": 41.1, "wadmkk": "Sleman"},
-        "Prambanan": {"min": 32.4, "max": 45.2, "mean": 38.7, "wadmkk": "Sleman"},
-        "Bantul": {"min": 35.1, "max": 49.8, "mean": 42.3, "wadmkk": "Bantul"},
-        "Sewon": {"min": 33.5, "max": 47.3, "mean": 40.0, "wadmkk": "Bantul"},
-        "Mergangsan": {"min": 35.7, "max": 51.0, "mean": 43.2, "wadmkk": "Yogyakarta"},
-        "Umbulharjo": {"min": 35.4, "max": 50.6, "mean": 42.7, "wadmkk": "Yogyakarta"},
-    },
-    "2009": {
-        "Cangkringan": {"min": 33.5, "max": 46.9, "mean": 39.8, "wadmkk": "Sleman"},
-        "Pakem": {"min": 31.8, "max": 44.2, "mean": 37.4, "wadmkk": "Sleman"},
-        "Kalasan": {"min": 34.4, "max": 49.6, "mean": 41.7, "wadmkk": "Sleman"},
-        "Prambanan": {"min": 33.0, "max": 45.9, "mean": 39.3, "wadmkk": "Sleman"},
-        "Bantul": {"min": 35.7, "max": 50.5, "mean": 42.9, "wadmkk": "Bantul"},
-        "Sewon": {"min": 34.1, "max": 48.0, "mean": 40.6, "wadmkk": "Bantul"},
-        "Mergangsan": {"min": 36.3, "max": 51.7, "mean": 43.8, "wadmkk": "Yogyakarta"},
-        "Umbulharjo": {"min": 36.0, "max": 51.3, "mean": 43.3, "wadmkk": "Yogyakarta"},
-    },
-    "2014": {
-        "Cangkringan": {"min": 33.2, "max": 46.6, "mean": 39.5, "wadmkk": "Sleman"},
-        "Pakem": {"min": 31.5, "max": 43.9, "mean": 37.1, "wadmkk": "Sleman"},
-        "Kalasan": {"min": 34.1, "max": 49.3, "mean": 41.4, "wadmkk": "Sleman"},
-        "Prambanan": {"min": 32.7, "max": 45.6, "mean": 39.0, "wadmkk": "Sleman"},
-        "Bantul": {"min": 35.4, "max": 50.2, "mean": 42.6, "wadmkk": "Bantul"},
-        "Sewon": {"min": 33.8, "max": 47.7, "mean": 40.3, "wadmkk": "Bantul"},
-        "Mergangsan": {"min": 36.0, "max": 51.4, "mean": 43.5, "wadmkk": "Yogyakarta"},
-        "Umbulharjo": {"min": 35.7, "max": 51.0, "mean": 43.0, "wadmkk": "Yogyakarta"},
-    },
-    "2019": {
-        "Cangkringan": {"min": 32.9, "max": 46.3, "mean": 39.2, "wadmkk": "Sleman"},
-        "Pakem": {"min": 31.2, "max": 43.6, "mean": 36.8, "wadmkk": "Sleman"},
-        "Kalasan": {"min": 33.8, "max": 49.0, "mean": 41.1, "wadmkk": "Sleman"},
-        "Prambanan": {"min": 32.4, "max": 45.3, "mean": 38.7, "wadmkk": "Sleman"},
-        "Bantul": {"min": 35.1, "max": 49.9, "mean": 42.3, "wadmkk": "Bantul"},
-        "Sewon": {"min": 33.5, "max": 47.4, "mean": 40.0, "wadmkk": "Bantul"},
-        "Mergangsan": {"min": 35.7, "max": 51.1, "mean": 43.2, "wadmkk": "Yogyakarta"},
-        "Umbulharjo": {"min": 35.4, "max": 50.7, "mean": 42.7, "wadmkk": "Yogyakarta"},
-    },
-    "2024": {
-        "Cangkringan": {"min": 33.6, "max": 47.0, "mean": 39.9, "wadmkk": "Sleman"},
-        "Pakem": {"min": 31.9, "max": 44.3, "mean": 37.5, "wadmkk": "Sleman"},
-        "Kalasan": {"min": 34.5, "max": 49.7, "mean": 41.8, "wadmkk": "Sleman"},
-        "Prambanan": {"min": 33.1, "max": 46.0, "mean": 39.4, "wadmkk": "Sleman"},
-        "Bantul": {"min": 35.8, "max": 50.6, "mean": 43.0, "wadmkk": "Bantul"},
-        "Sewon": {"min": 34.2, "max": 48.1, "mean": 40.7, "wadmkk": "Bantul"},
-        "Mergangsan": {"min": 36.4, "max": 51.8, "mean": 43.9, "wadmkk": "Yogyakarta"},
-        "Umbulharjo": {"min": 36.1, "max": 51.4, "mean": 43.4, "wadmkk": "Yogyakarta"},
-    },
-    "2029": {
-        "Cangkringan": {"min": 33.6, "max": 47.0, "mean": 39.9, "wadmkk": "Sleman"},
-        "Pakem": {"min": 31.9, "max": 44.3, "mean": 37.5, "wadmkk": "Sleman"},
-        "Kalasan": {"min": 34.5, "max": 49.7, "mean": 41.8, "wadmkk": "Sleman"},
-        "Prambanan": {"min": 33.1, "max": 46.0, "mean": 39.4, "wadmkk": "Sleman"},
-        "Bantul": {"min": 35.8, "max": 50.6, "mean": 43.0, "wadmkk": "Bantul"},
-        "Sewon": {"min": 34.2, "max": 48.1, "mean": 40.7, "wadmkk": "Bantul"},
-        "Mergangsan": {"min": 36.4, "max": 51.8, "mean": 43.9, "wadmkk": "Yogyakarta"},
-        "Umbulharjo": {"min": 36.1, "max": 51.4, "mean": 43.4, "wadmkk": "Yogyakarta"},
-    },
+    },  # 2029 Sementara Menggunakan Data 2024
 }
 
 
-# 2. TAMBAHKAN FUNCTION BARU untuk membuat grafik tren (letakkan setelah function get_toponim)
-def create_trend_graph():
-    # Data untuk grafik tren (hanya 1999-2024, tanpa 2029)
-    years = [1999, 2004, 2009, 2014, 2019, 2024]
-
-    # Ekstrak data min, max, mean dari dictionary
-    min_values = [stats_by_year[str(year)]["min"] for year in years]
-    max_values = [stats_by_year[str(year)]["max"] for year in years]
-    mean_values = [stats_by_year[str(year)]["mean"] for year in years]
-
-    # Buat grafik dengan Plotly
-    fig = go.Figure()
-
-    # Tambahkan line untuk Min (biru)
-    fig.add_trace(
-        go.Scatter(
-            x=years,
-            y=min_values,
-            mode="lines+markers",
-            name="LST Min",
-            line=dict(color="#003A87", width=3),
-            marker=dict(size=8, color="#003A87"),
-            hovertemplate="<b>Min:</b> %{y:.2f}°C<extra></extra>",
-        )
-    )
-
-    # Tambahkan line untuk Max (merah)
-    fig.add_trace(
-        go.Scatter(
-            x=years,
-            y=max_values,
-            mode="lines+markers",
-            name="LST Maks",
-            line=dict(color="#7B0000", width=3),
-            marker=dict(size=8, color="#7B0000"),
-            hovertemplate="<b>Maks:</b> %{y:.2f}°C<extra></extra>",
-        )
-    )
-
-    # Tambahkan line untuk Mean (kuning/emas)
-    fig.add_trace(
-        go.Scatter(
-            x=years,
-            y=mean_values,
-            mode="lines+markers",
-            name="LST Rata-rata",
-            line=dict(color="#F8CF00", width=3),
-            marker=dict(size=8, color="#F8CF00"),
-            hovertemplate="<b>Rata-rata:</b> %{y:.2f}°C<extra></extra>",
-        )
-    )
-
-    # Update layout
-    fig.update_layout(
-        xaxis=dict(
-            title=dict(
-                text="Tahun",
-                font=dict(family="Poppins", size=12, color="black"),
-            ),
-            tickfont=dict(family="Poppins", size=11),
-            gridcolor="rgba(128,128,128,0.2)",
-            tickvals=years,
-            ticktext=[str(year) for year in years],
-        ),
-        yaxis=dict(
-            title=dict(
-                text="LST (°C)", font=dict(family="Poppins", size=12, color="black")
-            ),
-            tickfont=dict(family="Poppins", size=11),
-            gridcolor="rgba(128,128,128,0.2)",
-        ),
-        legend=dict(
-            font=dict(family="Poppins", size=11),
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1,
-        ),
-        plot_bgcolor="#fdfaf6",
-        paper_bgcolor="#fdfaf6",
-        margin=dict(l=10, r=10, t=10, b=10),
-        height=284.5,
-        hovermode="x unified",
-        font=dict(family="Poppins"),
-    )
-
-    return fig
+# Function untuk Load Data Statistik Kecamatan dari CSV
+@st.cache_data
+def load_kecamatan_stats():
+    """
+    Load statistik LST per kecamatan dari file CSV
+    """
+    csv_path = "./stats/lstStatsKec.csv"
+    try:
+        df = pd.read_csv(csv_path)
+        # Kolom Tahun di CSV Harus String
+        df["Tahun"] = df["Tahun"].astype(str)
+        return df
+    except FileNotFoundError:
+        st.error(f"File CSV tidak ditemukan: {csv_path}")
+        return pd.DataFrame()
+    except Exception as e:
+        st.error(f"Error membaca file CSV: {str(e)}")
+        return pd.DataFrame()
 
 
-# Function untuk menentukan toponim sesuai wilayah
+# Function untuk Get Data Kecamatan berdasarkan Tahun
+def get_kecamatan_data_by_year(df, year):
+    """
+    Filter data kecamatan berdasarkan tahun
+    """
+    if df.empty:
+        return {}
+
+    year_data = df[df["Tahun"] == str(year)]
+    if year_data.empty:
+        return {}
+
+    # Convert ke dictionary dengan struktur yang sama seperti sebelumnya
+    kecamatan_dict = {}
+    for _, row in year_data.iterrows():
+        kecamatan_dict[row["NAMOBJ"]] = {
+            "min": row["min"],
+            "max": row["max"],
+            "mean": row["mean"],
+            "wadmkk": row["WADMKK"],
+        }
+
+    return kecamatan_dict
+
+
+# Function Condition untuk Menentukan Kapanewon/Kemantren Toponim
 def get_toponim(wadmkk):
     if "Sleman" in wadmkk or "Bantul" in wadmkk:
         return "Kapanewon"
@@ -470,7 +351,7 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
             # Bounds untuk Folium
             bounds_folium = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]
 
-            # Tambahkan ke Peta dengan Transparansi
+            # Tambahkan ke Peta
             lst_overlay = folium.raster_layers.ImageOverlay(
                 image=f"data:image/png;base64,{img_str}",
                 bounds=bounds_folium,
@@ -487,7 +368,10 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
         return False
 
 
-st.header("Suhu Permukaan Lahan")
+# Load Data Statistik Kecamatan
+kecamatan_stats_df = load_kecamatan_stats()
+
+st.subheader("Suhu Permukaan Lahan")
 
 selected_tab = st.pills(
     "**Pilih Mode:**",
@@ -504,16 +388,10 @@ selected_tab = st.pills(
 
 # Peta
 if selected_tab == "🗺️ Peta":
-    col1_peta, col2_peta = st.columns([2.4, 1.6])  # Mengubah rasio dari 3:1 ke 2.5:1.5
+    col1_peta, col2_peta = st.columns([2.6, 1.4])
 
     with col2_peta:
-        # Container untuk grafik tren (selalu tampil)
-        with st.container(border=True):
-            st.write("**Tren Suhu Permukaan Lahan 1999-2024**")
-            trend_fig = create_trend_graph()
-            st.plotly_chart(trend_fig, use_container_width=True)
-
-        # Container dengan border
+        # Container Selectbox Tahun
         with st.container(border=True):
             # Selectbox Tahun
             option = st.selectbox(
@@ -525,34 +403,42 @@ if selected_tab == "🗺️ Peta":
 
             selected_data = stats_by_year[option]
 
+        # Container Metrics LST
         with st.container(border=True):
-            # Metrics dalam 3 kolom sejajar
             col_min, col_max, col_mean = st.columns([1, 1, 1])
             with col_min:
-                st.metric("LST Minimum", f"{selected_data['min']:.2f}°C")
+                st.metric("LST Minimum", f"{selected_data['min']:.1f}°C")
             with col_max:
-                st.metric("LST Maksimum", f"{selected_data['max']:.2f}°C")
+                st.metric("LST Maksimum", f"{selected_data['max']:.1f}°C")
             with col_mean:
-                st.metric("LST Rata-rata", f"{selected_data['mean']:.2f}°C")
+                st.metric("LST Rata-rata", f"{selected_data['mean']:.1f}°C")
 
+        # Container Selectbox Kecamatan
         with st.container(border=True):
-            # Selectbox Cari Kecamatan
-            kecamatan_options = list(lst_per_kecamatan[option].keys())
-            selected_kecamatan = st.selectbox(
-                "**Cari Kecamatan**",
-                [""] + kecamatan_options,
-                index=0,
-                placeholder="Pilih Kecamatan",
-            )
+            # Ambil Data Statistik Kecamatan dari DataFrame
+            kecamatan_data_year = get_kecamatan_data_by_year(kecamatan_stats_df, option)
 
-        # Container terpisah untuk deskripsi kecamatan dengan border
-        if selected_kecamatan and selected_kecamatan != "":
+            # Selectbox Cari Kecamatan
+            if kecamatan_data_year:
+                kecamatan_options = list(kecamatan_data_year.keys())
+                selected_kecamatan = st.selectbox(
+                    "**Cari Kecamatan**",
+                    [""] + kecamatan_options,
+                    index=0,
+                    placeholder="Pilih Kecamatan",
+                )
+            else:
+                st.warning(f"Data kecamatan untuk tahun {option} tidak tersedia")
+                selected_kecamatan = ""
+
+        # Container Analisis LST per Kecamatan
+        if selected_kecamatan and selected_kecamatan != "" and kecamatan_data_year:
             with st.container(border=True):
-                kecamatan_data = lst_per_kecamatan[option][selected_kecamatan]
+                kecamatan_data = kecamatan_data_year[selected_kecamatan]
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
 
-                description = f"**Suhu permukaan lahan** di **{toponim} {selected_kecamatan}** pada tahun **{option}** memiliki rata-rata sebesar **{kecamatan_data['mean']:.1f}°C** dengan suhu terendah yakni **{kecamatan_data['min']:.1f}°C** dan suhu tertinggi adalah **{kecamatan_data['max']:.1f}°C**."
+                description = f"**Suhu permukaan lahan** di **{toponim} {selected_kecamatan}** pada tahun **{option}** memiliki rata-rata sebesar **{kecamatan_data['mean']:.2f}°C** dengan suhu terendah yakni **{kecamatan_data['min']:.2f}°C** dan suhu tertinggi adalah **{kecamatan_data['max']:.2f}°C**."
 
                 st.write(description)
 
@@ -560,15 +446,11 @@ if selected_tab == "🗺️ Peta":
         # Buat Peta Folium
         m = folium.Map(
             location=[-7.764326411862208, 110.3721676814108],
-            zoom_start=10.5,
+            zoom_start=10.4,
             tiles=None,
         )
 
         # Tambahkan Basemap
-        folium.TileLayer(
-            tiles="OpenStreetMap", name="OpenStreetMap", overlay=False, control=True
-        ).add_to(m)
-
         folium.TileLayer(
             tiles="CartoDB positron",
             name="CartoDB Positron",
@@ -595,6 +477,13 @@ if selected_tab == "🗺️ Peta":
             tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
             attr="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
             name="Esri WorldImagery",
+            overlay=False,
+            control=True,
+        ).add_to(m)
+
+        folium.TileLayer(
+            tiles="OpenStreetMap",  # Letakkan di Bawah Sendiri Supaya Jadi Default
+            name="OpenStreetMap",
             overlay=False,
             control=True,
         ).add_to(m)
@@ -649,4 +538,4 @@ if selected_tab == "🗺️ Peta":
         </style>
         """
         m.get_root().html.add_child(folium.Element(css))
-        st_data = st_folium(m, use_container_width=True)
+        st_data = st_folium(m, use_container_width=True, height=600)

@@ -80,19 +80,15 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.subheader("Proyek Google Earth Engine")
+
+st.subheader("Google Earth Engine Applications")
 col1, col2, col3 = st.columns(3, gap="small")
 with col1:
     with st.container(border=False):
         st.write("**LST**")
         st.image("./assets/lst.png")
         st.link_button(
-            label="Source Code",
-            url="",
-            icon=":material/code_blocks:",
-        )
-        st.link_button(
-            label="GEE Apps",
+            label="Aplikasi",
             url="",
             icon=":material/map:",
         )
@@ -102,12 +98,7 @@ with col2:
         st.write("**NDBI**")
         st.image("./assets/ndbi.png")
         st.link_button(
-            label="Source Code",
-            url="",
-            icon=":material/code_blocks:",
-        )
-        st.link_button(
-            label="GEE Apps",
+            label="Aplikasi",
             url="",
             icon=":material/map:",
         )
@@ -117,12 +108,7 @@ with col3:
         st.write("**NDMI**")
         st.image("./assets/ndmi.png")
         st.link_button(
-            label="Source Code",
-            url="",
-            icon=":material/code_blocks:",
-        )
-        st.link_button(
-            label="GEE Apps",
+            label="Aplikasi",
             url="",
             icon=":material/map:",
         )
@@ -132,11 +118,6 @@ with col4:
     with st.container(border=False):
         st.write("**NDVI**")
         st.image("./assets/ndvi.png")
-        st.link_button(
-            label="Source Code",
-            url="https://code.earthengine.google.com/d11ea47e61998873658e922ad1c8bdef",
-            icon=":material/code_blocks:",
-        )
         st.link_button(
             label="GEE Apps",
             url="https://ee-pramithadi.projects.earthengine.app/view/spatifyndvi",
@@ -148,22 +129,7 @@ with col5:
         st.write("**Penutup Lahan**")
         st.image("./assets/lulc.png")
         st.link_button(
-            label="Source Code",
-            url="",
-            icon=":material/code_blocks:",
-        )
-        st.link_button(
             label="GEE Apps",
-            url="",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatifylulc",
             icon=":material/map:",
-        )
-
-with col6:
-    with st.container(border=False):
-        st.write("**Elevasi dan Slope**")
-        st.image("./assets/elevasi.png")
-        st.link_button(
-            label="Source Code",
-            url="",
-            icon=":material/code_blocks:",
         )

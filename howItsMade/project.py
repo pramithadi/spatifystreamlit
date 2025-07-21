@@ -3,7 +3,7 @@ import streamlit as st
 st.markdown(
     """
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <style>
+    <style>
         .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
             font-family: 'Poppins', sans-serif !important;
         }
@@ -18,11 +18,11 @@ st.markdown(
             font-size: 16px !important;
             margin-bottom: 12px !important;
         }
+        
         div[data-testid="stVerticalBlockBorderWrapper"] {
             padding: 12px !important;
         }
         
-        /* Custom container styling dengan hover effect - hanya untuk container dengan border */
         div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
             border: 1px solid #e2e8f0 !important;
             border-radius: 3px !important;
@@ -41,13 +41,11 @@ st.markdown(
         .main {
             padding: 0 !important;
         }
-
         .block-container {
             padding: 0.5rem 1rem !important;
             margin-top: 1.5rem !important;
         }
 
-        /* Mengurangi space header toolbar */
         div[data-testid="stToolbar"] {
             min-height: 40px !important;
         }
@@ -67,14 +65,12 @@ st.markdown(
             width: 100% !important;
             box-sizing: border-box !important;
         }
-        
         .stLinkButton > a:hover {
             background-color: #6A9C89 !important;
             color: white !important;
             transform: translateY(-2px) !important;
             # box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3) !important;
         }
-        
         .stLinkButton > a:active {
             transform: translateY(0px) !important;
         }
@@ -84,24 +80,96 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.subheader("Proyek Google Colaboratory")
-col1, col2 = st.columns(2, gap="small")
-with col1:
-    with st.container(border=False):
-        st.write("**Prediksi LST 2029**")
-        st.image("./assets/lst.png")
-        st.link_button(
-            label="Buka di Colab",
-            url="https://code.earthengine.google.com/75fba0edce5cc401e8db57af47c6e6d6",
-            icon=":material/touch_double:",
-        )
+tab1, tab2 = st.tabs(
+    [
+        "**Google Earth Engine**",
+        "**Google Colaboratory**",
+    ]
+)
 
-with col2:
-    with st.container(border=False):
-        st.write("**Prediksi Penutup Lahan 2029**")
-        st.image("./assets/lulc.png")
-        st.link_button(
-            label="Buka di Colab",
-            url="",
-            icon=":material/touch_double:",
-        )
+with tab1:
+    st.subheader("Proyek Google Earth Engine")
+    col1, col2, col3 = st.columns(3, gap="small")
+    with col1:
+        with st.container(border=False):
+            st.write("**LST**")
+            st.image("./assets/lst.png")
+            st.link_button(
+                label="Source Code",
+                url="",
+                icon=":material/code_blocks:",
+            )
+
+    with col2:
+        with st.container(border=False):
+            st.write("**NDBI**")
+            st.image("./assets/ndbi.png")
+            st.link_button(
+                label="Source Code",
+                url="",
+                icon=":material/code_blocks:",
+            )
+
+    with col3:
+        with st.container(border=False):
+            st.write("**NDMI**")
+            st.image("./assets/ndmi.png")
+            st.link_button(
+                label="Source Code",
+                url="",
+                icon=":material/code_blocks:",
+            )
+
+    col4, col5, col6 = st.columns(3, gap="small")
+    with col4:
+        with st.container(border=False):
+            st.write("**NDVI**")
+            st.image("./assets/ndvi.png")
+            st.link_button(
+                label="Source Code",
+                url="https://code.earthengine.google.com/d11ea47e61998873658e922ad1c8bdef",
+                icon=":material/code_blocks:",
+            )
+
+    with col5:
+        with st.container(border=False):
+            st.write("**Penutup Lahan**")
+            st.image("./assets/lulc.png")
+            st.link_button(
+                label="Source Code",
+                url="",
+                icon=":material/code_blocks:",
+            )
+
+    with col6:
+        with st.container(border=False):
+            st.write("**Elevasi dan Slope**")
+            st.image("./assets/elevasi.png")
+            st.link_button(
+                label="Source Code",
+                url="",
+                icon=":material/code_blocks:",
+            )
+
+with tab2:
+    st.subheader("Proyek Google Colaboratory")
+    col1, col2 = st.columns(2, gap="small")
+    with col1:
+        with st.container(border=False):
+            st.write("**Prediksi LST 2029**")
+            st.image("./assets/lst.png")
+            st.link_button(
+                label="Source Code",
+                url="",
+                icon=":material/code_blocks:",
+            )
+
+    with col2:
+        with st.container(border=False):
+            st.write("**Prediksi Penutup Lahan 2029**")
+            st.image("./assets/lulc.png")
+            st.link_button(
+                label="Source Code",
+                url="",
+                icon=":material/code_blocks:",
+            )

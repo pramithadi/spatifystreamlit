@@ -90,7 +90,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(
 )
 
 with tab1:
-    st.header("Diagram Alir")
+    st.subheader("Diagram Alir")
     with st.container(border=False):
         st.image(
             "./assets/diagram_alir2.svg",
@@ -98,7 +98,7 @@ with tab1:
         )
 
 with tab2:
-    st.header("Prapengolahan Data")
+    st.subheader("Prapengolahan Data")
     # Penyaringan Citra
     st.badge("**Penyaringan Citra**", color="primary")
     st.markdown(
@@ -195,7 +195,7 @@ function maskLsr(image) {
 
 # tab 3
 with tab3:
-    st.header("Pengolahan Data")
+    st.subheader("Pengolahan Data")
     option = st.pills(
         "**Pilih Pengolahan:**",
         [
@@ -787,7 +787,7 @@ var slope = ee.Terrain.slope(elevation);
         st.code(codeDEM, language="javascript", line_numbers=True)
 
 with tab4:
-    st.header("Prediksi")
+    st.subheader("Prediksi")
     option = st.selectbox(
         "Pilih Pemodelan:",
         ("Prediksi LST 2029", "Prediksi Penutup Lahan 2029"),
@@ -808,4 +808,4 @@ with tab4:
         st.write("NDBI adalah indeks kerapatan bangunan")
 
 with tab5:
-    st.header("Validasi")
+    st.subheader("Validasi")

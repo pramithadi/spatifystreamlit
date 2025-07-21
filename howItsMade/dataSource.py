@@ -98,7 +98,7 @@ st.markdown(
 tab1, tab2 = st.tabs(["**Katalog**", "**Snippets**"])
 
 with tab1:
-    st.header("Katalog Data")
+    st.subheader("Katalog Data")
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         st.badge("**Citra Landsat 5 TM**", color="primary")
@@ -204,7 +204,7 @@ with tab1:
             )
 
 with tab2:
-    st.header("Snippets")
+    st.subheader("Snippets")
     st.badge("**Citra Landsat 5 TM Surface Reflectance**", color="primary")
     snippetLandsat5 = """var dataset = ee.ImageCollection('LANDSAT/LT05/C02/T1_L2')"""
     st.code(snippetLandsat5, language="javascript", line_numbers=True)
