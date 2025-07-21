@@ -438,7 +438,7 @@ if selected_tab == "🗺️ Peta":
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
 
-                description = f"Suhu permukaan lahan (LST) di **{toponim} {selected_kecamatan}** pada tahun **{option}** memiliki rata-rata sebesar **{kecamatan_data['mean']:.2f}°C** dengan suhu terendah yakni **{kecamatan_data['min']:.2f}°C** dan suhu tertinggi adalah **{kecamatan_data['max']:.2f}°C**."
+                description = f"**Suhu permukaan lahan** di **{toponim} {selected_kecamatan}** pada tahun **{option}** memiliki rata-rata sebesar **{kecamatan_data['mean']:.2f}°C** dengan suhu terendah yakni **{kecamatan_data['min']:.2f}°C** dan suhu tertinggi adalah **{kecamatan_data['max']:.2f}°C**."
 
                 st.write(description)
 
@@ -539,7 +539,3 @@ if selected_tab == "🗺️ Peta":
         """
         m.get_root().html.add_child(folium.Element(css))
         st_data = st_folium(m, use_container_width=True, height=600)
-
-# Peta
-if selected_tab == "🗺️ Perbandingan":
-    col1_peta, col2_peta = st.columns([2.6, 1.4])
