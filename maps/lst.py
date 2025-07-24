@@ -74,7 +74,7 @@ st.markdown(
         }
         
         div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-            # border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+            border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
             border-radius: 1px !important;
             padding: 12px !important;
             # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
@@ -102,7 +102,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Dictionary Statistik LST per tahun
+# Dictionary Statistik LST
 stats_by_year = {
     "1999": {"min": 4.31, "max": 69.76, "mean": 34.53},
     "2004": {"min": 15.30, "max": 57.40, "mean": 35.48},
@@ -153,7 +153,7 @@ def load_kecamatan_stats():
         return pd.DataFrame()
 
 
-# Function untuk Get Data Kecamatan berdasarkan Tahun
+# Function untuk Get Data Kecamatan Berdasarkan Tahun
 def get_kecamatan_data_by_year(df, year):
     """
     Filter data kecamatan berdasarkan tahun
@@ -165,7 +165,7 @@ def get_kecamatan_data_by_year(df, year):
     if year_data.empty:
         return {}
 
-    # Convert ke dictionary dengan struktur yang sama seperti sebelumnya
+    # Convert ke Dictionary
     kecamatan_dict = {}
     for _, row in year_data.iterrows():
         kecamatan_dict[row["NAMOBJ"]] = {
@@ -374,13 +374,13 @@ kecamatan_stats_df = load_kecamatan_stats()
 st.subheader("Suhu Permukaan Lahan")
 
 selected_tab = st.pills(
-    "**Pilih Mode:**",
+    "**Lihat Analisis:**",
     [
         "🗺️ Peta",
-        "🔍 Perbandingan",
-        "🛠️ Model",
+        "📈 Tren",
+        "⚙️ Model",
         "✅ Validasi",
-        "📈 Regresi",
+        "📉 Regresi",
     ],
     selection_mode="single",
     default="🗺️ Peta",
@@ -388,7 +388,7 @@ selected_tab = st.pills(
 
 # Peta
 if selected_tab == "🗺️ Peta":
-    col1_peta, col2_peta = st.columns([2.6, 1.4])
+    col1_peta, col2_peta = st.columns([2.5, 1.5])
 
     with col2_peta:
         # Container Selectbox Tahun
@@ -425,7 +425,7 @@ if selected_tab == "🗺️ Peta":
                     "**Cari Kecamatan**",
                     [""] + kecamatan_options,
                     index=0,
-                    placeholder="Pilih Kecamatan",
+                    placeholder="Ketik atau pilih kecamatan",
                 )
             else:
                 st.warning(f"Data kecamatan untuk tahun {option} tidak tersedia")
@@ -438,7 +438,7 @@ if selected_tab == "🗺️ Peta":
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
 
-                description = f"**Suhu permukaan lahan** di **{toponim} {selected_kecamatan}** pada tahun **{option}** memiliki rata-rata sebesar **{kecamatan_data['mean']:.2f}°C** dengan suhu terendah yakni **{kecamatan_data['min']:.2f}°C** dan suhu tertinggi adalah **{kecamatan_data['max']:.2f}°C**."
+                description = f"Suhu permukaan lahan di **{toponim} {selected_kecamatan}** pada tahun **{option}** memiliki rerata suhu sebesar **{kecamatan_data['mean']:.2f}°C** dengan suhu terendah yakni **{kecamatan_data['min']:.2f}°C** dan suhu tertinggi adalah **{kecamatan_data['max']:.2f}°C**."
 
                 st.write(description)
 
@@ -446,7 +446,7 @@ if selected_tab == "🗺️ Peta":
         # Buat Peta Folium
         m = folium.Map(
             location=[-7.764326411862208, 110.3721676814108],
-            zoom_start=10.4,
+            zoom_start=10.5,
             tiles=None,
         )
 
@@ -501,7 +501,6 @@ if selected_tab == "🗺️ Peta":
         if os.path.exists(tif_path):
             add_geotiff_to_map(m, tif_path, thresholds)
         else:
-            # Jika file tidak ditemukan, tampilkan warning
             st.warning(f"File GeoTIFF tidak ditemukan: {tif_path}")
 
         # Cek Ketersediaan AOI, Panggil Function Batas AOI, dan Tampilkan ke Peta
@@ -509,7 +508,6 @@ if selected_tab == "🗺️ Peta":
         if os.path.exists(shapefile_path):
             add_shapefile_to_map(m, shapefile_path)
         else:
-            # Jika file tidak ditemukan, tampilkan warning
             st.warning(f"File Shapefile tidak ditemukan: {shapefile_path}")
 
         # Tambahkan Legenda ke Peta
@@ -539,3 +537,168 @@ if selected_tab == "🗺️ Peta":
         """
         m.get_root().html.add_child(folium.Element(css))
         st_data = st_folium(m, use_container_width=True, height=600)
+
+if selected_tab == "📈 Tren":
+    # Grafik Tren LST Perkotaan vs Non-Perkotaan
+    df_urban_rural = pd.read_csv("./stats/lstStatsKec.csv")
+
+    lst_urban_rural = (
+        df_urban_rural.groupby(["Tahun", "Zona"])["mean"].mean().reset_index()
+    )
+
+    lst_urban_rural_pivot = lst_urban_rural.pivot(
+        index="Tahun", columns="Zona", values="mean"
+    )
+
+    # Row Diagram Garis & Ranking LST
+    st.badge(
+        "**Tren Fluktuasi LST di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
+        color="primary",
+    )
+    col1_tren_main, col2_tren_main = st.columns([2.2, 1.8])
+    with col1_tren_main:
+        # Container Grafik Tren
+        with st.container(border=True):
+            # Buat Grafik
+            import plotly.graph_objects as go
+            from plotly.subplots import make_subplots
+
+            fig = go.Figure()
+
+            if "Urban" in lst_urban_rural_pivot.columns:
+                fig.add_trace(
+                    go.Scatter(
+                        x=lst_urban_rural_pivot.index,
+                        y=lst_urban_rural_pivot["Urban"],
+                        mode="lines+markers",
+                        name="Perkotaan",
+                        line=dict(color="#FF90BB", width=3),
+                        marker=dict(size=8, symbol="circle"),
+                        hovertemplate="<b>Perkotaan</b><br>Tahun: %{x}<br>LST Mean: %{y:.2f}°C<extra></extra>",
+                    )
+                )
+
+            if "Rural" in lst_urban_rural_pivot.columns:
+                fig.add_trace(
+                    go.Scatter(
+                        x=lst_urban_rural_pivot.index,
+                        y=lst_urban_rural_pivot["Rural"],
+                        mode="lines+markers",
+                        name="Non-Perkotaan",
+                        line=dict(color="#096B68", width=3),
+                        marker=dict(size=8, symbol="square"),
+                        hovertemplate="<b>Non-Perkotaan</b><br>Tahun: %{x}<br>LST Mean: %{y:.2f}°C<extra></extra>",
+                    )
+                )
+
+            # Update Layout Grafik
+            fig.update_layout(
+                xaxis=dict(
+                    title=dict(
+                        text="Tahun",
+                        font=dict(family="Poppins", size=12, color="black"),
+                    ),
+                    tickfont=dict(family="Poppins", size=12, color="black"),
+                    tickvals=[1999, 2004, 2009, 2014, 2019, 2024],
+                    gridcolor="#9A9A9A",
+                ),
+                yaxis=dict(
+                    title=dict(
+                        text="LST Mean (°C)",
+                        font=dict(family="Poppins", size=12, color="black"),
+                    ),
+                    tickfont=dict(family="Poppins", size=12, color="black"),
+                    gridcolor="#9A9A9A",
+                    zerolinecolor="#9A9A9A",
+                    # range=[22, 40],
+                ),
+                legend=dict(
+                    orientation="v",
+                    yanchor="top",
+                    y=1,
+                    xanchor="left",
+                    x=1.02,
+                    font=dict(family="Poppins", size=12, color="black"),
+                ),
+                margin=dict(l=10, r=10, t=10, b=10),
+                height=334.5,
+                font=dict(family="Poppins", size=12),
+            )
+
+            # Tampilkan Grafik
+            st.plotly_chart(fig, use_container_width=True)
+
+    with col2_tren_main:
+        # Dictionary Mean LST
+        mean_by_year = {
+            1999: {"mean": 34.53},
+            2004: {"mean": 35.48},
+            2009: {"mean": 37.75},
+            2014: {"mean": 36.63},
+            2019: {"mean": 35.74},
+            2024: {"mean": 37.26},
+            # 2029: {"mean": 37.26},
+        }
+
+        years_tren = sorted(mean_by_year.keys())
+        mean_tren = [mean_by_year[y]["mean"] for y in years_tren]
+
+        # Hitung Overall Mean (Rata-rata LST 1999-2024)
+        overall_mean = sum(mean_tren) / len(mean_tren)
+
+        # Hitung Mean Absolute Change (Rata-rata Fluktuasi Tahunan)
+        diffs = []
+        for i in range(1, len(mean_tren)):
+            diff = abs(mean_tren[i] - mean_tren[i - 1])
+            diffs.append(diff)
+
+        mac = sum(diffs) / len(diffs)
+
+        # Row Metrics
+        col1_tren_metric, col2_tren_metric = st.columns([1, 1])
+        with col1_tren_metric:
+            with st.container(border=True):
+                st.metric(
+                    label="Rata-rata LST (1999-2024)",
+                    value=f"{overall_mean:.2f}°C",
+                )
+
+        with col2_tren_metric:
+            with st.container(border=True):
+                st.metric(label="Perubahan Tahunan", value=f"{mac:.2f}°C")
+
+        # Container Top 10 Wilayah Terpanas
+        with st.container(border=True):
+            df_kec = pd.read_csv("./stats/lstStatsKec.csv")
+
+            # Hitung Jumlah Mean LST per Kecamatan Tiap Tahun Lalu Dirata-rata
+            top_kecamatan = (
+                df_kec.groupby(["NAMOBJ", "WADMKK"])["mean"]
+                .mean()
+                .sort_values(ascending=False)
+                .head(10)
+                .reset_index()
+            )
+
+            # Format Informasi
+            top_kecamatan["formatted_name"] = top_kecamatan.apply(
+                lambda row: f"{row['NAMOBJ']}: {row['mean']:.2f}°C",
+                axis=1,
+            )
+
+            st.markdown("**Top 10 Wilayah Terpanas (1999-2024)**")
+
+            # Kolom untuk List Ranking 1-5 dan 6-10
+            col_left, col_right = st.columns(2)
+
+            with col_left:
+                for i in range(5):
+                    if i < len(top_kecamatan):
+                        formatted_name = top_kecamatan.iloc[i]["formatted_name"]
+                        st.markdown(f"**{i+1}.** {formatted_name}")
+
+            with col_right:
+                for i in range(5, 10):
+                    if i < len(top_kecamatan):
+                        formatted_name = top_kecamatan.iloc[i]["formatted_name"]
+                        st.markdown(f"**{i+1}.** {formatted_name}")

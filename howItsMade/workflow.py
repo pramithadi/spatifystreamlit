@@ -203,8 +203,8 @@ with tab3:
             "🏭 NDBI",
             "💧 NDMI",
             "🌳 NDVI",
-            "🗾 Penutup Lahan",
-            "⛰️ Elevasi dan Slope",
+            "🏞️ Penutup Lahan",
+            "🌋 Elevasi dan Slope",
         ],
         default="🌡️ LST",
     )
