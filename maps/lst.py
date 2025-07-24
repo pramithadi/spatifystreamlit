@@ -669,39 +669,10 @@ if selected_tab == "📈 Tren":
 
         # Container Top 10 Wilayah Terpanas
         with st.container(border=True):
-            df_kec = pd.read_csv("./stats/lstStatsKec.csv")
-
-            # Hitung Jumlah Mean LST per Kecamatan Tiap Tahun Lalu Dirata-rata
-            top_kecamatan = (
-                df_kec.groupby(["NAMOBJ", "WADMKK"])["mean"]
-                .mean()
-                .sort_values(ascending=False)
-                .head(10)
-                .reset_index()
+            st.write("**Analisis**")
+            st.markdown(
+                """Diagram garis di samping membuktikan kebenaran hipotesis awal bahwa :green-background[**kawasan perkotaan**] Yogyakarta cenderung memiliki nilai :green-background[**LST**] yang :green-background[**lebih tinggi**] dibandingkan :green-background[**kawasan non-perkotaan**] di sekitarnya pada masing-masing :green-background[**tahun**] yang :green-background[**sama**] dengan selisih nilai LST berkisar antara :green-background[**5.94°C**] hingga :green-background[**9.17°C**]."""
             )
-
-            # Format Informasi
-            top_kecamatan["formatted_name"] = top_kecamatan.apply(
-                lambda row: f"{row['NAMOBJ']}: {row['mean']:.2f}°C",
-                axis=1,
-            )
-
-            st.markdown("**Top 10 Wilayah Terpanas (1999-2024)**")
-
-            # Kolom untuk List Ranking 1-5 dan 6-10
-            col_left, col_right = st.columns(2)
-
-            with col_left:
-                for i in range(5):
-                    if i < len(top_kecamatan):
-                        formatted_name = top_kecamatan.iloc[i]["formatted_name"]
-                        st.markdown(f"**{i+1}.** {formatted_name}")
-
-            with col_right:
-                for i in range(5, 10):
-                    if i < len(top_kecamatan):
-                        formatted_name = top_kecamatan.iloc[i]["formatted_name"]
-                        st.markdown(f"**{i+1}.** {formatted_name}")
 
     # Row Diagram Garis & Ranking LST
     st.badge(
@@ -711,21 +682,20 @@ if selected_tab == "📈 Tren":
 
     col_rank = st.columns([1])[0]
     with col_rank:
-        # Load data
         df_stats = pd.read_csv("./stats/lstStatsKec.csv")
 
-        # Hitung rata-rata mean untuk setiap kecamatan dari semua tahun
+        # Hitung Rata-rata Mean untuk Setiap Kecamatan dari Semua Tahun
         df_ranking = (
             df_stats.groupby(["NAMOBJ", "WADMKK", "Zona"])["mean"].mean().reset_index()
         )
         df_ranking.columns = ["NAMOBJ", "WADMKK", "Zona", "Mean_LST"]
 
-        # Sort dari terpanas ke terdingin (descending untuk LST tertinggi dulu)
+        # Sort dari Terpanas ke Terdingin
         df_ranking = df_ranking.sort_values("Mean_LST", ascending=False).reset_index(
             drop=True
         )
 
-        # Buat label untuk sumbu Y berdasarkan WADMKK
+        # Buat Label untuk Sumbu Y Berdasarkan WADMKK
         def create_y_label(row):
             if row["WADMKK"] in ["Bantul", "Sleman"]:
                 return f"Kapanewon {row['NAMOBJ']}"
@@ -736,12 +706,12 @@ if selected_tab == "📈 Tren":
 
         df_ranking["Y_Label"] = df_ranking.apply(create_y_label, axis=1)
 
-        # Buat label zona untuk tooltip
+        # Buat Label Zona untuk Tooltip
         df_ranking["Zona_Label"] = df_ranking["Zona"].map(
             {"Urban": "Perkotaan", "Rural": "Non-Perkotaan"}
         )
 
-        # Create horizontal bar plot dengan plotly
+        # Buat Bar
         fig = px.bar(
             df_ranking,
             x="Mean_LST",
@@ -754,12 +724,12 @@ if selected_tab == "📈 Tren":
                 "Y_Label": "",
                 "Zona": "Kawasan",
             },
-            # Custom hover template
+            # Isi Hover
             hover_data={"Mean_LST": ":.1f", "Zona": False, "Y_Label": False},
             custom_data=["Zona_Label", "Mean_LST"],
         )
 
-        # Update hover template
+        # Update Hover Template
         fig.update_traces(
             hovertemplate="<b>%{y}</b><br>"
             + "Kawasan: %{customdata[0]}<br>"
@@ -770,7 +740,7 @@ if selected_tab == "📈 Tren":
             textfont_color="black",
         )
 
-        # Update layout dengan font Poppins
+        # Update dan Styling Bar Plot
         fig.update_layout(
             height=800,
             font=dict(family="Poppins", size=11),
@@ -786,25 +756,23 @@ if selected_tab == "📈 Tren":
                 x=0.98,
                 font=dict(family="Poppins"),
             ),
-            # Reverse y-axis order agar yang terpanas di atas
             yaxis=dict(
                 categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
             ),
-            # Hide title
             title="",
-            margin=dict(t=10),  # Mengurangi margin atas
+            margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
         )
 
-        # Update axis colors to black
+        # Sumbu Warna Hitam
         fig.update_xaxes(title_font_color="black", tickfont_color="black")
         fig.update_yaxes(title_font_color="black", tickfont_color="black")
 
-        # Update legend labels
+        # Update Legenda
         for trace in fig.data:
             if trace.name == "Urban":
                 trace.name = "Perkotaan"
             elif trace.name == "Rural":
                 trace.name = "Non-Perkotaan"
 
-        # Display plot
+        # Display Bar Plot
         st.plotly_chart(fig, use_container_width=True)
