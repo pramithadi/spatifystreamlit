@@ -73,19 +73,21 @@ st.markdown(
             padding: 12px !important;
         }
         
+        /* FIXED: Removed border-radius and added proper hover effects */
         div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
             border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-            border-radius: 1px !important;
+            border-radius: 0px !important; /* FIXED: Set to 0px instead of 1px */
             padding: 12px !important;
-            # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-            # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important; /* FIXED: Uncommented */
+            background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important; /* FIXED: Uncommented */
             transition: all 0.3s ease !important;
         }
 
+        /* FIXED: Proper hover effect */
         div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
             transform: translateY(-4px) !important;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-            border-color: #fdfaf6 !important;
+            border-color: rgba(0, 0, 0, 0.2) !important; /* FIXED: Changed from #fdfaf6 to proper border color */
         }
         
         /* Mengurangi Padding Top Halaman Utama */
@@ -104,32 +106,22 @@ st.markdown(
 
 # Dictionary Statistik NDBI
 stats_by_year = {
-    "1999": {"min": 4.31, "max": 69.76, "mean": 34.53},
-    "2004": {"min": 15.30, "max": 57.40, "mean": 35.48},
-    "2009": {"min": 18.11, "max": 67.16, "mean": 37.75},
-    "2014": {"min": 17.68, "max": 52.44, "mean": 36.63},
-    "2019": {"min": 18.54, "max": 49.67, "mean": 35.74},
-    "2024": {"min": 20.72, "max": 72.32, "mean": 37.26},
-    "2029": {
-        "min": 20.72,
-        "max": 72.32,
-        "mean": 37.26,
-    },  # 2029 Sementara Menggunakan Data 2024
+    "1999": {"min": -0.615, "max": 0.372, "mean": -0.168},
+    "2004": {"min": -0.696, "max": 0.569, "mean": -0.188},
+    "2009": {"min": -0.605, "max": 0.555, "mean": -0.154},
+    "2014": {"min": -0.564, "max": 0.819, "mean": -0.179},
+    "2019": {"min": -0.581, "max": 0.940, "mean": -0.161},
+    "2024": {"min": -0.604, "max": 0.454, "mean": -0.162},
 }
 
 # Dictionary Threshold
 threshold_dict = {
-    "1999": {"low": 30.531, "medium": 34.554, "high": 38.577},
-    "2004": {"low": 31.474, "medium": 35.508, "high": 39.542},
-    "2009": {"low": 33.273, "medium": 37.729, "high": 42.185},
-    "2014": {"low": 32.235, "medium": 36.646, "high": 41.058},
-    "2019": {"low": 31.953, "medium": 35.729, "high": 39.504},
-    "2024": {"low": 33.193, "medium": 37.206, "high": 41.219},
-    "2029": {
-        "low": 33.193,
-        "medium": 37.206,
-        "high": 41.219,
-    },  # 2029 Sementara Menggunakan Data 2024
+    "1999": {"low": -0.283, "medium": -0.168, "high": -0.053},
+    "2004": {"low": -0.309, "medium": -0.188, "high": -0.067},
+    "2009": {"low": -0.28, "medium": -0.154, "high": -0.027},
+    "2014": {"low": -0.302, "medium": -0.179, "high": -0.056},
+    "2019": {"low": -0.301, "medium": -0.161, "high": -0.022},
+    "2024": {"low": -0.309, "medium": -0.162, "high": -0.015},
 }
 
 
@@ -263,23 +255,23 @@ def add_legend_to_map(map_obj, thresholds):
                 font-size: 12px; 
                 box-shadow: 0 2px 4px rgba(0,0,0,0.2);
                 min-width: 160px;">
-        <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">Kelas NDBI (°C)</div>
+        <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">Tingkat Kerapatan Area Terbangun</div>
         <div style="display: flex; flex-direction: column; gap: 4px;">
             <div style="display: flex; align-items: center; gap: 6px;">
-                <div style="width: 12px; height: 12px; background-color: #5ca0d3; border: 1px solid #ddd;"></div>
-                <span style="color: #333;">Sangat Rendah (≤ {thresholds['low']:.2f}°C)</span>
+                <div style="width: 12px; height: 12px; background-color: #006400; border: 1px solid #ddd;"></div>
+                <span style="color: #333;">Non-terbangun (≤ {thresholds['low']:.3f})</span>
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
-                <div style="width: 12px; height: 12px; background-color: #f5ebb1; border: 1px solid #ddd;"></div>
-                <span style="color: #333;">Rendah ({thresholds['low']:.2f} - {thresholds['medium']:.2f}°C)</span>
+                <div style="width: 12px; height: 12px; background-color: #ffffe0; border: 1px solid #ddd;"></div>
+                <span style="color: #333;">Rendah ({thresholds['low']:.3f} - {thresholds['medium']:.3f})</span>
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
-                <div style="width: 12px; height: 12px; background-color: #dba758; border: 1px solid #ddd;"></div>
-                <span style="color: #333;">Sedang ({thresholds['medium']:.2f} - {thresholds['high']:.2f}°C)</span>
+                <div style="width: 12px; height: 12px; background-color: #ffa500; border: 1px solid #ddd;"></div>
+                <span style="color: #333;">Sedang ({thresholds['medium']:.3f} - {thresholds['high']:.3f})</span>
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
-                <div style="width: 12px; height: 12px; background-color: #93220e; border: 1px solid #ddd;"></div>
-                <span style="color: #333;">Tinggi (> {thresholds['high']:.2f}°C)</span>
+                <div style="width: 12px; height: 12px; background-color: #3b060a; border: 1px solid #ddd;"></div>
+                <span style="color: #333;">Tinggi (> {thresholds['high']:.3f})</span>
             </div>
         </div>
     </div>
@@ -302,15 +294,16 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
             if hasattr(src, "nodata") and src.nodata is not None:
                 data = np.where(data == src.nodata, np.nan, data)
 
-            # Set Nilai 0 atau Negatif sebagai NoData
-            data = np.where(data <= 0, np.nan, data)
+            # Nilai NDBI Berkisar -1 Hingga +1
+            # Maka Hanya Filter Nilai yang Benar-benar Tidak Valid (Outlier Ekstrem)
+            data = np.where((data < -1) | (data > 1), np.nan, data)
 
             # Warna untuk Setiap Kelas
             colors = {
-                "very_low": [92, 160, 211, 255],  # #5ca0d3
-                "low": [245, 235, 177, 255],  # #f5ebb1
-                "medium": [219, 167, 88, 255],  # #dba758
-                "high": [147, 34, 14, 255],  # #93220e
+                "very_low": [0, 100, 0, 255],  # #006400
+                "low": [255, 255, 224, 255],  # #ffffe0
+                "medium": [255, 165, 0, 255],  # #ffa500
+                "high": [59, 6, 10, 255],  # #3b060a
             }
 
             # Buat Array Warna Berdasarkan Threshold (RGBA)
@@ -359,7 +352,7 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
                 interactive=True,
                 cross_origin=False,
                 zindex=1,
-                name="Suhu Permukaan Lahan",
+                name="NDBI",
             )
             ndbi_overlay.add_to(map_obj)
 
@@ -394,7 +387,7 @@ if selected_tab == "🗺️ Peta":
             # Selectbox Tahun
             option = st.selectbox(
                 "**Pilih Tahun**",
-                ["1999", "2004", "2009", "2014", "2019", "2024", "2029"],
+                ["1999", "2004", "2009", "2014", "2019", "2024"],
                 index=0,
                 placeholder="Tahun",
             )
@@ -405,11 +398,11 @@ if selected_tab == "🗺️ Peta":
         with st.container(border=True):
             col_min, col_max, col_mean = st.columns([1, 1, 1])
             with col_min:
-                st.metric("NDBI Minimum", f"{selected_data['min']:.1f}°C")
+                st.metric("NDBI Minimum", f"{selected_data['min']:.3f}")
             with col_max:
-                st.metric("NDBI Maksimum", f"{selected_data['max']:.1f}°C")
+                st.metric("NDBI Maksimum", f"{selected_data['max']:.3f}")
             with col_mean:
-                st.metric("NDBI Rata-rata", f"{selected_data['mean']:.1f}°C")
+                st.metric("NDBI Rata-rata", f"{selected_data['mean']:.3f}")
 
         # Container Selectbox Kecamatan
         with st.container(border=True):
@@ -429,6 +422,27 @@ if selected_tab == "🗺️ Peta":
                 st.warning(f"Data kecamatan untuk tahun {option} tidak tersedia")
                 selected_kecamatan = ""
 
+        # Function Klasifikasi Deskripsi
+        def classify_ndbi(mean_value, thresholds):
+            """
+            Klasifikasi nilai mean NDBI berdasarkan threshold
+
+            Args:
+                mean_value (float): Nilai mean NDBI
+                thresholds (dict): Dictionary threshold dengan key 'low', 'medium', 'high'
+
+            Returns:
+                tuple: (kategori, deskripsi)
+            """
+            if mean_value <= thresholds["low"]:
+                return "sangat rendah", "sangat rendah"
+            elif thresholds["low"] < mean_value <= thresholds["medium"]:
+                return "cenderung rendah", "cenderung rendah"
+            elif thresholds["medium"] < mean_value <= thresholds["high"]:
+                return "cukup sedang", "cukup sedang"
+            else:  # mean_value > thresholds['high']
+                return "tinggi", "tinggi"
+
         # Container Analisis NDBI per Kecamatan
         if selected_kecamatan and selected_kecamatan != "" and kecamatan_data_year:
             with st.container(border=True):
@@ -436,7 +450,13 @@ if selected_tab == "🗺️ Peta":
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
 
-                description = f"Suhu permukaan lahan di **{toponim} {selected_kecamatan}** pada tahun **{option}** memiliki rerata suhu sebesar **{kecamatan_data['mean']:.2f}°C** dengan suhu terendah yakni **{kecamatan_data['min']:.2f}°C** dan suhu tertinggi adalah **{kecamatan_data['max']:.2f}°C**."
+                current_thresholds = threshold_dict[option]
+
+                kategori, deskripsi = classify_ndbi(
+                    kecamatan_data["mean"], current_thresholds
+                )
+
+                description = f"Tingkat kerapatan area terbangun di **{toponim} {selected_kecamatan}** pada tahun **{option}** menunjukkan nilai rata-rata NDBI sebesar **{kecamatan_data['mean']:.3f}**. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat kerapatan area terbangun dan mobilitas penduduk yang **{deskripsi}**."
 
                 st.write(description)
 
@@ -486,7 +506,7 @@ if selected_tab == "🗺️ Peta":
             control=True,
         ).add_to(m)
 
-        # Panggil GeoTiff dari Aset Lokal (2029 Sementara Memakai Data 2024)
+        # Panggil GeoTiff dari Aset Lokal
         if option == "2029":
             tif_path = "tif/ndbi2024kpy.tif"
         else:
@@ -550,7 +570,7 @@ if selected_tab == "📈 Tren":
 
     # Row Diagram Garis & Ranking NDBI
     st.badge(
-        "**Tren Fluktuasi NDBI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
+        "**Tren Fluktuasi Nilai NDBI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.2, 1.8])
@@ -619,7 +639,7 @@ if selected_tab == "📈 Tren":
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=334.5,
+                height=280,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -629,13 +649,12 @@ if selected_tab == "📈 Tren":
     with col2_tren_main:
         # Dictionary Mean NDBI
         mean_by_year = {
-            1999: {"mean": 34.53},
-            2004: {"mean": 35.48},
-            2009: {"mean": 37.75},
-            2014: {"mean": 36.63},
-            2019: {"mean": 35.74},
-            2024: {"mean": 37.26},
-            # 2029: {"mean": 37.26},
+            1999: {"mean": -0.168},
+            2004: {"mean": -0.188},
+            2009: {"mean": -0.154},
+            2014: {"mean": -0.179},
+            2019: {"mean": -0.161},
+            2024: {"mean": -0.162},
         }
 
         years_tren = sorted(mean_by_year.keys())
@@ -658,23 +677,23 @@ if selected_tab == "📈 Tren":
             with st.container(border=True):
                 st.metric(
                     label="Rata-rata NDBI (1999-2024)",
-                    value=f"{overall_mean:.2f}°C",
+                    value=f"{overall_mean:.3f}",
                 )
 
         with col2_tren_metric:
             with st.container(border=True):
-                st.metric(label="Perubahan Tahunan", value=f"{mac:.2f}°C")
+                st.metric(label="Perubahan Tahunan", value=f"{mac:.3f}")
 
         # Container Top 10 Wilayah Terpanas
         with st.container(border=True):
             st.write("**Analisis**")
             st.markdown(
-                """Diagram garis di samping membuktikan kebenaran hipotesis awal bahwa :green-background[**kawasan perkotaan**] Yogyakarta cenderung memiliki nilai :green-background[**NDBI**] yang :green-background[**lebih tinggi**] dibandingkan :green-background[**kawasan non-perkotaan**] di sekitarnya pada masing-masing :green-background[**tahun**] yang :green-background[**sama**] dengan selisih nilai NDBI berkisar antara :green-background[**5.94°C**] hingga :green-background[**9.17°C**]."""
+                """Diagram garis di samping membuktikan kebenaran hipotesis awal bahwa :green-background[**kawasan perkotaan**] Yogyakarta cenderung memiliki nilai :green-background[**NDBI**] yang :green-background[**lebih tinggi**] dibandingkan :green-background[**kawasan non-perkotaan**] di sekitarnya pada masing-masing :green-background[**tahun**] yang :green-background[**sama**] dengan selisih nilai NDBI berkisar antara :green-background[**.**] hingga :green-background[**.**]."""
             )
 
     # Row Diagram Garis & Ranking NDBI
     st.badge(
-        "**38 Kecamatan Terpanas Berdasarkan Rata-rata NDBI (1999-2024)**",
+        "**38 Kecamatan dengan Kerapatan Area Terbangun Tertinggi Berdasarkan Rata-rata NDBI (1999-2024)**",
         color="primary",
     )
 
@@ -688,7 +707,7 @@ if selected_tab == "📈 Tren":
         )
         df_ranking.columns = ["NAMOBJ", "WADMKK", "Zona", "Mean_NDBI"]
 
-        # Sort dari Terpanas ke Terdingin
+        # Sort dari Tertinggi ke Terendah
         df_ranking = df_ranking.sort_values("Mean_NDBI", ascending=False).reset_index(
             drop=True
         )
@@ -718,12 +737,12 @@ if selected_tab == "📈 Tren":
             color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
             orientation="h",
             labels={
-                "Mean_NDBI": "NDBI Mean (°C)",
+                "Mean_NDBI": "NDBI Rata-rata",
                 "Y_Label": "",
                 "Zona": "Kawasan",
             },
             # Isi Hover
-            hover_data={"Mean_NDBI": ":.1f", "Zona": False, "Y_Label": False},
+            hover_data={"Mean_NDBI": ":.3f", "Zona": False, "Y_Label": False},
             custom_data=["Zona_Label", "Mean_NDBI"],
         )
 
@@ -731,8 +750,8 @@ if selected_tab == "📈 Tren":
         fig.update_traces(
             hovertemplate="<b>%{y}</b><br>"
             + "Kawasan: %{customdata[0]}<br>"
-            + "Rata-rata NDBI: %{customdata[1]:.1f}°C<extra></extra>",
-            texttemplate="%{x:.1f}°C",
+            + "Rata-rata NDBI: %{customdata[1]:.3f}°C<extra></extra>",
+            texttemplate="%{x:.3f}",
             textposition="outside",
             textfont_size=10,
             textfont_color="black",

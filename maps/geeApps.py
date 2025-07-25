@@ -88,7 +88,7 @@ with col1:
         st.write("**LST**")
         st.image("./assets/lst.png")
         st.link_button(
-            label="Aplikasi",
+            label="GEE Apps",
             url="",
             icon=":material/map:",
         )
@@ -98,7 +98,7 @@ with col2:
         st.write("**NDBI**")
         st.image("./assets/ndbi.png")
         st.link_button(
-            label="Aplikasi",
+            label="GEE Apps",
             url="",
             icon=":material/map:",
         )
@@ -108,7 +108,7 @@ with col3:
         st.write("**NDMI**")
         st.image("./assets/ndmi.png")
         st.link_button(
-            label="Aplikasi",
+            label="GEE Apps",
             url="",
             icon=":material/map:",
         )

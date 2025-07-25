@@ -534,7 +534,7 @@ var ndmi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B6']).rename('ndbi
         with st.expander("Lihat Referensi"):
             st.markdown(
                 """
-                - Gao, B. C. (1996). NDWI - A Normalized Difference Water Indeks for Remote Sensing of Liquid Water from Space. *Remote Sensing of Environment*, 58, 257-266. https://doi.org/10.1016/S0034-4257(96)00067-3 
+                - Gao, B. C. (1996). NDWI - A Normalized Difference Water Index for Remote Sensing of Liquid Water from Space. *Remote Sensing of Environment*, 58, 257-266. https://doi.org/10.1016/S0034-4257(96)00067-3 
                 """
             )
 
@@ -591,7 +591,7 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
                 """
             )
 
-    elif option == "🗾 Penutup Lahan":
+    elif option == "🏞️ Penutup Lahan":
         st.subheader("**Penutup Lahan**")
         st.markdown(
             """
@@ -764,7 +764,7 @@ print('Consumers Accuracy:', confusionMatrix.consumersAccuracy());
                 """
             )
 
-    elif option == "⛰️ Elevasi dan Slope":
+    elif option == "🌋 Elevasi dan Slope":
         st.subheader("**Elevasi dan Slope**")
         st.markdown(
             """
