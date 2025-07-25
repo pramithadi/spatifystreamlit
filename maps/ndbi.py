@@ -73,21 +73,19 @@ st.markdown(
             padding: 12px !important;
         }
         
-        /* FIXED: Removed border-radius and added proper hover effects */
         div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
             border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-            border-radius: 0px !important; /* FIXED: Set to 0px instead of 1px */
+            border-radius: 1px !important;
             padding: 12px !important;
-            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important; /* FIXED: Uncommented */
-            background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important; /* FIXED: Uncommented */
+            # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+            # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
             transition: all 0.3s ease !important;
         }
 
-        /* FIXED: Proper hover effect */
         div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
             transform: translateY(-4px) !important;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-            border-color: rgba(0, 0, 0, 0.2) !important; /* FIXED: Changed from #fdfaf6 to proper border color */
+            border-color: #fdfaf6 !important;
         }
         
         /* Mengurangi Padding Top Halaman Utama */
