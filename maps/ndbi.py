@@ -139,7 +139,7 @@ def load_kecamatan_stats():
     """
     Load statistik NDBI per kecamatan dari file CSV
     """
-    csv_path = "./stats/lstStatsKec.csv"
+    csv_path = "./stats/ndbiStatsKec.csv"
     try:
         df = pd.read_csv(csv_path)
         # Kolom Tahun di CSV Harus String
@@ -352,7 +352,7 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
             bounds_folium = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]
 
             # Tambahkan ke Peta
-            lst_overlay = folium.raster_layers.ImageOverlay(
+            ndbi_overlay = folium.raster_layers.ImageOverlay(
                 image=f"data:image/png;base64,{img_str}",
                 bounds=bounds_folium,
                 opacity=1.0,
@@ -361,7 +361,7 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
                 zindex=1,
                 name="Suhu Permukaan Lahan",
             )
-            lst_overlay.add_to(map_obj)
+            ndbi_overlay.add_to(map_obj)
 
         return True
     except Exception as e:
@@ -488,9 +488,9 @@ if selected_tab == "🗺️ Peta":
 
         # Panggil GeoTiff dari Aset Lokal (2029 Sementara Memakai Data 2024)
         if option == "2029":
-            tif_path = "tif/lst2024kpy.tif"
+            tif_path = "tif/ndbi2024kpy.tif"
         else:
-            tif_path = f"tif/lst{option}kpy.tif"
+            tif_path = f"tif/ndbi{option}kpy.tif"
 
         # Set Threshold untuk Tahun yang Dipilih
         thresholds = threshold_dict[option]
@@ -538,13 +538,13 @@ if selected_tab == "🗺️ Peta":
 
 if selected_tab == "📈 Tren":
     # Grafik Tren NDBI Perkotaan vs Non-Perkotaan
-    df_urban_rural = pd.read_csv("./stats/lstStatsKec.csv")
+    df_urban_rural = pd.read_csv("./stats/ndbiStatsKec.csv")
 
-    lst_urban_rural = (
+    ndbi_urban_rural = (
         df_urban_rural.groupby(["Tahun", "Zona"])["mean"].mean().reset_index()
     )
 
-    lst_urban_rural_pivot = lst_urban_rural.pivot(
+    ndbi_urban_rural_pivot = ndbi_urban_rural.pivot(
         index="Tahun", columns="Zona", values="mean"
     )
 
@@ -563,11 +563,11 @@ if selected_tab == "📈 Tren":
 
             fig = go.Figure()
 
-            if "Urban" in lst_urban_rural_pivot.columns:
+            if "Urban" in ndbi_urban_rural_pivot.columns:
                 fig.add_trace(
                     go.Scatter(
-                        x=lst_urban_rural_pivot.index,
-                        y=lst_urban_rural_pivot["Urban"],
+                        x=ndbi_urban_rural_pivot.index,
+                        y=ndbi_urban_rural_pivot["Urban"],
                         mode="lines+markers",
                         name="Perkotaan",
                         line=dict(color="#FF90BB", width=3),
@@ -576,11 +576,11 @@ if selected_tab == "📈 Tren":
                     )
                 )
 
-            if "Rural" in lst_urban_rural_pivot.columns:
+            if "Rural" in ndbi_urban_rural_pivot.columns:
                 fig.add_trace(
                     go.Scatter(
-                        x=lst_urban_rural_pivot.index,
-                        y=lst_urban_rural_pivot["Rural"],
+                        x=ndbi_urban_rural_pivot.index,
+                        y=ndbi_urban_rural_pivot["Rural"],
                         mode="lines+markers",
                         name="Non-Perkotaan",
                         line=dict(color="#096B68", width=3),
@@ -680,7 +680,7 @@ if selected_tab == "📈 Tren":
 
     col_rank = st.columns([1])[0]
     with col_rank:
-        df_stats = pd.read_csv("./stats/lstStatsKec.csv")
+        df_stats = pd.read_csv("./stats/ndbiStatsKec.csv")
 
         # Hitung Rata-rata Mean untuk Setiap Kecamatan dari Semua Tahun
         df_ranking = (
