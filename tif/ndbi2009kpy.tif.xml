@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xml:lang="en"><Esri><CreaDate>20250725</CreaDate><CreaTime>12114200</CreaTime><ArcGISFormat>1.0</ArcGISFormat><ArcGISstyle>FGDC CSDGM Metadata</ArcGISstyle><SyncOnce>TRUE</SyncOnce><DataProperties><lineage><Process ToolSource="c:\program files (x86)\arcgis\desktop10.8\ArcToolbox\Toolboxes\Spatial Analyst Tools.tbx\ExtractByMask" Date="20250725" Time="121142">ExtractByMask ndbi2009.tif AOI_PA_KPY_Sekitarnya_OUTLINE D:\final_project\streamlit\tif\ndbi2009kpy.tif</Process></lineage></DataProperties></Esri></metadata>

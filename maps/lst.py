@@ -16,10 +16,11 @@ import matplotlib.pyplot as plt
 import geopandas as gpd
 
 st.set_page_config(
-    page_title="Peta Suhu Permukaan Lahan",
+    page_title="Dashboard Suhu Permukaan Lahan",
     layout="wide",
 )
 
+# CSS untuk Styling Komponen Streamlit
 st.markdown(
     """
     <style>
@@ -102,43 +103,40 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Dictionary Statistik LST
-stats_by_year = {
-    "1999": {"min": 4.31, "max": 69.76, "mean": 34.53},
-    "2004": {"min": 15.30, "max": 57.40, "mean": 35.48},
-    "2009": {"min": 18.11, "max": 67.16, "mean": 37.75},
-    "2014": {"min": 17.68, "max": 52.44, "mean": 36.63},
-    "2019": {"min": 18.54, "max": 49.67, "mean": 35.74},
-    "2024": {"min": 20.72, "max": 72.32, "mean": 37.26},
+# Dictionary Statistik LST 1999-2024
+stats_dict = {
+    "1999": {"min": 4.313, "max": 69.760, "mean": 34.531},
+    "2004": {"min": 15.295, "max": 57.402, "mean": 35.481},
+    "2009": {"min": 18.111, "max": 67.161, "mean": 37.745},
+    "2014": {"min": 17.684, "max": 52.441, "mean": 36.630},
+    "2019": {"min": 18.537, "max": 49.669, "mean": 35.739},
+    "2024": {"min": 20.722, "max": 72.317, "mean": 37.262},
     "2029": {
-        "min": 20.72,
-        "max": 72.32,
-        "mean": 37.26,
+        "min": 20.722,
+        "max": 72.317,
+        "mean": 37.262,
     },  # 2029 Sementara Menggunakan Data 2024
 }
 
-# Dictionary Threshold
+# Dictionary Threshold LST 1999-2024
 threshold_dict = {
-    "1999": {"low": 30.531, "medium": 34.554, "high": 38.577},
-    "2004": {"low": 31.474, "medium": 35.508, "high": 39.542},
-    "2009": {"low": 33.273, "medium": 37.729, "high": 42.185},
-    "2014": {"low": 32.235, "medium": 36.646, "high": 41.058},
-    "2019": {"low": 31.953, "medium": 35.729, "high": 39.504},
-    "2024": {"low": 33.193, "medium": 37.206, "high": 41.219},
+    "1999": {"low": 30.499, "medium": 34.531, "high": 38.563},
+    "2004": {"low": 31.412, "medium": 35.481, "high": 39.550},
+    "2009": {"low": 33.243, "medium": 37.745, "high": 42.247},
+    "2014": {"low": 32.168, "medium": 36.630, "high": 41.092},
+    "2019": {"low": 31.923, "medium": 35.739, "high": 39.556},
+    "2024": {"low": 33.207, "medium": 37.262, "high": 41.317},
     "2029": {
-        "low": 33.193,
-        "medium": 37.206,
-        "high": 41.219,
+        "low": 33.207,
+        "medium": 37.262,
+        "high": 41.317,
     },  # 2029 Sementara Menggunakan Data 2024
 }
 
 
-# Function untuk Load Data Statistik Kecamatan dari CSV
+# Function untuk Load CSV Statistik per Kecamatan
 @st.cache_data
-def load_kecamatan_stats():
-    """
-    Load statistik LST per kecamatan dari file CSV
-    """
+def load_stats_kec():
     csv_path = "./stats/lstStatsKec.csv"
     try:
         df = pd.read_csv(csv_path)
@@ -153,11 +151,8 @@ def load_kecamatan_stats():
         return pd.DataFrame()
 
 
-# Function untuk Get Data Kecamatan Berdasarkan Tahun
-def get_kecamatan_data_by_year(df, year):
-    """
-    Filter data kecamatan berdasarkan tahun
-    """
+# Function untuk Filter Kecamatan Berdasarkan Tahun
+def get_kec_by_year(df, year):
     if df.empty:
         return {}
 
@@ -165,7 +160,7 @@ def get_kecamatan_data_by_year(df, year):
     if year_data.empty:
         return {}
 
-    # Convert ke Dictionary
+    # Convert Menjadi Dictionary
     kecamatan_dict = {}
     for _, row in year_data.iterrows():
         kecamatan_dict[row["NAMOBJ"]] = {
@@ -368,12 +363,14 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
         return False
 
 
-# Load Data Statistik Kecamatan
-kecamatan_stats_df = load_kecamatan_stats()
+# Load DataFrame Kecamatan
+df_kec_stats = load_stats_kec()
 
+# Judul Halaman
 st.subheader("Suhu Permukaan Lahan")
 
-selected_tab = st.pills(
+# Membuat Menu
+selected_menu = st.pills(
     "**Lihat Analisis:**",
     [
         "🗺️ Peta",
@@ -387,13 +384,12 @@ selected_tab = st.pills(
 )
 
 # Peta
-if selected_tab == "🗺️ Peta":
+if selected_menu == "🗺️ Peta":
     col1_peta, col2_peta = st.columns([2.5, 1.5])
 
     with col2_peta:
         # Container Selectbox Tahun
         with st.container(border=True):
-            # Selectbox Tahun
             option = st.selectbox(
                 "**Pilih Tahun**",
                 ["1999", "2004", "2009", "2014", "2019", "2024", "2029"],
@@ -401,7 +397,7 @@ if selected_tab == "🗺️ Peta":
                 placeholder="Tahun",
             )
 
-            selected_data = stats_by_year[option]
+            selected_data = stats_dict[option]
 
         # Container Metrics LST
         with st.container(border=True):
@@ -416,11 +412,10 @@ if selected_tab == "🗺️ Peta":
         # Container Selectbox Kecamatan
         with st.container(border=True):
             # Ambil Data Statistik Kecamatan dari DataFrame
-            kecamatan_data_year = get_kecamatan_data_by_year(kecamatan_stats_df, option)
+            kec_year = get_kec_by_year(df_kec_stats, option)
 
-            # Selectbox Cari Kecamatan
-            if kecamatan_data_year:
-                kecamatan_options = list(kecamatan_data_year.keys())
+            if kec_year:
+                kecamatan_options = list(kec_year.keys())
                 selected_kecamatan = st.selectbox(
                     "**Cari Kecamatan**",
                     [""] + kecamatan_options,
@@ -432,9 +427,9 @@ if selected_tab == "🗺️ Peta":
                 selected_kecamatan = ""
 
         # Container Analisis LST per Kecamatan
-        if selected_kecamatan and selected_kecamatan != "" and kecamatan_data_year:
+        if selected_kecamatan and selected_kecamatan != "" and kec_year:
             with st.container(border=True):
-                kecamatan_data = kecamatan_data_year[selected_kecamatan]
+                kecamatan_data = kec_year[selected_kecamatan]
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
 
@@ -538,7 +533,8 @@ if selected_tab == "🗺️ Peta":
         m.get_root().html.add_child(folium.Element(css))
         st_data = st_folium(m, use_container_width=True, height=600)
 
-if selected_tab == "📈 Tren":
+# Tren
+elif selected_menu == "📈 Tren":
     # Grafik Tren LST Perkotaan vs Non-Perkotaan
     df_urban_rural = pd.read_csv("./stats/lstStatsKec.csv")
 
@@ -621,7 +617,7 @@ if selected_tab == "📈 Tren":
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=334.5,
+                height=300,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -631,12 +627,12 @@ if selected_tab == "📈 Tren":
     with col2_tren_main:
         # Dictionary Mean LST
         mean_by_year = {
-            1999: {"mean": 34.53},
-            2004: {"mean": 35.48},
-            2009: {"mean": 37.75},
-            2014: {"mean": 36.63},
-            2019: {"mean": 35.74},
-            2024: {"mean": 37.26},
+            1999: {"mean": 34.531},
+            2004: {"mean": 35.481},
+            2009: {"mean": 37.745},
+            2014: {"mean": 36.630},
+            2019: {"mean": 35.739},
+            2024: {"mean": 37.262},
             # 2029: {"mean": 37.26},
         }
 
@@ -720,12 +716,12 @@ if selected_tab == "📈 Tren":
             color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
             orientation="h",
             labels={
-                "Mean_LST": "LST Mean (°C)",
+                "Mean_LST": "LST Rata-rata (°C)",
                 "Y_Label": "",
                 "Zona": "Kawasan",
             },
             # Isi Hover
-            hover_data={"Mean_LST": ":.1f", "Zona": False, "Y_Label": False},
+            hover_data={"Mean_LST": ":.2f", "Zona": False, "Y_Label": False},
             custom_data=["Zona_Label", "Mean_LST"],
         )
 
@@ -733,8 +729,8 @@ if selected_tab == "📈 Tren":
         fig.update_traces(
             hovertemplate="<b>%{y}</b><br>"
             + "Kawasan: %{customdata[0]}<br>"
-            + "Rata-rata LST: %{customdata[1]:.1f}°C<extra></extra>",
-            texttemplate="%{x:.1f}°C",
+            + "Rata-rata LST: %{customdata[1]:.2f}°C<extra></extra>",
+            texttemplate="%{x:.2f}°C",
             textposition="outside",
             textfont_size=10,
             textfont_color="black",
@@ -776,3 +772,15 @@ if selected_tab == "📈 Tren":
 
         # Display Bar Plot
         st.plotly_chart(fig, use_container_width=True)
+
+# Model
+elif selected_menu == "⚙️ Model":
+    st.write("Page under construction.")
+
+# Validasi
+elif selected_menu == "✅ Validasi":
+    st.write("Page under construction.")
+
+# Regresi
+elif selected_menu == "📉 Regresi":
+    st.write("Page under construction.")
