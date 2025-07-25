@@ -568,7 +568,7 @@ if selected_tab == "📈 Tren":
 
     # Row Diagram Garis & Ranking NDBI
     st.badge(
-        "**Tren Fluktuasi Nilai NDBI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
+        "**Tren Fluktuasi NDBI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.2, 1.8])
@@ -590,7 +590,7 @@ if selected_tab == "📈 Tren":
                         name="Perkotaan",
                         line=dict(color="#FF90BB", width=3),
                         marker=dict(size=8, symbol="circle"),
-                        hovertemplate="<b>Perkotaan</b><br>Tahun: %{x}<br>NDBI Rata-rata: %{y:.2f}°C<extra></extra>",
+                        hovertemplate="<b>Perkotaan</b><br>Tahun: %{x}<br>NDBI Rata-rata: %{y:.3f}°C<extra></extra>",
                     )
                 )
 
@@ -603,7 +603,7 @@ if selected_tab == "📈 Tren":
                         name="Non-Perkotaan",
                         line=dict(color="#096B68", width=3),
                         marker=dict(size=8, symbol="square"),
-                        hovertemplate="<b>Non-Perkotaan</b><br>Tahun: %{x}<br>NDBI Rata-rata: %{y:.2f}°C<extra></extra>",
+                        hovertemplate="<b>Non-Perkotaan</b><br>Tahun: %{x}<br>NDBI Rata-rata: %{y:.3f}°C<extra></extra>",
                     )
                 )
 
@@ -637,7 +637,7 @@ if selected_tab == "📈 Tren":
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=280,
+                height=384.5,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -684,9 +684,12 @@ if selected_tab == "📈 Tren":
 
         # Container Top 10 Wilayah Terpanas
         with st.container(border=True):
-            st.write("**Analisis**")
             st.markdown(
-                """Diagram garis di samping membuktikan kebenaran hipotesis awal bahwa :green-background[**kawasan perkotaan**] Yogyakarta cenderung memiliki nilai :green-background[**NDBI**] yang :green-background[**lebih tinggi**] dibandingkan :green-background[**kawasan non-perkotaan**] di sekitarnya pada masing-masing :green-background[**tahun**] yang :green-background[**sama**] dengan selisih nilai NDBI berkisar antara :green-background[**.**] hingga :green-background[**.**]."""
+                """
+                **Analisis Tren**
+                - Kawasan perkotaan di Provinsi DIY memiliki nilai NDBI yang cenderung lebih tinggi dibanding kawasan non-perkotaan di sekitarnya.
+                - Selisih nilai NDBI antara kawasan perkotaan dan non-perkotaan berkisar antara 0.148 hingga 0.196.
+                - Pola ini mengindikasikan bahwa area terbangun di perkotaan terus bertambah seiring waktu dengan tren kenaikan sekitar 0.020 per tahun."""
             )
 
     # Row Diagram Garis & Ranking NDBI
