@@ -377,7 +377,7 @@ selected_tab = st.pills(
 
 # Peta
 if selected_tab == "🗺️ Peta":
-    col1_peta, col2_peta = st.columns([2.5, 1.5])
+    col1_peta, col2_peta = st.columns([2.6, 1.4])
 
     with col2_peta:
         # Container Selectbox Tahun
@@ -393,14 +393,16 @@ if selected_tab == "🗺️ Peta":
             selected_data = stats_by_year[option]
 
         # Container Metrics NDBI
-        with st.container(border=True):
-            col_min, col_max, col_mean = st.columns([1, 1, 1])
-            with col_min:
-                st.metric("NDBI Minimum", f"{selected_data['min']:.3f}")
-            with col_max:
-                st.metric("NDBI Maksimum", f"{selected_data['max']:.3f}")
-            with col_mean:
-                st.metric("NDBI Rata-rata", f"{selected_data['mean']:.3f}")
+        col1_peta_metric, col2_peta_metric, col3_peta_metric = st.columns([1, 1, 1])
+        with col1_peta_metric:
+            with st.container(border=True):
+                st.metric("NDBI Min", f"{selected_data['min']:.2f}")
+        with col2_peta_metric:
+            with st.container(border=True):
+                st.metric("NDBI Max", f"{selected_data['max']:.2f}")
+        with col3_peta_metric:
+            with st.container(border=True):
+                st.metric("NDBI Mean", f"{selected_data['mean']:.2f}")
 
         # Container Selectbox Kecamatan
         with st.container(border=True):
@@ -444,6 +446,7 @@ if selected_tab == "🗺️ Peta":
         # Container Analisis NDBI per Kecamatan
         if selected_kecamatan and selected_kecamatan != "" and kecamatan_data_year:
             with st.container(border=True):
+                st.write("💡**Quick Insight**")
                 kecamatan_data = kecamatan_data_year[selected_kecamatan]
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
@@ -454,7 +457,7 @@ if selected_tab == "🗺️ Peta":
                     kecamatan_data["mean"], current_thresholds
                 )
 
-                description = f"Tingkat kerapatan area terbangun di **{toponim} {selected_kecamatan}** pada tahun **{option}** menunjukkan nilai rata-rata NDBI sebesar **{kecamatan_data['mean']:.3f}**. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat kerapatan area terbangun dan mobilitas penduduk yang **{deskripsi}**."
+                description = f"Tingkat kerapatan area terbangun di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDBI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
 
                 st.write(description)
 
@@ -552,7 +555,7 @@ if selected_tab == "🗺️ Peta":
         </style>
         """
         m.get_root().html.add_child(folium.Element(css))
-        st_data = st_folium(m, use_container_width=True, height=600)
+        st_data = st_folium(m, use_container_width=True, height=597)
 
 if selected_tab == "📈 Tren":
     # Grafik Tren NDBI Perkotaan vs Non-Perkotaan
@@ -568,7 +571,7 @@ if selected_tab == "📈 Tren":
 
     # Row Diagram Garis & Ranking NDBI
     st.badge(
-        "**Tren Fluktuasi NDBI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
+        "**Tren NDBI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.2, 1.8])
@@ -590,7 +593,7 @@ if selected_tab == "📈 Tren":
                         name="Perkotaan",
                         line=dict(color="#FF90BB", width=3),
                         marker=dict(size=8, symbol="circle"),
-                        hovertemplate="<b>Perkotaan</b><br>Tahun: %{x}<br>NDBI Rata-rata: %{y:.3f}°C<extra></extra>",
+                        hovertemplate="<b>Perkotaan</b><br>Tahun: %{x}<br>NDBI Mean: %{y:.3f}<extra></extra>",
                     )
                 )
 
@@ -603,7 +606,7 @@ if selected_tab == "📈 Tren":
                         name="Non-Perkotaan",
                         line=dict(color="#096B68", width=3),
                         marker=dict(size=8, symbol="square"),
-                        hovertemplate="<b>Non-Perkotaan</b><br>Tahun: %{x}<br>NDBI Rata-rata: %{y:.3f}°C<extra></extra>",
+                        hovertemplate="<b>Non-Perkotaan</b><br>Tahun: %{x}<br>NDBI Mean: %{y:.3f}<extra></extra>",
                     )
                 )
 
@@ -620,7 +623,7 @@ if selected_tab == "📈 Tren":
                 ),
                 yaxis=dict(
                     title=dict(
-                        text="NDBI Rata-rata (°C)",
+                        text="NDBI Mean",
                         font=dict(family="Poppins", size=12, color="black"),
                     ),
                     tickfont=dict(family="Poppins", size=12, color="black"),
@@ -674,27 +677,27 @@ if selected_tab == "📈 Tren":
         with col1_tren_metric:
             with st.container(border=True):
                 st.metric(
-                    label="Rata-rata NDBI (1999-2024)",
+                    label="NDBI Mean (1999-2024)",
                     value=f"{overall_mean:.3f}",
                 )
 
         with col2_tren_metric:
             with st.container(border=True):
-                st.metric(label="Perubahan Tahunan", value=f"{mac:.3f}")
+                st.metric(label="Fluktuasi Tahunan", value=f"{mac:.4f}")
 
-        # Container Top 10 Wilayah Terpanas
+        # Container Analisis Tren
         with st.container(border=True):
             st.markdown(
                 """
                 **Analisis Tren**
-                - Kawasan perkotaan di Provinsi DIY memiliki nilai NDBI yang cenderung lebih tinggi dibanding kawasan non-perkotaan di sekitarnya.
-                - Selisih nilai NDBI antara kawasan perkotaan dan non-perkotaan berkisar antara 0.148 hingga 0.196.
-                - Pola ini mengindikasikan bahwa area terbangun di perkotaan terus bertambah seiring waktu dengan tren kenaikan sekitar 0.020 per tahun."""
+                - Kawasan perkotaan di Provinsi DIY memiliki nilai NDBI yang cenderung :green-background[**lebih tinggi**] dibanding kawasan non-perkotaan di sekitarnya.
+                - :green-background[**Selisih**] nilai NDBI antara kawasan perkotaan dan non-perkotaan berkisar antara :green-background[**0.148**] hingga :green-background[**0.196**].
+                - Pola ini mengindikasikan bahwa :green-background[**area terbangun**] di perkotaan :green-background[**terus bertambah**] seiring waktu dengan :green-background[**tren kenaikan**] sekitar :green-background[**0.0196**] per tahun."""
             )
 
     # Row Diagram Garis & Ranking NDBI
     st.badge(
-        "**38 Kecamatan dengan Kerapatan Area Terbangun Tertinggi Berdasarkan Rata-rata NDBI (1999-2024)**",
+        "**Top 38 Kecamatan: Kerapatan Area Terbangun Tertinggi (1999-2024)**",
         color="primary",
     )
 
@@ -738,7 +741,7 @@ if selected_tab == "📈 Tren":
             color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
             orientation="h",
             labels={
-                "Mean_NDBI": "NDBI Rata-rata",
+                "Mean_NDBI": "NDBI Mean",
                 "Y_Label": "",
                 "Zona": "Kawasan",
             },
@@ -751,7 +754,7 @@ if selected_tab == "📈 Tren":
         fig.update_traces(
             hovertemplate="<b>%{y}</b><br>"
             + "Kawasan: %{customdata[0]}<br>"
-            + "Rata-rata NDBI: %{customdata[1]:.3f}°C<extra></extra>",
+            + "NDBI Mean: %{customdata[1]:.3f}<extra></extra>",
             texttemplate="%{x:.3f}",
             textposition="outside",
             textfont_size=10,

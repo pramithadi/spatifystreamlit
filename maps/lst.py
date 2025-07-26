@@ -258,7 +258,7 @@ def add_legend_to_map(map_obj, thresholds):
                 font-size: 12px; 
                 box-shadow: 0 2px 4px rgba(0,0,0,0.2);
                 min-width: 160px;">
-        <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">Kelas LST (°C)</div>
+        <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">Kelas Suhu Permukaan Lahan (°C)</div>
         <div style="display: flex; flex-direction: column; gap: 4px;">
             <div style="display: flex; align-items: center; gap: 6px;">
                 <div style="width: 12px; height: 12px; background-color: #5ca0d3; border: 1px solid #ddd;"></div>
@@ -385,7 +385,7 @@ selected_menu = st.pills(
 
 # Peta
 if selected_menu == "🗺️ Peta":
-    col1_peta, col2_peta = st.columns([2.5, 1.5])
+    col1_peta, col2_peta = st.columns([2.4, 1.6])
 
     with col2_peta:
         # Container Selectbox Tahun
@@ -400,14 +400,16 @@ if selected_menu == "🗺️ Peta":
             selected_data = stats_dict[option]
 
         # Container Metrics LST
-        with st.container(border=True):
-            col_min, col_max, col_mean = st.columns([1, 1, 1])
-            with col_min:
-                st.metric("LST Minimum", f"{selected_data['min']:.1f}°C")
-            with col_max:
-                st.metric("LST Maksimum", f"{selected_data['max']:.1f}°C")
-            with col_mean:
-                st.metric("LST Rata-rata", f"{selected_data['mean']:.1f}°C")
+        col1_peta_metric, col2_peta_metric, col3_peta_metric = st.columns([1, 1, 1])
+        with col1_peta_metric:
+            with st.container(border=True):
+                st.metric("LST Min", f"{selected_data['min']:.1f}°C")
+        with col2_peta_metric:
+            with st.container(border=True):
+                st.metric("LST Max", f"{selected_data['max']:.1f}°C")
+        with col3_peta_metric:
+            with st.container(border=True):
+                st.metric("LST Mean", f"{selected_data['mean']:.1f}°C")
 
         # Container Selectbox Kecamatan
         with st.container(border=True):
@@ -429,11 +431,12 @@ if selected_menu == "🗺️ Peta":
         # Container Analisis LST per Kecamatan
         if selected_kecamatan and selected_kecamatan != "" and kec_year:
             with st.container(border=True):
+                st.write("💡**Quick Insight**")
                 kecamatan_data = kec_year[selected_kecamatan]
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
 
-                description = f"Suhu permukaan lahan di **{toponim} {selected_kecamatan}** pada tahun **{option}** memiliki rerata suhu sebesar **{kecamatan_data['mean']:.2f}°C** dengan suhu terendah yakni **{kecamatan_data['min']:.2f}°C** dan suhu tertinggi adalah **{kecamatan_data['max']:.2f}°C**."
+                description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] memiliki rata-rata suhu sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
 
                 st.write(description)
 
@@ -548,7 +551,7 @@ elif selected_menu == "📈 Tren":
 
     # Row Diagram Garis & Ranking LST
     st.badge(
-        "**Tren Fluktuasi LST di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
+        "**Tren LST: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.2, 1.8])
@@ -570,7 +573,7 @@ elif selected_menu == "📈 Tren":
                         name="Perkotaan",
                         line=dict(color="#FF90BB", width=3),
                         marker=dict(size=8, symbol="circle"),
-                        hovertemplate="<b>Perkotaan</b><br>Tahun: %{x}<br>LST Rata-rata: %{y:.2f}°C<extra></extra>",
+                        hovertemplate="<b>Perkotaan</b><br>Tahun: %{x}<br>LST Mean: %{y:.2f}°C<extra></extra>",
                     )
                 )
 
@@ -583,7 +586,7 @@ elif selected_menu == "📈 Tren":
                         name="Non-Perkotaan",
                         line=dict(color="#096B68", width=3),
                         marker=dict(size=8, symbol="square"),
-                        hovertemplate="<b>Non-Perkotaan</b><br>Tahun: %{x}<br>LST Rata-rata: %{y:.2f}°C<extra></extra>",
+                        hovertemplate="<b>Non-Perkotaan</b><br>Tahun: %{x}<br>LST Mean: %{y:.2f}°C<extra></extra>",
                     )
                 )
 
@@ -600,7 +603,7 @@ elif selected_menu == "📈 Tren":
                 ),
                 yaxis=dict(
                     title=dict(
-                        text="LST Rata-rata (°C)",
+                        text="LST Mean (°C)",
                         font=dict(family="Poppins", size=12, color="black"),
                     ),
                     tickfont=dict(family="Poppins", size=12, color="black"),
@@ -617,7 +620,7 @@ elif selected_menu == "📈 Tren":
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=300,
+                height=410,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -655,24 +658,27 @@ elif selected_menu == "📈 Tren":
         with col1_tren_metric:
             with st.container(border=True):
                 st.metric(
-                    label="Rata-rata LST (1999-2024)",
+                    label="LST Mean (1999-2024)",
                     value=f"{overall_mean:.2f}°C",
                 )
 
         with col2_tren_metric:
             with st.container(border=True):
-                st.metric(label="Perubahan Tahunan", value=f"{mac:.2f}°C")
+                st.metric(label="Fluktuasi Tahunan", value=f"{mac:.2f}°C")
 
-        # Container Top 10 Wilayah Terpanas
+        # Container Analisis Tren
         with st.container(border=True):
-            st.write("**Analisis**")
             st.markdown(
-                """Diagram garis di samping membuktikan kebenaran hipotesis awal bahwa :green-background[**kawasan perkotaan**] Yogyakarta cenderung memiliki nilai :green-background[**LST**] yang :green-background[**lebih tinggi**] dibandingkan :green-background[**kawasan non-perkotaan**] di sekitarnya pada masing-masing :green-background[**tahun**] yang :green-background[**sama**] dengan selisih nilai LST berkisar antara :green-background[**5.94°C**] hingga :green-background[**9.17°C**]."""
+                """
+                **Analisis Tren**
+                - Kawasan perkotaan Yogyakarta memiliki nilai LST yang :green-background[**lebih tinggi**] dibanding kawasan non-perkotaan di sekitarnya.
+                - :green-background[**Selisih**] nilai LST antara kawasan perkotaan dan non-perkotaan berkisar antara :green-background[**5.15°C**] hingga :green-background[**7.30°C**].
+                - Pola ini mengindikasikan bahwa :green-background[**suhu permukaan lahan**] di kawasan perkotaan :green-background[**terus meningkat**] seiring waktu dengan :green-background[**tren kenaikan**] tercatat sebesar :green-background[**1.35°C**] per tahun."""
             )
 
     # Row Diagram Garis & Ranking LST
     st.badge(
-        "**38 Kecamatan Terpanas Berdasarkan Rata-rata LST (1999-2024)**",
+        "**Top 38 Kecamatan: Suhu Permukaan Tertinggi (1999-2024)**",
         color="primary",
     )
 
@@ -716,7 +722,7 @@ elif selected_menu == "📈 Tren":
             color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
             orientation="h",
             labels={
-                "Mean_LST": "LST Rata-rata (°C)",
+                "Mean_LST": "LST Mean (°C)",
                 "Y_Label": "",
                 "Zona": "Kawasan",
             },
@@ -729,7 +735,7 @@ elif selected_menu == "📈 Tren":
         fig.update_traces(
             hovertemplate="<b>%{y}</b><br>"
             + "Kawasan: %{customdata[0]}<br>"
-            + "Rata-rata LST: %{customdata[1]:.2f}°C<extra></extra>",
+            + "LST Mean: %{customdata[1]:.2f}°C<extra></extra>",
             texttemplate="%{x:.2f}°C",
             textposition="outside",
             textfont_size=10,
