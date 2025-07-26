@@ -557,7 +557,7 @@ if selected_tab == "🗺️ Peta":
         m.get_root().html.add_child(folium.Element(css))
         st_data = st_folium(m, use_container_width=True, height=597)
 
-if selected_tab == "📈 Tren":
+elif selected_tab == "📈 Tren":
     # Grafik Tren NDBI Perkotaan vs Non-Perkotaan
     df_urban_rural = pd.read_csv("./stats/ndbiStatsKec.csv")
 
@@ -797,3 +797,229 @@ if selected_tab == "📈 Tren":
 
         # Display Bar Plot
         st.plotly_chart(fig, use_container_width=True)
+
+elif selected_tab == "✅ Validasi":
+    # Threshold untuk validasi
+    validation_thresholds = {
+        "landsat": {"low": -0.309, "medium": -0.162, "high": -0.015},
+        "sentinel": {"low": -0.238, "medium": -0.0927, "high": 0.053},
+    }
+
+    # Row Diagram Garis dan Validasi NDBI
+    st.badge(
+        "**Korelasi Pearson NDBI: Landsat 8 vs Sentinel-2 (2024)**",
+        color="primary",
+    )
+
+    col1_validate, col2_validate = st.columns([2.2, 1.8])
+    with col1_validate:
+        # Container Grafik Korelasi Pearson
+        with st.container(border=True):
+            st.markdown(
+                """
+            **Korelasi Pearson NDBI Landsat 8 vs Sentinel-2 (2024)**"""
+            )
+
+    with col2_validate:
+        # Row Metrics
+        col1_validate_metric, col2_validate_metric, col3_validate_metric = st.columns(
+            [1, 1, 1]
+        )
+        with col1_validate_metric:
+            with st.container(border=True):
+                st.metric(
+                    label="r",
+                    value="100%",
+                )
+
+        with col2_validate_metric:
+            with st.container(border=True):
+                st.metric(
+                    label="RMSE",
+                    value="100%",
+                )
+
+        with col3_validate_metric:
+            with st.container(border=True):
+                st.metric(
+                    label="MAE",
+                    value="100%",
+                )
+
+        # Container Analisis Tren
+        with st.container(border=True):
+            st.markdown(
+                """
+                **Analisis Tren**
+                - Di sini nanti analisis."""
+            )
+
+    # Row Peta NDBI Landsat 8 vs Sentinel-2
+    st.badge(
+        "**Peta NDBI: Landsat 8 vs Sentinel-2 (2024)**",
+        color="primary",
+    )
+    with st.container(border=True):
+        st.markdown(
+            """
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="font-weight: 600; color: #333; font-size: 14px;">📡 Landsat 8 NDBI (2024)</div>
+                <div style="font-weight: 600; color: #333; font-size: 14px;">🛰️ Sentinel-2 NDBI (2024)</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Import DualMap plugin
+        from folium.plugins import DualMap
+
+        # Buat DualMap dengan synchronized view
+        dual_map = DualMap(
+            location=[-7.764326411862208, 110.3721676814108],
+            zoom_start=10.5,
+            tiles=None,
+        )
+
+        # Tambahkan basemap ke kedua sisi
+        # Sisi kiri (Landsat)
+        folium.TileLayer(
+            tiles="CartoDB positron",
+            name="CartoDB Positron",
+            overlay=False,
+            control=True,
+        ).add_to(dual_map.m1)
+
+        folium.TileLayer(
+            tiles="OpenStreetMap",
+            name="OpenStreetMap",
+            overlay=False,
+            control=True,
+        ).add_to(dual_map.m1)
+
+        # Sisi kanan (Sentinel)
+        folium.TileLayer(
+            tiles="CartoDB positron",
+            name="CartoDB Positron",
+            overlay=False,
+            control=True,
+        ).add_to(dual_map.m2)
+
+        folium.TileLayer(
+            tiles="OpenStreetMap",
+            name="OpenStreetMap",
+            overlay=False,
+            control=True,
+        ).add_to(dual_map.m2)
+
+        # Path untuk file TIFF
+        landsat_tif_path = "tif/ndbi2024kpy.tif"
+        sentinel_tif_path = "tif/ndbiSentinel30.tif"
+        shapefile_path = "shp/aoi_kpy.shp"
+
+        # Tambahkan GeoTiff Landsat ke sisi kiri
+        if os.path.exists(landsat_tif_path):
+            add_geotiff_to_map(
+                dual_map.m1, landsat_tif_path, validation_thresholds["landsat"]
+            )
+        else:
+            st.warning(f"File Landsat GeoTIFF tidak ditemukan: {landsat_tif_path}")
+
+        # Tambahkan GeoTiff Sentinel ke sisi kanan
+        if os.path.exists(sentinel_tif_path):
+            add_geotiff_to_map(
+                dual_map.m2, sentinel_tif_path, validation_thresholds["sentinel"]
+            )
+        else:
+            st.warning(f"File Sentinel GeoTIFF tidak ditemukan: {sentinel_tif_path}")
+
+        # Tambahkan batas administrasi ke kedua peta
+        if os.path.exists(shapefile_path):
+            add_shapefile_to_map(dual_map.m1, shapefile_path)
+            add_shapefile_to_map(dual_map.m2, shapefile_path)
+
+        # Function untuk menambahkan legenda universal
+        def add_universal_legend_to_map(map_obj, title):
+            legend_html = f"""
+            <div style="position: fixed; 
+                        top: 10px; 
+                        right: 10px; 
+                        z-index: 1000; 
+                        background-color: white; 
+                        border: 1px solid #ccc; 
+                        border-radius: 1px; 
+                        padding: 10px; 
+                        font-family: 'Poppins', sans-serif; 
+                        font-size: 12px; 
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                        min-width: 160px;">
+                <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">{title}</div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 12px; height: 12px; background-color: #006400; border: 1px solid #ddd;"></div>
+                        <span style="color: #333;">Non-terbangun</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 12px; height: 12px; background-color: #ffffe0; border: 1px solid #ddd;"></div>
+                        <span style="color: #333;">Rendah</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 12px; height: 12px; background-color: #ffa500; border: 1px solid #ddd;"></div>
+                        <span style="color: #333;">Sedang</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 12px; height: 12px; background-color: #3b060a; border: 1px solid #ddd;"></div>
+                        <span style="color: #333;">Tinggi</span>
+                    </div>
+                </div>
+            </div>
+            """
+            map_obj.get_root().html.add_child(folium.Element(legend_html))
+
+        # Tambahkan legenda universal ke kedua peta
+        add_universal_legend_to_map(dual_map.m1, "Kelas NDBI")
+
+        # Tambahkan Layer Control ke kedua peta
+        folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m1)
+        folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m2)
+
+        # CSS untuk Custom Peta dan Title
+        css = """
+        <style>
+        .leaflet-control-layers label {
+            font-size: 11px !important;
+            font-family: 'Poppins', sans-serif !important;
+        }
+        .leaflet-control-layers-list {
+            font-size: 11px !important;
+        }
+        .leaflet-control-layers-expanded {
+            font-size: 11px !important;
+        }
+        .leaflet-control-attribution {
+            font-size: 11px !important;
+            font-family: 'Poppins', sans-serif !important;
+        }
+        
+        /* Title untuk peta kiri (Landsat) */
+        .leaflet-left .leaflet-top::after {
+            content: '📡 Landsat 8 NDBI (2024)';
+            position: absolute;
+            top: 50px;
+            left: 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 6px 10px;
+            border: 1px solid #333;
+            border-radius: 3px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 1001;
+        }
+        </style>
+        """
+        dual_map.get_root().html.add_child(folium.Element(css))
+
+        # Display DualMap
+        st_folium(dual_map, use_container_width=True, height=500)
