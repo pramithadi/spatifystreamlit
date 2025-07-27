@@ -1,8 +1,10 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
+import pandas as pd
+import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import folium
 from streamlit_folium import folium_static
@@ -12,8 +14,8 @@ import os
 import base64
 from io import BytesIO
 from PIL import Image
-import matplotlib.pyplot as plt
-import geopandas as gpd
+from scipy import stats
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 st.set_page_config(
     page_title="Dashboard NDBI",
@@ -689,7 +691,7 @@ elif selected_tab == "📈 Tren":
         with st.container(border=True):
             st.markdown(
                 """
-                **Analisis Tren**
+                💡**Quick Insight**
                 - Kawasan perkotaan di Provinsi DIY memiliki nilai NDBI yang cenderung :green-background[**lebih tinggi**] dibanding kawasan non-perkotaan di sekitarnya.
                 - :green-background[**Selisih**] nilai NDBI antara kawasan perkotaan dan non-perkotaan berkisar antara :green-background[**0.148**] hingga :green-background[**0.196**].
                 - Pola ini mengindikasikan bahwa :green-background[**area terbangun**] di perkotaan :green-background[**terus bertambah**] seiring waktu dengan :green-background[**tren kenaikan**] sekitar :green-background[**0.0196**] per tahun."""
@@ -799,62 +801,212 @@ elif selected_tab == "📈 Tren":
         st.plotly_chart(fig, use_container_width=True)
 
 elif selected_tab == "✅ Validasi":
-    # Threshold untuk validasi
+    try:
+        # Load CSV Sampel NDBI untuk Validasi
+        validation_data = pd.read_csv("stats/ndbiSampelValidasi.csv")
+
+        # Hapus Nilai NaN
+        validation_data = validation_data.dropna()
+
+        # Ekstraksi Nilai dari Field
+        landsat_values = validation_data["ndbiLandsat"].values
+        sentinel_values = validation_data["ndbiSentinel"].values
+
+        # Hitung Korelasi Pearson
+        correlation_coef, p_value = stats.pearsonr(landsat_values, sentinel_values)
+
+        # RMSE
+        rmse = np.sqrt(mean_squared_error(landsat_values, sentinel_values))
+
+        # MAE
+        mae = mean_absolute_error(landsat_values, sentinel_values)
+
+        # Hitung Persamaan Linear
+        slope, intercept, r_value, p_val, std_err = stats.linregress(
+            landsat_values, sentinel_values
+        )
+
+        # Buat Persamaan
+        if intercept >= 0:
+            equation = f"y = {slope:.3f}x + {intercept:.3f}"
+        else:
+            equation = f"y = {slope:.3f}x - {abs(intercept):.3f}"
+
+        # Row Diagram Garis dan Validasi NDBI
+        st.badge(
+            "**Korelasi Pearson NDBI: Landsat 8 vs Sentinel-2 (2024)**",
+            color="primary",
+        )
+
+        col1_validate, col2_validate = st.columns([2.4, 1.6])
+        with col1_validate:
+            # Container Grafik Korelasi Pearson
+            with st.container(border=True):
+                # Buat Scatterplot
+                fig = px.scatter(
+                    x=landsat_values,
+                    y=sentinel_values,
+                    labels={"x": "NDBI Landsat 8", "y": "NDBI Sentinel-2"},
+                    opacity=0.6,
+                    color_discrete_sequence=["#1f77b4"],
+                )
+
+                # Garis Trend (Memvisualisasikan Hubungan Linear)
+                x_range = np.linspace(landsat_values.min(), landsat_values.max(), 100)
+                y_trend = slope * x_range + intercept
+
+                fig.add_trace(
+                    go.Scatter(
+                        x=x_range,
+                        y=y_trend,
+                        mode="lines",
+                        name="Garis Regresi",
+                        line=dict(color="red", width=2),
+                    )
+                )
+
+                # Update Layout
+                fig.update_layout(
+                    height=362,
+                    showlegend=True,
+                    template="plotly_white",
+                    font=dict(
+                        family="Poppins, sans-serif",  # Font Poppins
+                        size=10,
+                        color="black",  # Font color hitam
+                    ),
+                    margin=dict(t=30, b=20, l=20, r=20),
+                    # Styling Sumbu X dan Y
+                    xaxis=dict(
+                        title=dict(
+                            text="NDBI Landsat 8",
+                            font=dict(color="black", family="Poppins, sans-serif"),
+                        ),
+                        tickfont=dict(color="black", family="Poppins, sans-serif"),
+                    ),
+                    yaxis=dict(
+                        title=dict(
+                            text="NDBI Sentinel-2",
+                            font=dict(color="black", family="Poppins, sans-serif"),
+                        ),
+                        tickfont=dict(color="black", family="Poppins, sans-serif"),
+                    ),
+                    # Styling untuk legend
+                    legend=dict(font=dict(color="black", family="Poppins, sans-serif")),
+                )
+
+                # Box Info
+                fig.add_annotation(
+                    x=0.02,
+                    y=0.98,
+                    xref="paper",
+                    yref="paper",
+                    text=f"<b>{equation}</b>",
+                    showarrow=False,
+                    font=dict(size=12, color="black", family="Poppins, sans-serif"),
+                    bgcolor="#fdfaf6",
+                    bordercolor="black",
+                    borderwidth=1,
+                    borderpad=7,  # Tambah Padding Internal
+                    xanchor="left",
+                    yanchor="top",
+                )
+
+                st.plotly_chart(fig, use_container_width=True)
+
+        with col2_validate:
+            # Row Metrics
+            col1_validate_metric, col2_validate_metric, col3_validate_metric = (
+                st.columns([1, 1, 1])
+            )
+            with col1_validate_metric:
+                with st.container(border=True):
+                    st.metric(
+                        label="r",
+                        value=f"{correlation_coef:.3f}",
+                        help="Koefisien Korelasi Pearson (-1 hingga 1)",
+                    )
+
+            with col2_validate_metric:
+                with st.container(border=True):
+                    st.metric(
+                        label="RMSE", value=f"{rmse:.3f}", help="Root Mean Square Error"
+                    )
+
+            with col3_validate_metric:
+                with st.container(border=True):
+                    st.metric(
+                        label="MAE", value=f"{mae:.3f}", help="Mean Absolute Error"
+                    )
+
+            # Container Analisis Tren
+            with st.container(border=True):
+                st.markdown("💡**Quick Insight**")
+
+                # Interpretasi Korelasi
+                if abs(correlation_coef) >= 0.9:
+                    corr_interpretation = "Sangat Kuat"
+                    corr_color = "🟢"
+                elif abs(correlation_coef) >= 0.7:
+                    corr_interpretation = "Kuat"
+                    corr_color = "🟡"
+                elif abs(correlation_coef) >= 0.5:
+                    corr_interpretation = "Sedang"
+                    corr_color = "🟠"
+                else:
+                    corr_interpretation = "Lemah"
+                    corr_color = "🔴"
+
+                # Interpretasi RMSE
+                if rmse <= 0.05:
+                    rmse_interpretation = "Sangat Baik"
+                    rmse_color = "🟢"
+                elif rmse <= 0.1:
+                    rmse_interpretation = "Baik"
+                    rmse_color = "🟡"
+                elif rmse <= 0.15:
+                    rmse_interpretation = "Cukup"
+                    rmse_color = "🟠"
+                else:
+                    rmse_interpretation = "Perlu Perbaikan"
+                    rmse_color = "🔴"
+
+                st.markdown(
+                    f"""
+                - **Sampel**: {len(landsat_values)} Titik
+                - **Korelasi**: {corr_color} {corr_interpretation} (r = {correlation_coef:.3f})
+                - **Akurasi**: {rmse_color} {rmse_interpretation} (RMSE = {rmse:.3f})
+                - **p-value**: {p_value:.3f} (Sangat Signifikan)
+                """
+                )
+
+                # Status Validasi
+                if correlation_coef >= 0.7 and rmse <= 0.1:
+                    st.success("✅ Validasi SUKSES")
+                elif correlation_coef >= 0.5 and rmse <= 0.15:
+                    st.warning("⚠️ Validasi CUKUP - Ada perbedaan minor")
+                else:
+                    st.error("❌ Validasi KURANG - Perlu investigasi lebih lanjut")
+
+    except FileNotFoundError:
+        st.error("❌ File 'stats/ndbiSampelValidasi.csv' tidak ditemukan!")
+        st.info(
+            "Pastikan file CSV hasil sampling dari GEE sudah tersedia di folder 'stats/'"
+        )
+
+    except Exception as e:
+        st.error(f"❌ Error dalam memproses data: {str(e)}")
+        st.info(
+            "Periksa format file CSV dan nama kolom ('ndbiLandsat' dan 'ndbiSentinel')"
+        )
+
+    # Row Peta NDBI Landsat 8 vs Sentinel-2
+    # Threshold untuk Peta Validasi
     validation_thresholds = {
         "landsat": {"low": -0.309, "medium": -0.162, "high": -0.015},
         "sentinel": {"low": -0.238, "medium": -0.0927, "high": 0.053},
     }
 
-    # Row Diagram Garis dan Validasi NDBI
-    st.badge(
-        "**Korelasi Pearson NDBI: Landsat 8 vs Sentinel-2 (2024)**",
-        color="primary",
-    )
-
-    col1_validate, col2_validate = st.columns([2.2, 1.8])
-    with col1_validate:
-        # Container Grafik Korelasi Pearson
-        with st.container(border=True):
-            st.markdown(
-                """
-            **Korelasi Pearson NDBI Landsat 8 vs Sentinel-2 (2024)**"""
-            )
-
-    with col2_validate:
-        # Row Metrics
-        col1_validate_metric, col2_validate_metric, col3_validate_metric = st.columns(
-            [1, 1, 1]
-        )
-        with col1_validate_metric:
-            with st.container(border=True):
-                st.metric(
-                    label="r",
-                    value="100%",
-                )
-
-        with col2_validate_metric:
-            with st.container(border=True):
-                st.metric(
-                    label="RMSE",
-                    value="100%",
-                )
-
-        with col3_validate_metric:
-            with st.container(border=True):
-                st.metric(
-                    label="MAE",
-                    value="100%",
-                )
-
-        # Container Analisis Tren
-        with st.container(border=True):
-            st.markdown(
-                """
-                **Analisis Tren**
-                - Di sini nanti analisis."""
-            )
-
-    # Row Peta NDBI Landsat 8 vs Sentinel-2
     st.badge(
         "**Peta NDBI: Landsat 8 vs Sentinel-2 (2024)**",
         color="primary",
@@ -870,18 +1022,18 @@ elif selected_tab == "✅ Validasi":
             unsafe_allow_html=True,
         )
 
-        # Import DualMap plugin
+        # Import DualMap Plugin
         from folium.plugins import DualMap
 
-        # Buat DualMap dengan synchronized view
+        # Buat DualMap dengan Synchronized View
         dual_map = DualMap(
             location=[-7.764326411862208, 110.3721676814108],
             zoom_start=10.5,
             tiles=None,
         )
 
-        # Tambahkan basemap ke kedua sisi
-        # Sisi kiri (Landsat)
+        # Tambahkan Basemap ke Kedua Sisi
+        # Sisi Kiri (Landsat)
         folium.TileLayer(
             tiles="CartoDB positron",
             name="CartoDB Positron",
@@ -896,7 +1048,7 @@ elif selected_tab == "✅ Validasi":
             control=True,
         ).add_to(dual_map.m1)
 
-        # Sisi kanan (Sentinel)
+        # Sisi Kanan (Sentinel)
         folium.TileLayer(
             tiles="CartoDB positron",
             name="CartoDB Positron",
@@ -911,12 +1063,12 @@ elif selected_tab == "✅ Validasi":
             control=True,
         ).add_to(dual_map.m2)
 
-        # Path untuk file TIFF
+        # Path untuk File GeoTIFF
         landsat_tif_path = "tif/ndbi2024kpy.tif"
         sentinel_tif_path = "tif/ndbiSentinel30.tif"
         shapefile_path = "shp/aoi_kpy.shp"
 
-        # Tambahkan GeoTiff Landsat ke sisi kiri
+        # Tambahkan GeoTiff Landsat ke Sisi Kiri
         if os.path.exists(landsat_tif_path):
             add_geotiff_to_map(
                 dual_map.m1, landsat_tif_path, validation_thresholds["landsat"]
@@ -924,7 +1076,7 @@ elif selected_tab == "✅ Validasi":
         else:
             st.warning(f"File Landsat GeoTIFF tidak ditemukan: {landsat_tif_path}")
 
-        # Tambahkan GeoTiff Sentinel ke sisi kanan
+        # Tambahkan GeoTiff Sentinel ke Sisi Kanan
         if os.path.exists(sentinel_tif_path):
             add_geotiff_to_map(
                 dual_map.m2, sentinel_tif_path, validation_thresholds["sentinel"]
@@ -932,12 +1084,12 @@ elif selected_tab == "✅ Validasi":
         else:
             st.warning(f"File Sentinel GeoTIFF tidak ditemukan: {sentinel_tif_path}")
 
-        # Tambahkan batas administrasi ke kedua peta
+        # Tambahkan Batas Administrasi ke Kedua Peta
         if os.path.exists(shapefile_path):
             add_shapefile_to_map(dual_map.m1, shapefile_path)
             add_shapefile_to_map(dual_map.m2, shapefile_path)
 
-        # Function untuk menambahkan legenda universal
+        # Function untuk Menambahkan Legenda Universal
         def add_universal_legend_to_map(map_obj, title):
             legend_html = f"""
             <div style="position: fixed; 
@@ -975,10 +1127,9 @@ elif selected_tab == "✅ Validasi":
             """
             map_obj.get_root().html.add_child(folium.Element(legend_html))
 
-        # Tambahkan legenda universal ke kedua peta
         add_universal_legend_to_map(dual_map.m1, "Kelas NDBI")
 
-        # Tambahkan Layer Control ke kedua peta
+        # Tambahkan Layer Control ke Kedua Peta
         folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m1)
         folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m2)
 

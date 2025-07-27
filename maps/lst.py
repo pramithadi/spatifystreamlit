@@ -375,8 +375,8 @@ selected_menu = st.pills(
     [
         "🗺️ Peta",
         "📈 Tren",
-        "⚙️ Model",
         "✅ Validasi",
+        "⚙️ Model",
         "📉 Regresi",
     ],
     selection_mode="single",
@@ -779,12 +779,12 @@ elif selected_menu == "📈 Tren":
         # Display Bar Plot
         st.plotly_chart(fig, use_container_width=True)
 
-# Model
-elif selected_menu == "⚙️ Model":
-    st.write("Page under construction.")
-
 # Validasi
 elif selected_menu == "✅ Validasi":
+    st.write("Page under construction.")
+
+# Model
+elif selected_menu == "⚙️ Model":
     st.write("Page under construction.")
 
 # Regresi
