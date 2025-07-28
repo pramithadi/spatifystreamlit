@@ -576,7 +576,7 @@ elif selected_tab == "📈 Tren":
         "**Tren NDBI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2.2, 1.8])
+    col1_tren_main, col2_tren_main = st.columns([2.3, 1.7])
     with col1_tren_main:
         # Container Grafik Tren
         with st.container(border=True):
@@ -642,7 +642,7 @@ elif selected_tab == "📈 Tren":
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=384.5,
+                height=305,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -679,22 +679,27 @@ elif selected_tab == "📈 Tren":
         with col1_tren_metric:
             with st.container(border=True):
                 st.metric(
-                    label="NDBI Mean (1999-2024)",
+                    label="Rata-rata NDBI",
                     value=f"{overall_mean:.3f}",
+                    help="Rata-rata NDBI di KPY dan Sekitarnya = (NDBImean₁₉₉₉ + NDBImean₂₀₀₄ + ... + NDBImean₂₀₂₄)/6",
                 )
 
         with col2_tren_metric:
             with st.container(border=True):
-                st.metric(label="Fluktuasi Tahunan", value=f"{mac:.4f}")
+                st.metric(
+                    label="Rata-rata Perubahan",
+                    value=f"{mac:.4f}",
+                    help="Perubahan Absolut NDBI di KPY dan Sekitarnya = (|NDBImean₂₀₀₄ - NDBImean₁₉₉₉| + |NDBImean₂₀₀₉ - NDBImean₂₀₀₄| + ... + |NDBImean₂₀₂₄ - NDBImean₂₀₁₉|)/5",
+                )
 
         # Container Analisis Tren
         with st.container(border=True):
             st.markdown(
                 """
                 💡**Quick Insight**
-                - Kawasan perkotaan di Provinsi DIY memiliki nilai NDBI yang cenderung :green-background[**lebih tinggi**] dibanding kawasan non-perkotaan di sekitarnya.
-                - :green-background[**Selisih**] nilai NDBI antara kawasan perkotaan dan non-perkotaan berkisar antara :green-background[**0.148**] hingga :green-background[**0.196**].
-                - Pola ini mengindikasikan bahwa :green-background[**area terbangun**] di perkotaan :green-background[**terus bertambah**] seiring waktu dengan :green-background[**tren kenaikan**] sekitar :green-background[**0.0196**] per tahun."""
+                - Kawasan perkotaan Yogyakarta memiliki nilai NDBI :green-background[**lebih tinggi**] dibanding kawasan non-perkotaan.
+                - :green-background[**Selisih**] nilai NDBI perkotaan dan non-perkotaan berkisar antara :green-background[**0.148**] hingga :green-background[**0.196**].
+                """
             )
 
     # Row Diagram Garis & Ranking NDBI
@@ -930,13 +935,17 @@ elif selected_tab == "✅ Validasi":
             with col2_validate_metric:
                 with st.container(border=True):
                     st.metric(
-                        label="RMSE", value=f"{rmse:.3f}", help="Root Mean Square Error"
+                        label="RMSE",
+                        value=f"{rmse:.3f}",
+                        help="Root Mean Square Error",
                     )
 
             with col3_validate_metric:
                 with st.container(border=True):
                     st.metric(
-                        label="MAE", value=f"{mae:.3f}", help="Mean Absolute Error"
+                        label="MAE",
+                        value=f"{mae:.3f}",
+                        help="Mean Absolute Error",
                     )
 
             # Container Analisis Tren
@@ -944,49 +953,56 @@ elif selected_tab == "✅ Validasi":
                 st.markdown("💡**Quick Insight**")
 
                 # Interpretasi Korelasi
-                if abs(correlation_coef) >= 0.9:
-                    corr_interpretation = "Sangat Kuat"
-                    corr_color = "🟢"
-                elif abs(correlation_coef) >= 0.7:
-                    corr_interpretation = "Kuat"
-                    corr_color = "🟡"
-                elif abs(correlation_coef) >= 0.5:
-                    corr_interpretation = "Sedang"
-                    corr_color = "🟠"
-                else:
-                    corr_interpretation = "Lemah"
+                if correlation_coef == 0:
+                    corr_interpretation = "Tidak Ada Korelasi"
                     corr_color = "🔴"
-
-                # Interpretasi RMSE
-                if rmse <= 0.05:
-                    rmse_interpretation = "Sangat Baik"
-                    rmse_color = "🟢"
-                elif rmse <= 0.1:
-                    rmse_interpretation = "Baik"
-                    rmse_color = "🟡"
-                elif rmse <= 0.15:
-                    rmse_interpretation = "Cukup"
-                    rmse_color = "🟠"
+                elif correlation_coef == 1:
+                    corr_interpretation = "Korelasi Positif Sempurna"
+                    corr_color = "🔵"
+                elif correlation_coef == -1:
+                    corr_interpretation = "Korelasi Negatif Sempurna"
+                    corr_color = "🔵"
+                elif 0 < correlation_coef < 0.3:
+                    corr_interpretation = "Korelasi Positif Lemah"
+                    corr_color = "🟡"
+                elif -0.3 < correlation_coef < 0:
+                    corr_interpretation = "Korelasi Negatif Lemah"
+                    corr_color = "🟡"
+                elif 0.3 <= correlation_coef < 0.7:
+                    corr_interpretation = "Korelasi Positif Sedang"
+                    corr_color = "🟠"
+                elif -0.7 < correlation_coef <= -0.3:
+                    corr_interpretation = "Korelasi Negatif Sedang"
+                    corr_color = "🟠"
+                elif 0.7 <= correlation_coef < 1:
+                    corr_interpretation = "Korelasi Positif Kuat"
+                    corr_color = "🟢"
+                elif -1 < correlation_coef <= -0.7:
+                    corr_interpretation = "Korelasi Negatif Kuat"
+                    corr_color = "🟢"
                 else:
-                    rmse_interpretation = "Perlu Perbaikan"
-                    rmse_color = "🔴"
+                    corr_interpretation = "Tidak Terdefinisi"
+                    corr_color = "🔴"
 
                 st.markdown(
                     f"""
-                - **Sampel**: {len(landsat_values)} Titik
-                - **Korelasi**: {corr_color} {corr_interpretation} (r = {correlation_coef:.3f})
-                - **Akurasi**: {rmse_color} {rmse_interpretation} (RMSE = {rmse:.3f})
-                - **p-value**: {p_value:.3f} (Sangat Signifikan)
+                - **Sampel**: {len(landsat_values)}
+                - **Korelasi (r)**: {corr_interpretation}¹
+                - **Akurasi (RMSE)**: 🟢 Baik²
+                - **p-value**: {p_value:.3f} (Sangat Signifikan)³
                 """
                 )
 
                 # Status Validasi
-                if correlation_coef >= 0.7 and rmse <= 0.1:
-                    st.success("✅ Validasi SUKSES")
-                elif correlation_coef >= 0.5 and rmse <= 0.15:
-                    st.warning("⚠️ Validasi CUKUP - Ada perbedaan minor")
+                abs_corr = abs(correlation_coef)
+                if abs_corr >= 0.7 and rmse <= 0.1:
+                    st.success("✅ VALID! Data layak untuk prediksi LST.")
+                elif abs_corr >= 0.5 and rmse <= 0.15:
+                    st.warning("⚠️ CUKUP VALID — Data dapat digunakan dengan catatan.")
+                elif abs_corr >= 0.3 and rmse <= 0.2:
+                    st.warning("⚠️ KURANG VALID — Data perlu perbaikan.")
                 else:
-                    st.error("❌ Validasi KURANG - Perlu investigasi lebih lanjut")
+                    st.error("❌ TIDAK VALID — Data tidak layak digunakan.")
 
     except FileNotFoundError:
         st.error("❌ File 'stats/ndbiSampelValidasi.csv' tidak ditemukan!")
@@ -1174,3 +1190,12 @@ elif selected_tab == "✅ Validasi":
 
         # Display DualMap
         st_folium(dual_map, use_container_width=True, height=500)
+
+    with st.expander("Lihat Referensi"):
+        st.markdown(
+            """
+        - [1] Ratner, B. (2009). The Correlation Coefficient: Its Values Range Between +1/-1, or Do They?. *Journal of Targeting, Measurement and Analysis for Marketing*, 17. 139-142. https://doi.org/10.1057/jt.2009.5
+        - [2] Chen, J., Zhu, X., Imura, H., Chen, X. (2010). Consistency of Accuracy Assessment Indices for Soft Classification: Simulation Analysis. *ISPRS Journal of Photogrammetry and Remote Sensing*, 65(6). 156-164. https://doi.org/10.1016/j.isprsjprs.2009.10.003
+        - [3] Schmidt, J., & Osebold, R. (2017). Environmental Management Systems as A Driver for Sustainability: State of Implementation, Benefits, and Barriers in German Construction Companies. *Journal of Civil Engineering and Management*, 23(1). 150-162. https://doi.org/10.3846/13923730.2014.946441
+        """
+        )

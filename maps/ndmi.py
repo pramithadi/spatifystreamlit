@@ -255,7 +255,7 @@ def add_legend_to_map(map_obj, thresholds):
                 font-size: 12px; 
                 box-shadow: 0 2px 4px rgba(0,0,0,0.2);
                 min-width: 160px;">
-        <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">Tingkat Kerapatan Area Terbangun</div>
+        <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">Tingkat Kelembapan Vegetasi</div>
         <div style="display: flex; flex-direction: column; gap: 4px;">
             <div style="display: flex; align-items: center; gap: 6px;">
                 <div style="width: 12px; height: 12px; background-color: #948979; border: 1px solid #ddd;"></div>
@@ -280,7 +280,7 @@ def add_legend_to_map(map_obj, thresholds):
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
-# Function untuk Menambahkan GeoTiff ke Peta Folium
+# Function untuk Menambahkan GeoTiff ke Peta Folium (DIPERBAIKI)
 def add_geotiff_to_map(map_obj, tif_path, thresholds):
     try:
         with rasterio.open(tif_path) as src:
@@ -298,12 +298,12 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
             # Maka Hanya Filter Nilai yang Benar-benar Tidak Valid (Outlier Ekstrem)
             data = np.where((data < -1) | (data > 1), np.nan, data)
 
-            # Warna untuk Setiap Kelas
+            # Warna untuk Setiap Kelas (DIPERBAIKI - Konversi hex ke RGB)
             colors = {
-                "very_low": "#948979",
-                "low": "#ffffe0",
-                "medium": "#add8e6",
-                "high": "#00008b",
+                "very_low": [148, 137, 121, 255],  # #948979
+                "low": [255, 255, 224, 255],  # #ffffe0
+                "medium": [173, 216, 230, 255],  # #add8e6
+                "high": [0, 0, 139, 255],  # #00008b
             }
 
             # Buat Array Warna Berdasarkan Threshold (RGBA)
@@ -324,7 +324,7 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
             )
             high_mask = valid_mask & (data > thresholds["high"])
 
-            # Pengaplikasian Warna Berdasarkan Klasifikasi
+            # Pengaplikasian Warna Berdasarkan Klasifikasi (DIPERBAIKI)
             colored_data[very_low_mask] = colors["very_low"]
             colored_data[low_mask] = colors["low"]
             colored_data[medium_mask] = colors["medium"]
@@ -332,6 +332,12 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
 
             # Set Area yang Tidak Valid dengan Warna Transparan
             colored_data[~valid_mask] = [0, 0, 0, 0]
+
+            # Debug: Print info untuk troubleshooting
+            print(f"Data shape: {data.shape}")
+            print(f"Data range: {np.nanmin(data):.3f} to {np.nanmax(data):.3f}")
+            print(f"Valid pixels: {np.sum(valid_mask)}")
+            print(f"Bounds: {bounds}")
 
             # Konversi ke PIL Image
             img = Image.fromarray(colored_data, "RGBA")
@@ -341,14 +347,14 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
             img.save(buffered, format="PNG")
             img_str = base64.b64encode(buffered.getvalue()).decode()
 
-            # Bounds untuk Folium
+            # Bounds untuk Folium (DIPERBAIKI - Pastikan urutan yang benar)
             bounds_folium = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]
 
             # Tambahkan ke Peta
             ndmi_overlay = folium.raster_layers.ImageOverlay(
                 image=f"data:image/png;base64,{img_str}",
                 bounds=bounds_folium,
-                opacity=1.0,
+                opacity=0.8,  # Turunkan opacity untuk debug
                 interactive=True,
                 cross_origin=False,
                 zindex=1,
@@ -356,8 +362,10 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
             )
             ndmi_overlay.add_to(map_obj)
 
-        return True
+            print("GeoTIFF berhasil ditambahkan ke peta")
+            return True
     except Exception as e:
+        print(f"Error adding GeoTIFF to map: {str(e)}")
         return False
 
 
@@ -459,7 +467,7 @@ if selected_tab == "🗺️ Peta":
                     kecamatan_data["mean"], current_thresholds
                 )
 
-                description = f"Tingkat kerapatan area terbangun di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDMI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
+                description = f"Tingkat kelembapan vegetasi di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDMI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kelembapan vegetasi**] yang :green-background[**{deskripsi}**]."
 
                 st.write(description)
 
@@ -576,7 +584,7 @@ elif selected_tab == "📈 Tren":
         "**Tren NDMI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2.2, 1.8])
+    col1_tren_main, col2_tren_main = st.columns([2.3, 1.7])
     with col1_tren_main:
         # Container Grafik Tren
         with st.container(border=True):
@@ -642,7 +650,7 @@ elif selected_tab == "📈 Tren":
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=384.5,
+                height=305,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -679,27 +687,32 @@ elif selected_tab == "📈 Tren":
         with col1_tren_metric:
             with st.container(border=True):
                 st.metric(
-                    label="NDMI Mean (1999-2024)",
+                    label="Rata-rata NDMI",
                     value=f"{overall_mean:.3f}",
+                    help="Rata-rata NDMI di KPY dan Sekitarnya = (NDMImean₁₉₉₉ + NDMImean₂₀₀₄ + ... + NDMImean₂₀₂₄)/6",
                 )
 
         with col2_tren_metric:
             with st.container(border=True):
-                st.metric(label="Fluktuasi Tahunan", value=f"{mac:.4f}")
+                st.metric(
+                    label="Rata-rata Perubahan",
+                    value=f"{mac:.3f}",
+                    help="Perubahan Absolut NDMI di KPY dan Sekitarnya = (|NDMImean₂₀₀₄ - NDMImean₁₉₉₉| + |NDMImean₂₀₀₉ - NDMImean₂₀₀₄| + ... + |NDMImean₂₀₂₄ - NDMImean₂₀₁₉|)/5",
+                )
 
         # Container Analisis Tren
         with st.container(border=True):
             st.markdown(
                 """
                 💡**Quick Insight**
-                - Kawasan perkotaan di Provinsi DIY memiliki nilai NDMI yang cenderung :green-background[**lebih tinggi**] dibanding kawasan non-perkotaan di sekitarnya.
-                - :green-background[**Selisih**] nilai NDMI antara kawasan perkotaan dan non-perkotaan berkisar antara :green-background[**0.148**] hingga :green-background[**0.196**].
-                - Pola ini mengindikasikan bahwa :green-background[**area terbangun**] di perkotaan :green-background[**terus bertambah**] seiring waktu dengan :green-background[**tren kenaikan**] sekitar :green-background[**0.0196**] per tahun."""
+                - Kawasan perkotaan Yogyakarta memiliki nilai NDMI :green-background[**lebih rendah**] dibanding kawasan non-perkotaan.
+                - :green-background[**Selisih**] nilai NDMI perkotaan dan non-perkotaan berkisar antara :green-background[**0.148**] hingga :green-background[**0.196**].
+                """
             )
 
     # Row Diagram Garis & Ranking NDMI
     st.badge(
-        "**Top 38 Kecamatan: Kerapatan Area Terbangun Tertinggi (1999-2024)**",
+        "**Top 38 Kecamatan: Kelembapan Vegetasi Tertinggi (1999-2024)**",
         color="primary",
     )
 
@@ -1108,7 +1121,7 @@ elif selected_tab == "✅ Validasi":
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <div style="width: 12px; height: 12px; background-color: #006400; border: 1px solid #ddd;"></div>
-                        <span style="color: #333;">Non-terbangun</span>
+                        <span style="color: #333;">Sangat Rendah</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <div style="width: 12px; height: 12px; background-color: #ffffe0; border: 1px solid #ddd;"></div>

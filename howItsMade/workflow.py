@@ -193,7 +193,7 @@ function maskLsr(image) {
     with st.expander("Lihat Referensi"):
         st.markdown(
             """
-                - Sinabutar, J. J., Sasmito, B., Sukmono, A. (2020). Studi Cloud Masking Menggunakan Band Quality Assessment, Function of Mask, dan Multi-Temporal Cloud Masking pada Citra Landsat 8. *Jurnal Geodesi Undip*, 9(3), 51-60. https://doi.org/10.14710/jgundip.2020.28123 
+                - Sinabutar, J. J., Sasmito, B., Sukmono, A. (2020). Studi Cloud Masking Menggunakan Band Quality Assessment, Function of Mask, dan Multi-Temporal Cloud Masking pada Citra Landsat 8. *Jurnal Geodesi Undip*, 9(3). 51-60. https://doi.org/10.14710/jgundip.2020.28123 
                 - United States Geological Survey. (2023). How Do I Use A Scale Factor with Landsat Level-2 Science Products?. (*https://www.usgs.gov/faqs/how-do-i-use-a-scale-factor-landsat-level-2-science-products*, diakses 8 Juli 2025).
                 """
         )
@@ -434,8 +434,8 @@ var lst2024 = bt2024.expression(
                 """
                 - Jatayu, A., & Susetyo, C. (2017). Analisis Perubahan Temperatur Permukaan Wilayah Surabaya Timur Tahun 2001-2016 Menggunakan Citra Landsat. *Jurnal Teknik ITS*, 6(2). 429-433. 
                 - Jiménez-Muñoz, J. C., & Sobrino, J. A. (2010). A Single-Channel Algorithm for Land-Surface Temperature Retrieval from ASTER Data. *IEEE Geoscience and Remote Sensing Letters*, 7(1). 176-179. https://doi.org/10.1109/LGRS.2009.2029534
-                - Mallick, J., Singh, C. K., Shashtri, S. Rahman, A., Mukherjee, S. (2012). Land Surface Emissivity Retrieval based on Moisture Index from Landsat TM Satellite Data over Heterogeneous Surfaces of Delhi City. *Internasional Journal of Applied Earth Observation and Geoinformation*, 19, 384-358. https://doi.org/10.1016/j.jag.2012.06.002
-                - Waleed, M., & Sajjad, M. (2022). Leveraging Cloud-based Computing and Spatial Modelling Approaches for Land Surface Temperature Disparities in Response to Land Cover Change: Evidence from Pakistan. *Remote Sensing Applications: Society and Environment*, 25, 1-19. https://doi.org/10.1016/j.rsase.2021.100665 
+                - Mallick, J., Singh, C. K., Shashtri, S. Rahman, A., Mukherjee, S. (2012). Land Surface Emissivity Retrieval based on Moisture Index from Landsat TM Satellite Data over Heterogeneous Surfaces of Delhi City. *Internasional Journal of Applied Earth Observation and Geoinformation*, 19. 384-358. https://doi.org/10.1016/j.jag.2012.06.002
+                - Waleed, M., & Sajjad, M. (2022). Leveraging Cloud-based Computing and Spatial Modelling Approaches for Land Surface Temperature Disparities in Response to Land Cover Change: Evidence from Pakistan. *Remote Sensing Applications: Society and Environment*, 25. 1-19. https://doi.org/10.1016/j.rsase.2021.100665 
                 """
             )
 
@@ -487,7 +487,7 @@ var ndbi2024 = landsat2024.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndbi
         with st.expander("Lihat Referensi"):
             st.markdown(
                 """
-                - Wicaksono, C. S. A., Sukmono, A., Hadi, F. (2021). Analisis Pengaruh Perubahan Komposisi Vegetasi dan Kawasan Terbangun terhadap Suhu Permukaan (Studi Kasus: Kota Tegal). *Jurnal Geodesi Undip*, 10(3), 1-10. https://doi.org/10.14710/jgundip.2021.31120 
+                - Wicaksono, C. S. A., Sukmono, A., Hadi, F. (2021). Analisis Pengaruh Perubahan Komposisi Vegetasi dan Kawasan Terbangun terhadap Suhu Permukaan (Studi Kasus: Kota Tegal). *Jurnal Geodesi Undip*, 10(3). 1-10. https://doi.org/10.14710/jgundip.2021.31120 
                 """
             )
 
@@ -539,7 +539,7 @@ var ndmi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B6']).rename('ndbi
         with st.expander("Lihat Referensi"):
             st.markdown(
                 """
-                - Gao, B. C. (1996). NDWI - A Normalized Difference Water Index for Remote Sensing of Liquid Water from Space. *Remote Sensing of Environment*, 58, 257-266. https://doi.org/10.1016/S0034-4257(96)00067-3 
+                - Gao, B. C. (1996). NDWI - A Normalized Difference Water Index for Remote Sensing of Liquid Water from Space. *Remote Sensing of Environment*, 58. 257-266. https://doi.org/10.1016/S0034-4257(96)00067-3 
                 """
             )
 
@@ -591,7 +591,7 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
         with st.expander("Lihat Referensi"):
             st.markdown(
                 """
-                - Estoque, Ronald, C., Murayama, Yuji. (2017). Landscape Pattern and Ecosystem Service Value Changes: Implications for Environmental Sustainability Planning for the Rapidly Urbanizing Summer Capital of the Philippines. *Landscape Urban Plan*, 116, 60-72. https://doi.org/10.1016/j.landurbplan.2013.04.008
+                - Estoque, Ronald, C., Murayama, Yuji. (2017). Landscape Pattern and Ecosystem Service Value Changes: Implications for Environmental Sustainability Planning for the Rapidly Urbanizing Summer Capital of the Philippines. *Landscape Urban Plan*, 116. 60-72. https://doi.org/10.1016/j.landurbplan.2013.04.008
                 - ‘Ain, S. S. (2022). *Analisis Spasio-Temporal Suhu Permukaan Lahan di Provinsi DKI Jakarta Tahun 1991-2021 berbasis Cloud GIS: Google Earth Engine*. Tugas Akhir, Sekolah Vokasi. Yogyakarta: Universitas Gadjah Mada.
                 """
             )
@@ -765,7 +765,7 @@ print('Consumers Accuracy:', confusionMatrix.consumersAccuracy());
         with st.expander("Lihat Referensi"):
             st.markdown(
                 """
-                - Krzywinski, M., & Altman, N. (2017). Classification and Regression Trees. *Nature Methods*, 14(8), 757-758. https://doi.org/10.1038/nmeth.4370 
+                - Krzywinski, M., & Altman, N. (2017). Classification and Regression Trees. *Nature Methods*, 14(8). 757-758. https://doi.org/10.1038/nmeth.4370 
                 """
             )
 
