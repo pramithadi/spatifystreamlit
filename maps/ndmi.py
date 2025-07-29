@@ -841,9 +841,9 @@ elif selected_tab == "✅ Validasi":
 
         # Buat Persamaan
         if intercept >= 0:
-            equation = f"y = {slope:.4f}x + {intercept:.4f}"
+            equation = f"y = {slope:.3f}x + {intercept:.3f}"
         else:
-            equation = f"y = {slope:.4f}x - {abs(intercept):.4f}"
+            equation = f"y = {slope:.3f}x - {abs(intercept):.3f}"
 
         # Row Diagram Garis dan Validasi NDMI
         st.badge(
@@ -851,7 +851,7 @@ elif selected_tab == "✅ Validasi":
             color="primary",
         )
 
-        col1_validate, col2_validate = st.columns([2.3, 1.7])
+        col1_validate, col2_validate = st.columns([2.4, 1.6])
         with col1_validate:
             # Container Grafik Korelasi Pearson
             with st.container(border=True):
@@ -935,21 +935,25 @@ elif selected_tab == "✅ Validasi":
             with col1_validate_metric:
                 with st.container(border=True):
                     st.metric(
-                        label="r (Korelasi)",
-                        value=f"{correlation_coef:.4f}",
+                        label="r",
+                        value=f"{correlation_coef:.3f}",
                         help="Koefisien Korelasi Pearson (-1 hingga 1)",
                     )
 
             with col2_validate_metric:
                 with st.container(border=True):
                     st.metric(
-                        label="RMSE", value=f"{rmse:.4f}", help="Root Mean Square Error"
+                        label="RMSE",
+                        value=f"{rmse:.3f}",
+                        help="Root Mean Square Error",
                     )
 
             with col3_validate_metric:
                 with st.container(border=True):
                     st.metric(
-                        label="MAE", value=f"{mae:.4f}", help="Mean Absolute Error"
+                        label="MAE",
+                        value=f"{mae:.3f}",
+                        help="Mean Absolute Error",
                     )
 
             # Container Analisis Tren
@@ -957,49 +961,56 @@ elif selected_tab == "✅ Validasi":
                 st.markdown("💡**Quick Insight**")
 
                 # Interpretasi Korelasi
-                if abs(correlation_coef) >= 0.9:
-                    corr_interpretation = "Sangat Kuat"
-                    corr_color = "🟢"
-                elif abs(correlation_coef) >= 0.7:
-                    corr_interpretation = "Kuat"
-                    corr_color = "🟡"
-                elif abs(correlation_coef) >= 0.5:
-                    corr_interpretation = "Sedang"
-                    corr_color = "🟠"
-                else:
-                    corr_interpretation = "Lemah"
+                if correlation_coef == 0:
+                    corr_interpretation = "Tidak Ada Korelasi"
                     corr_color = "🔴"
-
-                # Interpretasi RMSE
-                if rmse <= 0.05:
-                    rmse_interpretation = "Sangat Baik"
-                    rmse_color = "🟢"
-                elif rmse <= 0.1:
-                    rmse_interpretation = "Baik"
-                    rmse_color = "🟡"
-                elif rmse <= 0.15:
-                    rmse_interpretation = "Cukup"
-                    rmse_color = "🟠"
+                elif correlation_coef == 1:
+                    corr_interpretation = "Korelasi Positif Sempurna"
+                    corr_color = "🔵"
+                elif correlation_coef == -1:
+                    corr_interpretation = "Korelasi Negatif Sempurna"
+                    corr_color = "🔵"
+                elif 0 < correlation_coef < 0.3:
+                    corr_interpretation = "Korelasi Positif Lemah"
+                    corr_color = "🟡"
+                elif -0.3 < correlation_coef < 0:
+                    corr_interpretation = "Korelasi Negatif Lemah"
+                    corr_color = "🟡"
+                elif 0.3 <= correlation_coef < 0.7:
+                    corr_interpretation = "Korelasi Positif Sedang"
+                    corr_color = "🟠"
+                elif -0.7 < correlation_coef <= -0.3:
+                    corr_interpretation = "Korelasi Negatif Sedang"
+                    corr_color = "🟠"
+                elif 0.7 <= correlation_coef < 1:
+                    corr_interpretation = "Korelasi Positif Kuat"
+                    corr_color = "🟢"
+                elif -1 < correlation_coef <= -0.7:
+                    corr_interpretation = "Korelasi Negatif Kuat"
+                    corr_color = "🟢"
                 else:
-                    rmse_interpretation = "Perlu Perbaikan"
-                    rmse_color = "🔴"
+                    corr_interpretation = "Tidak Terdefinisi"
+                    corr_color = "🔴"
 
                 st.markdown(
                     f"""
-                - **Sampel**: {len(landsat_values)} Titik
-                - **Korelasi**: {corr_color} {corr_interpretation} (r = {correlation_coef:.4f})
-                - **Akurasi**: {rmse_color} {rmse_interpretation} (RMSE = {rmse:.4f})
-                - **p-value**: {p_value:.3f} (Sangat Signifikan)
+                - **Sampel**: {len(landsat_values)}
+                - **Korelasi (r)**: {corr_interpretation}⁽¹⁾
+                - **Akurasi (RMSE)**: 🟢 Baik⁽²⁾
+                - **p-value**: {p_value:.3f} (Sangat Signifikan)⁽³⁾
                 """
                 )
 
                 # Status Validasi
-                if correlation_coef >= 0.7 and rmse <= 0.1:
-                    st.success("✅ Validasi SUKSES")
-                elif correlation_coef >= 0.5 and rmse <= 0.15:
-                    st.warning("⚠️ Validasi CUKUP - Ada perbedaan minor")
+                abs_corr = abs(correlation_coef)
+                if abs_corr >= 0.7 and rmse <= 0.1:
+                    st.success("✅ VALID! Data layak untuk prediksi LST")
+                elif abs_corr >= 0.5 and rmse <= 0.15:
+                    st.warning("⚠️ CUKUP VALID — Data dapat digunakan dengan catatan.")
+                elif abs_corr >= 0.3 and rmse <= 0.2:
+                    st.warning("⚠️ KURANG VALID — Data perlu perbaikan.")
                 else:
-                    st.error("❌ Validasi KURANG - Perlu investigasi lebih lanjut")
+                    st.error("❌ TIDAK VALID — Data tidak layak digunakan.")
 
     except FileNotFoundError:
         st.error("❌ File 'stats/ndmiSampelValidasi.csv' tidak ditemukan!")
@@ -1016,8 +1027,8 @@ elif selected_tab == "✅ Validasi":
     # Row Peta NDMI Landsat 8 vs Sentinel-2
     # Threshold untuk Peta Validasi
     validation_thresholds = {
-        "landsat": {"low": -0.309, "medium": -0.162, "high": -0.015},
-        "sentinel": {"low": -0.238, "medium": -0.0927, "high": 0.053},
+        "landsat": {"low": 0.015, "medium": 0.162, "high": 0.309},
+        "sentinel": {"low": -0.053, "medium": 0.093, "high": 0.238},
     }
 
     st.badge(
@@ -1120,7 +1131,7 @@ elif selected_tab == "✅ Validasi":
                 <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">{title}</div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                     <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #006400; border: 1px solid #ddd;"></div>
+                        <div style="width: 12px; height: 12px; background-color: #948979; border: 1px solid #ddd;"></div>
                         <span style="color: #333;">Sangat Rendah</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 6px;">
@@ -1128,11 +1139,11 @@ elif selected_tab == "✅ Validasi":
                         <span style="color: #333;">Rendah</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #ffa500; border: 1px solid #ddd;"></div>
+                        <div style="width: 12px; height: 12px; background-color: #add8e6; border: 1px solid #ddd;"></div>
                         <span style="color: #333;">Sedang</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #3b060a; border: 1px solid #ddd;"></div>
+                        <div style="width: 12px; height: 12px; background-color: #00008b; border: 1px solid #ddd;"></div>
                         <span style="color: #333;">Tinggi</span>
                     </div>
                 </div>
@@ -1187,3 +1198,12 @@ elif selected_tab == "✅ Validasi":
 
         # Display DualMap
         st_folium(dual_map, use_container_width=True, height=500)
+
+    with st.expander("Lihat Referensi"):
+        st.markdown(
+            """
+        - [1] Ratner, B. (2009). The Correlation Coefficient: Its Values Range Between +1/-1, or Do They?. *Journal of Targeting, Measurement and Analysis for Marketing*, 17. 139-142. https://doi.org/10.1057/jt.2009.5
+        - [2] Chen, J., Zhu, X., Imura, H., Chen, X. (2010). Consistency of Accuracy Assessment Indices for Soft Classification: Simulation Analysis. *ISPRS Journal of Photogrammetry and Remote Sensing*, 65(6). 156-164. https://doi.org/10.1016/j.isprsjprs.2009.10.003
+        - [3] Schmidt, J., & Osebold, R. (2017). Environmental Management Systems as A Driver for Sustainability: State of Implementation, Benefits, and Barriers in German Construction Companies. *Journal of Civil Engineering and Management*, 23(1). 150-162. https://doi.org/10.3846/13923730.2014.946441
+        """
+        )

@@ -987,16 +987,16 @@ elif selected_tab == "✅ Validasi":
                 st.markdown(
                     f"""
                 - **Sampel**: {len(landsat_values)}
-                - **Korelasi (r)**: {corr_interpretation}¹
-                - **Akurasi (RMSE)**: 🟢 Baik²
-                - **p-value**: {p_value:.3f} (Sangat Signifikan)³
+                - **Korelasi (r)**: {corr_interpretation}⁽¹⁾
+                - **Akurasi (RMSE)**: 🟢 Baik⁽²⁾
+                - **p-value**: {p_value:.3f} (Sangat Signifikan)⁽³⁾
                 """
                 )
 
                 # Status Validasi
                 abs_corr = abs(correlation_coef)
                 if abs_corr >= 0.7 and rmse <= 0.1:
-                    st.success("✅ VALID! Data layak untuk prediksi LST.")
+                    st.success("✅ VALID! Data layak untuk prediksi LST")
                 elif abs_corr >= 0.5 and rmse <= 0.15:
                     st.warning("⚠️ CUKUP VALID — Data dapat digunakan dengan catatan.")
                 elif abs_corr >= 0.3 and rmse <= 0.2:
@@ -1020,7 +1020,7 @@ elif selected_tab == "✅ Validasi":
     # Threshold untuk Peta Validasi
     validation_thresholds = {
         "landsat": {"low": -0.309, "medium": -0.162, "high": -0.015},
-        "sentinel": {"low": -0.238, "medium": -0.0927, "high": 0.053},
+        "sentinel": {"low": -0.238, "medium": -0.093, "high": 0.053},
     }
 
     st.badge(
