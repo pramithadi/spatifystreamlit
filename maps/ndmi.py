@@ -696,7 +696,7 @@ elif selected_tab == "📈 Tren":
             with st.container(border=True):
                 st.metric(
                     label="Rata-rata Perubahan",
-                    value=f"{mac:.3f}",
+                    value=f"{mac:.2f}",
                     help="Perubahan Absolut NDMI di KPY dan Sekitarnya = (|NDMImean₂₀₀₄ - NDMImean₁₉₉₉| + |NDMImean₂₀₀₉ - NDMImean₂₀₀₄| + ... + |NDMImean₂₀₂₄ - NDMImean₂₀₁₉|)/5",
                 )
 
