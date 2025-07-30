@@ -14,9 +14,12 @@ from io import BytesIO
 from PIL import Image
 import matplotlib.pyplot as plt
 import geopandas as gpd
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+from scipy import stats
 
 st.set_page_config(
-    page_title="Dashboard Suhu Permukaan Lahan",
+    page_title="Dashboard LST",
     layout="wide",
 )
 
@@ -103,7 +106,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Dictionary Statistik LST 1999-2024
+# Dictionary Statistik LST
 stats_dict = {
     "1999": {"min": 4.313, "max": 69.760, "mean": 34.531},
     "2004": {"min": 15.295, "max": 57.402, "mean": 35.481},
@@ -118,7 +121,7 @@ stats_dict = {
     },  # 2029 Sementara Menggunakan Data 2024
 }
 
-# Dictionary Threshold LST 1999-2024
+# Dictionary Threshold LST
 threshold_dict = {
     "1999": {"low": 30.499, "medium": 34.531, "high": 38.563},
     "2004": {"low": 31.412, "medium": 35.481, "high": 39.550},
@@ -137,7 +140,7 @@ threshold_dict = {
 # Function untuk Load CSV Statistik per Kecamatan
 @st.cache_data
 def load_stats_kec():
-    csv_path = "./stats/lstStatsKec.csv"
+    csv_path = "./csv/lstStatsKec.csv"
     try:
         df = pd.read_csv(csv_path)
         # Kolom Tahun di CSV Harus String
@@ -363,6 +366,131 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
         return False
 
 
+# Fungsi untuk membuat scatter plot regresi
+def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
+    """
+    Membuat scatter plot dengan garis regresi menggunakan Plotly
+    """
+    # Menghapus data yang kosong
+    clean_data = df[[x_col, y_col]].dropna()
+
+    if len(clean_data) == 0:
+        return None, None, None, None
+
+    x = clean_data[x_col].values.reshape(-1, 1)
+    y = clean_data[y_col].values
+
+    # Membuat model regresi linear
+    model = LinearRegression()
+    model.fit(x, y)
+    y_pred = model.predict(x)
+
+    # Menghitung statistik
+    r2 = r2_score(y, y_pred)
+    slope = model.coef_[0]
+    intercept = model.intercept_
+
+    # Menghitung p-value
+    correlation, p_value = stats.pearsonr(clean_data[x_col], clean_data[y_col])
+
+    # Membuat scatter plot
+    fig = px.scatter(
+        x=clean_data[x_col],
+        y=clean_data[y_col],
+        labels={"x": x_label, "y": y_label},
+        opacity=0.6,
+        color_discrete_sequence=["#1f77b4"],
+    )
+
+    # Garis Trend (Memvisualisasikan Hubungan Linear)
+    x_range = np.linspace(clean_data[x_col].min(), clean_data[x_col].max(), 100)
+    y_trend = slope * x_range + intercept
+
+    fig.add_trace(
+        go.Scatter(
+            x=x_range,
+            y=y_trend,
+            mode="lines",
+            name="Garis Regresi",
+            line=dict(color="red", width=2),
+        )
+    )
+
+    # Update Layout
+    fig.update_layout(
+        height=362,
+        showlegend=True,
+        template="plotly_white",
+        font=dict(
+            family="Poppins, sans-serif",  # Font Poppins
+            size=10,
+            color="black",  # Font color hitam
+        ),
+        margin=dict(t=30, b=20, l=20, r=20),
+        # Styling Sumbu X dan Y
+        xaxis=dict(
+            title=dict(
+                text=x_label,
+                font=dict(color="black", family="Poppins, sans-serif"),
+            ),
+            tickfont=dict(color="black", family="Poppins, sans-serif"),
+        ),
+        yaxis=dict(
+            title=dict(
+                text=y_label,
+                font=dict(color="black", family="Poppins, sans-serif"),
+            ),
+            tickfont=dict(color="black", family="Poppins, sans-serif"),
+        ),
+        # Styling untuk legend
+        legend=dict(font=dict(color="black", family="Poppins, sans-serif")),
+    )
+
+    # Box Info - Persamaan regresi dan R²
+    equation = f"y = {slope:.3f}x + {intercept:.3f}<br>R² = {r2:.3f}"
+    fig.add_annotation(
+        x=0.02,
+        y=0.98,
+        xref="paper",
+        yref="paper",
+        text=f"<b>{equation}</b>",
+        showarrow=False,
+        font=dict(size=12, color="black", family="Poppins, sans-serif"),
+        bgcolor="#fdfaf6",
+        bordercolor="black",
+        borderwidth=1,
+        borderpad=7,  # Tambah Padding Internal
+        xanchor="left",
+        yanchor="top",
+    )
+
+    return fig, r2, p_value, slope
+
+
+# Fungsi untuk memberikan interpretasi hasil regresi
+def interpret_regression(r2, p_value, slope, x_var):
+    """
+    Memberikan interpretasi hasil regresi
+    """
+    # Interpretasi signifikansi
+    significance = "signifikan" if p_value < 0.05 else "tidak signifikan"
+
+    # Interpretasi R²
+    r2_percent = r2 * 100
+
+    # Cek apakah berpengaruh
+    is_influential = r2 >= 0.1 and p_value < 0.05
+
+    interpretation = f"""
+    **Hasil Analisis:**
+    - **R²**: {r2:.3f} ({r2_percent:.1f}% variasi LST dijelaskan oleh {x_var})
+    - **Signifikansi**: {significance} (p-value: {p_value:.3f})
+    - **Slope**: {slope:.3f} (setiap kenaikan 1 unit {x_var} berkaitan dengan perubahan {slope:.3f}°C pada LST)
+    """
+
+    return interpretation, is_influential
+
+
 # Load DataFrame Kecamatan
 df_kec_stats = load_stats_kec()
 
@@ -539,7 +667,7 @@ if selected_menu == "🗺️ Peta":
 # Tren
 elif selected_menu == "📈 Tren":
     # Grafik Tren LST Perkotaan vs Non-Perkotaan
-    df_urban_rural = pd.read_csv("./stats/lstStatsKec.csv")
+    df_urban_rural = pd.read_csv("./csv/lstStatsKec.csv")
 
     lst_urban_rural = (
         df_urban_rural.groupby(["Tahun", "Zona"])["mean"].mean().reset_index()
@@ -620,7 +748,7 @@ elif selected_menu == "📈 Tren":
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=410,
+                height=279,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -658,22 +786,27 @@ elif selected_menu == "📈 Tren":
         with col1_tren_metric:
             with st.container(border=True):
                 st.metric(
-                    label="LST Mean (1999-2024)",
+                    label="Rata-rata LST",
                     value=f"{overall_mean:.2f}°C",
+                    help="Rata-rata LST di KPY dan Sekitarnya = (LSTmean₁₉₉₉ + LSTmean₂₀₀₄ + ... + LSTmean₂₀₂₄)/6",
                 )
 
         with col2_tren_metric:
             with st.container(border=True):
-                st.metric(label="Fluktuasi Tahunan", value=f"{mac:.2f}°C")
+                st.metric(
+                    label="Rata-rata Perubahan",
+                    value=f"{mac:.2f}°C",
+                    help="Perubahan Absolut LST di KPY dan Sekitarnya = (|LSTmean₂₀₀₄ - LSTmean₁₉₉₉| + |LSTmean₂₀₀₉ - LSTmean₂₀₀₄| + ... + |LSTmean₂₀₂₄ - LSTmean₂₀₁₉|)/5",
+                )
 
         # Container Analisis Tren
         with st.container(border=True):
             st.markdown(
                 """
-                **Analisis Tren**
-                - Kawasan perkotaan Yogyakarta memiliki nilai LST yang :green-background[**lebih tinggi**] dibanding kawasan non-perkotaan di sekitarnya.
-                - :green-background[**Selisih**] nilai LST antara kawasan perkotaan dan non-perkotaan berkisar antara :green-background[**5.15°C**] hingga :green-background[**7.30°C**].
-                - Pola ini mengindikasikan bahwa :green-background[**suhu permukaan lahan**] di kawasan perkotaan :green-background[**terus meningkat**] seiring waktu dengan :green-background[**tren kenaikan**] tercatat sebesar :green-background[**1.35°C**] per tahun."""
+                💡**Quick Insight**
+                - Kawasan perkotaan Yogyakarta memiliki nilai LST :green-background[**lebih tinggi**] dibanding kawasan non-perkotaan.
+                - :green-background[**Selisih**] nilai LST perkotaan dan non-perkotaan berkisar antara :green-background[**5.15°C**] hingga :green-background[**7.30°C**].
+                """
             )
 
     # Row Diagram Garis & Ranking LST
@@ -684,7 +817,7 @@ elif selected_menu == "📈 Tren":
 
     col_rank = st.columns([1])[0]
     with col_rank:
-        df_stats = pd.read_csv("./stats/lstStatsKec.csv")
+        df_stats = pd.read_csv("./csv/lstStatsKec.csv")
 
         # Hitung Rata-rata Mean untuk Setiap Kecamatan dari Semua Tahun
         df_ranking = (
@@ -789,4 +922,127 @@ elif selected_menu == "⚙️ Model":
 
 # Regresi
 elif selected_menu == "📉 Regresi":
-    st.write("Page under construction.")
+    # Membaca data CSV
+    try:
+        df_regression = pd.read_csv("csv/sampelRegresi.csv")
+
+        # Row Diagram Garis & Ranking LST
+        st.badge(
+            "**Scatter Plot Regresi Linier LST dan NDBI**",
+            color="primary",
+        )
+
+        col1_regresi_ndbi, col2_regresi_ndbi = st.columns([2.3, 1.7])
+        with col1_regresi_ndbi:
+            with st.container(border=True):
+                # Membuat plot LST vs NDBI
+                fig_ndbi, r2_ndbi, p_val_ndbi, slope_ndbi = create_regression_plot(
+                    df_regression,
+                    "NDBI",
+                    "LST",
+                    "Regresi Linier: LST vs NDBI",
+                    "NDBI",
+                    "LST (°C)",
+                )
+
+                if fig_ndbi is not None:
+                    st.plotly_chart(fig_ndbi, use_container_width=True)
+                else:
+                    st.error("Data tidak dapat diproses untuk NDBI")
+
+        with col2_regresi_ndbi:
+            with st.container(border=True):
+                st.markdown("💡**Quick Insight**")
+                if fig_ndbi is not None:
+                    insight_ndbi, is_influential_ndbi = interpret_regression(
+                        r2_ndbi, p_val_ndbi, slope_ndbi, "NDBI"
+                    )
+                    st.markdown(insight_ndbi)
+
+                    if is_influential_ndbi:
+                        st.success("NDBI berpengaruh terhadap LST")
+                    else:
+                        st.warning("NDBI kurang berpengaruh terhadap LST")
+
+        # Row Diagram Garis & Ranking LST
+        st.badge(
+            "**Scatter Plot Regresi Linier LST dan NDMI**",
+            color="primary",
+        )
+
+        col1_regresi_ndmi, col2_regresi_ndmi = st.columns([2.3, 1.7])
+        with col1_regresi_ndmi:
+            with st.container(border=True):
+                # Membuat plot LST vs NDMI
+                fig_ndmi, r2_ndmi, p_val_ndmi, slope_ndmi = create_regression_plot(
+                    df_regression,
+                    "NDMI",
+                    "LST",
+                    "Regresi Linier: LST vs NDMI",
+                    "NDMI",
+                    "LST (°C)",
+                )
+
+                if fig_ndmi is not None:
+                    st.plotly_chart(fig_ndmi, use_container_width=True)
+                else:
+                    st.error("Data tidak dapat diproses untuk NDMI")
+
+        with col2_regresi_ndmi:
+            with st.container(border=True):
+                st.markdown("💡**Quick Insight**")
+                if fig_ndmi is not None:
+                    insight_ndmi, is_influential_ndmi = interpret_regression(
+                        r2_ndmi, p_val_ndmi, slope_ndmi, "NDMI"
+                    )
+                    st.markdown(insight_ndmi)
+
+                    if is_influential_ndmi:
+                        st.success("NDMI berpengaruh terhadap LST")
+                    else:
+                        st.warning("NDMI kurang berpengaruh terhadap LST")
+
+        # Row Diagram Garis & Ranking LST
+        st.badge(
+            "**Scatter Plot Regresi Linier LST dan NDVI**",
+            color="primary",
+        )
+
+        col1_regresi_ndvi, col2_regresi_ndvi = st.columns([2.3, 1.7])
+        with col1_regresi_ndvi:
+            with st.container(border=True):
+                # Membuat plot LST vs NDVI
+                fig_ndvi, r2_ndvi, p_val_ndvi, slope_ndvi = create_regression_plot(
+                    df_regression,
+                    "NDVI",
+                    "LST",
+                    "Regresi Linier: LST vs NDVI",
+                    "NDVI",
+                    "LST (°C)",
+                )
+
+                if fig_ndvi is not None:
+                    st.plotly_chart(fig_ndvi, use_container_width=True)
+                else:
+                    st.error("Data tidak dapat diproses untuk NDVI")
+
+        with col2_regresi_ndvi:
+            with st.container(border=True):
+                st.markdown("💡**Quick Insight**")
+                if fig_ndvi is not None:
+                    insight_ndvi, is_influential_ndvi = interpret_regression(
+                        r2_ndvi, p_val_ndvi, slope_ndvi, "NDVI"
+                    )
+                    st.markdown(insight_ndvi)
+
+                    if is_influential_ndvi:
+                        st.success("NDVI berpengaruh terhadap LST")
+                    else:
+                        st.warning("NDVI kurang berpengaruh terhadap LST")
+
+    except FileNotFoundError:
+        st.error(
+            "File 'csv/sampelRegresi.csv' tidak ditemukan. Pastikan file sudah ada di folder yang benar."
+        )
+    except Exception as e:
+        st.error(f"Terjadi kesalahan: {str(e)}")

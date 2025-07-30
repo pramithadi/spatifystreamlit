@@ -131,7 +131,7 @@ def load_kecamatan_stats():
     """
     Load statistik NDBI per kecamatan dari file CSV
     """
-    csv_path = "./stats/ndbiStatsKec.csv"
+    csv_path = "./csv/ndbiStatsKec.csv"
     try:
         df = pd.read_csv(csv_path)
         # Kolom Tahun di CSV Harus String
@@ -561,7 +561,7 @@ if selected_tab == "🗺️ Peta":
 
 elif selected_tab == "📈 Tren":
     # Grafik Tren NDBI Perkotaan vs Non-Perkotaan
-    df_urban_rural = pd.read_csv("./stats/ndbiStatsKec.csv")
+    df_urban_rural = pd.read_csv("./csv/ndbiStatsKec.csv")
 
     ndbi_urban_rural = (
         df_urban_rural.groupby(["Tahun", "Zona"])["mean"].mean().reset_index()
@@ -710,7 +710,7 @@ elif selected_tab == "📈 Tren":
 
     col_rank = st.columns([1])[0]
     with col_rank:
-        df_stats = pd.read_csv("./stats/ndbiStatsKec.csv")
+        df_stats = pd.read_csv("./csv/ndbiStatsKec.csv")
 
         # Hitung Rata-rata Mean untuk Setiap Kecamatan dari Semua Tahun
         df_ranking = (
