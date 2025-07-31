@@ -3,7 +3,7 @@ from streamlit_image_comparison import image_comparison
 
 st.set_page_config(
     page_title="Alur Pemrosesan",
-    layout="wide",
+    # layout="wide",
 )
 
 st.markdown(

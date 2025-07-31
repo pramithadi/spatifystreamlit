@@ -1,6 +1,11 @@
 import streamlit as st
 import os
 
+st.set_page_config(
+    page_title="Download Peta",
+    # layout="wide",
+)
+
 st.markdown(
     """
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">

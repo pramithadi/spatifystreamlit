@@ -366,12 +366,9 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
         return False
 
 
-# Fungsi untuk membuat scatter plot regresi
+# Fungsi untuk Membuat Scatter Plot Regresi
 def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
-    """
-    Membuat scatter plot dengan garis regresi menggunakan Plotly
-    """
-    # Menghapus data yang kosong
+    # Menghapus Data yang Kosong
     clean_data = df[[x_col, y_col]].dropna()
 
     if len(clean_data) == 0:
@@ -380,12 +377,12 @@ def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
     x = clean_data[x_col].values.reshape(-1, 1)
     y = clean_data[y_col].values
 
-    # Membuat model regresi linear
+    # Membuat Model Regresi Linier
     model = LinearRegression()
     model.fit(x, y)
     y_pred = model.predict(x)
 
-    # Menghitung statistik
+    # Menghitung R² dan Slope
     r2 = r2_score(y, y_pred)
     slope = model.coef_[0]
     intercept = model.intercept_
@@ -393,7 +390,7 @@ def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
     # Menghitung p-value
     correlation, p_value = stats.pearsonr(clean_data[x_col], clean_data[y_col])
 
-    # Membuat scatter plot
+    # Membuat Scatter Plot
     fig = px.scatter(
         x=clean_data[x_col],
         y=clean_data[y_col],
@@ -418,13 +415,13 @@ def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
 
     # Update Layout
     fig.update_layout(
-        height=362,
+        height=266.5,
         showlegend=True,
         template="plotly_white",
         font=dict(
             family="Poppins, sans-serif",  # Font Poppins
             size=10,
-            color="black",  # Font color hitam
+            color="black",  # Font Color hitam
         ),
         margin=dict(t=30, b=20, l=20, r=20),
         # Styling Sumbu X dan Y
@@ -446,8 +443,8 @@ def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
         legend=dict(font=dict(color="black", family="Poppins, sans-serif")),
     )
 
-    # Box Info - Persamaan regresi dan R²
-    equation = f"y = {slope:.3f}x + {intercept:.3f}<br>R² = {r2:.3f}"
+    # Box Info - Persamaan Regresi dan R²
+    equation = f"y = {slope:.2f}x + {intercept:.2f}<br>R² = {r2:.2f}"
     fig.add_annotation(
         x=0.02,
         y=0.98,
@@ -467,25 +464,30 @@ def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
     return fig, r2, p_value, slope
 
 
-# Fungsi untuk memberikan interpretasi hasil regresi
+# Fungsi untuk Memberikan Interpretasi Hasil Regresi
 def interpret_regression(r2, p_value, slope, x_var):
-    """
-    Memberikan interpretasi hasil regresi
-    """
-    # Interpretasi signifikansi
-    significance = "signifikan" if p_value < 0.05 else "tidak signifikan"
+    # Interpretasi Signifikansi
+    if p_value <= 0.001:
+        significance = "Sangat Signifikan"
+    elif p_value <= 0.01:
+        significance = "Amat Signifikan"
+    elif p_value <= 0.05:
+        significance = "Signifikan"
+    else:
+        significance = "Tidak Signifikan"
 
     # Interpretasi R²
     r2_percent = r2 * 100
 
-    # Cek apakah berpengaruh
+    # Cek Pengaruh
     is_influential = r2 >= 0.1 and p_value < 0.05
 
+    direction = "meningkat" if slope > 0 else "menurun"
+
     interpretation = f"""
-    **Hasil Analisis:**
-    - **R²**: {r2:.3f} ({r2_percent:.1f}% variasi LST dijelaskan oleh {x_var})
-    - **Signifikansi**: {significance} (p-value: {p_value:.3f})
-    - **Slope**: {slope:.3f} (setiap kenaikan 1 unit {x_var} berkaitan dengan perubahan {slope:.3f}°C pada LST)
+    - **Koefisien Determinasi (R²)**: Variabel :green-background[**{x_var}**] mampu menjelaskan variasi nilai LST sebesar :green-background[**{r2_percent:.2f}%**], sedangkan {100 - r2_percent:.2f}% sisanya dipengaruhi oleh faktor lain.⁽¹⁾
+    - **Slope**: Nilai LST :green-background[**{direction} {abs(slope):.2f}°C**] untuk setiap kenaikan 0.1 unit nilai {x_var}.
+    - **p-value**: {p_value:.3f} ({significance})⁽²⁾
     """
 
     return interpretation, is_influential
@@ -932,7 +934,7 @@ elif selected_menu == "📉 Regresi":
             color="primary",
         )
 
-        col1_regresi_ndbi, col2_regresi_ndbi = st.columns([2.3, 1.7])
+        col1_regresi_ndbi, col2_regresi_ndbi = st.columns([2.1, 1.9])
         with col1_regresi_ndbi:
             with st.container(border=True):
                 # Membuat plot LST vs NDBI
@@ -960,9 +962,11 @@ elif selected_menu == "📉 Regresi":
                     st.markdown(insight_ndbi)
 
                     if is_influential_ndbi:
-                        st.success("NDBI berpengaruh terhadap LST")
+                        st.success(
+                            "✅ NDBI berpengaruh positif signifikan terhadap LST!"
+                        )
                     else:
-                        st.warning("NDBI kurang berpengaruh terhadap LST")
+                        st.warning("❌ NDBI tidak berpengaruh terhadap LST!")
 
         # Row Diagram Garis & Ranking LST
         st.badge(
@@ -970,7 +974,7 @@ elif selected_menu == "📉 Regresi":
             color="primary",
         )
 
-        col1_regresi_ndmi, col2_regresi_ndmi = st.columns([2.3, 1.7])
+        col1_regresi_ndmi, col2_regresi_ndmi = st.columns([2.1, 1.9])
         with col1_regresi_ndmi:
             with st.container(border=True):
                 # Membuat plot LST vs NDMI
@@ -998,9 +1002,11 @@ elif selected_menu == "📉 Regresi":
                     st.markdown(insight_ndmi)
 
                     if is_influential_ndmi:
-                        st.success("NDMI berpengaruh terhadap LST")
+                        st.success(
+                            "✅ NDMI berpengaruh positif signifikan terhadap LST!"
+                        )
                     else:
-                        st.warning("NDMI kurang berpengaruh terhadap LST")
+                        st.warning("❌ NDMI tidak berpengaruh terhadap LST!")
 
         # Row Diagram Garis & Ranking LST
         st.badge(
@@ -1008,7 +1014,7 @@ elif selected_menu == "📉 Regresi":
             color="primary",
         )
 
-        col1_regresi_ndvi, col2_regresi_ndvi = st.columns([2.3, 1.7])
+        col1_regresi_ndvi, col2_regresi_ndvi = st.columns([2.1, 1.9])
         with col1_regresi_ndvi:
             with st.container(border=True):
                 # Membuat plot LST vs NDVI
@@ -1036,9 +1042,11 @@ elif selected_menu == "📉 Regresi":
                     st.markdown(insight_ndvi)
 
                     if is_influential_ndvi:
-                        st.success("NDVI berpengaruh terhadap LST")
+                        st.success(
+                            "✅ NDVI berpengaruh positif signifikan terhadap LST!"
+                        )
                     else:
-                        st.warning("NDVI kurang berpengaruh terhadap LST")
+                        st.warning("❌ NDVI tidak berpengaruh terhadap LST!")
 
     except FileNotFoundError:
         st.error(
@@ -1046,3 +1054,11 @@ elif selected_menu == "📉 Regresi":
         )
     except Exception as e:
         st.error(f"Terjadi kesalahan: {str(e)}")
+
+    with st.expander("Lihat Referensi"):
+        st.markdown(
+            """
+        - [1] Sugiyono (2010). *Metode Penelitian Pendidikan Pendekatan Kuantitatif, Kualitatif, dan R&D*. Bandung: Penerbit Alfabeta.
+        - [2] Schmidt, J., & Osebold, R. (2017). Environmental Management Systems as A Driver for Sustainability: State of Implementation, Benefits, and Barriers in German Construction Companies. *Journal of Civil Engineering and Management*, 23(1). 150-162. https://doi.org/10.3846/13923730.2014.946441
+        """
+        )

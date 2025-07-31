@@ -816,7 +816,7 @@ elif selected_tab == "📈 Tren":
 elif selected_tab == "✅ Validasi":
     try:
         # Load CSV Sampel NDMI untuk Validasi
-        validation_data = pd.read_csv("stats/ndmiSampelValidasi.csv")
+        validation_data = pd.read_csv("csv/ndmiSampelValidasi.csv")
 
         # Hapus Nilai NaN
         validation_data = validation_data.dropna()
@@ -996,7 +996,7 @@ elif selected_tab == "✅ Validasi":
                     f"""
                 - **Sampel**: {len(landsat_values)}
                 - **Korelasi (r)**: {corr_interpretation}⁽¹⁾
-                - **Akurasi (RMSE)**: 🟢 Baik⁽²⁾
+                - **Akurasi (RMSE)**: Baik⁽²⁾
                 - **p-value**: {p_value:.3f} (Sangat Signifikan)⁽³⁾
                 """
                 )
@@ -1013,9 +1013,9 @@ elif selected_tab == "✅ Validasi":
                     st.error("❌ TIDAK VALID — Data tidak layak digunakan.")
 
     except FileNotFoundError:
-        st.error("❌ File 'stats/ndmiSampelValidasi.csv' tidak ditemukan!")
+        st.error("❌ File 'csv/ndmiSampelValidasi.csv' tidak ditemukan!")
         st.info(
-            "Pastikan file CSV hasil sampling dari GEE sudah tersedia di folder 'stats/'"
+            "Pastikan file CSV hasil sampling dari GEE sudah tersedia di folder 'csv/'"
         )
 
     except Exception as e:

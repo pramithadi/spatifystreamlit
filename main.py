@@ -131,37 +131,37 @@ lst = st.Page(
 ndbi = st.Page("maps/ndbi.py", title="NDBI", icon=":material/apartment:")
 ndmi = st.Page("maps/ndmi.py", title="NDMI", icon=":material/water_voc:")
 ndvi = st.Page("maps/ndvi.py", title="NDVI", icon=":material/psychiatry:")
-lulc = st.Page("maps/lulc.py", title="Penutup Lahan", icon=":material/landscape_2:")
-geeApps = st.Page(
-    "maps/geeApps.py", title="GEE Apps", icon=":material/globe_location_pin:"
+lulc = st.Page(
+    "maps/penutup-lahan.py", title="Penutup Lahan", icon=":material/landscape_2:"
+)
+gee_apps = st.Page(
+    "maps/gee-apps.py", title="GEE Apps", icon=":material/globe_location_pin:"
 )
 
 # How It's Made Section
-dataSource = st.Page(
-    "howItsMade/dataSource.py", title="Dataset", icon=":material/database:"
-)
+dataset = st.Page("howItsMade/dataset.py", title="Dataset", icon=":material/database:")
 workflow = st.Page(
     "howItsMade/workflow.py",
     title="Alur Pemrosesan",
     icon=":material/flowchart:",
 )
 project = st.Page(
-    "howItsMade/project.py",
+    "howItsMade/proyek.py",
     title="Proyek",
     icon=":material/code_blocks:",
 )
 
 # Get Results Section
-downloadMaps = st.Page(
-    "getResults/downloadMaps.py", title="Download Peta", icon=":material/download:"
+download_peta = st.Page(
+    "getResults/download-peta.py", title="Download Peta", icon=":material/download:"
 )
 
 pg = st.navigation(
     {
         "": [home],
-        "Dashboard": [lst, ndbi, ndmi, ndvi, lulc, geeApps],
-        "How It's Made": [dataSource, workflow, project],
-        "Get Results": [downloadMaps],
+        "Dashboard": [lst, ndbi, ndmi, ndvi, lulc, gee_apps],
+        "How It's Made": [dataset, workflow, project],
+        "Get Results": [download_peta],
     }
 )
 pg.run()
