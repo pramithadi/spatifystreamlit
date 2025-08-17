@@ -89,8 +89,8 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(
         "**Diagram Alir**",
         "**Prapengolahan Data**",
         "**Pengolahan Data**",
-        "**Pemodelan Prediksi**",
         "**Validasi Data**",
+        "**Pemodelan Prediksi**",
     ]
 )
 
@@ -202,7 +202,7 @@ function maskLsr(image) {
 with tab3:
     st.subheader("Pengolahan Data")
     option = st.pills(
-        "**Pilih Pengolahan:**",
+        "**Lihat Pengolahan:**",
         [
             "🌡️ LST",
             "🏭 NDBI",
@@ -792,25 +792,32 @@ var slope = ee.Terrain.slope(elevation);
         st.code(codeDEM, language="javascript", line_numbers=True)
 
 with tab4:
-    st.subheader("Prediksi")
-    option = st.selectbox(
-        "Pilih Pemodelan:",
-        ("Prediksi LST 2029", "Prediksi Penutup Lahan 2029"),
+    st.subheader("Validasi")
+    option = st.pills(
+        "**Lihat Validasi:**",
+        [
+            "🌡️ LST",
+            "🌳 Indeks",
+            "🏞️ Penutup Lahan",
+        ],
+        default="🌡️ LST",
     )
-    if option == "Prediksi LST 2029":
-        st.write("**Land Surface Temperature (LST)**")
-        st.markdown(
-            """
-            <div class="justified-text">
-            LST adalah ukuran kuantitatif mengenai seberapa panas permukaan bumi (Ahyar et al., 2024). Ekstraksi LST dalam penelitian ini menggunakan metode <strong>Single-Channel</strong> yang dikembangkan oleh Jiménez-Muñoz & Sobrino (2009). Metode ini terdiri atas empat tahapan utama yaitu:
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
 
-    elif option == "Prediksi Penutup Lahan 2029":
-        st.badge("**Normalized Difference Built-Up Index (NDBI)**", color="primary")
-        st.write("NDBI adalah indeks kerapatan bangunan")
+    if option == "🌡️ LST":
+        st.subheader("**Suhu Permukaan Lahan (LST)**")
+        st.write("Page under construction.")
 
 with tab5:
-    st.subheader("Validasi")
+    st.subheader("Prediksi")
+    option = st.pills(
+        "**Lihat Prediksi:**",
+        [
+            "🌡️ LST",
+            "🏞️ Penutup Lahan",
+        ],
+        default="🌡️ LST",
+    )
+
+    if option == "🌡️ LST":
+        st.subheader("**Suhu Permukaan Lahan (LST)**")
+        st.write("Page under construction.")
