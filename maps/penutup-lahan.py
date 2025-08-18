@@ -482,6 +482,10 @@ st.header("Penutup Lahan")
 
 # Peta
 with tab1:
+    st.badge(
+        "**Peta Penutup Lahan di KPY dan Sekitarnya (1999-2029)**",
+        color="primary",
+    )
     col1_peta, col2_peta = st.columns([2.6, 1.4])
 
     with col2_peta:
@@ -688,7 +692,7 @@ with tab2:
     tren_df = pd.DataFrame(tren_data)
 
     st.badge(
-        "**Tren Perubahan Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
+        "**Tren Perubahan Penutup Lahan di KPY dan Sekitarnya (1999-2029)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.4, 1.6])
@@ -776,7 +780,7 @@ with tab2:
 with tab3:
     # Validasi Data 2014
     st.badge(
-        "**Uji Akurasi Penutup Lahan**",
+        "**Uji Akurasi di Penutup Lahan KPY dan Sekitarnya**",
         color="primary",
     )
 
@@ -1744,31 +1748,40 @@ with tab3:
                 st.error(f"Terjadi kesalahan: {str(e)}")
 
 with tab4:
-    st.subheader("**Perbandingan Peta Aktual vs Prediksi**")
-    with st.container(border=True):
-        st.image(
-            "img/peta_3_pl.png",
-            caption="Perbandingan Peta Penutup Lahan Kawasan Perkotaan Yogyakarta dan Sekitarnya",
-        )
+    st.badge(
+        "**Evaluasi Model Prediksi Penutup Lahan Cellular Automata-Markov Chain dan XGBoost**",
+        color="primary",
+    )
 
-    st.subheader("**Metrik Evaluasi dan Matriks Konfusi**")
-    col1_metrik, col2_matriks = st.columns([2, 2])
-    with col1_metrik:
+    col1_metrik_img, col2_metrik_insight = st.columns([1.45, 2.55])
+    with col1_metrik_img:
         with st.container(border=True):
             st.image(
-                "img/metrik_evaluasi_prediksi_pll.png",
-                caption="Metrik Evaluasi Model Prediksi CA-Markov Tahun 2024",
-            )
-    with col2_matriks:
-        with st.container(border=True):
-            st.image(
-                "img/matriks_konfusi_prediksi_pl.png",
-                caption="Matriks Konfusi Prediksi CA-Markov Tahun 2024",
+                "img/metrik_evaluasi_prediksi_pl.png",
+                caption="*Sumber: Pengolahan Pribadi (2025)*",
             )
 
-    st.subheader("**Laporan Klasifikasi**")
-    with st.container(border=True):
-        st.image(
-            "img/report_prediksi_pl.png",
-            caption="Laporan Klasifikasi Prediksi CA-Markov Tahun 2024",
-        )
+    with col2_metrik_insight:
+        with st.container(border=True):
+            st.write("💡**Quick Insight**")
+            st.markdown(
+                f"""
+                - Model prediksi penutup lahan mencapai akurasi :green-background[**89.63%**] setelah divalidasi dengan data aktual terkini.
+                - Koefisien *kappa* :green-background[**83.51%**] masuk ke dalam kategori ***almost perfect agreement***⁽²⁾ yang menunjukkan tingkat kesepakatan yang **sangat baik**.
+                - Kedua metrik akurasi membuktikan bahwa model **dapat diandalkan** untuk proyeksi perubahan penutup lahan di masa depan.
+                """,
+                unsafe_allow_html=True,
+            )
+        with st.container(border=True):
+            st.write("**📌 Kesimpulan**")
+            st.markdown(
+                f"""
+                - **Model** Cellular Automata-Markov Chain dan XGBoost **layak digunakan** untuk memprediksi penutup lahan 2029.
+                """,
+                unsafe_allow_html=True,
+            )
+
+    st.badge(
+        "**Perbandingan Peta Penutup Lahan Aktual vs Prediksi**",
+        color="primary",
+    )

@@ -124,7 +124,7 @@ st.markdown(
 # Home Page
 home = st.Page("home.py", title="Beranda", icon=":material/home:", default=True)
 
-# Dashboard Section
+# Section Analisis
 lst = st.Page(
     "maps/lst.py", title="Suhu Permukaan Lahan", icon=":material/thermometer:"
 )
@@ -134,21 +134,21 @@ ndvi = st.Page("maps/ndvi.py", title="NDVI", icon=":material/psychiatry:")
 lulc = st.Page(
     "maps/penutup-lahan.py", title="Penutup Lahan", icon=":material/landscape_2:"
 )
-gee_apps = st.Page(
-    "maps/gee-apps.py", title="GEE Apps", icon=":material/globe_location_pin:"
-)
 
-# How It's Made Section
+# Section How It's Made
 dataset = st.Page("howItsMade/dataset.py", title="Dataset", icon=":material/database:")
 workflow = st.Page(
     "howItsMade/workflow.py",
-    title="Alur Pemrosesan",
+    title="Alur Proses",
     icon=":material/flowchart:",
 )
 project = st.Page(
     "howItsMade/proyek.py",
     title="Proyek",
     icon=":material/code_blocks:",
+)
+gee_apps = st.Page(
+    "maps/gee-apps.py", title="GEE Apps", icon=":material/globe_location_pin:"
 )
 
 # Get Results Section
@@ -159,8 +159,8 @@ download_peta = st.Page(
 pg = st.navigation(
     {
         "": [home],
-        "Dashboard": [lst, ndbi, ndmi, ndvi, lulc, gee_apps],
-        "How It's Made": [dataset, workflow, project],
+        "Analisis": [lst, ndbi, ndmi, ndvi, lulc],
+        "How It's Made": [dataset, workflow, project, gee_apps],
         "Get Results": [download_peta],
     }
 )
