@@ -19,86 +19,91 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, DataReturnMode
 
 st.set_page_config(
-    page_title="Dashboard Penutup Lahan",
+    page_title="Penutup Lahan — Spatify",
     layout="wide",
-)
-
-st.markdown(
-    """
-    <style>
-    .main {
-        padding-top: 0rem !important;
-    }
-    .block-container {
-        padding-top: 0.2rem !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
+    initial_sidebar_state="expanded",
 )
 
 st.markdown(
     """
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        div[data-testid="stMarkdownContainer"] * {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .stMarkdown p {
-            font-size: 14px !important;
-            margin-bottom: 8px !important;
-        }
-        .stSubheader {
-            font-size: 16px !important;
-            margin-bottom: 12px !important;
-        }
-        
-        div[data-testid="stMarkdownContainer"] h1 {
-            color: #000000 !important;
-            font-weight: 600 !important;
-        }
-        
-        .stApp > header {
-            color: #000000 !important;
-        }
-        .stApp {
-            color: #000000 !important;
-        }
-        
-        .stMarkdown {
-            color: #000000 !important;
-        }
-        
-        div[data-testid="stVerticalBlockBorderWrapper"] {
-            padding: 12px !important;
-        }
-        
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-            border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-            border-radius: 1px !important;
-            padding: 12px !important;
-            transition: all 0.3s ease !important;
-        }
+    .main {
+        padding-top: 0rem !important;
+    }
+    .block-container {
+        padding-top: 0.5rem !important;
+    }
+    
+    .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    div[data-testid="stMarkdownContainer"] * {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    .stMarkdown p {
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+    }
+    .stSubheader {
+        font-size: 16px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    div[data-testid="stMarkdownContainer"] h1 {
+        color: #000000 !important;
+        font-weight: 600 !important;
+    }
+    
+    .stApp > header {
+        color: #000000 !important;
+    }
+    .stApp {
+        color: #000000 !important;
+    }
+    
+    .stMarkdown {
+        color: #000000 !important;
+    }
+    
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        padding: 12px !important;
+    }
+    
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 1px !important;
+        padding: 12px !important;
+        transition: all 0.3s ease !important;
+    }
 
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-            transform: translateY(-4px) !important;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-            border-color: #fdfaf6 !important;
-        }
-        
-        .block-container {
-            padding-top: 0rem !important;
-            max-width: 100% !important;
-        }
-        
-        .main {
-            padding-top: 0rem !important;
-        }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        border-color: #fdfaf6 !important;
+    }
+            
+    .stTabs [data-baseweb="tab-highlight"] {
+        background-color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button:hover {
+        color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button:hover [data-baseweb="tab-highlight"] {
+        background-color: #705c53 !important;
+    }
+    .stTabs {
+        margin-top: 0rem !important;
+    }
+    .stCode {
+        margin-bottom: 0.5rem !important;
+    }
     </style>
-""",
+    """,
     unsafe_allow_html=True,
 )
 
@@ -459,22 +464,24 @@ def generate_quick_insight_markdown(penutup_lahan_df):
 penutup_lahan_df = load_aoi_data()
 penutup_lahan_kec_df = load_kec_data()
 
-st.subheader("Dashboard Penutup Lahan")
+st.header("Penutup Lahan")
 
-selected_tab = st.pills(
-    "**Lihat Analisis:**",
+(
+    tab1,
+    tab2,
+    tab3,
+    tab4,
+) = st.tabs(
     [
         "🗺️ Peta",
         "📈 Tren",
         "✅ Validasi",
         "⚙️ Model",
-    ],
-    selection_mode="single",
-    default="🗺️ Peta",
+    ]
 )
 
 # Peta
-if selected_tab == "🗺️ Peta":
+with tab1:
     col1_peta, col2_peta = st.columns([2.6, 1.4])
 
     with col2_peta:
@@ -654,7 +661,7 @@ if selected_tab == "🗺️ Peta":
         m.get_root().html.add_child(folium.Element(css))
         st_data = st_folium(m, use_container_width=True, height=803)
 
-elif selected_tab == "📈 Tren":
+with tab2:
     # Grafik Tren Penutup Lahan AOI
 
     # Buat Data Tren dari DataFrame AOI
@@ -681,7 +688,7 @@ elif selected_tab == "📈 Tren":
     tren_df = pd.DataFrame(tren_data)
 
     st.badge(
-        "**Tren Penutup Lahan Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
+        "**Tren Perubahan Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.4, 1.6])
@@ -766,961 +773,1002 @@ elif selected_tab == "📈 Tren":
         with st.container(border=True):
             st.markdown(generate_quick_insight_markdown(penutup_lahan_df))
 
-elif selected_tab == "✅ Validasi":
+with tab3:
     # Validasi Data 2014
-    st.subheader("**Uji Akurasi Penutup Lahan Tahun 2014**")
-    with st.container(border=True):
-        st.write("**Matriks Konfusi Penutup Lahan Tahun 2014**")
+    st.badge(
+        "**Uji Akurasi Penutup Lahan**",
+        color="primary",
+    )
 
-        # Tambahkan matriks konfusi ilmiah di sini
-        try:
-            df = pd.read_csv("csv/validasiPL2014.csv")
+    # Membuat Menu
+    validate_years = st.pills(
+        "**Lihat Tahun:**",
+        [
+            "2014",
+            "2019",
+            "2024",
+        ],
+        selection_mode="single",
+        default="2014",
+    )
 
-            # Fungsi untuk membuat matriks konfusi ilmiah
-            def create_confusion_matrix(df):
-                from sklearn.metrics import (
-                    confusion_matrix,
-                    accuracy_score,
-                    cohen_kappa_score,
-                )
-                import numpy as np
+    if validate_years == "2014":
+        with st.container(border=True):
+            st.write("**Matriks Konfusi Penutup Lahan 2014**")
 
-                y_true = df["PL Referensi"]
-                y_pred = df["PL Aktual"]
+            # Membuat Matriks Konfusi
+            try:
+                df = pd.read_csv("csv/validasiPL2014.csv")
 
-                # Gunakan urutan kelas yang sudah ditentukan
-                classes = ["Vegetasi", "Tubuh Air", "Lahan Terbangun", "Lahan Terbuka"]
-                # Filter hanya kelas yang ada di data
-                classes = [
-                    cls
-                    for cls in classes
-                    if cls in y_true.values or cls in y_pred.values
-                ]
+                # Fungsi untuk membuat matriks konfusi
+                def create_confusion_matrix(df):
+                    from sklearn.metrics import (
+                        confusion_matrix,
+                        accuracy_score,
+                        cohen_kappa_score,
+                    )
+                    import numpy as np
 
-                cm = confusion_matrix(y_true, y_pred, labels=classes)
-                n_total = np.sum(cm)
+                    y_true = df["PL Referensi"]
+                    y_pred = df["PL Aktual"]
 
-                row_totals = np.sum(cm, axis=1)
-                col_totals = np.sum(cm, axis=0)
+                    # Gunakan urutan kelas yang sudah ditentukan
+                    classes = [
+                        "Vegetasi",
+                        "Tubuh Air",
+                        "Lahan Terbangun",
+                        "Lahan Terbuka",
+                    ]
+                    # Filter hanya kelas yang ada di data
+                    classes = [
+                        cls
+                        for cls in classes
+                        if cls in y_true.values or cls in y_pred.values
+                    ]
 
-                # Producer's Accuracy = diagonal / row total
-                producer_acc = np.diag(cm) / row_totals * 100
+                    cm = confusion_matrix(y_true, y_pred, labels=classes)
+                    n_total = np.sum(cm)
 
-                # User's Accuracy = diagonal / column total
-                user_acc = np.diag(cm) / col_totals * 100
+                    row_totals = np.sum(cm, axis=1)
+                    col_totals = np.sum(cm, axis=0)
 
-                # Overall Accuracy
-                overall_acc = np.sum(np.diag(cm)) / n_total * 100
+                    # Producer's Accuracy = diagonal / row total
+                    producer_acc = np.diag(cm) / row_totals * 100
 
-                # Kappa Accuracy
-                kappa = cohen_kappa_score(y_true, y_pred) * 100
+                    # User's Accuracy = diagonal / column total
+                    user_acc = np.diag(cm) / col_totals * 100
 
-                # Errors
-                commission_error = 100 - user_acc
-                omission_error = 100 - producer_acc
+                    # Overall Accuracy
+                    overall_acc = np.sum(np.diag(cm)) / n_total * 100
 
-                return {
-                    "cm": cm,
-                    "classes": classes,
-                    "row_totals": row_totals,
-                    "col_totals": col_totals,
-                    "producer_acc": producer_acc,
-                    "user_acc": user_acc,
-                    "commission_error": commission_error,
-                    "omission_error": omission_error,
-                    "overall_acc": overall_acc,
-                    "kappa": kappa,
-                    "n_total": n_total,
-                }
+                    # Kappa Accuracy
+                    kappa = cohen_kappa_score(y_true, y_pred) * 100
 
-            def display_confusion_matrix_html(results):
-                cm = results["cm"]
-                classes = results["classes"]
-                row_totals = results["row_totals"]
-                col_totals = results["col_totals"]
-                producer_acc = results["producer_acc"]
-                user_acc = results["user_acc"]
-                commission_error = results["commission_error"]
-                omission_error = results["omission_error"]
-                overall_acc = results["overall_acc"]
-                kappa = results["kappa"]
-                n_total = results["n_total"]
+                    # Errors
+                    commission_error = 100 - user_acc
+                    omission_error = 100 - producer_acc
 
-                html_content = """
-                <style>
-                .conf-matrix {{
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 10px 0;
-                    font-family: Arial, sans-serif;
-                    font-size: 13px;
-                    border: 2px solid #333;
-                }}
-                .conf-matrix th {{
-                    background: #E4EFE7;
-                    border: 1px solid #333;
-                    padding: 10px 6px;
-                    text-align: center;
-                    font-weight: bold;
-                    color: #333;
-                }}
-                .conf-matrix td {{
-                    border: 1px solid #333;
-                    padding: 8px 6px;
-                    text-align: center;
-                    background: white;
-                }}
-                .conf-matrix .header-main {{
-                    background: #E4EFE7;
-                    font-weight: bold;
-                    color: #333;
-                }}
-                .conf-matrix .diagonal {{
-                    background: #3c5e51;
-                    color: white;
-                    font-weight: bold;
-                }}
-                .conf-matrix .important {{
-                    background: #3c5e51;
-                    color: white;
-                    font-weight: bold;
-                }}
-                </style>
-                
-                <table class="conf-matrix">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="header-main">Data Hasil<br/>Klasifikasi</th>
-                            <th colspan="{num_classes}" class="header-main">Data Uji Klasifikasi (Referensi)</th>
-                            <th rowspan="2" class="header-main">Total<br/>Baris</th>
-                            <th rowspan="2" class="header-main">Producer<br/>Accuracy<br/>(%)</th>
-                            <th rowspan="2" class="header-main">Kesalahan<br/>Omisi<br/>(%)</th>
-                        </tr>
-                        <tr>
-                """.format(
-                    num_classes=len(classes)
-                )
+                    return {
+                        "cm": cm,
+                        "classes": classes,
+                        "row_totals": row_totals,
+                        "col_totals": col_totals,
+                        "producer_acc": producer_acc,
+                        "user_acc": user_acc,
+                        "commission_error": commission_error,
+                        "omission_error": omission_error,
+                        "overall_acc": overall_acc,
+                        "kappa": kappa,
+                        "n_total": n_total,
+                    }
 
-                # Add class headers
-                for cls in classes:
-                    html_content += '<th class="header-main">{}</th>'.format(cls)
+                def display_confusion_matrix_html(results):
+                    cm = results["cm"]
+                    classes = results["classes"]
+                    row_totals = results["row_totals"]
+                    col_totals = results["col_totals"]
+                    producer_acc = results["producer_acc"]
+                    user_acc = results["user_acc"]
+                    commission_error = results["commission_error"]
+                    omission_error = results["omission_error"]
+                    overall_acc = results["overall_acc"]
+                    kappa = results["kappa"]
+                    n_total = results["n_total"]
 
-                html_content += "</tr></thead><tbody>"
-
-                # Add data rows
-                for i, cls in enumerate(classes):
-                    html_content += '<tr><td class="header-main">{}</td>'.format(cls)
-
-                    # Add confusion matrix values
-                    for j in range(len(classes)):
-                        cell_class = "diagonal" if i == j else ""
-                        html_content += '<td class="{}">{}</td>'.format(
-                            cell_class, cm[i][j]
-                        )
-
-                    # Add row total, producer accuracy, omission error
-                    html_content += """
-                    <td>{row_total}</td>
-                    <td>{producer_acc:.1f}</td>
-                    <td>{omis_err:.1f}</td>
-                    </tr>""".format(
-                        row_total=row_totals[i],
-                        producer_acc=producer_acc[i],
-                        omis_err=omission_error[i],
+                    html_content = """
+                    <style>
+                    .conf-matrix {{
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin: 10px 0;
+                        font-family: Arial, sans-serif;
+                        font-size: 13px;
+                        border: 2px solid #333;
+                    }}
+                    .conf-matrix th {{
+                        background: #E4EFE7;
+                        border: 1px solid #333;
+                        padding: 10px 6px;
+                        text-align: center;
+                        font-weight: bold;
+                        color: #333;
+                    }}
+                    .conf-matrix td {{
+                        border: 1px solid #333;
+                        padding: 8px 6px;
+                        text-align: center;
+                        background: white;
+                    }}
+                    .conf-matrix .header-main {{
+                        background: #E4EFE7;
+                        font-weight: bold;
+                        color: #333;
+                    }}
+                    .conf-matrix .diagonal {{
+                        background: #3c5e51;
+                        color: white;
+                        font-weight: bold;
+                    }}
+                    .conf-matrix .important {{
+                        background: #3c5e51;
+                        color: white;
+                        font-weight: bold;
+                    }}
+                    </style>
+                    
+                    <table class="conf-matrix">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="header-main">Data Hasil<br/>Klasifikasi</th>
+                                <th colspan="{num_classes}" class="header-main">Data Uji Klasifikasi</th>
+                                <th rowspan="2" class="header-main">Total<br/>Baris</th>
+                                <th rowspan="2" class="header-main">Producer<br/>Accuracy<br/>(%)</th>
+                                <th rowspan="2" class="header-main">Kesalahan<br/>Omisi<br/>(%)</th>
+                            </tr>
+                            <tr>
+                    """.format(
+                        num_classes=len(classes)
                     )
 
-                # Add totals row
-                html_content += '<tr><td class="header-main">Total Kolom</td>'
-                for total in col_totals:
-                    html_content += "<td>{}</td>".format(total)
-                html_content += "<td>{}</td><td>-</td><td>-</td></tr>".format(n_total)
+                    # Add class headers
+                    for cls in classes:
+                        html_content += '<th class="header-main">{}</th>'.format(cls)
 
-                # Add user accuracy row
-                html_content += '<tr><td class="header-main">User Accuracy (%)</td>'
-                for acc in user_acc:
-                    html_content += "<td>{:.1f}</td>".format(acc)
-                html_content += "<td>-</td><td>-</td><td>-</td></tr>"
+                    html_content += "</tr></thead><tbody>"
 
-                # Add commission error row
-                html_content += '<tr><td class="header-main">Kesalahan Komisi (%)</td>'
-                for error in commission_error:
-                    html_content += "<td>{:.1f}</td>".format(error)
-                html_content += "<td>-</td><td>-</td><td>-</td></tr>"
+                    # Add data rows
+                    for i, cls in enumerate(classes):
+                        html_content += '<tr><td class="header-main">{}</td>'.format(
+                            cls
+                        )
 
-                # Add overall accuracy row
-                html_content += """
-                <tr>
-                    <td class="header-main"><strong>Overall Accuracy</strong></td>
-                    <td colspan="{num_classes}" class="important">{overall_acc:.2f}%</td>
-                    <td>-</td><td>-</td><td>-</td>
-                </tr>""".format(
-                    num_classes=len(classes), overall_acc=overall_acc
+                        # Add confusion matrix values
+                        for j in range(len(classes)):
+                            cell_class = "diagonal" if i == j else ""
+                            html_content += '<td class="{}">{}</td>'.format(
+                                cell_class, cm[i][j]
+                            )
+
+                        # Add row total, producer accuracy, omission error
+                        html_content += """
+                        <td>{row_total}</td>
+                        <td>{producer_acc:.1f}</td>
+                        <td>{omis_err:.1f}</td>
+                        </tr>""".format(
+                            row_total=row_totals[i],
+                            producer_acc=producer_acc[i],
+                            omis_err=omission_error[i],
+                        )
+
+                    # Add totals row
+                    html_content += '<tr><td class="header-main">Total Kolom</td>'
+                    for total in col_totals:
+                        html_content += "<td>{}</td>".format(total)
+                    html_content += "<td>{}</td><td>-</td><td>-</td></tr>".format(
+                        n_total
+                    )
+
+                    # Add user accuracy row
+                    html_content += '<tr><td class="header-main">User Accuracy (%)</td>'
+                    for acc in user_acc:
+                        html_content += "<td>{:.1f}</td>".format(acc)
+                    html_content += "<td>-</td><td>-</td><td>-</td></tr>"
+
+                    # Add commission error row
+                    html_content += (
+                        '<tr><td class="header-main">Kesalahan Komisi (%)</td>'
+                    )
+                    for error in commission_error:
+                        html_content += "<td>{:.1f}</td>".format(error)
+                    html_content += "<td>-</td><td>-</td><td>-</td></tr>"
+
+                    # Add overall accuracy row
+                    html_content += """
+                    <tr>
+                        <td class="header-main"><strong>Overall Accuracy</strong></td>
+                        <td colspan="{num_classes}" class="important">{overall_acc:.2f}%</td>
+                        <td>-</td><td>-</td><td>-</td>
+                    </tr>""".format(
+                        num_classes=len(classes), overall_acc=overall_acc
+                    )
+
+                    # Add kappa accuracy row
+                    html_content += """
+                    <tr>
+                        <td class="header-main"><strong>Kappa Accuracy</strong></td>
+                        <td colspan="{num_classes}" class="important">{kappa:.2f}%</td>
+                        <td>-</td><td>-</td><td>-</td>
+                    </tr>
+                    </tbody></table>""".format(
+                        num_classes=len(classes), kappa=kappa
+                    )
+
+                    return html_content
+
+                # Hitung dan tampilkan matriks konfusi
+                results = create_confusion_matrix(df)
+
+                # Tampilkan matriks konfusi
+                html_content = display_confusion_matrix_html(results)
+                st.markdown(html_content, unsafe_allow_html=True)
+
+            except Exception as e:
+                st.error(f"Error dalam membuat matriks konfusi: {str(e)}")
+
+        with st.expander("**📍 Tabel Sampel Penutup Lahan 2014**"):
+            try:
+                df = pd.read_csv("csv/validasiPL2014.csv")
+
+                def get_base64_encoded_image(image_path):
+                    try:
+                        with open(image_path, "rb") as img_file:
+                            return base64.b64encode(img_file.read()).decode()
+                    except Exception as e:
+                        return None
+
+                def path_to_image_html(path):
+                    base64_img = get_base64_encoded_image(path)
+                    if base64_img:
+                        return f'<img src="data:image/png;base64,{base64_img}" width="100" height="80" style="object-fit: cover; border-radius: 2px;">'
+                    else:
+                        return "❌ Foto tidak ditemukan."
+
+                def create_image_path(kode):
+                    kode_prefix = kode[:5].lower()
+                    return f"img/img_val_2014/{kode_prefix}14.png"
+
+                # Tambahkan kolom Foto berdasarkan kode masing-masing
+                df["Foto"] = df["Kode"].apply(create_image_path)
+
+                @st.cache_data
+                def convert_df_to_html(input_df):
+                    return input_df.to_html(
+                        escape=False,
+                        formatters=dict(Foto=path_to_image_html),
+                        table_id="validasi-table",
+                        classes="table table-striped",
+                        index=False,
+                    )
+
+                html_table = convert_df_to_html(df)
+                st.markdown(
+                    """
+                <style>
+                #validasi-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 0px 0 10px 0;
+                }
+                #validasi-table th, #validasi-table td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: center;
+                    vertical-align: middle;
+                }
+                #validasi-table th {
+                    background-color: #E4EFE7;
+                    font-weight: bold;
+                }
+                #validasi-table img {
+                    margin: 0 auto;
+                    border-radius: 4px;
+                    display: block;
+                }
+                .stExpander > div > div > div > div {
+                    padding-top: 0rem !important;
+                }
+                </style>
+                """,
+                    unsafe_allow_html=True,
                 )
 
-                # Add kappa accuracy row
-                html_content += """
-                <tr>
-                    <td class="header-main"><strong>Kappa Accuracy</strong></td>
-                    <td colspan="{num_classes}" class="important">{kappa:.2f}%</td>
-                    <td>-</td><td>-</td><td>-</td>
-                </tr>
-                </tbody></table>""".format(
-                    num_classes=len(classes), kappa=kappa
+                st.markdown(
+                    '<div style="margin-top: -20px;"></div>', unsafe_allow_html=True
                 )
 
-                return html_content
+                st.markdown(html_table, unsafe_allow_html=True)
 
-            # Hitung dan tampilkan matriks konfusi
-            results = create_confusion_matrix(df)
-
-            # # Tampilkan metrics summary
-            # col1, col2, col3, col4 = st.columns(4)
-            # with col1:
-            #     st.metric("Total Sampel", results["n_total"])
-            # with col2:
-            #     st.metric("Akurasi yang Diharapkan", f"85%")
-            # with col3:
-            #     st.metric("Overall Accuracy", f"{results['overall_acc']:.2f}%")
-            # with col4:
-            #     st.metric("Kappa Accuracy", f"{results['kappa']:.2f}%")
-
-            # Tampilkan matriks konfusi
-            html_content = display_confusion_matrix_html(results)
-            st.markdown(html_content, unsafe_allow_html=True)
-
-        except Exception as e:
-            st.error(f"Error dalam membuat matriks konfusi: {str(e)}")
-
-    with st.expander("**Tabel Sampel Validasi Tahun 2014**"):
-        try:
-            df = pd.read_csv("csv/validasiPL2014.csv")
-            # foto_path = "img/31veg2014.png"
-
-            def get_base64_encoded_image(image_path):
-                try:
-                    with open(image_path, "rb") as img_file:
-                        return base64.b64encode(img_file.read()).decode()
-                except Exception as e:
-                    return None
-
-            def path_to_image_html(path):
-                base64_img = get_base64_encoded_image(path)
-                if base64_img:
-                    return f'<img src="data:image/png;base64,{base64_img}" width="100" height="80" style="object-fit: cover; border-radius: 2px;">'
-                else:
-                    return "❌ Foto tidak ditemukan."
-
-            def create_image_path(kode):
-                kode_prefix = kode[:5].lower()
-                return f"img/img_val_2014/{kode_prefix}14.png"
-
-            # Tambahkan kolom Foto berdasarkan kode masing-masing
-            df["Foto"] = df["Kode"].apply(create_image_path)
-
-            @st.cache_data
-            def convert_df_to_html(input_df):
-                return input_df.to_html(
-                    escape=False,
-                    formatters=dict(Foto=path_to_image_html),
-                    table_id="validasi-table",
-                    classes="table table-striped",
-                    index=False,
-                )
-
-            html_table = convert_df_to_html(df)
-            st.markdown(
-                """
-            <style>
-            #validasi-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 0px 0 10px 0;
-            }
-            #validasi-table th, #validasi-table td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: center;
-                vertical-align: middle;
-            }
-            #validasi-table th {
-                background-color: #E4EFE7;
-                font-weight: bold;
-            }
-            #validasi-table img {
-                margin: 0 auto;
-                border-radius: 4px;
-                display: block;
-            }
-            .stExpander > div > div > div > div {
-                padding-top: 0rem !important;
-            }
-            </style>
-            """,
-                unsafe_allow_html=True,
-            )
-
-            st.markdown(
-                '<div style="margin-top: -20px;"></div>', unsafe_allow_html=True
-            )
-
-            st.markdown(html_table, unsafe_allow_html=True)
-
-        except FileNotFoundError:
-            st.error("File 'csv/validasiPL2014.csv' tidak ditemukan!")
-        except Exception as e:
-            st.error(f"Terjadi kesalahan: {str(e)}")
+            except FileNotFoundError:
+                st.error("File 'csv/validasiPL2014.csv' tidak ditemukan!")
+            except Exception as e:
+                st.error(f"Terjadi kesalahan: {str(e)}")
 
     # Validasi Data 2019
-    st.subheader("**Uji Akurasi Penutup Lahan Tahun 2019**")
-    with st.container(border=True):
-        st.write("**Matriks Konfusi Penutup Lahan Tahun 2019**")
+    elif validate_years == "2019":
+        with st.container(border=True):
+            st.write("**Matriks Konfusi Penutup Lahan Tahun 2019**")
 
-        # Tambahkan matriks konfusi ilmiah di sini
-        try:
-            df = pd.read_csv("csv/validasiPL2019.csv")
+            # Tambahkan matriks konfusi di sini
+            try:
+                df = pd.read_csv("csv/validasiPL2019.csv")
 
-            # Fungsi untuk membuat matriks konfusi ilmiah
-            def create_confusion_matrix(df):
-                from sklearn.metrics import (
-                    confusion_matrix,
-                    accuracy_score,
-                    cohen_kappa_score,
-                )
-                import numpy as np
+                # Fungsi untuk membuat matriks konfusi
+                def create_confusion_matrix(df):
+                    from sklearn.metrics import (
+                        confusion_matrix,
+                        accuracy_score,
+                        cohen_kappa_score,
+                    )
+                    import numpy as np
 
-                y_true = df["PL Referensi"]
-                y_pred = df["PL Aktual"]
+                    y_true = df["PL Referensi"]
+                    y_pred = df["PL Aktual"]
 
-                # Gunakan urutan kelas yang sudah ditentukan
-                classes = ["Vegetasi", "Tubuh Air", "Lahan Terbangun", "Lahan Terbuka"]
-                # Filter hanya kelas yang ada di data
-                classes = [
-                    cls
-                    for cls in classes
-                    if cls in y_true.values or cls in y_pred.values
-                ]
+                    # Gunakan urutan kelas yang sudah ditentukan
+                    classes = [
+                        "Vegetasi",
+                        "Tubuh Air",
+                        "Lahan Terbangun",
+                        "Lahan Terbuka",
+                    ]
+                    # Filter hanya kelas yang ada di data
+                    classes = [
+                        cls
+                        for cls in classes
+                        if cls in y_true.values or cls in y_pred.values
+                    ]
 
-                cm = confusion_matrix(y_true, y_pred, labels=classes)
-                n_total = np.sum(cm)
+                    cm = confusion_matrix(y_true, y_pred, labels=classes)
+                    n_total = np.sum(cm)
 
-                row_totals = np.sum(cm, axis=1)
-                col_totals = np.sum(cm, axis=0)
+                    row_totals = np.sum(cm, axis=1)
+                    col_totals = np.sum(cm, axis=0)
 
-                # Producer's Accuracy = diagonal / row total
-                producer_acc = np.diag(cm) / row_totals * 100
+                    # Producer's Accuracy = diagonal / row total
+                    producer_acc = np.diag(cm) / row_totals * 100
 
-                # User's Accuracy = diagonal / column total
-                user_acc = np.diag(cm) / col_totals * 100
+                    # User's Accuracy = diagonal / column total
+                    user_acc = np.diag(cm) / col_totals * 100
 
-                # Overall Accuracy
-                overall_acc = np.sum(np.diag(cm)) / n_total * 100
+                    # Overall Accuracy
+                    overall_acc = np.sum(np.diag(cm)) / n_total * 100
 
-                # Kappa Accuracy
-                kappa = cohen_kappa_score(y_true, y_pred) * 100
+                    # Kappa Accuracy
+                    kappa = cohen_kappa_score(y_true, y_pred) * 100
 
-                # Errors
-                commission_error = 100 - user_acc
-                omission_error = 100 - producer_acc
+                    # Errors
+                    commission_error = 100 - user_acc
+                    omission_error = 100 - producer_acc
 
-                return {
-                    "cm": cm,
-                    "classes": classes,
-                    "row_totals": row_totals,
-                    "col_totals": col_totals,
-                    "producer_acc": producer_acc,
-                    "user_acc": user_acc,
-                    "commission_error": commission_error,
-                    "omission_error": omission_error,
-                    "overall_acc": overall_acc,
-                    "kappa": kappa,
-                    "n_total": n_total,
-                }
+                    return {
+                        "cm": cm,
+                        "classes": classes,
+                        "row_totals": row_totals,
+                        "col_totals": col_totals,
+                        "producer_acc": producer_acc,
+                        "user_acc": user_acc,
+                        "commission_error": commission_error,
+                        "omission_error": omission_error,
+                        "overall_acc": overall_acc,
+                        "kappa": kappa,
+                        "n_total": n_total,
+                    }
 
-            def display_confusion_matrix_html(results):
-                cm = results["cm"]
-                classes = results["classes"]
-                row_totals = results["row_totals"]
-                col_totals = results["col_totals"]
-                producer_acc = results["producer_acc"]
-                user_acc = results["user_acc"]
-                commission_error = results["commission_error"]
-                omission_error = results["omission_error"]
-                overall_acc = results["overall_acc"]
-                kappa = results["kappa"]
-                n_total = results["n_total"]
+                def display_confusion_matrix_html(results):
+                    cm = results["cm"]
+                    classes = results["classes"]
+                    row_totals = results["row_totals"]
+                    col_totals = results["col_totals"]
+                    producer_acc = results["producer_acc"]
+                    user_acc = results["user_acc"]
+                    commission_error = results["commission_error"]
+                    omission_error = results["omission_error"]
+                    overall_acc = results["overall_acc"]
+                    kappa = results["kappa"]
+                    n_total = results["n_total"]
 
-                html_content = """
-                <style>
-                .conf-matrix {{
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 10px 0;
-                    font-family: Arial, sans-serif;
-                    font-size: 13px;
-                    border: 2px solid #333;
-                }}
-                .conf-matrix th {{
-                    background: #E4EFE7;
-                    border: 1px solid #333;
-                    padding: 10px 6px;
-                    text-align: center;
-                    font-weight: bold;
-                    color: #333;
-                }}
-                .conf-matrix td {{
-                    border: 1px solid #333;
-                    padding: 8px 6px;
-                    text-align: center;
-                    background: white;
-                }}
-                .conf-matrix .header-main {{
-                    background: #E4EFE7;
-                    font-weight: bold;
-                    color: #333;
-                }}
-                .conf-matrix .diagonal {{
-                    background: #3c5e51;
-                    color: white;
-                    font-weight: bold;
-                }}
-                .conf-matrix .important {{
-                    background: #3c5e51;
-                    color: white;
-                    font-weight: bold;
-                }}
-                </style>
-                
-                <table class="conf-matrix">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="header-main">Data Hasil<br/>Klasifikasi</th>
-                            <th colspan="{num_classes}" class="header-main">Data Uji Klasifikasi (Referensi)</th>
-                            <th rowspan="2" class="header-main">Total<br/>Baris</th>
-                            <th rowspan="2" class="header-main">Producer<br/>Accuracy<br/>(%)</th>
-                            <th rowspan="2" class="header-main">Kesalahan<br/>Omisi<br/>(%)</th>
-                        </tr>
-                        <tr>
-                """.format(
-                    num_classes=len(classes)
-                )
-
-                # Add class headers
-                for cls in classes:
-                    html_content += '<th class="header-main">{}</th>'.format(cls)
-
-                html_content += "</tr></thead><tbody>"
-
-                # Add data rows
-                for i, cls in enumerate(classes):
-                    html_content += '<tr><td class="header-main">{}</td>'.format(cls)
-
-                    # Add confusion matrix values
-                    for j in range(len(classes)):
-                        cell_class = "diagonal" if i == j else ""
-                        html_content += '<td class="{}">{}</td>'.format(
-                            cell_class, cm[i][j]
-                        )
-
-                    # Add row total, producer accuracy, omission error
-                    html_content += """
-                    <td>{row_total}</td>
-                    <td>{producer_acc:.1f}</td>
-                    <td>{omis_err:.1f}</td>
-                    </tr>""".format(
-                        row_total=row_totals[i],
-                        producer_acc=producer_acc[i],
-                        omis_err=omission_error[i],
+                    html_content = """
+                    <style>
+                    .conf-matrix {{
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin: 10px 0;
+                        font-family: Arial, sans-serif;
+                        font-size: 13px;
+                        border: 2px solid #333;
+                    }}
+                    .conf-matrix th {{
+                        background: #E4EFE7;
+                        border: 1px solid #333;
+                        padding: 10px 6px;
+                        text-align: center;
+                        font-weight: bold;
+                        color: #333;
+                    }}
+                    .conf-matrix td {{
+                        border: 1px solid #333;
+                        padding: 8px 6px;
+                        text-align: center;
+                        background: white;
+                    }}
+                    .conf-matrix .header-main {{
+                        background: #E4EFE7;
+                        font-weight: bold;
+                        color: #333;
+                    }}
+                    .conf-matrix .diagonal {{
+                        background: #3c5e51;
+                        color: white;
+                        font-weight: bold;
+                    }}
+                    .conf-matrix .important {{
+                        background: #3c5e51;
+                        color: white;
+                        font-weight: bold;
+                    }}
+                    </style>
+                    
+                    <table class="conf-matrix">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="header-main">Data Hasil<br/>Klasifikasi</th>
+                                <th colspan="{num_classes}" class="header-main">Data Uji Klasifikasi</th>
+                                <th rowspan="2" class="header-main">Total<br/>Baris</th>
+                                <th rowspan="2" class="header-main">Producer<br/>Accuracy<br/>(%)</th>
+                                <th rowspan="2" class="header-main">Kesalahan<br/>Omisi<br/>(%)</th>
+                            </tr>
+                            <tr>
+                    """.format(
+                        num_classes=len(classes)
                     )
 
-                # Add totals row
-                html_content += '<tr><td class="header-main">Total Kolom</td>'
-                for total in col_totals:
-                    html_content += "<td>{}</td>".format(total)
-                html_content += "<td>{}</td><td>-</td><td>-</td></tr>".format(n_total)
+                    # Add class headers
+                    for cls in classes:
+                        html_content += '<th class="header-main">{}</th>'.format(cls)
 
-                # Add user accuracy row
-                html_content += '<tr><td class="header-main">User Accuracy (%)</td>'
-                for acc in user_acc:
-                    html_content += "<td>{:.1f}</td>".format(acc)
-                html_content += "<td>-</td><td>-</td><td>-</td></tr>"
+                    html_content += "</tr></thead><tbody>"
 
-                # Add commission error row
-                html_content += '<tr><td class="header-main">Kesalahan Komisi (%)</td>'
-                for error in commission_error:
-                    html_content += "<td>{:.1f}</td>".format(error)
-                html_content += "<td>-</td><td>-</td><td>-</td></tr>"
+                    # Add data rows
+                    for i, cls in enumerate(classes):
+                        html_content += '<tr><td class="header-main">{}</td>'.format(
+                            cls
+                        )
 
-                # Add overall accuracy row
-                html_content += """
-                <tr>
-                    <td class="header-main"><strong>Overall Accuracy</strong></td>
-                    <td colspan="{num_classes}" class="important">{overall_acc:.2f}%</td>
-                    <td>-</td><td>-</td><td>-</td>
-                </tr>""".format(
-                    num_classes=len(classes), overall_acc=overall_acc
+                        # Add confusion matrix values
+                        for j in range(len(classes)):
+                            cell_class = "diagonal" if i == j else ""
+                            html_content += '<td class="{}">{}</td>'.format(
+                                cell_class, cm[i][j]
+                            )
+
+                        # Add row total, producer accuracy, omission error
+                        html_content += """
+                        <td>{row_total}</td>
+                        <td>{producer_acc:.1f}</td>
+                        <td>{omis_err:.1f}</td>
+                        </tr>""".format(
+                            row_total=row_totals[i],
+                            producer_acc=producer_acc[i],
+                            omis_err=omission_error[i],
+                        )
+
+                    # Add totals row
+                    html_content += '<tr><td class="header-main">Total Kolom</td>'
+                    for total in col_totals:
+                        html_content += "<td>{}</td>".format(total)
+                    html_content += "<td>{}</td><td>-</td><td>-</td></tr>".format(
+                        n_total
+                    )
+
+                    # Add user accuracy row
+                    html_content += '<tr><td class="header-main">User Accuracy (%)</td>'
+                    for acc in user_acc:
+                        html_content += "<td>{:.1f}</td>".format(acc)
+                    html_content += "<td>-</td><td>-</td><td>-</td></tr>"
+
+                    # Add commission error row
+                    html_content += (
+                        '<tr><td class="header-main">Kesalahan Komisi (%)</td>'
+                    )
+                    for error in commission_error:
+                        html_content += "<td>{:.1f}</td>".format(error)
+                    html_content += "<td>-</td><td>-</td><td>-</td></tr>"
+
+                    # Add overall accuracy row
+                    html_content += """
+                    <tr>
+                        <td class="header-main"><strong>Overall Accuracy</strong></td>
+                        <td colspan="{num_classes}" class="important">{overall_acc:.2f}%</td>
+                        <td>-</td><td>-</td><td>-</td>
+                    </tr>""".format(
+                        num_classes=len(classes), overall_acc=overall_acc
+                    )
+
+                    # Add kappa accuracy row
+                    html_content += """
+                    <tr>
+                        <td class="header-main"><strong>Kappa Accuracy</strong></td>
+                        <td colspan="{num_classes}" class="important">{kappa:.2f}%</td>
+                        <td>-</td><td>-</td><td>-</td>
+                    </tr>
+                    </tbody></table>""".format(
+                        num_classes=len(classes), kappa=kappa
+                    )
+
+                    return html_content
+
+                # Hitung dan tampilkan matriks konfusi
+                results = create_confusion_matrix(df)
+
+                # Tampilkan matriks konfusi
+                html_content = display_confusion_matrix_html(results)
+                st.markdown(html_content, unsafe_allow_html=True)
+
+            except Exception as e:
+                st.error(f"Error dalam membuat matriks konfusi: {str(e)}")
+
+        with st.expander("**📍 Tabel Sampel Penutup Lahan 2019**"):
+            try:
+                df = pd.read_csv("csv/validasiPL2019.csv")
+                # foto_path = "img/31veg2019.png"
+
+                def get_base64_encoded_image(image_path):
+                    try:
+                        with open(image_path, "rb") as img_file:
+                            return base64.b64encode(img_file.read()).decode()
+                    except Exception as e:
+                        return None
+
+                def path_to_image_html(path):
+                    base64_img = get_base64_encoded_image(path)
+                    if base64_img:
+                        return f'<img src="data:image/png;base64,{base64_img}" width="100" height="80" style="object-fit: cover; border-radius: 2px;">'
+                    else:
+                        return "❌ Foto tidak ditemukan."
+
+                def create_image_path(kode):
+                    kode_prefix = kode[:5].lower()
+                    return f"img/img_val_2019/{kode_prefix}19.png"
+
+                # Tambahkan kolom Foto berdasarkan kode masing-masing
+                df["Foto"] = df["Kode"].apply(create_image_path)
+
+                @st.cache_data
+                def convert_df_to_html(input_df):
+                    return input_df.to_html(
+                        escape=False,
+                        formatters=dict(Foto=path_to_image_html),
+                        table_id="validasi-table",
+                        classes="table table-striped",
+                        index=False,
+                    )
+
+                html_table = convert_df_to_html(df)
+                st.markdown(
+                    """
+                <style>
+                #validasi-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 0px 0 10px 0;
+                }
+                #validasi-table th, #validasi-table td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: center;
+                    vertical-align: middle;
+                }
+                #validasi-table th {
+                    background-color: #E4EFE7;
+                    font-weight: bold;
+                }
+                #validasi-table img {
+                    margin: 0 auto;
+                    border-radius: 4px;
+                    display: block;
+                }
+                .stExpander > div > div > div > div {
+                    padding-top: 0rem !important;
+                }
+                </style>
+                """,
+                    unsafe_allow_html=True,
                 )
 
-                # Add kappa accuracy row
-                html_content += """
-                <tr>
-                    <td class="header-main"><strong>Kappa Accuracy</strong></td>
-                    <td colspan="{num_classes}" class="important">{kappa:.2f}%</td>
-                    <td>-</td><td>-</td><td>-</td>
-                </tr>
-                </tbody></table>""".format(
-                    num_classes=len(classes), kappa=kappa
+                st.markdown(
+                    '<div style="margin-top: -20px;"></div>', unsafe_allow_html=True
                 )
 
-                return html_content
+                st.markdown(html_table, unsafe_allow_html=True)
 
-            # Hitung dan tampilkan matriks konfusi
-            results = create_confusion_matrix(df)
-
-            # # Tampilkan metrics summary
-            # col1, col2, col3, col4 = st.columns(4)
-            # with col1:
-            #     st.metric("Total Sampel", results["n_total"])
-            # with col2:
-            #     st.metric("Akurasi yang Diharapkan", f"85%")
-            # with col3:
-            #     st.metric("Overall Accuracy", f"{results['overall_acc']:.2f}%")
-            # with col4:
-            #     st.metric("Kappa Accuracy", f"{results['kappa']:.2f}%")
-
-            # Tampilkan matriks konfusi
-            html_content = display_confusion_matrix_html(results)
-            st.markdown(html_content, unsafe_allow_html=True)
-
-        except Exception as e:
-            st.error(f"Error dalam membuat matriks konfusi: {str(e)}")
-
-    with st.expander("**Tabel Sampel Validasi Tahun 2019**"):
-        try:
-            df = pd.read_csv("csv/validasiPL2019.csv")
-            # foto_path = "img/31veg2019.png"
-
-            def get_base64_encoded_image(image_path):
-                try:
-                    with open(image_path, "rb") as img_file:
-                        return base64.b64encode(img_file.read()).decode()
-                except Exception as e:
-                    return None
-
-            def path_to_image_html(path):
-                base64_img = get_base64_encoded_image(path)
-                if base64_img:
-                    return f'<img src="data:image/png;base64,{base64_img}" width="100" height="80" style="object-fit: cover; border-radius: 2px;">'
-                else:
-                    return "❌ Foto tidak ditemukan."
-
-            def create_image_path(kode):
-                kode_prefix = kode[:5].lower()
-                return f"img/img_val_2019/{kode_prefix}19.png"
-
-            # Tambahkan kolom Foto berdasarkan kode masing-masing
-            df["Foto"] = df["Kode"].apply(create_image_path)
-
-            @st.cache_data
-            def convert_df_to_html(input_df):
-                return input_df.to_html(
-                    escape=False,
-                    formatters=dict(Foto=path_to_image_html),
-                    table_id="validasi-table",
-                    classes="table table-striped",
-                    index=False,
-                )
-
-            html_table = convert_df_to_html(df)
-            st.markdown(
-                """
-            <style>
-            #validasi-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 0px 0 10px 0;
-            }
-            #validasi-table th, #validasi-table td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: center;
-                vertical-align: middle;
-            }
-            #validasi-table th {
-                background-color: #E4EFE7;
-                font-weight: bold;
-            }
-            #validasi-table img {
-                margin: 0 auto;
-                border-radius: 4px;
-                display: block;
-            }
-            .stExpander > div > div > div > div {
-                padding-top: 0rem !important;
-            }
-            </style>
-            """,
-                unsafe_allow_html=True,
-            )
-
-            st.markdown(
-                '<div style="margin-top: -20px;"></div>', unsafe_allow_html=True
-            )
-
-            st.markdown(html_table, unsafe_allow_html=True)
-
-        except FileNotFoundError:
-            st.error("File 'csv/validasiPL2019.csv' tidak ditemukan!")
-        except Exception as e:
-            st.error(f"Terjadi kesalahan: {str(e)}")
+            except FileNotFoundError:
+                st.error("File 'csv/validasiPL2019.csv' tidak ditemukan!")
+            except Exception as e:
+                st.error(f"Terjadi kesalahan: {str(e)}")
 
     # Validasi Data 2024
-    st.subheader("**Uji Akurasi Penutup Lahan Tahun 2024**")
+    elif validate_years == "2024":
+        with st.container(border=True):
+            st.write("**Matriks Konfusi Penutup Lahan Tahun 2024**")
 
-    with st.container(border=True):
-        st.write("**Matriks Konfusi Penutup Lahan Tahun 2024**")
+            # Tambahkan matriks konfusi ilmiah di sini
+            try:
+                df = pd.read_csv("csv/validasiPL2024.csv")
 
-        # Tambahkan matriks konfusi ilmiah di sini
-        try:
-            df = pd.read_csv("csv/validasiPL2024.csv")
-
-            # Fungsi untuk membuat matriks konfusi ilmiah
-            def create_confusion_matrix(df):
-                from sklearn.metrics import (
-                    confusion_matrix,
-                    accuracy_score,
-                    cohen_kappa_score,
-                )
-                import numpy as np
-
-                y_true = df["PL Referensi"]
-                y_pred = df["PL Aktual"]
-
-                # Gunakan urutan kelas yang sudah ditentukan
-                classes = ["Vegetasi", "Tubuh Air", "Lahan Terbangun", "Lahan Terbuka"]
-                # Filter hanya kelas yang ada di data
-                classes = [
-                    cls
-                    for cls in classes
-                    if cls in y_true.values or cls in y_pred.values
-                ]
-
-                cm = confusion_matrix(y_true, y_pred, labels=classes)
-                n_total = np.sum(cm)
-
-                row_totals = np.sum(cm, axis=1)
-                col_totals = np.sum(cm, axis=0)
-
-                # Producer's Accuracy = diagonal / row total (avoid division by zero)
-                producer_acc = (
-                    np.divide(
-                        np.diag(cm),
-                        row_totals,
-                        out=np.zeros_like(np.diag(cm), dtype=float),
-                        where=row_totals != 0,
+                # Fungsi untuk membuat matriks konfusi ilmiah
+                def create_confusion_matrix(df):
+                    from sklearn.metrics import (
+                        confusion_matrix,
+                        accuracy_score,
+                        cohen_kappa_score,
                     )
-                    * 100
-                )
+                    import numpy as np
 
-                # User's Accuracy = diagonal / column total (avoid division by zero)
-                user_acc = (
-                    np.divide(
-                        np.diag(cm),
-                        col_totals,
-                        out=np.zeros_like(np.diag(cm), dtype=float),
-                        where=col_totals != 0,
+                    y_true = df["PL Referensi"]
+                    y_pred = df["PL Aktual"]
+
+                    # Gunakan urutan kelas yang sudah ditentukan
+                    classes = [
+                        "Vegetasi",
+                        "Tubuh Air",
+                        "Lahan Terbangun",
+                        "Lahan Terbuka",
+                    ]
+                    # Filter hanya kelas yang ada di data
+                    classes = [
+                        cls
+                        for cls in classes
+                        if cls in y_true.values or cls in y_pred.values
+                    ]
+
+                    cm = confusion_matrix(y_true, y_pred, labels=classes)
+                    n_total = np.sum(cm)
+
+                    row_totals = np.sum(cm, axis=1)
+                    col_totals = np.sum(cm, axis=0)
+
+                    # Producer's Accuracy = diagonal / row total (avoid division by zero)
+                    producer_acc = (
+                        np.divide(
+                            np.diag(cm),
+                            row_totals,
+                            out=np.zeros_like(np.diag(cm), dtype=float),
+                            where=row_totals != 0,
+                        )
+                        * 100
                     )
-                    * 100
-                )
 
-                # Overall Accuracy
-                overall_acc = np.sum(np.diag(cm)) / n_total * 100
+                    # User's Accuracy = diagonal / column total (avoid division by zero)
+                    user_acc = (
+                        np.divide(
+                            np.diag(cm),
+                            col_totals,
+                            out=np.zeros_like(np.diag(cm), dtype=float),
+                            where=col_totals != 0,
+                        )
+                        * 100
+                    )
 
-                # Kappa Accuracy
-                kappa = cohen_kappa_score(y_true, y_pred) * 100
+                    # Overall Accuracy
+                    overall_acc = np.sum(np.diag(cm)) / n_total * 100
 
-                # Errors
-                commission_error = 100 - user_acc
-                omission_error = 100 - producer_acc
+                    # Kappa Accuracy
+                    kappa = cohen_kappa_score(y_true, y_pred) * 100
 
-                return {
-                    "cm": cm,
-                    "classes": classes,
-                    "row_totals": row_totals,
-                    "col_totals": col_totals,
-                    "producer_acc": producer_acc,
-                    "user_acc": user_acc,
-                    "commission_error": commission_error,
-                    "omission_error": omission_error,
-                    "overall_acc": overall_acc,
-                    "kappa": kappa,
-                    "n_total": n_total,
-                }
+                    # Errors
+                    commission_error = 100 - user_acc
+                    omission_error = 100 - producer_acc
 
-            def display_confusion_matrix_html(results):
-                cm = results["cm"]
-                classes = results["classes"]
-                row_totals = results["row_totals"]
-                col_totals = results["col_totals"]
-                producer_acc = results["producer_acc"]
-                user_acc = results["user_acc"]
-                commission_error = results["commission_error"]
-                omission_error = results["omission_error"]
-                overall_acc = results["overall_acc"]
-                kappa = results["kappa"]
-                n_total = results["n_total"]
+                    return {
+                        "cm": cm,
+                        "classes": classes,
+                        "row_totals": row_totals,
+                        "col_totals": col_totals,
+                        "producer_acc": producer_acc,
+                        "user_acc": user_acc,
+                        "commission_error": commission_error,
+                        "omission_error": omission_error,
+                        "overall_acc": overall_acc,
+                        "kappa": kappa,
+                        "n_total": n_total,
+                    }
 
-                html_content = """
-                <style>
-                .conf-matrix {{
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin: 10px 0;
-                    font-family: Arial, sans-serif;
-                    font-size: 13px;
-                    border: 2px solid #333;
-                }}
-                .conf-matrix th {{
-                    background: #E4EFE7;
-                    border: 1px solid #333;
-                    padding: 10px 6px;
-                    text-align: center;
-                    font-weight: bold;
-                    color: #333;
-                }}
-                .conf-matrix td {{
-                    border: 1px solid #333;
-                    padding: 8px 6px;
-                    text-align: center;
-                    background: white;
-                }}
-                .conf-matrix .header-main {{
-                    background: #E4EFE7;
-                    font-weight: bold;
-                    color: #333;
-                }}
-                .conf-matrix .diagonal {{
-                    background: #3c5e51;
-                    color: white;
-                    font-weight: bold;
-                }}
-                .conf-matrix .important {{
-                    background: #3c5e51;
-                    color: white;
-                    font-weight: bold;
-                }}
-                </style>
-                
-                <table class="conf-matrix">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="header-main">Data Hasil<br/>Klasifikasi</th>
-                            <th colspan="{num_classes}" class="header-main">Data Uji Klasifikasi (Referensi)</th>
-                            <th rowspan="2" class="header-main">Total<br/>Baris</th>
-                            <th rowspan="2" class="header-main">Producer<br/>Accuracy<br/>(%)</th>
-                            <th rowspan="2" class="header-main">Kesalahan<br/>Omisi<br/>(%)</th>
-                        </tr>
-                        <tr>
-                """.format(
-                    num_classes=len(classes)
-                )
+                def display_confusion_matrix_html(results):
+                    cm = results["cm"]
+                    classes = results["classes"]
+                    row_totals = results["row_totals"]
+                    col_totals = results["col_totals"]
+                    producer_acc = results["producer_acc"]
+                    user_acc = results["user_acc"]
+                    commission_error = results["commission_error"]
+                    omission_error = results["omission_error"]
+                    overall_acc = results["overall_acc"]
+                    kappa = results["kappa"]
+                    n_total = results["n_total"]
 
-                # Add class headers
-                for cls in classes:
-                    html_content += '<th class="header-main">{}</th>'.format(cls)
+                    html_content = """
+                    <style>
+                    .conf-matrix {{
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin: 10px 0;
+                        font-family: Arial, sans-serif;
+                        font-size: 13px;
+                        border: 2px solid #333;
+                    }}
+                    .conf-matrix th {{
+                        background: #E4EFE7;
+                        border: 1px solid #333;
+                        padding: 10px 6px;
+                        text-align: center;
+                        font-weight: bold;
+                        color: #333;
+                    }}
+                    .conf-matrix td {{
+                        border: 1px solid #333;
+                        padding: 8px 6px;
+                        text-align: center;
+                        background: white;
+                    }}
+                    .conf-matrix .header-main {{
+                        background: #E4EFE7;
+                        font-weight: bold;
+                        color: #333;
+                    }}
+                    .conf-matrix .diagonal {{
+                        background: #3c5e51;
+                        color: white;
+                        font-weight: bold;
+                    }}
+                    .conf-matrix .important {{
+                        background: #3c5e51;
+                        color: white;
+                        font-weight: bold;
+                    }}
+                    </style>
+                    
+                    <table class="conf-matrix">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="header-main">Data Hasil<br/>Klasifikasi</th>
+                                <th colspan="{num_classes}" class="header-main">Data Uji Klasifikasi</th>
+                                <th rowspan="2" class="header-main">Total<br/>Baris</th>
+                                <th rowspan="2" class="header-main">Producer<br/>Accuracy<br/>(%)</th>
+                                <th rowspan="2" class="header-main">Kesalahan<br/>Omisi<br/>(%)</th>
+                            </tr>
+                            <tr>
+                    """.format(
+                        num_classes=len(classes)
+                    )
 
-                html_content += "</tr></thead><tbody>"
+                    # Add class headers
+                    for cls in classes:
+                        html_content += '<th class="header-main">{}</th>'.format(cls)
 
-                # Add data rows
-                for i, cls in enumerate(classes):
-                    html_content += '<tr><td class="header-main">{}</td>'.format(cls)
+                    html_content += "</tr></thead><tbody>"
 
-                    # Add confusion matrix values
-                    for j in range(len(classes)):
-                        cell_class = "diagonal" if i == j else ""
-                        html_content += '<td class="{}">{}</td>'.format(
-                            cell_class, cm[i][j]
+                    # Add data rows
+                    for i, cls in enumerate(classes):
+                        html_content += '<tr><td class="header-main">{}</td>'.format(
+                            cls
                         )
 
-                    # Add row total, producer accuracy, omission error
+                        # Add confusion matrix values
+                        for j in range(len(classes)):
+                            cell_class = "diagonal" if i == j else ""
+                            html_content += '<td class="{}">{}</td>'.format(
+                                cell_class, cm[i][j]
+                            )
+
+                        # Add row total, producer accuracy, omission error
+                        html_content += """
+                        <td>{row_total}</td>
+                        <td>{producer_acc:.1f}</td>
+                        <td>{omis_err:.1f}</td>
+                        </tr>""".format(
+                            row_total=row_totals[i],
+                            producer_acc=producer_acc[i],
+                            omis_err=omission_error[i],
+                        )
+
+                    # Add totals row
+                    html_content += '<tr><td class="header-main">Total Kolom</td>'
+                    for total in col_totals:
+                        html_content += "<td>{}</td>".format(total)
+                    html_content += "<td>{}</td><td>-</td><td>-</td></tr>".format(
+                        n_total
+                    )
+
+                    # Add user accuracy row
+                    html_content += '<tr><td class="header-main">User Accuracy (%)</td>'
+                    for acc in user_acc:
+                        if np.isnan(acc) or acc == 0:
+                            html_content += "<td>0.0</td>"
+                        else:
+                            html_content += "<td>{:.1f}</td>".format(acc)
+                    html_content += "<td>-</td><td>-</td><td>-</td></tr>"
+
+                    # Add commission error row
+                    html_content += (
+                        '<tr><td class="header-main">Kesalahan Komisi (%)</td>'
+                    )
+                    for error in commission_error:
+                        if np.isnan(error) or error == 100:
+                            html_content += "<td>0.0</td>"
+                        else:
+                            html_content += "<td>{:.1f}</td>".format(error)
+                    html_content += "<td>-</td><td>-</td><td>-</td></tr>"
+
+                    # Add overall accuracy row
                     html_content += """
-                    <td>{row_total}</td>
-                    <td>{producer_acc:.1f}</td>
-                    <td>{omis_err:.1f}</td>
+                    <tr>
+                        <td class="header-main"><strong>Overall Accuracy</strong></td>
+                        <td colspan="{num_classes}" class="important">{overall_acc:.2f}%</td>
+                        <td>-</td><td>-</td><td>-</td>
                     </tr>""".format(
-                        row_total=row_totals[i],
-                        producer_acc=producer_acc[i],
-                        omis_err=omission_error[i],
+                        num_classes=len(classes), overall_acc=overall_acc
                     )
 
-                # Add totals row
-                html_content += '<tr><td class="header-main">Total Kolom</td>'
-                for total in col_totals:
-                    html_content += "<td>{}</td>".format(total)
-                html_content += "<td>{}</td><td>-</td><td>-</td></tr>".format(n_total)
-
-                # Add user accuracy row
-                html_content += '<tr><td class="header-main">User Accuracy (%)</td>'
-                for acc in user_acc:
-                    if np.isnan(acc) or acc == 0:
-                        html_content += "<td>0.0</td>"
-                    else:
-                        html_content += "<td>{:.1f}</td>".format(acc)
-                html_content += "<td>-</td><td>-</td><td>-</td></tr>"
-
-                # Add commission error row
-                html_content += '<tr><td class="header-main">Kesalahan Komisi (%)</td>'
-                for error in commission_error:
-                    if np.isnan(error) or error == 100:
-                        html_content += "<td>0.0</td>"
-                    else:
-                        html_content += "<td>{:.1f}</td>".format(error)
-                html_content += "<td>-</td><td>-</td><td>-</td></tr>"
-
-                # Add overall accuracy row
-                html_content += """
-                <tr>
-                    <td class="header-main"><strong>Overall Accuracy</strong></td>
-                    <td colspan="{num_classes}" class="important">{overall_acc:.2f}%</td>
-                    <td>-</td><td>-</td><td>-</td>
-                </tr>""".format(
-                    num_classes=len(classes), overall_acc=overall_acc
-                )
-
-                # Add kappa accuracy row
-                html_content += """
-                <tr>
-                    <td class="header-main"><strong>Kappa Accuracy</strong></td>
-                    <td colspan="{num_classes}" class="important">{kappa:.2f}%</td>
-                    <td>-</td><td>-</td><td>-</td>
-                </tr>
-                </tbody></table>""".format(
-                    num_classes=len(classes), kappa=kappa
-                )
-
-                return html_content
-
-            # Hitung dan tampilkan matriks konfusi
-            results = create_confusion_matrix(df)
-
-            # # Tampilkan metrics summary
-            # col1, col2, col3, col4 = st.columns(4)
-            # with col1:
-            #     st.metric("Total Sampel", results["n_total"])
-            # with col2:
-            #     st.metric("Akurasi yang Diharapkan", f"85%")
-            # with col3:
-            #     st.metric("Overall Accuracy", f"{results['overall_acc']:.2f}%")
-            # with col4:
-            #     st.metric("Kappa Accuracy", f"{results['kappa']:.2f}%")
-
-            # Tampilkan matriks konfusi
-            html_content = display_confusion_matrix_html(results)
-            st.markdown(html_content, unsafe_allow_html=True)
-
-        except Exception as e:
-            st.error(f"Error dalam membuat matriks konfusi: {str(e)}")
-
-    with st.expander("**Tabel Sampel Validasi Tahun 2024**"):
-        try:
-            df = pd.read_csv("csv/validasiPL2024.csv")
-
-            def get_base64_encoded_image(image_path):
-                try:
-                    with open(image_path, "rb") as img_file:
-                        return base64.b64encode(img_file.read()).decode()
-                except Exception as e:
-                    return None
-
-            def path_to_image_html(path):
-                base64_img = get_base64_encoded_image(path)
-                if base64_img:
-                    return f'<img src="data:image/jpg;base64,{base64_img}" width="80" height="100" style="object-fit: cover; border-radius: 2px;">'
-                else:
-                    return "❌ Foto tidak ditemukan."
-
-            def create_image_path(kode):
-                import os
-
-                # Ambil 2 digit pertama dari kode
-                kode_prefix = kode[:2]
-
-                # Semua kemungkinan pola nama file berdasarkan jenis penutup lahan
-                possible_patterns = ["veg24", "urb24", "air24", "ope24"]
-                possible_paths = []
-
-                # Buat semua kemungkinan path dengan ekstensi JPG dan jpg
-                for pattern in possible_patterns:
-                    possible_paths.extend(
-                        [
-                            f"img/img_val_2024/{kode_prefix}{pattern}.JPG",
-                            f"img/img_val_2024/{kode_prefix}{pattern}.jpg",
-                        ]
+                    # Add kappa accuracy row
+                    html_content += """
+                    <tr>
+                        <td class="header-main"><strong>Kappa Accuracy</strong></td>
+                        <td colspan="{num_classes}" class="important">{kappa:.2f}%</td>
+                        <td>-</td><td>-</td><td>-</td>
+                    </tr>
+                    </tbody></table>""".format(
+                        num_classes=len(classes), kappa=kappa
                     )
 
-                # Cek path mana yang ada
-                for path in possible_paths:
-                    if os.path.exists(path):
-                        return path
+                    return html_content
 
-                # Return path pertama sebagai fallback
-                return possible_paths[0]
+                # Hitung dan tampilkan matriks konfusi
+                results = create_confusion_matrix(df)
 
-            # Tambahkan kolom Foto berdasarkan kode masing-masing
-            df["Foto"] = df["Kode"].apply(create_image_path)
+                # Tampilkan matriks konfusi
+                html_content = display_confusion_matrix_html(results)
+                st.markdown(html_content, unsafe_allow_html=True)
 
-            @st.cache_data
-            def convert_df_to_html(input_df):
-                return input_df.to_html(
-                    escape=False,
-                    formatters=dict(Foto=path_to_image_html),
-                    table_id="validasi-table",
-                    classes="table table-striped",
-                    index=False,
+            except Exception as e:
+                st.error(f"Error dalam membuat matriks konfusi: {str(e)}")
+
+        with st.expander("**📍 Tabel Sampel Penutup Lahan 2024**"):
+            try:
+                df = pd.read_csv("csv/validasiPL2024.csv")
+
+                def get_base64_encoded_image(image_path):
+                    try:
+                        with open(image_path, "rb") as img_file:
+                            return base64.b64encode(img_file.read()).decode()
+                    except Exception as e:
+                        return None
+
+                def path_to_image_html(path):
+                    base64_img = get_base64_encoded_image(path)
+                    if base64_img:
+                        return f'<img src="data:image/jpg;base64,{base64_img}" width="80" height="100" style="object-fit: cover; border-radius: 2px;">'
+                    else:
+                        return "❌ Foto tidak ditemukan."
+
+                def create_image_path(kode):
+                    import os
+
+                    # Ambil 2 digit pertama dari kode
+                    kode_prefix = kode[:2]
+
+                    # Semua kemungkinan pola nama file berdasarkan jenis penutup lahan
+                    possible_patterns = ["veg24", "urb24", "air24", "ope24"]
+                    possible_paths = []
+
+                    # Buat semua kemungkinan path dengan ekstensi JPG dan jpg
+                    for pattern in possible_patterns:
+                        possible_paths.extend(
+                            [
+                                f"img/img_val_2024/{kode_prefix}{pattern}.JPG",
+                                f"img/img_val_2024/{kode_prefix}{pattern}.jpg",
+                            ]
+                        )
+
+                    # Cek path mana yang ada
+                    for path in possible_paths:
+                        if os.path.exists(path):
+                            return path
+
+                    # Return path pertama sebagai fallback
+                    return possible_paths[0]
+
+                # Tambahkan kolom Foto berdasarkan kode masing-masing
+                df["Foto"] = df["Kode"].apply(create_image_path)
+
+                @st.cache_data
+                def convert_df_to_html(input_df):
+                    return input_df.to_html(
+                        escape=False,
+                        formatters=dict(Foto=path_to_image_html),
+                        table_id="validasi-table",
+                        classes="table table-striped",
+                        index=False,
+                    )
+
+                html_table = convert_df_to_html(df)
+                st.markdown(
+                    """
+                <style>
+                #validasi-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 0px 0 10px 0;
+                }
+                #validasi-table th, #validasi-table td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: center;
+                    vertical-align: middle;
+                }
+                #validasi-table th {
+                    background-color: #E4EFE7;
+                    font-weight: bold;
+                }
+                #validasi-table img {
+                    margin: 0 auto;
+                    border-radius: 4px;
+                    display: block;
+                }
+                .stExpander > div > div > div > div {
+                    padding-top: 0rem !important;
+                }
+                </style>
+                """,
+                    unsafe_allow_html=True,
                 )
 
-            html_table = convert_df_to_html(df)
-            st.markdown(
-                """
-            <style>
-            #validasi-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 0px 0 10px 0;
-            }
-            #validasi-table th, #validasi-table td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: center;
-                vertical-align: middle;
-            }
-            #validasi-table th {
-                background-color: #E4EFE7;
-                font-weight: bold;
-            }
-            #validasi-table img {
-                margin: 0 auto;
-                border-radius: 4px;
-                display: block;
-            }
-            .stExpander > div > div > div > div {
-                padding-top: 0rem !important;
-            }
-            </style>
-            """,
-                unsafe_allow_html=True,
+                st.markdown(
+                    '<div style="margin-top: -20px;"></div>', unsafe_allow_html=True
+                )
+
+                st.markdown(html_table, unsafe_allow_html=True)
+
+            except FileNotFoundError:
+                st.error("File 'csv/validasiPL2024.csv' tidak ditemukan!")
+            except Exception as e:
+                st.error(f"Terjadi kesalahan: {str(e)}")
+
+with tab4:
+    st.subheader("**Perbandingan Peta Aktual vs Prediksi**")
+    with st.container(border=True):
+        st.image(
+            "img/peta_3_pl.png",
+            caption="Perbandingan Peta Penutup Lahan Kawasan Perkotaan Yogyakarta dan Sekitarnya",
+        )
+
+    st.subheader("**Metrik Evaluasi dan Matriks Konfusi**")
+    col1_metrik, col2_matriks = st.columns([2, 2])
+    with col1_metrik:
+        with st.container(border=True):
+            st.image(
+                "img/metrik_evaluasi_prediksi_pll.png",
+                caption="Metrik Evaluasi Model Prediksi CA-Markov Tahun 2024",
+            )
+    with col2_matriks:
+        with st.container(border=True):
+            st.image(
+                "img/matriks_konfusi_prediksi_pl.png",
+                caption="Matriks Konfusi Prediksi CA-Markov Tahun 2024",
             )
 
-            st.markdown(
-                '<div style="margin-top: -20px;"></div>', unsafe_allow_html=True
-            )
-
-            st.markdown(html_table, unsafe_allow_html=True)
-
-        except FileNotFoundError:
-            st.error("File 'csv/validasiPL2024.csv' tidak ditemukan!")
-        except Exception as e:
-            st.error(f"Terjadi kesalahan: {str(e)}")
-
-
-elif selected_tab == "⚙️ Model":
-    st.write("Page under construction. Coming soon!")
+    st.subheader("**Laporan Klasifikasi**")
+    with st.container(border=True):
+        st.image(
+            "img/report_prediksi_pl.png",
+            caption="Laporan Klasifikasi Prediksi CA-Markov Tahun 2024",
+        )
