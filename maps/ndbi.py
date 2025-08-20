@@ -18,87 +18,83 @@ from scipy import stats
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 st.set_page_config(
-    page_title="Dashboard NDBI",
+    page_title="NDBI — Spatify",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
+# ==============================================================================
+# CUSTOM CSS
+# ==============================================================================
 st.markdown(
     """
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
     .main {
         padding-top: 0rem !important;
     }
     .block-container {
-        padding-top: 0.2rem !important;
+        padding-top: 0.5rem !important;
     }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    """
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        div[data-testid="stMarkdownContainer"] * {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .stMarkdown p {
-            font-size: 14px !important;
-            margin-bottom: 8px !important;
-        }
-        .stSubheader {
-            font-size: 16px !important;
-            margin-bottom: 12px !important;
-        }
-        
-        div[data-testid="stMarkdownContainer"] h1 {
-            color: #000000 !important;
-            font-weight: 600 !important;
-        }
-        
-        .stApp > header {
-            color: #000000 !important;
-        }
-        .stApp {
-            color: #000000 !important;
-        }
-        
-        .stMarkdown {
-            color: #000000 !important;
-        }
-        
-        div[data-testid="stVerticalBlockBorderWrapper"] {
-            padding: 12px !important;
-        }
-        
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-            border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-            border-radius: 1px !important;
-            padding: 12px !important;
-            # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-            # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-            transition: all 0.3s ease !important;
-        }
-
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-            transform: translateY(-4px) !important;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-            border-color: #fdfaf6 !important;
-        }
-        
-        /* Mengurangi Padding Top Halaman Utama */
-        .block-container {
-            padding-top: 0rem !important;
-            max-width: 100% !important;
-        }
-        
-        .main {
-            padding-top: 0rem !important;
-        }
+    .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    div[data-testid="stMarkdownContainer"] * {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    .stMarkdown p {
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+    }
+    .stSubheader {
+        font-size: 16px !important;
+        margin-bottom: 12px !important;
+    }
+    div[data-testid="stMarkdownContainer"] h1 {
+        color: #000000 !important;
+        font-weight: 600 !important;
+    }
+    .stApp > header {
+        color: #000000 !important;
+    }
+    .stApp {
+        color: #000000 !important;
+    }
+    .stMarkdown {
+        color: #000000 !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        padding: 12px !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 1px !important;
+        padding: 12px !important;
+        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+        transition: all 0.3s ease !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        border-color: #fdfaf6 !important;
+    }           
+    .stTabs [data-baseweb="tab-highlight"] {
+        background-color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button:hover {
+        color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button:hover [data-baseweb="tab-highlight"] {
+        background-color: #705c53 !important;
+    }
+    .stTabs {
+        margin-top: 0rem !important;
+    }
     </style>
 """,
     unsafe_allow_html=True,
@@ -112,6 +108,7 @@ stats_by_year = {
     "2014": {"min": -0.564, "max": 0.819, "mean": -0.179},
     "2019": {"min": -0.581, "max": 0.940, "mean": -0.161},
     "2024": {"min": -0.604, "max": 0.454, "mean": -0.162},
+    "2029": {"min": -0.471, "max": 0.228, "mean": -0.161},
 }
 
 # Dictionary Threshold
@@ -122,14 +119,17 @@ threshold_dict = {
     "2014": {"low": -0.302, "medium": -0.179, "high": -0.056},
     "2019": {"low": -0.301, "medium": -0.161, "high": -0.022},
     "2024": {"low": -0.309, "medium": -0.162, "high": -0.015},
+    "2029": {"low": -0.303, "medium": -0.161, "high": -0.020},
 }
 
 
-# Function untuk Load Data Statistik Kecamatan dari CSV
+# ==============================================================================
+# DEKLARASI FUNGSI
+# ==============================================================================
 @st.cache_data
-def load_kecamatan_stats():
+def load_kec_stats():
     """
-    Load statistik NDBI per kecamatan dari file CSV
+    Load CSV Statistik NDBI tiap Kecamatan.
     """
     csv_path = "./csv/ndbiStatsKec.csv"
     try:
@@ -145,10 +145,9 @@ def load_kecamatan_stats():
         return pd.DataFrame()
 
 
-# Function untuk Get Data Kecamatan Berdasarkan Tahun
 def get_kecamatan_data_by_year(df, year):
     """
-    Filter data kecamatan berdasarkan tahun
+    Filter NDBI Kecamatan Berdasarkan Tahun.
     """
     if df.empty:
         return {}
@@ -170,8 +169,10 @@ def get_kecamatan_data_by_year(df, year):
     return kecamatan_dict
 
 
-# Function Condition untuk Menentukan Kapanewon/Kemantren Toponim
 def get_toponim(wadmkk):
+    """
+    Penentuan Istilah Kapanewon/Kemantren Berdasarkan Kabupaten/Kota (WADMKK).
+    """
     if "Sleman" in wadmkk or "Bantul" in wadmkk:
         return "Kapanewon"
     elif "Yogyakarta" in wadmkk:
@@ -180,8 +181,30 @@ def get_toponim(wadmkk):
         return "Kecamatan"
 
 
-# Function untuk Menambahkan SHP Batas Administrasi ke Peta Folium
-def add_shapefile_to_map(map_obj, shapefile_path):
+@st.cache_data
+def get_kecamatan_bounds(namobj):
+    """
+    Get bounds of specific kecamatan from shapefile.
+    """
+    shapefile_path = "shp/aoi_kpy.shp"
+    try:
+        gdf = gpd.read_file(shapefile_path)
+
+        if gdf.crs != "EPSG:4326":
+            gdf = gdf.to_crs("EPSG:4326")
+
+        kec_data = gdf[gdf["NAMOBJ"] == namobj]
+
+        if not kec_data.empty:
+            bounds = kec_data.total_bounds
+            return [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
+        else:
+            return None
+    except Exception as e:
+        return None
+
+
+def add_shp_to_map(map_obj, shapefile_path):
     try:
         # Geopandas untuk Membaca SHP
         gdf = gpd.read_file(shapefile_path)
@@ -240,7 +263,6 @@ def add_shapefile_to_map(map_obj, shapefile_path):
         return False
 
 
-# Function untuk Menambahkan Legenda ke Peta Folium
 def add_legend_to_map(map_obj, thresholds):
     legend_html = f"""
     <div style="position: fixed; 
@@ -280,7 +302,6 @@ def add_legend_to_map(map_obj, thresholds):
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
-# Function untuk Menambahkan GeoTiff ke Peta Folium
 def add_geotiff_to_map(map_obj, tif_path, thresholds):
     try:
         with rasterio.open(tif_path) as src:
@@ -361,33 +382,43 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
         return False
 
 
-# Load Data Statistik Kecamatan
-kecamatan_stats_df = load_kecamatan_stats()
+# ==============================================================================
+# MAIN EXECUTION
+# ==============================================================================
 
-st.subheader("Normalized Difference Built-Up Index")
+kecamatan_stats_df = load_kec_stats()
 
-selected_tab = st.pills(
-    "**Lihat Analisis:**",
+st.header("Normalized Difference Built-Up Index")
+(
+    tab1,
+    tab2,
+    tab3,
+    tab4,
+) = st.tabs(
     [
         "🗺️ Peta",
         "📈 Tren",
         "✅ Validasi",
-    ],
-    selection_mode="single",
-    default="🗺️ Peta",
+        "⚙️ Model",
+    ]
 )
 
-# Peta
-if selected_tab == "🗺️ Peta":
-    col1_peta, col2_peta = st.columns([2.6, 1.4])
+# ==============================================================================
+# SECTION 1: PETA
+# ==============================================================================
+with tab1:
+    st.badge(
+        "**Peta NDBI di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
+        color="primary",
+    )
+
+    col1_peta, col2_peta = st.columns([2.5, 1.5])
 
     with col2_peta:
-        # Container Selectbox Tahun
         with st.container(border=True):
-            # Selectbox Tahun
             option = st.selectbox(
                 "**Pilih Tahun**",
-                ["1999", "2004", "2009", "2014", "2019", "2024"],
+                ["1999", "2004", "2009", "2014", "2019", "2024", "2029"],
                 index=0,
                 placeholder="Tahun",
             )
@@ -464,10 +495,24 @@ if selected_tab == "🗺️ Peta":
                 st.write(description)
 
     with col1_peta:
+        if selected_kecamatan:
+            kec_bounds = get_kecamatan_bounds(selected_kecamatan)
+            if kec_bounds:
+                center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
+                center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
+                map_center = [center_lat, center_lon]
+                zoom_level = 14
+            else:
+                map_center = [-7.764326411862208, 110.3721676814108]
+                zoom_level = 13
+        else:
+            map_center = [-7.764326411862208, 110.3721676814108]
+            zoom_level = 10.5
+
         # Buat Peta Folium
         m = folium.Map(
-            location=[-7.764326411862208, 110.3721676814108],
-            zoom_start=10.5,
+            location=map_center,
+            zoom_start=zoom_level,
             tiles=None,
         )
 
@@ -511,7 +556,7 @@ if selected_tab == "🗺️ Peta":
 
         # Panggil GeoTiff dari Aset Lokal
         if option == "2029":
-            tif_path = "tif/ndbi2024kpy.tif"
+            tif_path = "tif/ndbi2029kpy.tif"
         else:
             tif_path = f"tif/ndbi{option}kpy.tif"
 
@@ -527,7 +572,7 @@ if selected_tab == "🗺️ Peta":
         # Cek Ketersediaan AOI, Panggil Function Batas AOI, dan Tampilkan ke Peta
         shapefile_path = "shp/aoi_kpy.shp"
         if os.path.exists(shapefile_path):
-            add_shapefile_to_map(m, shapefile_path)
+            add_shp_to_map(m, shapefile_path)
         else:
             st.warning(f"File Shapefile tidak ditemukan: {shapefile_path}")
 
@@ -559,8 +604,10 @@ if selected_tab == "🗺️ Peta":
         m.get_root().html.add_child(folium.Element(css))
         st_data = st_folium(m, use_container_width=True, height=597)
 
-elif selected_tab == "📈 Tren":
-    # Grafik Tren NDBI Perkotaan vs Non-Perkotaan
+# ==============================================================================
+# SECTION 2: TREN
+# ==============================================================================
+with tab2:
     df_urban_rural = pd.read_csv("./csv/ndbiStatsKec.csv")
 
     ndbi_urban_rural = (
@@ -571,9 +618,9 @@ elif selected_tab == "📈 Tren":
         index="Tahun", columns="Zona", values="mean"
     )
 
-    # Row Diagram Garis & Ranking NDBI
+    # Grafik Garis Tren NDBI
     st.badge(
-        "**Tren NDBI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
+        "**Tren NDBI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.3, 1.7])
@@ -612,7 +659,16 @@ elif selected_tab == "📈 Tren":
                     )
                 )
 
-            # Update Layout Grafik
+            fig.add_vline(
+                x=2024,
+                line_width=2,
+                line_dash="dash",
+                line_color="grey",
+                annotation_text="Proyeksi",
+                annotation_position="top right",
+            )
+
+            # Update Tren
             fig.update_layout(
                 xaxis=dict(
                     title=dict(
@@ -620,7 +676,7 @@ elif selected_tab == "📈 Tren":
                         font=dict(family="Poppins", size=12, color="black"),
                     ),
                     tickfont=dict(family="Poppins", size=12, color="black"),
-                    tickvals=[1999, 2004, 2009, 2014, 2019, 2024],
+                    tickvals=[1999, 2004, 2009, 2014, 2019, 2024, 2029],
                     gridcolor="#9A9A9A",
                 ),
                 yaxis=dict(
@@ -634,11 +690,11 @@ elif selected_tab == "📈 Tren":
                     # range=[22, 40],
                 ),
                 legend=dict(
-                    orientation="v",
+                    orientation="h",
                     yanchor="top",
-                    y=1,
-                    xanchor="left",
-                    x=1.02,
+                    y=-0.3,
+                    xanchor="center",
+                    x=0.5,
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
@@ -658,6 +714,7 @@ elif selected_tab == "📈 Tren":
             2014: {"mean": -0.179},
             2019: {"mean": -0.161},
             2024: {"mean": -0.162},
+            2029: {"mean": -0.161},
         }
 
         years_tren = sorted(mean_by_year.keys())
@@ -805,7 +862,11 @@ elif selected_tab == "📈 Tren":
         # Display Bar Plot
         st.plotly_chart(fig, use_container_width=True)
 
-elif selected_tab == "✅ Validasi":
+# ==============================================================================
+# SECTION 3: VALIDASI
+# ==============================================================================
+
+with tab3:
     try:
         # Load CSV Sampel NDBI untuk Validasi
         validation_data = pd.read_csv("csv/ndbiSampelValidasi.csv")
@@ -1102,8 +1163,8 @@ elif selected_tab == "✅ Validasi":
 
         # Tambahkan Batas Administrasi ke Kedua Peta
         if os.path.exists(shapefile_path):
-            add_shapefile_to_map(dual_map.m1, shapefile_path)
-            add_shapefile_to_map(dual_map.m2, shapefile_path)
+            add_shp_to_map(dual_map.m1, shapefile_path)
+            add_shp_to_map(dual_map.m2, shapefile_path)
 
         # Function untuk Menambahkan Legenda Universal
         def add_universal_legend_to_map(map_obj, title):
@@ -1199,3 +1260,13 @@ elif selected_tab == "✅ Validasi":
         - [3] Schmidt, J., & Osebold, R. (2017). Environmental Management Systems as A Driver for Sustainability: State of Implementation, Benefits, and Barriers in German Construction Companies. *Journal of Civil Engineering and Management*, 23(1). 150-162. https://doi.org/10.3846/13923730.2014.946441
         """
         )
+
+# ==============================================================================
+# SECTION 4: MODEL
+# ==============================================================================
+
+with tab4:
+    st.badge(
+        "**Evaluasi Model Proyeksi XGBoost**",
+        color="primary",
+    )
