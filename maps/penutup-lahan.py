@@ -4,6 +4,7 @@ import pandas as pd
 import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import folium
@@ -74,14 +75,15 @@ st.markdown(
         padding: 12px !important;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-        border-radius: 10px !important;
+        border: 0.5px solid rgba(0, 0, 0, 0.0.1) !important;
+        border-radius: 1px !important;
         padding: 12px !important;
+        # box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
         transition: all 0.3s ease !important;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
         transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
         border-color: #fdfaf6 !important;
     }     
     .stTabs [data-baseweb="tab-highlight"] {
@@ -1029,45 +1031,173 @@ with tab4:
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([1.525, 2.475])
+    import plotly.graph_objects as go
+
+    col1_metrik_img, col2_metrik_insight = st.columns([1.7, 2.3])
+
     with col1_metrik_img:
         with st.container(border=True):
-            st.image(
-                "img/metrik_evaluasi_prediksi_pl2.png",
-                caption="Plot Metrik Evaluasi Model Prediksi 2024",
+            fig = go.Figure(
+                data=[
+                    go.Bar(
+                        name="Akurasi Keseluruhan",
+                        x=["Akurasi Keseluruhan"],
+                        y=[0.8963],
+                        text=["0.8963"],
+                        textposition="outside",
+                        marker_color="#87B6B4",
+                        textfont=dict(family="Poppins", size=12, color="black"),
+                    ),
+                    go.Bar(
+                        name="Koefisien Kappa",
+                        x=["Koefisien Kappa"],
+                        y=[0.8351],
+                        text=["0.8351"],
+                        textposition="outside",
+                        marker_color="#184D4B",
+                        textfont=dict(family="Poppins", size=12, color="black"),
+                    ),
+                ]
             )
+
+            fig.update_layout(
+                xaxis={"tickfont": {"family": "Poppins", "size": 12, "color": "black"}},
+                yaxis={
+                    "title": {
+                        "text": "Nilai",
+                        "font": {"family": "Poppins", "size": 12, "color": "black"},
+                    },
+                    "tickfont": {"family": "Poppins", "size": 12, "color": "black"},
+                    "range": [0, 1],
+                },
+                legend={
+                    "orientation": "h",
+                    "yanchor": "top",
+                    "y": -0.15,
+                    "xanchor": "center",
+                    "x": 0.5,
+                    "font": {"family": "Poppins", "size": 12, "color": "black"},
+                },
+                font={"family": "Poppins"},
+                plot_bgcolor="#fdfaf6",
+                paper_bgcolor="#fdfaf6",
+                margin=dict(l=20, r=20, t=20, b=60),
+                height=263,
+                showlegend=True,
+            )
+
+            fig.update_xaxes(showgrid=False)
+            fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor="rgba(0,0,0,0.1)")
+
+            st.plotly_chart(fig, use_container_width=True)
 
     with col2_metrik_insight:
         with st.container(border=True):
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - Model prediksi penutup lahan mencapai akurasi :green-background[**89.63%**] setelah divalidasi dengan data aktual terkini.
-                - Koefisien *kappa* :green-background[**83.51%**] masuk ke dalam kategori ***almost perfect agreement***⁽¹⁾ yang menunjukkan tingkat kesepakatan yang **sangat baik**.
-                - Kedua metrik akurasi membuktikan bahwa model **dapat diandalkan** untuk proyeksi perubahan penutup lahan di masa depan.
+                - **Akurasi** model prediksi penutup lahan menunjukkan angka yang tinggi sebesar :green-background[**89.63%**] setelah dilakukan validasi dengan data aktual terkini.
+                - **Koefisien kappa** sebesar :green-background[**83.51%**] masuk ke dalam kategori ***almost perfect agreement***⁽¹⁾ yang menunjukkan tingkat kesepakatan yang **sangat baik**.
                 """,
                 unsafe_allow_html=True,
             )
-        with st.container(border=True):
-            st.write("**📌 Kesimpulan**")
-            st.markdown(
-                f"""
-                - **Model** Cellular Automata-Markov Chain dan XGBoost **layak digunakan** untuk memprediksi penutup lahan 2029.
-                """,
-                unsafe_allow_html=True,
+            st.success(
+                "✅ Model **LAYAK** untuk prediksi perubahan penutup lahan tahun 2029"
             )
 
     st.badge(
         "**Classification Report**",
         color="primary",
     )
-    col2_classification_report, col2_report_insight = st.columns([2.33, 1.67])
+    col2_classification_report, col2_report_insight = st.columns([2.45, 1.55])
     with col2_classification_report:
         with st.container(border=True):
-            st.image(
-                "img/report_prediksi_pl2.png",
-                caption="Classification Report Prediksi 2024",
+            classes = ["Vegetasi", "Tubuh Air", "Lahan Terbangun", "Lahan Terbuka"]
+            precision = [0.83, 0.30, 0.77, 0.44]
+            recall = [0.94, 0.44, 0.78, 0.08]
+            f1_score = [0.88, 0.36, 0.77, 0.14]
+
+            colors = {
+                "precision": "#1C352D",
+                "recall": "#A6B28B",
+                "f1_score": "#F5C9B0",
+            }
+
+            fig = go.Figure()
+
+            fig.add_trace(
+                go.Bar(
+                    name="Precision",
+                    x=classes,
+                    y=precision,
+                    text=[f"{val:.2f}" for val in precision],
+                    textposition="outside",
+                    marker_color=colors["precision"],
+                    textfont=dict(family="Poppins", size=12, color="black"),
+                )
             )
+
+            fig.add_trace(
+                go.Bar(
+                    name="Recall",
+                    x=classes,
+                    y=recall,
+                    text=[f"{val:.2f}" for val in recall],
+                    textposition="outside",
+                    marker_color=colors["recall"],
+                    textfont=dict(family="Poppins", size=12, color="black"),
+                )
+            )
+
+            fig.add_trace(
+                go.Bar(
+                    name="F1-Score",
+                    x=classes,
+                    y=f1_score,
+                    text=[f"{val:.2f}" for val in f1_score],
+                    textposition="outside",
+                    marker_color=colors["f1_score"],
+                    textfont=dict(family="Poppins", size=12, color="black"),
+                )
+            )
+
+            fig.update_layout(
+                xaxis={
+                    "title": {
+                        "text": "Kelas Penutup Lahan",
+                        "font": {"family": "Poppins", "size": 12, "color": "black"},
+                    },
+                    "tickfont": {"family": "Poppins", "size": 12, "color": "black"},
+                },
+                yaxis={
+                    "title": {
+                        "text": "Skor",
+                        "font": {"family": "Poppins", "size": 12, "color": "black"},
+                    },
+                    "tickfont": {"family": "Poppins", "size": 12, "color": "black"},
+                    "range": [0, 1],
+                },
+                legend={
+                    "orientation": "h",
+                    "yanchor": "top",
+                    "y": -0.15,
+                    "xanchor": "center",
+                    "x": 0.5,
+                    "font": {"family": "Poppins", "size": 12, "color": "black"},
+                },
+                font={"family": "Poppins"},
+                plot_bgcolor="#fdfaf6",
+                paper_bgcolor="#fdfaf6",
+                margin=dict(l=40, r=40, t=20, b=80),
+                showlegend=True,
+                barmode="group",
+                height=407,
+            )
+
+            fig.update_xaxes(showgrid=False)
+            fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor="rgba(0,0,0,0.1)")
+
+            st.plotly_chart(fig, use_container_width=True)
 
     with col2_report_insight:
         with st.container(border=True):
@@ -1096,12 +1226,153 @@ with tab4:
         color="primary",
     )
 
-    with st.container(border=True):
+    col_peta_perbandingan = st.columns(1)
+    with col_peta_perbandingan[0]:
         with st.container(border=True):
-            st.image(
-                "img/peta_3_pl2.png",
-                caption="Plot Perbandingan Peta Penutup Lahan Aktual vs Prediksi",
-            )
+            try:
+                with rasterio.open("tif/pl2024kpy.tif") as src:
+                    data_2024_actual = src.read(1)
+                    bounds_actual = src.bounds
+                    height, width = data_2024_actual.shape
+                    x_actual = np.linspace(
+                        bounds_actual.left, bounds_actual.right, width
+                    )
+                    y_actual = np.linspace(
+                        bounds_actual.bottom, bounds_actual.top, height
+                    )
+                    data_2024_actual = np.flipud(data_2024_actual)
+
+                with rasterio.open("tif/pl2004kpy.tif") as src:
+                    data_2024_pred = src.read(1)
+                    bounds_pred = src.bounds
+                    height, width = data_2024_pred.shape
+                    x_pred_24 = np.linspace(bounds_pred.left, bounds_pred.right, width)
+                    y_pred_24 = np.linspace(bounds_pred.bottom, bounds_pred.top, height)
+                    # Putar Posisi
+                    data_2024_pred = np.flipud(data_2024_pred)
+
+                with rasterio.open("tif/pl2029kpy.tif") as src:
+                    data_2029_pred = src.read(1)
+                    bounds_2029 = src.bounds
+                    height, width = data_2029_pred.shape
+                    x_pred_29 = np.linspace(bounds_2029.left, bounds_2029.right, width)
+                    y_pred_29 = np.linspace(bounds_2029.bottom, bounds_2029.top, height)
+                    # Putar Posisi
+                    data_2029_pred = np.flipud(data_2029_pred)
+
+                # Create colorscale
+                colorscale = [
+                    [0.0, "rgb(41, 75, 41)"],  # Vegetasi
+                    [0.33, "rgb(105, 195, 221)"],  # Tubuh Air
+                    [0.67, "rgb(205, 154, 77)"],  # Lahan Terbangun
+                    [1.0, "rgb(250, 245, 217)"],  # Lahan Terbuka
+                ]
+
+                # Create subplots
+                fig = make_subplots(
+                    rows=1,
+                    cols=3,
+                    subplot_titles=["Aktual 2024", "Prediksi 2024", "Prediksi 2029"],
+                    horizontal_spacing=0.08,
+                    # font=dict(family="Poppins, sans-serif", size=11, color="black"),
+                )
+
+                fig.add_trace(
+                    go.Heatmap(
+                        z=data_2024_actual,
+                        x=x_actual,
+                        y=y_actual,
+                        colorscale=colorscale,
+                        zmin=0,
+                        zmax=3,
+                        showscale=False,
+                    ),
+                    row=1,
+                    col=1,
+                )
+
+                fig.add_trace(
+                    go.Heatmap(
+                        z=data_2024_pred,
+                        x=x_pred_24,
+                        y=y_pred_24,
+                        colorscale=colorscale,
+                        zmin=0,
+                        zmax=3,
+                        showscale=False,
+                    ),
+                    row=1,
+                    col=2,
+                )
+
+                fig.add_trace(
+                    go.Heatmap(
+                        z=data_2029_pred,
+                        x=x_pred_29,
+                        y=y_pred_29,
+                        colorscale=colorscale,
+                        zmin=0,
+                        zmax=3,
+                        showscale=False,
+                    ),
+                    row=1,
+                    col=3,
+                )
+                legend_data = [
+                    {"name": "Vegetasi", "color": "rgb(41, 75, 41)"},
+                    {"name": "Tubuh Air", "color": "rgb(105, 195, 221)"},
+                    {"name": "Lahan Terbangun", "color": "rgb(205, 154, 77)"},
+                    {"name": "Lahan Terbuka", "color": "rgb(250, 245, 217)"},
+                ]
+
+                for i, legend_item in enumerate(legend_data):
+                    fig.add_trace(
+                        go.Scatter(
+                            x=[None],
+                            y=[None],
+                            mode="markers",
+                            marker=dict(
+                                size=11, color=legend_item["color"], symbol="square"
+                            ),
+                            name=legend_item["name"],
+                            showlegend=True,
+                        )
+                    )
+
+                # Update layout
+                fig.update_layout(
+                    height=500,
+                    showlegend=True,
+                    font=dict(family="Poppins, sans-serif", size=11, color="black"),
+                    plot_bgcolor="#fdfaf6",
+                    paper_bgcolor="#fdfaf6",
+                    margin=dict(l=50, r=50, t=30, b=50),
+                    legend=dict(
+                        orientation="h",
+                        yanchor="top",
+                        y=-0.1,
+                        xanchor="center",
+                        x=0.5,
+                        bgcolor="rgba(0,0,0,0)",
+                        bordercolor="rgba(0,0,0,0)",
+                        borderwidth=0,
+                    ),
+                )
+
+                # Update subplot backgrounds
+                fig.update_xaxes(showgrid=False, zeroline=False)
+                fig.update_yaxes(showgrid=False, zeroline=False)
+
+                # Set background color for each subplot
+                for i in range(1, 4):
+                    fig.update_xaxes(showgrid=False, zeroline=False, row=1, col=i)
+                    fig.update_yaxes(showgrid=False, zeroline=False, row=1, col=i)
+
+                # Display
+                st.plotly_chart(fig, use_container_width=True)
+
+            except Exception as e:
+                st.error(f"Error: {str(e)}")
 
     with st.expander("Lihat Referensi"):
         st.markdown(

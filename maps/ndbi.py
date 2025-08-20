@@ -1270,3 +1270,51 @@ with tab4:
         "**Evaluasi Model Proyeksi XGBoost**",
         color="primary",
     )
+
+    col1_metrik_img, col2_metrik_insight = st.columns([1.525, 2.475])
+    with col1_metrik_img:
+        with st.container(border=True):
+            st.image(
+                "img/metrik_evaluasi_proyeksi_ndbi.png",
+                caption="Plot Metrik Evaluasi Model Proyeksi NDBI 2024",
+            )
+
+    with col2_metrik_insight:
+        with st.container(border=True):
+            st.write("💡**Quick Insight**")
+            st.markdown(
+                f"""
+                - Model proyeksi NDBI mencapai akurasi :green-background[**89.63%**] setelah divalidasi dengan data aktual terkini.
+                - Koefisien *kappa* :green-background[**83.51%**] masuk ke dalam kategori ***almost perfect agreement***⁽¹⁾ yang menunjukkan tingkat kesepakatan yang **sangat baik**.
+                - Kedua metrik akurasi membuktikan bahwa model **dapat diandalkan** untuk proyeksi perubahan penutup lahan di masa depan.
+                """,
+                unsafe_allow_html=True,
+            )
+        with st.container(border=True):
+            st.write("**📌 Kesimpulan**")
+            st.markdown(
+                f"""
+                - **Model** XGBoost **layak digunakan** untuk memproyeksi NDBI tahun 2029.
+                """,
+                unsafe_allow_html=True,
+            )
+
+    st.badge(
+        "**Perbandingan Peta NDBI Aktual vs Proyeksi**",
+        color="primary",
+    )
+
+    with st.container(border=True):
+        with st.container(border=True):
+            st.image(
+                "img/peta_3_ndbi.png",
+                caption="Plot Perbandingan Peta NDBI Aktual vs Proyeksi",
+            )
+
+    with st.expander("Lihat Referensi"):
+        st.markdown(
+            """
+            - [1] Viera, A. J., & Garrett, J. M. (2005). Understanding Interobserver Agreement: The Kappa Statistic. *Family Medicine*, 37(5). 360-363.
+            - [2] Bobbitt, Z. (2022). *How to Interpret the Classification Report in sklearn (With Example)*. (*https://www.statology.org/sklearn-classification-report/,* diakses 19 Agustus 2025).
+            """
+        )
