@@ -11,6 +11,8 @@ import folium
 from streamlit_folium import folium_static
 from streamlit_folium import st_folium
 import rasterio
+from rasterio.mask import mask
+from shapely.geometry import mapping
 import os
 import base64
 from io import BytesIO
@@ -1180,7 +1182,7 @@ with tab4:
                 legend={
                     "orientation": "h",
                     "yanchor": "top",
-                    "y": -0.15,
+                    "y": -0.20,
                     "xanchor": "center",
                     "x": 0.5,
                     "font": {"family": "Poppins", "size": 12, "color": "black"},
@@ -1188,7 +1190,7 @@ with tab4:
                 font={"family": "Poppins"},
                 plot_bgcolor="#fdfaf6",
                 paper_bgcolor="#fdfaf6",
-                margin=dict(l=40, r=40, t=20, b=80),
+                margin=dict(l=40, r=40, t=40, b=80),
                 showlegend=True,
                 barmode="group",
                 height=407,
@@ -1230,6 +1232,13 @@ with tab4:
     with col_peta_perbandingan[0]:
         with st.container(border=True):
             try:
+
+                def process_raster_data(data):
+                    data = data.astype("float32")
+                    data[data > 3] = np.nan  # Nilai > 3 NoData
+                    data[data < 0] = np.nan  # Nilai < 0 NoData
+                    return data
+
                 with rasterio.open("tif/pl2024kpy.tif") as src:
                     data_2024_actual = src.read(1)
                     bounds_actual = src.bounds
@@ -1241,15 +1250,16 @@ with tab4:
                         bounds_actual.bottom, bounds_actual.top, height
                     )
                     data_2024_actual = np.flipud(data_2024_actual)
+                    data_2024_actual = process_raster_data(data_2024_actual)
 
-                with rasterio.open("tif/pl2004kpy.tif") as src:
+                with rasterio.open("tif/prediksi_pl2024kpy.tif") as src:
                     data_2024_pred = src.read(1)
                     bounds_pred = src.bounds
                     height, width = data_2024_pred.shape
                     x_pred_24 = np.linspace(bounds_pred.left, bounds_pred.right, width)
                     y_pred_24 = np.linspace(bounds_pred.bottom, bounds_pred.top, height)
-                    # Putar Posisi
                     data_2024_pred = np.flipud(data_2024_pred)
+                    data_2024_pred = process_raster_data(data_2024_pred)
 
                 with rasterio.open("tif/pl2029kpy.tif") as src:
                     data_2029_pred = src.read(1)
@@ -1257,10 +1267,9 @@ with tab4:
                     height, width = data_2029_pred.shape
                     x_pred_29 = np.linspace(bounds_2029.left, bounds_2029.right, width)
                     y_pred_29 = np.linspace(bounds_2029.bottom, bounds_2029.top, height)
-                    # Putar Posisi
                     data_2029_pred = np.flipud(data_2029_pred)
+                    data_2029_pred = process_raster_data(data_2029_pred)
 
-                # Create colorscale
                 colorscale = [
                     [0.0, "rgb(41, 75, 41)"],  # Vegetasi
                     [0.33, "rgb(105, 195, 221)"],  # Tubuh Air
@@ -1268,13 +1277,11 @@ with tab4:
                     [1.0, "rgb(250, 245, 217)"],  # Lahan Terbuka
                 ]
 
-                # Create subplots
                 fig = make_subplots(
                     rows=1,
                     cols=3,
                     subplot_titles=["Aktual 2024", "Prediksi 2024", "Prediksi 2029"],
                     horizontal_spacing=0.08,
-                    # font=dict(family="Poppins, sans-serif", size=11, color="black"),
                 )
 
                 fig.add_trace(
@@ -1286,6 +1293,7 @@ with tab4:
                         zmin=0,
                         zmax=3,
                         showscale=False,
+                        hovertemplate="<extra></extra>",
                     ),
                     row=1,
                     col=1,
@@ -1300,6 +1308,7 @@ with tab4:
                         zmin=0,
                         zmax=3,
                         showscale=False,
+                        hovertemplate="<extra></extra>",
                     ),
                     row=1,
                     col=2,
@@ -1314,10 +1323,12 @@ with tab4:
                         zmin=0,
                         zmax=3,
                         showscale=False,
+                        hovertemplate="<extra></extra>",
                     ),
                     row=1,
                     col=3,
                 )
+
                 legend_data = [
                     {"name": "Vegetasi", "color": "rgb(41, 75, 41)"},
                     {"name": "Tubuh Air", "color": "rgb(105, 195, 221)"},
@@ -1336,14 +1347,14 @@ with tab4:
                             ),
                             name=legend_item["name"],
                             showlegend=True,
+                            hovertemplate="<extra></extra>",
                         )
                     )
 
-                # Update layout
                 fig.update_layout(
-                    height=500,
+                    height=465,
                     showlegend=True,
-                    font=dict(family="Poppins, sans-serif", size=11, color="black"),
+                    font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",
                     paper_bgcolor="#fdfaf6",
                     margin=dict(l=50, r=50, t=30, b=50),
@@ -1356,19 +1367,32 @@ with tab4:
                         bgcolor="rgba(0,0,0,0)",
                         bordercolor="rgba(0,0,0,0)",
                         borderwidth=0,
+                        font=dict(size=12, color="black"),
                     ),
                 )
 
-                # Update subplot backgrounds
-                fig.update_xaxes(showgrid=False, zeroline=False)
-                fig.update_yaxes(showgrid=False, zeroline=False)
-
-                # Set background color for each subplot
                 for i in range(1, 4):
-                    fig.update_xaxes(showgrid=False, zeroline=False, row=1, col=i)
-                    fig.update_yaxes(showgrid=False, zeroline=False, row=1, col=i)
+                    fig.update_xaxes(
+                        showgrid=False,
+                        zeroline=False,
+                        row=1,
+                        col=i,
+                        tickfont=dict(size=12, color="black"),
+                        title_font=dict(size=12, color="black"),
+                    )
+                    fig.update_yaxes(
+                        showgrid=False,
+                        zeroline=False,
+                        row=1,
+                        col=i,
+                        tickfont=dict(size=12, color="black"),
+                        title_font=dict(size=12, color="black"),
+                    )
 
-                # Display
+                for annotation in fig.layout.annotations:
+                    annotation.font.size = 12
+                    annotation.font.color = "black"
+
                 st.plotly_chart(fig, use_container_width=True)
 
             except Exception as e:
