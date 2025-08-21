@@ -4,12 +4,15 @@ import pandas as pd
 import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import folium
 from streamlit_folium import folium_static
 from streamlit_folium import st_folium
 import rasterio
+from rasterio.mask import mask
+from shapely.geometry import mapping
 import os
 import base64
 from io import BytesIO
@@ -68,7 +71,8 @@ st.markdown(
         padding: 12px !important;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+        border: 0.5px solid rgba(0, 0, 0, 0.0.1)
+        !important;
         border-radius: 1px !important;
         padding: 12px !important;
         # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
@@ -77,7 +81,7 @@ st.markdown(
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
         transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
         border-color: #fdfaf6 !important;
     }           
     .stTabs [data-baseweb="tab-highlight"] {
@@ -183,9 +187,6 @@ def get_toponim(wadmkk):
 
 @st.cache_data
 def get_kecamatan_bounds(namobj):
-    """
-    Get bounds of specific kecamatan from shapefile.
-    """
     shapefile_path = "shp/aoi_kpy.shp"
     try:
         gdf = gpd.read_file(shapefile_path)
@@ -205,6 +206,9 @@ def get_kecamatan_bounds(namobj):
 
 
 def add_shp_to_map(map_obj, shapefile_path):
+    """
+    Menambahkan SHP Batas Administrasi ke Peta Folium.
+    """
     try:
         # Geopandas untuk Membaca SHP
         gdf = gpd.read_file(shapefile_path)
@@ -303,6 +307,9 @@ def add_legend_to_map(map_obj, thresholds):
 
 
 def add_geotiff_to_map(map_obj, tif_path, thresholds):
+    """
+    Menambahkan GeoTiff Penutup Lahan ke Peta Folium.
+    """
     try:
         with rasterio.open(tif_path) as src:
             # Rasterio untuk Membaca Data Raster
@@ -490,7 +497,11 @@ with tab1:
                     kecamatan_data["mean"], current_thresholds
                 )
 
-                description = f"Tingkat kerapatan area terbangun di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDBI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
+                # Kondisional untuk tahun 2029
+                if option == "2029":
+                    description = f"Tingkat kerapatan area terbangun di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] :green-background[**diprediksi**] menunjukkan nilai rata-rata NDBI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki tingkat :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
+                else:
+                    description = f"Tingkat kerapatan area terbangun di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDBI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
 
                 st.write(description)
 
@@ -623,7 +634,7 @@ with tab2:
         "**Tren NDBI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2.3, 1.7])
+    col1_tren_main, col2_tren_main = st.columns([2, 2])
     with col1_tren_main:
         # Container Grafik Tren
         with st.container(border=True):
@@ -687,7 +698,7 @@ with tab2:
                     tickfont=dict(family="Poppins", size=12, color="black"),
                     gridcolor="#9A9A9A",
                     zerolinecolor="#9A9A9A",
-                    # range=[22, 40],
+                    # range=[-0.25, 0.05],
                 ),
                 legend=dict(
                     orientation="h",
@@ -698,7 +709,7 @@ with tab2:
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=305,
+                height=242,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -717,45 +728,14 @@ with tab2:
             2029: {"mean": -0.161},
         }
 
-        years_tren = sorted(mean_by_year.keys())
-        mean_tren = [mean_by_year[y]["mean"] for y in years_tren]
-
-        # Hitung Overall Mean (Rata-rata NDBI 1999-2024)
-        overall_mean = sum(mean_tren) / len(mean_tren)
-
-        # Hitung Mean Absolute Change (Rata-rata Fluktuasi Tahunan)
-        diffs = []
-        for i in range(1, len(mean_tren)):
-            diff = abs(mean_tren[i] - mean_tren[i - 1])
-            diffs.append(diff)
-
-        mac = sum(diffs) / len(diffs)
-
-        # Row Metrics
-        col1_tren_metric, col2_tren_metric = st.columns([1, 1])
-        with col1_tren_metric:
-            with st.container(border=True):
-                st.metric(
-                    label="Rata-rata NDBI",
-                    value=f"{overall_mean:.3f}",
-                    help="Rata-rata NDBI di KPY dan Sekitarnya = (NDBImean₁₉₉₉ + NDBImean₂₀₀₄ + ... + NDBImean₂₀₂₄)/6",
-                )
-
-        with col2_tren_metric:
-            with st.container(border=True):
-                st.metric(
-                    label="Rata-rata Perubahan",
-                    value=f"{mac:.4f}",
-                    help="Perubahan Absolut NDBI di KPY dan Sekitarnya = (|NDBImean₂₀₀₄ - NDBImean₁₉₉₉| + |NDBImean₂₀₀₉ - NDBImean₂₀₀₄| + ... + |NDBImean₂₀₂₄ - NDBImean₂₀₁₉|)/5",
-                )
-
         # Container Analisis Tren
         with st.container(border=True):
             st.markdown(
                 """
                 💡**Quick Insight**
-                - Kawasan perkotaan Yogyakarta memiliki nilai NDBI :green-background[**lebih tinggi**] dibanding kawasan non-perkotaan.
-                - :green-background[**Selisih**] nilai NDBI perkotaan dan non-perkotaan berkisar antara :green-background[**0.148**] hingga :green-background[**0.196**].
+                - :green-background[**Nilai NDBI**] berkisar antara :green-background[**-1 hingga +1**]. :green-background[**Semakin tinggi**], maka mengindikasikan :green-background[**dominasi area terbangun**]; sedangkan :green-background[**semakin rendah**] menunjukkan :green-background[**vegetasi dan tubuh air**].
+                - :green-background[**Kawasan Perkotaan:**] Nilai NDBI cenderung naik sejak 1999 dan diproyeksikan akan :green-background[**tetap naik**] sekitar 0.005 pada 2029.
+                - :green-background[**Kawasan Non-Perkotaan:**] Nilai NDBI :green-background[**cenderung fluktuatif**] dan diperkirakan akan :green-background[**tetap turun**] sekitar 0.003 pada 2029.
                 """
             )
 
@@ -795,72 +775,72 @@ with tab2:
         df_ranking["Zona_Label"] = df_ranking["Zona"].map(
             {"Urban": "Perkotaan", "Rural": "Non-Perkotaan"}
         )
+        with st.container(border=True):
+            # Buat Bar
+            fig = px.bar(
+                df_ranking,
+                x="Mean_NDBI",
+                y="Y_Label",
+                color="Zona",
+                color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
+                orientation="h",
+                labels={
+                    "Mean_NDBI": "NDBI Mean",
+                    "Y_Label": "",
+                    "Zona": "Kawasan",
+                },
+                # Isi Hover
+                hover_data={"Mean_NDBI": ":.3f", "Zona": False, "Y_Label": False},
+                custom_data=["Zona_Label", "Mean_NDBI"],
+            )
 
-        # Buat Bar
-        fig = px.bar(
-            df_ranking,
-            x="Mean_NDBI",
-            y="Y_Label",
-            color="Zona",
-            color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
-            orientation="h",
-            labels={
-                "Mean_NDBI": "NDBI Mean",
-                "Y_Label": "",
-                "Zona": "Kawasan",
-            },
-            # Isi Hover
-            hover_data={"Mean_NDBI": ":.3f", "Zona": False, "Y_Label": False},
-            custom_data=["Zona_Label", "Mean_NDBI"],
-        )
+            # Update Hover Template
+            fig.update_traces(
+                hovertemplate="<b>%{y}</b><br>"
+                + "Kawasan: %{customdata[0]}<br>"
+                + "NDBI Mean: %{customdata[1]:.3f}<extra></extra>",
+                texttemplate="%{x:.3f}",
+                textposition="outside",
+                textfont_size=10,
+                textfont_color="black",
+            )
 
-        # Update Hover Template
-        fig.update_traces(
-            hovertemplate="<b>%{y}</b><br>"
-            + "Kawasan: %{customdata[0]}<br>"
-            + "NDBI Mean: %{customdata[1]:.3f}<extra></extra>",
-            texttemplate="%{x:.3f}",
-            textposition="outside",
-            textfont_size=10,
-            textfont_color="black",
-        )
+            # Update dan Styling Bar Plot
+            fig.update_layout(
+                height=800,
+                font=dict(family="Poppins", size=11),
+                title_font_size=16,
+                xaxis_title_font_size=14,
+                yaxis_title_font_size=14,
+                showlegend=True,
+                legend=dict(
+                    orientation="v",
+                    yanchor="bottom",
+                    y=0.02,
+                    xanchor="right",
+                    x=0.98,
+                    font=dict(family="Poppins"),
+                ),
+                yaxis=dict(
+                    categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
+                ),
+                title="",
+                margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
+            )
 
-        # Update dan Styling Bar Plot
-        fig.update_layout(
-            height=800,
-            font=dict(family="Poppins", size=11),
-            title_font_size=16,
-            xaxis_title_font_size=14,
-            yaxis_title_font_size=14,
-            showlegend=True,
-            legend=dict(
-                orientation="v",
-                yanchor="bottom",
-                y=0.02,
-                xanchor="right",
-                x=0.98,
-                font=dict(family="Poppins"),
-            ),
-            yaxis=dict(
-                categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
-            ),
-            title="",
-            margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
-        )
+            # Sumbu Warna Hitam
+            fig.update_xaxes(title_font_color="black", tickfont_color="black")
+            fig.update_yaxes(title_font_color="black", tickfont_color="black")
 
-        # Sumbu Warna Hitam
-        fig.update_xaxes(title_font_color="black", tickfont_color="black")
-        fig.update_yaxes(title_font_color="black", tickfont_color="black")
+            # Update Legenda
+            for trace in fig.data:
+                if trace.name == "Urban":
+                    trace.name = "Perkotaan"
+                elif trace.name == "Rural":
+                    trace.name = "Non-Perkotaan"
 
-        # Update Legenda
-        for trace in fig.data:
-            if trace.name == "Urban":
-                trace.name = "Perkotaan"
-            elif trace.name == "Rural":
-                trace.name = "Non-Perkotaan"
-
-        # Display Bar Plot
-        st.plotly_chart(fig, use_container_width=True)
+            # Display Bar Plot
+            st.plotly_chart(fig, use_container_width=True)
 
 # ==============================================================================
 # SECTION 3: VALIDASI
@@ -917,7 +897,7 @@ with tab3:
                     color_discrete_sequence=["#1f77b4"],
                 )
 
-                # Garis Trend (Memvisualisasikan Hubungan Linear)
+                # Garis Tren (Memvisualisasikan Hubungan Linear)
                 x_range = np.linspace(landsat_values.min(), landsat_values.max(), 100)
                 y_trend = slope * x_range + intercept
 
@@ -1088,169 +1068,173 @@ with tab3:
         "**Peta NDBI: Landsat 8 vs Sentinel-2 (2024)**",
         color="primary",
     )
-    with st.container(border=True):
-        st.markdown(
-            """
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div style="font-weight: 600; color: #333; font-size: 14px;">📡 Landsat 8 NDBI (2024)</div>
-                <div style="font-weight: 600; color: #333; font-size: 14px;">🛰️ Sentinel-2 NDBI (2024)</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        # Import DualMap Plugin
-        from folium.plugins import DualMap
-
-        # Buat DualMap dengan Synchronized View
-        dual_map = DualMap(
-            location=[-7.764326411862208, 110.3721676814108],
-            zoom_start=10.5,
-            tiles=None,
-        )
-
-        # Tambahkan Basemap ke Kedua Sisi
-        # Sisi Kiri (Landsat)
-        folium.TileLayer(
-            tiles="CartoDB positron",
-            name="CartoDB Positron",
-            overlay=False,
-            control=True,
-        ).add_to(dual_map.m1)
-
-        folium.TileLayer(
-            tiles="OpenStreetMap",
-            name="OpenStreetMap",
-            overlay=False,
-            control=True,
-        ).add_to(dual_map.m1)
-
-        # Sisi Kanan (Sentinel)
-        folium.TileLayer(
-            tiles="CartoDB positron",
-            name="CartoDB Positron",
-            overlay=False,
-            control=True,
-        ).add_to(dual_map.m2)
-
-        folium.TileLayer(
-            tiles="OpenStreetMap",
-            name="OpenStreetMap",
-            overlay=False,
-            control=True,
-        ).add_to(dual_map.m2)
-
-        # Path untuk File GeoTIFF
-        landsat_tif_path = "tif/ndbi2024kpy.tif"
-        sentinel_tif_path = "tif/ndbiSentinel30.tif"
-        shapefile_path = "shp/aoi_kpy.shp"
-
-        # Tambahkan GeoTiff Landsat ke Sisi Kiri
-        if os.path.exists(landsat_tif_path):
-            add_geotiff_to_map(
-                dual_map.m1, landsat_tif_path, validation_thresholds["landsat"]
+    col_peta_sentinel = st.columns(1)
+    with col_peta_sentinel[0]:
+        with st.container(border=True):
+            st.markdown(
+                """
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div style="font-weight: 600; color: #333; font-size: 14px;">📡 Landsat 8 NDBI (2024)</div>
+                    <div style="font-weight: 600; color: #333; font-size: 14px;">🛰️ Sentinel-2 NDBI (2024)</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
             )
-        else:
-            st.warning(f"File Landsat GeoTIFF tidak ditemukan: {landsat_tif_path}")
 
-        # Tambahkan GeoTiff Sentinel ke Sisi Kanan
-        if os.path.exists(sentinel_tif_path):
-            add_geotiff_to_map(
-                dual_map.m2, sentinel_tif_path, validation_thresholds["sentinel"]
+            # Import DualMap Plugin
+            from folium.plugins import DualMap
+
+            # Buat DualMap dengan Synchronized View
+            dual_map = DualMap(
+                location=[-7.764326411862208, 110.3721676814108],
+                zoom_start=10.5,
+                tiles=None,
             )
-        else:
-            st.warning(f"File Sentinel GeoTIFF tidak ditemukan: {sentinel_tif_path}")
 
-        # Tambahkan Batas Administrasi ke Kedua Peta
-        if os.path.exists(shapefile_path):
-            add_shp_to_map(dual_map.m1, shapefile_path)
-            add_shp_to_map(dual_map.m2, shapefile_path)
+            # Tambahkan Basemap ke Kedua Sisi
+            # Sisi Kiri (Landsat)
+            folium.TileLayer(
+                tiles="CartoDB positron",
+                name="CartoDB Positron",
+                overlay=False,
+                control=True,
+            ).add_to(dual_map.m1)
 
-        # Function untuk Menambahkan Legenda Universal
-        def add_universal_legend_to_map(map_obj, title):
-            legend_html = f"""
-            <div style="position: fixed; 
-                        top: 10px; 
-                        right: 10px; 
-                        z-index: 1000; 
-                        background-color: white; 
-                        border: 1px solid #ccc; 
-                        border-radius: 1px; 
-                        padding: 10px; 
-                        font-family: 'Poppins', sans-serif; 
-                        font-size: 12px; 
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                        min-width: 160px;">
-                <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">{title}</div>
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #006400; border: 1px solid #ddd;"></div>
-                        <span style="color: #333;">Non-terbangun</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #ffffe0; border: 1px solid #ddd;"></div>
-                        <span style="color: #333;">Rendah</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #ffa500; border: 1px solid #ddd;"></div>
-                        <span style="color: #333;">Sedang</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #3b060a; border: 1px solid #ddd;"></div>
-                        <span style="color: #333;">Tinggi</span>
+            folium.TileLayer(
+                tiles="OpenStreetMap",
+                name="OpenStreetMap",
+                overlay=False,
+                control=True,
+            ).add_to(dual_map.m1)
+
+            # Sisi Kanan (Sentinel)
+            folium.TileLayer(
+                tiles="CartoDB positron",
+                name="CartoDB Positron",
+                overlay=False,
+                control=True,
+            ).add_to(dual_map.m2)
+
+            folium.TileLayer(
+                tiles="OpenStreetMap",
+                name="OpenStreetMap",
+                overlay=False,
+                control=True,
+            ).add_to(dual_map.m2)
+
+            # Path untuk File GeoTIFF
+            landsat_tif_path = "tif/ndbi2024kpy.tif"
+            sentinel_tif_path = "tif/ndbiSentinel30.tif"
+            shapefile_path = "shp/aoi_kpy.shp"
+
+            # Tambahkan GeoTiff Landsat ke Sisi Kiri
+            if os.path.exists(landsat_tif_path):
+                add_geotiff_to_map(
+                    dual_map.m1, landsat_tif_path, validation_thresholds["landsat"]
+                )
+            else:
+                st.warning(f"File Landsat GeoTIFF tidak ditemukan: {landsat_tif_path}")
+
+            # Tambahkan GeoTiff Sentinel ke Sisi Kanan
+            if os.path.exists(sentinel_tif_path):
+                add_geotiff_to_map(
+                    dual_map.m2, sentinel_tif_path, validation_thresholds["sentinel"]
+                )
+            else:
+                st.warning(
+                    f"File Sentinel GeoTIFF tidak ditemukan: {sentinel_tif_path}"
+                )
+
+            # Tambahkan Batas Administrasi ke Kedua Peta
+            if os.path.exists(shapefile_path):
+                add_shp_to_map(dual_map.m1, shapefile_path)
+                add_shp_to_map(dual_map.m2, shapefile_path)
+
+            # Function untuk Menambahkan Legenda Universal
+            def add_universal_legend_to_map(map_obj, title):
+                legend_html = f"""
+                <div style="position: fixed; 
+                            top: 10px; 
+                            right: 10px; 
+                            z-index: 1000; 
+                            background-color: white; 
+                            border: 1px solid #ccc; 
+                            border-radius: 1px; 
+                            padding: 10px; 
+                            font-family: 'Poppins', sans-serif; 
+                            font-size: 12px; 
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                            min-width: 160px;">
+                    <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">{title}</div>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <div style="width: 12px; height: 12px; background-color: #006400; border: 1px solid #ddd;"></div>
+                            <span style="color: #333;">Non-terbangun</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <div style="width: 12px; height: 12px; background-color: #ffffe0; border: 1px solid #ddd;"></div>
+                            <span style="color: #333;">Rendah</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <div style="width: 12px; height: 12px; background-color: #ffa500; border: 1px solid #ddd;"></div>
+                            <span style="color: #333;">Sedang</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <div style="width: 12px; height: 12px; background-color: #3b060a; border: 1px solid #ddd;"></div>
+                            <span style="color: #333;">Tinggi</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+                """
+                map_obj.get_root().html.add_child(folium.Element(legend_html))
+
+            add_universal_legend_to_map(dual_map.m1, "Kelas NDBI")
+
+            # Tambahkan Layer Control ke Kedua Peta
+            folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m1)
+            folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m2)
+
+            # CSS untuk Custom Peta dan Title
+            css = """
+            <style>
+            .leaflet-control-layers label {
+                font-size: 11px !important;
+                font-family: 'Poppins', sans-serif !important;
+            }
+            .leaflet-control-layers-list {
+                font-size: 11px !important;
+            }
+            .leaflet-control-layers-expanded {
+                font-size: 11px !important;
+            }
+            .leaflet-control-attribution {
+                font-size: 11px !important;
+                font-family: 'Poppins', sans-serif !important;
+            }
+            
+            /* Title untuk peta kiri (Landsat) */
+            .leaflet-left .leaflet-top::after {
+                content: '📡 Landsat 8 NDBI (2024)';
+                position: absolute;
+                top: 50px;
+                left: 0;
+                background: rgba(255, 255, 255, 0.95);
+                padding: 6px 10px;
+                border: 1px solid #333;
+                border-radius: 3px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 12px;
+                font-weight: 600;
+                color: #333;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                z-index: 1001;
+            }
+            </style>
             """
-            map_obj.get_root().html.add_child(folium.Element(legend_html))
+            dual_map.get_root().html.add_child(folium.Element(css))
 
-        add_universal_legend_to_map(dual_map.m1, "Kelas NDBI")
-
-        # Tambahkan Layer Control ke Kedua Peta
-        folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m1)
-        folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m2)
-
-        # CSS untuk Custom Peta dan Title
-        css = """
-        <style>
-        .leaflet-control-layers label {
-            font-size: 11px !important;
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .leaflet-control-layers-list {
-            font-size: 11px !important;
-        }
-        .leaflet-control-layers-expanded {
-            font-size: 11px !important;
-        }
-        .leaflet-control-attribution {
-            font-size: 11px !important;
-            font-family: 'Poppins', sans-serif !important;
-        }
-        
-        /* Title untuk peta kiri (Landsat) */
-        .leaflet-left .leaflet-top::after {
-            content: '📡 Landsat 8 NDBI (2024)';
-            position: absolute;
-            top: 50px;
-            left: 0;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 6px 10px;
-            border: 1px solid #333;
-            border-radius: 3px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 12px;
-            font-weight: 600;
-            color: #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            z-index: 1001;
-        }
-        </style>
-        """
-        dual_map.get_root().html.add_child(folium.Element(css))
-
-        # Display DualMap
-        st_folium(dual_map, use_container_width=True, height=500)
+            # Display DualMap
+            st_folium(dual_map, use_container_width=True, height=500)
 
     with st.expander("Lihat Referensi"):
         st.markdown(

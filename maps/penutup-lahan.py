@@ -80,7 +80,8 @@ st.markdown(
         border: 0.5px solid rgba(0, 0, 0, 0.0.1) !important;
         border-radius: 1px !important;
         padding: 12px !important;
-        # box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
         transition: all 0.3s ease !important;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
@@ -236,9 +237,6 @@ def get_kec_list(df):
 
 @st.cache_data
 def get_kecamatan_bounds(namobj):
-    """
-    Get bounds of specific kecamatan from shapefile.
-    """
     shapefile_path = "shp/aoi_kpy.shp"
     try:
         gdf = gpd.read_file(shapefile_path)
