@@ -1031,10 +1031,7 @@ with tab4:
         color="primary",
     )
 
-    import plotly.graph_objects as go
-
     col1_metrik_img, col2_metrik_insight = st.columns([1.7, 2.3])
-
     with col1_metrik_img:
         with st.container(border=True):
             fig = go.Figure(

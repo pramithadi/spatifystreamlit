@@ -1255,32 +1255,84 @@ with tab4:
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([1.525, 2.475])
+    col1_metrik_img, col2_metrik_insight = st.columns([1.75, 2.25])
     with col1_metrik_img:
         with st.container(border=True):
-            st.image(
-                "img/metrik_evaluasi_proyeksi_ndbi.png",
-                caption="Plot Metrik Evaluasi Model Proyeksi NDBI 2024",
+            fig = go.Figure(
+                data=[
+                    go.Bar(
+                        name="RMSE",
+                        x=["RMSE"],
+                        y=[0.0539],
+                        text=["0.0539"],
+                        textposition="outside",
+                        marker_color="#F5C9B0",
+                        textfont=dict(family="Poppins", size=12, color="black"),
+                    ),
+                    go.Bar(
+                        name="MAE",
+                        x=["MAE"],
+                        y=[0.0409],
+                        text=["0.0409"],
+                        textposition="outside",
+                        marker_color="#A6B28B",
+                        textfont=dict(family="Poppins", size=12, color="black"),
+                    ),
+                    go.Bar(
+                        name="R²",
+                        x=["R²"],
+                        y=[0.8648],
+                        text=["0.8648"],
+                        textposition="outside",
+                        marker_color="#1C352D",
+                        textfont=dict(family="Poppins", size=12, color="black"),
+                    ),
+                ]
             )
+
+            fig.update_layout(
+                xaxis={"tickfont": {"family": "Poppins", "size": 12, "color": "black"}},
+                yaxis={
+                    "title": {
+                        "text": "Nilai",
+                        "font": {"family": "Poppins", "size": 12, "color": "black"},
+                    },
+                    "tickfont": {"family": "Poppins", "size": 12, "color": "black"},
+                    "range": [0, 1],
+                },
+                legend={
+                    "orientation": "h",
+                    "yanchor": "top",
+                    "y": -0.15,
+                    "xanchor": "center",
+                    "x": 0.5,
+                    "font": {"family": "Poppins", "size": 12, "color": "black"},
+                },
+                font={"family": "Poppins"},
+                plot_bgcolor="#fdfaf6",
+                paper_bgcolor="#fdfaf6",
+                margin=dict(l=0, r=0, t=10, b=30),
+                height=277.5,
+                showlegend=True,
+            )
+
+            fig.update_xaxes(showgrid=False)
+            fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor="rgba(0,0,0,0.1)")
+
+            st.plotly_chart(fig, use_container_width=True)
 
     with col2_metrik_insight:
         with st.container(border=True):
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - Model proyeksi NDBI mencapai akurasi :green-background[**89.63%**] setelah divalidasi dengan data aktual terkini.
-                - Koefisien *kappa* :green-background[**83.51%**] masuk ke dalam kategori ***almost perfect agreement***⁽¹⁾ yang menunjukkan tingkat kesepakatan yang **sangat baik**.
-                - Kedua metrik akurasi membuktikan bahwa model **dapat diandalkan** untuk proyeksi perubahan penutup lahan di masa depan.
+                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**sangat kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**].⁽¹⁾ 
+                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**86.48%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi cukup tepat**].⁽²⁾
                 """,
                 unsafe_allow_html=True,
             )
-        with st.container(border=True):
-            st.write("**📌 Kesimpulan**")
-            st.markdown(
-                f"""
-                - **Model** XGBoost **layak digunakan** untuk memproyeksi NDBI tahun 2029.
-                """,
-                unsafe_allow_html=True,
+            st.success(
+                "✅ Model XGBoost **LAYAK** untuk proyeksi NDBI 2029\n\n✅ Data proyeksi NDBI 2029 **VALID** untuk prediksi LST 2029"
             )
 
     st.badge(
@@ -1288,17 +1340,324 @@ with tab4:
         color="primary",
     )
 
-    with st.container(border=True):
+    col_peta_perbandingan = st.columns(1)
+    with col_peta_perbandingan[0]:
         with st.container(border=True):
-            st.image(
-                "img/peta_3_ndbi.png",
-                caption="Plot Perbandingan Peta NDBI Aktual vs Proyeksi",
+            try:
+
+                def process_raster_data_with_threshold(data, thresholds):
+                    """
+                    Proses data raster NDBI dengan threshold spesifik dan konversi ke format yang kompatibel dengan Plotly
+                    """
+                    data = data.astype("float32")
+                    data = np.where((data < -1) | (data > 1), np.nan, data)
+
+                    colors = {
+                        "very_low": 0,
+                        "low": 1,
+                        "medium": 2,
+                        "high": 3,
+                    }
+
+                    classified_data = np.full(data.shape, np.nan, dtype=np.float32)
+                    valid_mask = ~np.isnan(data)
+                    very_low_mask = valid_mask & (data <= thresholds["low"])
+                    low_mask = (
+                        valid_mask
+                        & (data > thresholds["low"])
+                        & (data <= thresholds["medium"])
+                    )
+                    medium_mask = (
+                        valid_mask
+                        & (data > thresholds["medium"])
+                        & (data <= thresholds["high"])
+                    )
+                    high_mask = valid_mask & (data > thresholds["high"])
+
+                    classified_data[very_low_mask] = colors["very_low"]
+                    classified_data[low_mask] = colors["low"]
+                    classified_data[medium_mask] = colors["medium"]
+                    classified_data[high_mask] = colors["high"]
+
+                    return classified_data
+
+                thresholds = {
+                    "aktual_2024": {"low": -0.309, "medium": -0.162, "high": -0.015},
+                    "proyeksi_2024": {
+                        "low": -0.299,
+                        "medium": -0.162,
+                        "high": -0.025,
+                    },
+                    "proyeksi_2029": {"low": -0.303, "medium": -0.161, "high": -0.020},
+                }
+
+                # Aktual NDBI 2024
+                with rasterio.open("tif/ndbi2024kpy.tif") as src:
+                    data_2024_actual = src.read(1)
+                    bounds_actual = src.bounds
+                    height, width = data_2024_actual.shape
+                    x_actual = np.linspace(
+                        bounds_actual.left, bounds_actual.right, width
+                    )
+                    y_actual = np.linspace(
+                        bounds_actual.bottom, bounds_actual.top, height
+                    )
+                    data_2024_actual = np.flipud(data_2024_actual)
+                    data_2024_actual = process_raster_data_with_threshold(
+                        data_2024_actual, thresholds["aktual_2024"]
+                    )
+
+                # Proyeksi NDBI 2024
+                with rasterio.open("tif/proyeksi_ndbi2024kpy.tif") as src:
+                    data_2024_pred = src.read(1)
+                    bounds_pred = src.bounds
+                    height, width = data_2024_pred.shape
+                    x_pred_24 = np.linspace(bounds_pred.left, bounds_pred.right, width)
+                    y_pred_24 = np.linspace(bounds_pred.bottom, bounds_pred.top, height)
+                    data_2024_pred = np.flipud(data_2024_pred)
+                    data_2024_pred = process_raster_data_with_threshold(
+                        data_2024_pred, thresholds["proyeksi_2024"]
+                    )
+
+                # Proyeksi NDBI 2029
+                with rasterio.open("tif/ndbi2029kpy.tif") as src:
+                    data_2029_pred = src.read(1)
+                    bounds_2029 = src.bounds
+                    height, width = data_2029_pred.shape
+                    x_pred_29 = np.linspace(bounds_2029.left, bounds_2029.right, width)
+                    y_pred_29 = np.linspace(bounds_2029.bottom, bounds_2029.top, height)
+                    data_2029_pred = np.flipud(data_2029_pred)
+                    data_2029_pred = process_raster_data_with_threshold(
+                        data_2029_pred, thresholds["proyeksi_2029"]
+                    )
+
+                colorscale = [
+                    [0.0, "rgb(0, 100, 0)"],
+                    [0.33, "rgb(255, 255, 224)"],
+                    [0.67, "rgb(255, 165, 0)"],
+                    [1.0, "rgb(59, 6, 10)"],
+                ]
+
+                fig = make_subplots(
+                    rows=1,
+                    cols=3,
+                    subplot_titles=[
+                        "Aktual NDBI 2024",
+                        "Proyeksi NDBI 2024",
+                        "Proyeksi NDBI 2029",
+                    ],
+                    horizontal_spacing=0.08,
+                )
+
+                fig.add_trace(
+                    go.Heatmap(
+                        z=data_2024_actual,
+                        x=x_actual,
+                        y=y_actual,
+                        colorscale=colorscale,
+                        zmin=0,
+                        zmax=3,
+                        showscale=False,
+                        hovertemplate="<extra></extra>",
+                    ),
+                    row=1,
+                    col=1,
+                )
+
+                fig.add_trace(
+                    go.Heatmap(
+                        z=data_2024_pred,
+                        x=x_pred_24,
+                        y=y_pred_24,
+                        colorscale=colorscale,
+                        zmin=0,
+                        zmax=3,
+                        showscale=False,
+                        hovertemplate="<extra></extra>",
+                    ),
+                    row=1,
+                    col=2,
+                )
+
+                fig.add_trace(
+                    go.Heatmap(
+                        z=data_2029_pred,
+                        x=x_pred_29,
+                        y=y_pred_29,
+                        colorscale=colorscale,
+                        zmin=0,
+                        zmax=3,
+                        showscale=False,
+                        hovertemplate="<extra></extra>",
+                    ),
+                    row=1,
+                    col=3,
+                )
+
+                legend_data = [
+                    {
+                        "name": "Sangat Rendah",
+                        "color": "rgb(0, 100, 0)",
+                    },
+                    {
+                        "name": "Rendah",
+                        "color": "rgb(255, 255, 224)",
+                    },
+                    {
+                        "name": "Sedang",
+                        "color": "rgb(255, 165, 0)",
+                    },
+                    {
+                        "name": "Tinggi",
+                        "color": "rgb(59, 6, 10)",
+                    },
+                ]
+
+                for i, legend_item in enumerate(legend_data):
+                    fig.add_trace(
+                        go.Scatter(
+                            x=[None],
+                            y=[None],
+                            mode="markers",
+                            marker=dict(
+                                size=11, color=legend_item["color"], symbol="square"
+                            ),
+                            name=legend_item["name"],
+                            showlegend=True,
+                            hovertemplate="<extra></extra>",
+                        )
+                    )
+
+                fig.update_layout(
+                    height=510,
+                    showlegend=True,
+                    font=dict(family="Poppins, sans-serif", size=12, color="black"),
+                    plot_bgcolor="#fdfaf6",
+                    paper_bgcolor="#fdfaf6",
+                    margin=dict(l=50, r=50, t=50, b=100),
+                    legend=dict(
+                        orientation="h",
+                        yanchor="top",
+                        y=-0.2,
+                        xanchor="center",
+                        x=0.5,
+                        bgcolor="rgba(0,0,0,0)",
+                        bordercolor="rgba(0,0,0,0)",
+                        borderwidth=0,
+                        font=dict(size=12, color="black"),
+                    ),
+                )
+
+                for i in range(1, 4):
+                    fig.update_xaxes(
+                        showgrid=False,
+                        zeroline=False,
+                        row=1,
+                        col=i,
+                        tickfont=dict(size=12, color="black"),
+                        title_font=dict(size=12, color="black"),
+                    )
+                    fig.update_yaxes(
+                        showgrid=False,
+                        zeroline=False,
+                        row=1,
+                        col=i,
+                        tickfont=dict(size=12, color="black"),
+                        title_font=dict(size=12, color="black"),
+                    )
+
+                for annotation in fig.layout.annotations:
+                    annotation.font.size = 12
+                    annotation.font.color = "black"
+
+                st.plotly_chart(fig, use_container_width=True)
+
+            except Exception as e:
+                st.error(f"Error: {str(e)}")
+
+    st.badge(
+        "**Tabel Perbandingan Sampel Nilai NDBI Aktual vs Proyeksi**",
+        color="primary",
+    )
+
+    col_sampel_perbandingan = st.columns(1)
+    with col_sampel_perbandingan[0]:
+        csv_path = "csv/ndbiSampelModel.csv"
+
+        try:
+            df = pd.read_csv(csv_path)
+
+            def format_ndbi_value(value):
+                try:
+                    return f"{float(value):.3f}"
+                except:
+                    return str(value)
+
+            def convert_df_to_html_ndbi(input_df):
+                formatters = {}
+                for col in input_df.columns:
+                    if (
+                        "ndbi" in col.lower()
+                        or "aktual" in col.lower()
+                        or "proyeksi" in col.lower()
+                    ):
+                        formatters[col] = format_ndbi_value
+
+                return input_df.to_html(
+                    escape=False,
+                    formatters=formatters,
+                    table_id="ndbi-sample-table",
+                    classes="table table-striped",
+                    index=False,
+                )
+
+            html_table = convert_df_to_html_ndbi(df)
+
+            st.markdown(
+                """
+                <style>
+                #ndbi-sample-table { 
+                    width: 100%; 
+                    border-collapse: collapse; 
+                    margin: 0px 0 10px 0; 
+                    font-family: 'Poppins', sans-serif;
+                    margin-top: -15px;
+                }
+                #ndbi-sample-table th, #ndbi-sample-table td { 
+                    border: 1px solid #ddd; 
+                    padding: 8px; 
+                    text-align: center; 
+                    vertical-align: middle; 
+                    font-size: 14px;
+                }
+                #ndbi-sample-table th { 
+                    background-color: #E4EFE7; 
+                    font-weight: bold; 
+                    color: #333;
+                }
+                #ndbi-sample-table td:not(:first-child) {
+                    font-family: 'Courier New', monospace;
+                }
+                .stContainer > div > div > div > div { 
+                    padding-top: 0rem !important; 
+                }
+                </style>
+                <div style="margin-top: -25px;"></div>
+            """,
+                unsafe_allow_html=True,
             )
+
+            st.markdown(html_table, unsafe_allow_html=True)
+
+        except FileNotFoundError:
+            st.error(f"File '{csv_path}' tidak ditemukan!")
+        except Exception as e:
+            st.error(f"Error dalam menampilkan tabel sampel NDBI: {str(e)}")
 
     with st.expander("Lihat Referensi"):
         st.markdown(
             """
-            - [1] Viera, A. J., & Garrett, J. M. (2005). Understanding Interobserver Agreement: The Kappa Statistic. *Family Medicine*, 37(5). 360-363.
-            - [2] Bobbitt, Z. (2022). *How to Interpret the Classification Report in sklearn (With Example)*. (*https://www.statology.org/sklearn-classification-report/,* diakses 19 Agustus 2025).
+            - [1] Nurdin, Suarna, N., Prihartono, W. (2025). Algoritma Regresi Linier untuk Prediksi Penggunaan Volume Air Berdasarkan Jenis Pelanggan PDAM. *Jurnal Kecerdasan Buatan dan Teknologi Informasi*, 4(1). 43-52. https://doi.org/10.69916/jkbti.v4i1.187
+            - [2] Man, A., Chaichana, C., Wicharuck, S., Rinchumphu, D. (2022). *Predicting Sunlight Availability for Vertical Shelves using Simulation*. *IOP Conference Series: Earth and Environmental Science*. 1094 012011. https://doi.org/10.1088/1755-1315/1094/1/012011
             """
         )
