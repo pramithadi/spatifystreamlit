@@ -704,7 +704,7 @@ with tab2:
         "**Tren Perubahan Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2, 2])
+    col1_tren_main, col2_tren_main = st.columns([2.5, 1.5])
 
     with col1_tren_main:
         # Container Grafik Tren
@@ -768,13 +768,13 @@ with tab2:
                 legend=dict(
                     orientation="h",
                     yanchor="top",
-                    y=-0.15,
+                    y=-0.1,
                     xanchor="center",
                     x=0.5,
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=80),
-                height=550,
+                height=653,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -983,6 +983,8 @@ def display_validation_content(year):
                 kode_prefix = kode[:5].lower()
                 if year == "2024":
                     return f"img/img_val_{year}/{kode_prefix}24.JPG"
+                elif year == "2019":
+                    return f"img/img_val_{year}/{kode_prefix}19.png"
                 else:
                     return f"img/img_val_{year}/{kode_prefix}14.png"
 
@@ -1048,7 +1050,7 @@ with tab4:
                         y=[0.8963],
                         text=["0.8963"],
                         textposition="outside",
-                        marker_color="#87B6B4",
+                        marker_color="#DEE8CE",
                         textfont=dict(family="Poppins", size=12, color="black"),
                     ),
                     go.Bar(
@@ -1057,7 +1059,7 @@ with tab4:
                         y=[0.8351],
                         text=["0.8351"],
                         textposition="outside",
-                        marker_color="#184D4B",
+                        marker_color="#BB6653",
                         textfont=dict(family="Poppins", size=12, color="black"),
                     ),
                 ]
@@ -1099,20 +1101,20 @@ with tab4:
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - **Akurasi** model prediksi penutup lahan menunjukkan angka yang tinggi sebesar :green-background[**89.63%**] setelah dilakukan validasi dengan data aktual terkini.
-                - **Koefisien kappa** sebesar :green-background[**83.51%**] masuk ke dalam kategori ***almost perfect agreement***⁽¹⁾ yang menunjukkan tingkat kesepakatan yang **sangat baik**.
+                - :green-background[**Akurasi**] model prediksi penutup lahan menunjukkan angka yang :green-background[**tinggi**] sebesar :green-background[**89.63%**] setelah dilakukan validasi dengan data aktual terkini.
+                - :green-background[**Koefisien kappa**] sebesar :green-background[**83.51%**] masuk ke dalam kategori :green-background[***almost perfect agreement***⁽¹⁾], menunjukkan tingkat kesepakatan yang :green-background[**sangat baik**].
                 """,
                 unsafe_allow_html=True,
             )
             st.success(
-                "✅ Model **LAYAK** untuk prediksi perubahan penutup lahan tahun 2029"
+                "✅ Model **LAYAK** untuk prediksi perubahan penutup lahan 2029."
             )
 
     st.badge(
         "**Classification Report**",
         color="primary",
     )
-    col2_classification_report, col2_report_insight = st.columns([2.45, 1.55])
+    col2_classification_report, col2_report_insight = st.columns([2.3, 1.7])
     with col2_classification_report:
         with st.container(border=True):
             classes = ["Vegetasi", "Tubuh Air", "Lahan Terbangun", "Lahan Terbuka"]
@@ -1218,8 +1220,8 @@ with tab4:
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - **Vegetasi** dan **Lahan Terbangun** menunjukkan performa terbaik dengan **F1-Score** tinggi (**0.88** dan **0.77**) yang mengindikasikan model dapat mengidentifikasi kedua kelas ini dengan baik.
-                - **Tubuh Air** dan **Lahan Terbuka** memiliki performa rendah (**F1-Score 0.36** dan **0.14**) menunjukkan model kesulitan membedakan kelas-kelas ini, kemungkinan karena keterbatasan data training atau kemiripan spektral dengan kelas lain.
+                - :green-background[**Vegetasi**] dan :green-background[**Lahan Terbangun**] menunjukkan :green-background[**performa terbaik**] dengan :green-background[**F1-Score tinggi**] (**0.88** dan **0.77**) yang mengindikasikan :green-background[**model dapat mengidentifikasi**] kedua kelas ini dengan baik.
+                - :green-background[**Tubuh Air**] dan :green-background[**Lahan Terbuka**] memiliki :green-background[**performa rendah**] (F1-Score :green-background[**0.36**] dan :green-background[**0.14**]), menunjukkan :green-background[**model kesulitan membedakan**] kedua kelas tersebut. Hal ini mungkin disebabkan oleh :green-background[**keterbatasan data training**] atau :green-background[**kemiripan spektral**] dengan kelas lain.
                 """,
                 unsafe_allow_html=True,
             )
@@ -1353,7 +1355,7 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=465,
+                    height=462,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",
