@@ -125,14 +125,14 @@ st.markdown(
 home = st.Page("home.py", title="Beranda", icon=":material/home:", default=True)
 
 # Section Analisis
-lst = st.Page(
-    "maps/lst.py", title="Suhu Permukaan Lahan", icon=":material/thermometer:"
+lulc = st.Page(
+    "maps/penutup-lahan.py", title="Penutup Lahan", icon=":material/landscape_2:"
 )
 ndbi = st.Page("maps/ndbi.py", title="NDBI", icon=":material/apartment:")
 ndmi = st.Page("maps/ndmi.py", title="NDMI", icon=":material/water_voc:")
 ndvi = st.Page("maps/ndvi.py", title="NDVI", icon=":material/psychiatry:")
-lulc = st.Page(
-    "maps/penutup-lahan.py", title="Penutup Lahan", icon=":material/landscape_2:"
+lst = st.Page(
+    "maps/lst.py", title="Suhu Permukaan Lahan", icon=":material/thermometer:"
 )
 
 # Section How It's Made
@@ -159,7 +159,7 @@ download_peta = st.Page(
 pg = st.navigation(
     {
         "": [home],
-        "Analisis": [lst, ndbi, ndmi, ndvi, lulc],
+        "Analisis": [lulc, ndbi, ndmi, ndvi, lst],
         "How It's Made": [dataset, workflow, project, gee_apps],
         "Get Results": [download_peta],
     }

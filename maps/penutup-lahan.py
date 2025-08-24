@@ -77,7 +77,7 @@ st.markdown(
         padding: 12px !important;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.0.1) !important;
+        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
         border-radius: 1px !important;
         padding: 12px !important;
         # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
@@ -566,9 +566,15 @@ with tab1:
                     }
                     dominan_kec = max(classes_kec, key=classes_kec.get)
 
-                    st.write(
-                        f"**Kesimpulan**: {jenis_kec} {selected_kecamatan} :green-background[**didominasi**] oleh :green-background[**{dominan_kec}**]."
-                    )
+                    # Pengkondisian untuk tahun 2029
+                    if str(option) == "2029":
+                        st.write(
+                            f"**Kesimpulan**: {jenis_kec} {selected_kecamatan} :green-background[**diprediksi akan didominasi**] oleh :green-background[**{dominan_kec}**]."
+                        )
+                    else:
+                        st.write(
+                            f"**Kesimpulan**: {jenis_kec} {selected_kecamatan} :green-background[**didominasi**] oleh :green-background[**{dominan_kec}**]."
+                        )
                 else:
                     st.write(
                         "Data tidak tersedia untuk kecamatan dan tahun yang dipilih."

@@ -71,7 +71,7 @@ st.markdown(
         padding: 12px !important;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.0.1)
+        border: 0.5px solid rgba(0, 0, 0, 0.1)
         !important;
         border-radius: 1px !important;
         padding: 12px !important;
@@ -396,6 +396,7 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
 kecamatan_stats_df = load_kec_stats()
 
 st.header("Normalized Difference Built-Up Index")
+
 (
     tab1,
     tab2,
@@ -464,16 +465,6 @@ with tab1:
 
         # Function Klasifikasi Deskripsi
         def classify_ndbi(mean_value, thresholds):
-            """
-            Klasifikasi nilai mean NDBI berdasarkan threshold
-
-            Args:
-                mean_value (float): Nilai mean NDBI
-                thresholds (dict): Dictionary threshold dengan key 'low', 'medium', 'high'
-
-            Returns:
-                tuple: (kategori, deskripsi)
-            """
             if mean_value <= thresholds["low"]:
                 return "sangat rendah", "sangat rendah"
             elif thresholds["low"] < mean_value <= thresholds["medium"]:
@@ -497,9 +488,9 @@ with tab1:
                     kecamatan_data["mean"], current_thresholds
                 )
 
-                # Kondisional untuk tahun 2029
+                # Pengkondisian Tahun 2029
                 if option == "2029":
-                    description = f"Tingkat kerapatan area terbangun di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] :green-background[**diprediksi**] menunjukkan nilai rata-rata NDBI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki tingkat :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
+                    description = f"Tingkat kerapatan area terbangun di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] :green-background[**diprediksi**] sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai rata-rata NDBI tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
                 else:
                     description = f"Tingkat kerapatan area terbangun di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDBI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
 
@@ -634,7 +625,7 @@ with tab2:
         "**Tren NDBI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2, 2])
+    col1_tren_main, col2_tren_main = st.columns([2.4, 1.6])
     with col1_tren_main:
         # Container Grafik Tren
         with st.container(border=True):
@@ -709,7 +700,7 @@ with tab2:
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=242,
+                height=318,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -733,9 +724,9 @@ with tab2:
             st.markdown(
                 """
                 💡**Quick Insight**
-                - :green-background[**Nilai NDBI**] berkisar antara :green-background[**-1 hingga +1**]. :green-background[**Semakin tinggi**], maka mengindikasikan :green-background[**dominasi area terbangun**]; sedangkan :green-background[**semakin rendah**] menunjukkan :green-background[**vegetasi dan tubuh air**].
-                - :green-background[**Kawasan Perkotaan:**] Nilai NDBI cenderung naik sejak 1999 dan diproyeksikan akan :green-background[**tetap naik**] sekitar 0.005 pada 2029.
-                - :green-background[**Kawasan Non-Perkotaan:**] Nilai NDBI :green-background[**cenderung fluktuatif**] dan diperkirakan akan :green-background[**tetap turun**] sekitar 0.003 pada 2029.
+                - Nilai NDBI berkisar antara :green-background[**-1 hingga +1**]. :green-background[**Semakin tinggi**] nilai mengindikasikan adanya :green-background[**dominasi area terbangun**]. Sebaliknya, :green-background[**semakin rendah**] menunjukkan area :green-background[**bervegetasi**] atau :green-background[**tubuh air**].
+                - NDBI di :green-background[**kawasan perkotaan:**] cenderung :green-background[**naik**] sejak 1999 dan diproyeksi akan :green-background[**terus naik**] sekitar 0.005 pada 2029.
+                - NDBI di :green-background[**kawasan non-perkotaan:**] cenderung :green-background[**fluktuatif**] dan diproyeksi akan :green-background[**turun**] sekitar 0.003 pada 2029.
                 """
             )
 
@@ -801,17 +792,17 @@ with tab2:
                 + "NDBI Mean: %{customdata[1]:.3f}<extra></extra>",
                 texttemplate="%{x:.3f}",
                 textposition="outside",
-                textfont_size=10,
+                textfont_size=12,
                 textfont_color="black",
             )
 
             # Update dan Styling Bar Plot
             fig.update_layout(
                 height=800,
-                font=dict(family="Poppins", size=11),
-                title_font_size=16,
-                xaxis_title_font_size=14,
-                yaxis_title_font_size=14,
+                font=dict(family="Poppins", size=12),
+                title_font_size=12,
+                xaxis_title_font_size=12,
+                yaxis_title_font_size=12,
                 showlegend=True,
                 legend=dict(
                     orientation="v",
@@ -913,12 +904,12 @@ with tab3:
 
                 # Update Layout
                 fig.update_layout(
-                    height=362,
+                    height=360,
                     showlegend=True,
                     template="plotly_white",
                     font=dict(
                         family="Poppins, sans-serif",  # Font Poppins
-                        size=10,
+                        size=12,
                         color="black",  # Font color hitam
                     ),
                     margin=dict(t=30, b=20, l=20, r=20),
@@ -937,8 +928,14 @@ with tab3:
                         ),
                         tickfont=dict(color="black", family="Poppins, sans-serif"),
                     ),
-                    # Styling untuk legend
-                    legend=dict(font=dict(color="black", family="Poppins, sans-serif")),
+                    legend={
+                        "orientation": "h",
+                        "yanchor": "top",
+                        "y": -0.25,
+                        "xanchor": "center",
+                        "x": 0.5,
+                        "font": {"family": "Poppins", "size": 14, "color": "black"},
+                    },
                 )
 
                 # Box Info
@@ -953,7 +950,7 @@ with tab3:
                     bgcolor="#fdfaf6",
                     bordercolor="black",
                     borderwidth=1,
-                    borderpad=7,  # Tambah Padding Internal
+                    borderpad=7,
                     xanchor="left",
                     yanchor="top",
                 )
@@ -1255,7 +1252,7 @@ with tab4:
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([1.75, 2.25])
+    col1_metrik_img, col2_metrik_insight = st.columns([1.9, 2.1])
     with col1_metrik_img:
         with st.container(border=True):
             fig = go.Figure(
@@ -1312,7 +1309,7 @@ with tab4:
                 plot_bgcolor="#fdfaf6",
                 paper_bgcolor="#fdfaf6",
                 margin=dict(l=0, r=0, t=10, b=30),
-                height=277.5,
+                height=335,
                 showlegend=True,
             )
 
@@ -1331,9 +1328,8 @@ with tab4:
                 """,
                 unsafe_allow_html=True,
             )
-            st.success(
-                "✅ Model XGBoost **LAYAK** untuk proyeksi NDBI 2029\n\n✅ Data proyeksi NDBI 2029 **VALID** untuk prediksi LST 2029"
-            )
+            st.success("✅ Model XGBoost **LAYAK** untuk proyeksi NDBI 2029.")
+            st.success("✅ Data proyeksi NDBI 2029 **VALID** untuk prediksi LST 2029.")
 
     st.badge(
         "**Perbandingan Peta NDBI Aktual vs Proyeksi**",
@@ -1346,9 +1342,6 @@ with tab4:
             try:
 
                 def process_raster_data_with_threshold(data, thresholds):
-                    """
-                    Proses data raster NDBI dengan threshold spesifik dan konversi ke format yang kompatibel dengan Plotly
-                    """
                     data = data.astype("float32")
                     data = np.where((data < -1) | (data > 1), np.nan, data)
 
@@ -1529,7 +1522,7 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=510,
+                    height=507,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",
@@ -1622,6 +1615,7 @@ with tab4:
                     margin: 0px 0 10px 0; 
                     font-family: 'Poppins', sans-serif;
                     margin-top: -15px;
+                    margin-bottom: 15px;
                 }
                 #ndbi-sample-table th, #ndbi-sample-table td { 
                     border: 1px solid #ddd; 

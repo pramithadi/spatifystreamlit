@@ -4,12 +4,15 @@ import pandas as pd
 import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import folium
 from streamlit_folium import folium_static
 from streamlit_folium import st_folium
 import rasterio
+from rasterio.mask import mask
+from shapely.geometry import mapping
 import os
 import base64
 from io import BytesIO
@@ -18,87 +21,84 @@ from scipy import stats
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 st.set_page_config(
-    page_title="Dashboard NDMI",
+    page_title="NDMI — Spatify",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
+# ==============================================================================
+# CUSTOM CSS
+# ==============================================================================
 st.markdown(
     """
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
     .main {
         padding-top: 0rem !important;
     }
     .block-container {
-        padding-top: 0.2rem !important;
+        padding-top: 0.5rem !important;
     }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    """
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        div[data-testid="stMarkdownContainer"] * {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .stMarkdown p {
-            font-size: 14px !important;
-            margin-bottom: 8px !important;
-        }
-        .stSubheader {
-            font-size: 16px !important;
-            margin-bottom: 12px !important;
-        }
-        
-        div[data-testid="stMarkdownContainer"] h1 {
-            color: #000000 !important;
-            font-weight: 600 !important;
-        }
-        
-        .stApp > header {
-            color: #000000 !important;
-        }
-        .stApp {
-            color: #000000 !important;
-        }
-        
-        .stMarkdown {
-            color: #000000 !important;
-        }
-        
-        div[data-testid="stVerticalBlockBorderWrapper"] {
-            padding: 12px !important;
-        }
-        
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-            border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-            border-radius: 1px !important;
-            padding: 12px !important;
-            # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-            # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-            transition: all 0.3s ease !important;
-        }
-
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-            transform: translateY(-4px) !important;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-            border-color: #fdfaf6 !important;
-        }
-        
-        /* Mengurangi Padding Top Halaman Utama */
-        .block-container {
-            padding-top: 0rem !important;
-            max-width: 100% !important;
-        }
-        
-        .main {
-            padding-top: 0rem !important;
-        }
+    .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    div[data-testid="stMarkdownContainer"] * {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    .stMarkdown p {
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+    }
+    .stSubheader {
+        font-size: 16px !important;
+        margin-bottom: 12px !important;
+    }
+    div[data-testid="stMarkdownContainer"] h1 {
+        color: #000000 !important;
+        font-weight: 600 !important;
+    }
+    .stApp > header {
+        color: #000000 !important;
+    }
+    .stApp {
+        color: #000000 !important;
+    }
+    .stMarkdown {
+        color: #000000 !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        padding: 12px !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+        border: 0.5px solid rgba(0, 0, 0, 0.1)
+        !important;
+        border-radius: 1px !important;
+        padding: 12px !important;
+        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+        transition: all 0.3s ease !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+        border-color: #fdfaf6 !important;
+    }           
+    .stTabs [data-baseweb="tab-highlight"] {
+        background-color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button:hover {
+        color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button:hover [data-baseweb="tab-highlight"] {
+        background-color: #705c53 !important;
+    }
+    .stTabs {
+        margin-top: 0rem !important;
+    }
     </style>
 """,
     unsafe_allow_html=True,
@@ -112,6 +112,7 @@ stats_by_year = {
     "2014": {"min": -0.819, "max": 0.564, "mean": 0.179},
     "2019": {"min": -0.940, "max": 0.581, "mean": 0.161},
     "2024": {"min": -0.454, "max": 0.604, "mean": 0.162},
+    "2029": {"min": -0.228, "max": 0.471, "mean": 0.161},
 }
 
 # Dictionary Threshold
@@ -122,14 +123,17 @@ threshold_dict = {
     "2014": {"low": 0.056, "medium": 0.179, "high": 0.302},
     "2019": {"low": 0.022, "medium": 0.161, "high": 0.301},
     "2024": {"low": 0.015, "medium": 0.162, "high": 0.309},
+    "2029": {"low": 0.020, "medium": 0.161, "high": 0.303},
 }
 
 
-# Function untuk Load Data Statistik Kecamatan dari CSV
+# ==============================================================================
+# DEKLARASI FUNGSI
+# ==============================================================================
 @st.cache_data
 def load_kecamatan_stats():
     """
-    Load statistik NDMI per kecamatan dari file CSV
+    Load CSV Statistik NDMI tiap Kecamatan.
     """
     csv_path = "./csv/ndmiStatsKec.csv"
     try:
@@ -145,10 +149,9 @@ def load_kecamatan_stats():
         return pd.DataFrame()
 
 
-# Function untuk Get Data Kecamatan Berdasarkan Tahun
 def get_kecamatan_data_by_year(df, year):
     """
-    Filter data kecamatan berdasarkan tahun
+    Filter NDMI Kecamatan Berdasarkan Tahun.
     """
     if df.empty:
         return {}
@@ -170,8 +173,10 @@ def get_kecamatan_data_by_year(df, year):
     return kecamatan_dict
 
 
-# Function Condition untuk Menentukan Kapanewon/Kemantren Toponim
 def get_toponim(wadmkk):
+    """
+    Penentuan Istilah Kapanewon/Kemantren Berdasarkan Kabupaten/Kota (WADMKK).
+    """
     if "Sleman" in wadmkk or "Bantul" in wadmkk:
         return "Kapanewon"
     elif "Yogyakarta" in wadmkk:
@@ -180,8 +185,30 @@ def get_toponim(wadmkk):
         return "Kecamatan"
 
 
-# Function untuk Menambahkan SHP Batas Administrasi ke Peta Folium
-def add_shapefile_to_map(map_obj, shapefile_path):
+@st.cache_data
+def get_kecamatan_bounds(namobj):
+    shapefile_path = "shp/aoi_kpy.shp"
+    try:
+        gdf = gpd.read_file(shapefile_path)
+
+        if gdf.crs != "EPSG:4326":
+            gdf = gdf.to_crs("EPSG:4326")
+
+        kec_data = gdf[gdf["NAMOBJ"] == namobj]
+
+        if not kec_data.empty:
+            bounds = kec_data.total_bounds
+            return [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
+        else:
+            return None
+    except Exception as e:
+        return None
+
+
+def add_shp_to_map(map_obj, shapefile_path):
+    """
+    Menambahkan SHP Batas Administrasi ke Peta Folium.
+    """
     try:
         # Geopandas untuk Membaca SHP
         gdf = gpd.read_file(shapefile_path)
@@ -240,7 +267,6 @@ def add_shapefile_to_map(map_obj, shapefile_path):
         return False
 
 
-# Function untuk Menambahkan Legenda ke Peta Folium
 def add_legend_to_map(map_obj, thresholds):
     legend_html = f"""
     <div style="position: fixed; 
@@ -280,8 +306,10 @@ def add_legend_to_map(map_obj, thresholds):
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
-# Function untuk Menambahkan GeoTiff ke Peta Folium (DIPERBAIKI)
 def add_geotiff_to_map(map_obj, tif_path, thresholds):
+    """
+    Menambahkan GeoTiff Penutup Lahan ke Peta Folium.
+    """
     try:
         with rasterio.open(tif_path) as src:
             # Rasterio untuk Membaca Data Raster
@@ -333,12 +361,6 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
             # Set Area yang Tidak Valid dengan Warna Transparan
             colored_data[~valid_mask] = [0, 0, 0, 0]
 
-            # Debug: Print info untuk troubleshooting
-            print(f"Data shape: {data.shape}")
-            print(f"Data range: {np.nanmin(data):.3f} to {np.nanmax(data):.3f}")
-            print(f"Valid pixels: {np.sum(valid_mask)}")
-            print(f"Bounds: {bounds}")
-
             # Konversi ke PIL Image
             img = Image.fromarray(colored_data, "RGBA")
 
@@ -347,14 +369,14 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
             img.save(buffered, format="PNG")
             img_str = base64.b64encode(buffered.getvalue()).decode()
 
-            # Bounds untuk Folium (DIPERBAIKI - Pastikan urutan yang benar)
+            # Bounds untuk Folium
             bounds_folium = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]
 
             # Tambahkan ke Peta
             ndmi_overlay = folium.raster_layers.ImageOverlay(
                 image=f"data:image/png;base64,{img_str}",
                 bounds=bounds_folium,
-                opacity=0.8,  # Turunkan opacity untuk debug
+                opacity=1.0,
                 interactive=True,
                 cross_origin=False,
                 zindex=1,
@@ -362,40 +384,50 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
             )
             ndmi_overlay.add_to(map_obj)
 
-            print("GeoTIFF berhasil ditambahkan ke peta")
-            return True
+        return True
     except Exception as e:
-        print(f"Error adding GeoTIFF to map: {str(e)}")
         return False
 
 
-# Load Data Statistik Kecamatan
+# ==============================================================================
+# MAIN EXECUTION
+# ==============================================================================
+
 kecamatan_stats_df = load_kecamatan_stats()
 
-st.subheader("Normalized Difference Moisture Index")
+st.header("Normalized Difference Moisture Index")
 
-selected_tab = st.pills(
-    "**Lihat Analisis:**",
+(
+    tab1,
+    tab2,
+    tab3,
+    tab4,
+) = st.tabs(
     [
         "🗺️ Peta",
         "📈 Tren",
         "✅ Validasi",
-    ],
-    selection_mode="single",
-    default="🗺️ Peta",
+        "⚙️ Model",
+    ]
 )
 
+# ==============================================================================
+# SECTION 1: PETA
+# ==============================================================================
 # Peta
-if selected_tab == "🗺️ Peta":
-    col1_peta, col2_peta = st.columns([2.6, 1.4])
+with tab1:
+    st.badge(
+        "**Peta NDMI di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
+        color="primary",
+    )
+
+    col1_peta, col2_peta = st.columns([2.5, 1.5])
 
     with col2_peta:
-        # Container Selectbox Tahun
         with st.container(border=True):
-            # Selectbox Tahun
             option = st.selectbox(
                 "**Pilih Tahun**",
-                ["1999", "2004", "2009", "2014", "2019", "2024"],
+                ["1999", "2004", "2009", "2014", "2019", "2024", "2029"],
                 index=0,
                 placeholder="Tahun",
             )
@@ -434,16 +466,7 @@ if selected_tab == "🗺️ Peta":
 
         # Function Klasifikasi Deskripsi
         def classify_ndmi(mean_value, thresholds):
-            """
-            Klasifikasi nilai mean NDMI berdasarkan threshold
 
-            Args:
-                mean_value (float): Nilai mean NDMI
-                thresholds (dict): Dictionary threshold dengan key 'low', 'medium', 'high'
-
-            Returns:
-                tuple: (kategori, deskripsi)
-            """
             if mean_value <= thresholds["low"]:
                 return "sangat rendah", "sangat rendah"
             elif thresholds["low"] < mean_value <= thresholds["medium"]:
@@ -467,15 +490,33 @@ if selected_tab == "🗺️ Peta":
                     kecamatan_data["mean"], current_thresholds
                 )
 
-                description = f"Tingkat kelembapan vegetasi di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDMI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kelembapan vegetasi**] yang :green-background[**{deskripsi}**]."
+                # Pengkondisian Tahun 2029
+                if option == "2029":
+                    description = f"Tingkat kelembapan vegetasi di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] diprediksi sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai rata-rata NDMI tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki :green-background[**kelembapan vegetasi**] yang :green-background[**{deskripsi}**]."
+                else:
+                    description = f"Tingkat kelembapan vegetasi di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDMI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kelembapan vegetasi**] yang :green-background[**{deskripsi}**]."
 
                 st.write(description)
 
     with col1_peta:
+        if selected_kecamatan:
+            kec_bounds = get_kecamatan_bounds(selected_kecamatan)
+            if kec_bounds:
+                center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
+                center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
+                map_center = [center_lat, center_lon]
+                zoom_level = 14
+            else:
+                map_center = [-7.764326411862208, 110.3721676814108]
+                zoom_level = 13
+        else:
+            map_center = [-7.764326411862208, 110.3721676814108]
+            zoom_level = 10.5
+
         # Buat Peta Folium
         m = folium.Map(
-            location=[-7.764326411862208, 110.3721676814108],
-            zoom_start=10.5,
+            location=map_center,
+            zoom_start=zoom_level,
             tiles=None,
         )
 
@@ -535,7 +576,7 @@ if selected_tab == "🗺️ Peta":
         # Cek Ketersediaan AOI, Panggil Function Batas AOI, dan Tampilkan ke Peta
         shapefile_path = "shp/aoi_kpy.shp"
         if os.path.exists(shapefile_path):
-            add_shapefile_to_map(m, shapefile_path)
+            add_shp_to_map(m, shapefile_path)
         else:
             st.warning(f"File Shapefile tidak ditemukan: {shapefile_path}")
 
@@ -567,8 +608,10 @@ if selected_tab == "🗺️ Peta":
         m.get_root().html.add_child(folium.Element(css))
         st_data = st_folium(m, use_container_width=True, height=597)
 
-elif selected_tab == "📈 Tren":
-    # Grafik Tren NDMI Perkotaan vs Non-Perkotaan
+# ==============================================================================
+# SECTION 2: TREN
+# ==============================================================================
+with tab2:
     df_urban_rural = pd.read_csv("./csv/ndmiStatsKec.csv")
 
     ndmi_urban_rural = (
@@ -584,7 +627,7 @@ elif selected_tab == "📈 Tren":
         "**Tren NDMI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2.3, 1.7])
+    col1_tren_main, col2_tren_main = st.columns([2.4, 1.6])
     with col1_tren_main:
         # Container Grafik Tren
         with st.container(border=True):
@@ -620,7 +663,16 @@ elif selected_tab == "📈 Tren":
                     )
                 )
 
-            # Update Layout Grafik
+            fig.add_vline(
+                x=2024,
+                line_width=2,
+                line_dash="dash",
+                line_color="grey",
+                annotation_text="Proyeksi",
+                annotation_position="top right",
+            )
+
+            # Update Tren
             fig.update_layout(
                 xaxis=dict(
                     title=dict(
@@ -628,7 +680,7 @@ elif selected_tab == "📈 Tren":
                         font=dict(family="Poppins", size=12, color="black"),
                     ),
                     tickfont=dict(family="Poppins", size=12, color="black"),
-                    tickvals=[1999, 2004, 2009, 2014, 2019, 2024],
+                    tickvals=[1999, 2004, 2009, 2014, 2019, 2024, 2029],
                     gridcolor="#9A9A9A",
                 ),
                 yaxis=dict(
@@ -639,18 +691,18 @@ elif selected_tab == "📈 Tren":
                     tickfont=dict(family="Poppins", size=12, color="black"),
                     gridcolor="#9A9A9A",
                     zerolinecolor="#9A9A9A",
-                    # range=[22, 40],
+                    # range=[-0.25, 0.05],
                 ),
                 legend=dict(
-                    orientation="v",
+                    orientation="h",
                     yanchor="top",
-                    y=1,
-                    xanchor="left",
-                    x=1.02,
+                    y=-0.3,
+                    xanchor="center",
+                    x=0.5,
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=305,
+                height=319,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -666,47 +718,17 @@ elif selected_tab == "📈 Tren":
             2014: {"mean": 0.179},
             2019: {"mean": 0.161},
             2024: {"mean": 0.162},
+            2029: {"mean": 0.161},
         }
-
-        years_tren = sorted(mean_by_year.keys())
-        mean_tren = [mean_by_year[y]["mean"] for y in years_tren]
-
-        # Hitung Overall Mean (Rata-rata NDMI 1999-2024)
-        overall_mean = sum(mean_tren) / len(mean_tren)
-
-        # Hitung Mean Absolute Change (Rata-rata Fluktuasi Tahunan)
-        diffs = []
-        for i in range(1, len(mean_tren)):
-            diff = abs(mean_tren[i] - mean_tren[i - 1])
-            diffs.append(diff)
-
-        mac = sum(diffs) / len(diffs)
-
-        # Row Metrics
-        col1_tren_metric, col2_tren_metric = st.columns([1, 1])
-        with col1_tren_metric:
-            with st.container(border=True):
-                st.metric(
-                    label="Rata-rata NDMI",
-                    value=f"{overall_mean:.3f}",
-                    help="Rata-rata NDMI di KPY dan Sekitarnya = (NDMImean₁₉₉₉ + NDMImean₂₀₀₄ + ... + NDMImean₂₀₂₄)/6",
-                )
-
-        with col2_tren_metric:
-            with st.container(border=True):
-                st.metric(
-                    label="Rata-rata Perubahan",
-                    value=f"{mac:.2f}",
-                    help="Perubahan Absolut NDMI di KPY dan Sekitarnya = (|NDMImean₂₀₀₄ - NDMImean₁₉₉₉| + |NDMImean₂₀₀₉ - NDMImean₂₀₀₄| + ... + |NDMImean₂₀₂₄ - NDMImean₂₀₁₉|)/5",
-                )
 
         # Container Analisis Tren
         with st.container(border=True):
             st.markdown(
                 """
                 💡**Quick Insight**
-                - Kawasan perkotaan Yogyakarta memiliki nilai NDMI :green-background[**lebih rendah**] dibanding kawasan non-perkotaan.
-                - :green-background[**Selisih**] nilai NDMI perkotaan dan non-perkotaan berkisar antara :green-background[**0.148**] hingga :green-background[**0.196**].
+                - Nilai NDMI berkisar antara :green-background[**-1 hingga +1**]. :green-background[**Semakin tinggi**] nilai mengindikasikan :green-background[**adanya kandungan air yang tinggi pada vegetasi**] dan begitupun sebaliknya.
+                - Nilai NDMI di :green-background[**kawasan perkotaan**] cenderung :green-background[**turun**] sejak 1999 dan diproyeksi akan :green-background[**terus turun**] sekitar 0.005 pada 2029.
+                - Nilai NDMI di :green-background[**kawasan non-perkotaan**] cenderung :green-background[**fluktuatif**] di awal 1999, lalu mulai naik sejak 2019, dan diproyeksi akan :green-background[**terus naik**] sekitar 0.003 pada 2029.
                 """
             )
 
@@ -772,17 +794,17 @@ elif selected_tab == "📈 Tren":
             + "NDMI Mean: %{customdata[1]:.3f}<extra></extra>",
             texttemplate="%{x:.3f}",
             textposition="outside",
-            textfont_size=10,
+            textfont_size=12,
             textfont_color="black",
         )
 
         # Update dan Styling Bar Plot
         fig.update_layout(
             height=800,
-            font=dict(family="Poppins", size=11),
-            title_font_size=16,
-            xaxis_title_font_size=14,
-            yaxis_title_font_size=14,
+            font=dict(family="Poppins", size=12),
+            title_font_size=12,
+            xaxis_title_font_size=12,
+            yaxis_title_font_size=12,
             showlegend=True,
             legend=dict(
                 orientation="v",
@@ -813,7 +835,11 @@ elif selected_tab == "📈 Tren":
         # Display Bar Plot
         st.plotly_chart(fig, use_container_width=True)
 
-elif selected_tab == "✅ Validasi":
+# ==============================================================================
+# SECTION 3: VALIDASI
+# ==============================================================================
+
+with tab3:
     try:
         # Load CSV Sampel NDMI untuk Validasi
         validation_data = pd.read_csv("csv/ndmiSampelValidasi.csv")
@@ -885,8 +911,8 @@ elif selected_tab == "✅ Validasi":
                     template="plotly_white",
                     font=dict(
                         family="Poppins, sans-serif",  # Font Poppins
-                        size=10,
-                        color="black",  # Font color hitam
+                        size=12,
+                        color="black",
                     ),
                     margin=dict(t=30, b=20, l=20, r=20),
                     # Styling Sumbu X dan Y
@@ -904,8 +930,14 @@ elif selected_tab == "✅ Validasi":
                         ),
                         tickfont=dict(color="black", family="Poppins, sans-serif"),
                     ),
-                    # Styling untuk legend
-                    legend=dict(font=dict(color="black", family="Poppins, sans-serif")),
+                    legend={
+                        "orientation": "h",
+                        "yanchor": "top",
+                        "y": -0.25,
+                        "xanchor": "center",
+                        "x": 0.5,
+                        "font": {"family": "Poppins", "size": 14, "color": "black"},
+                    },
                 )
 
                 # Box Info
@@ -920,7 +952,7 @@ elif selected_tab == "✅ Validasi":
                     bgcolor="#fdfaf6",
                     bordercolor="black",
                     borderwidth=1,
-                    borderpad=7,  # Tambah Padding Internal
+                    borderpad=7,
                     xanchor="left",
                     yanchor="top",
                 )
@@ -1110,8 +1142,8 @@ elif selected_tab == "✅ Validasi":
 
         # Tambahkan Batas Administrasi ke Kedua Peta
         if os.path.exists(shapefile_path):
-            add_shapefile_to_map(dual_map.m1, shapefile_path)
-            add_shapefile_to_map(dual_map.m2, shapefile_path)
+            add_shp_to_map(dual_map.m1, shapefile_path)
+            add_shp_to_map(dual_map.m2, shapefile_path)
 
         # Function untuk Menambahkan Legenda Universal
         def add_universal_legend_to_map(map_obj, title):
@@ -1206,4 +1238,418 @@ elif selected_tab == "✅ Validasi":
         - [2] Chen, J., Zhu, X., Imura, H., Chen, X. (2010). Consistency of Accuracy Assessment Indices for Soft Classification: Simulation Analysis. *ISPRS Journal of Photogrammetry and Remote Sensing*, 65(6). 156-164. https://doi.org/10.1016/j.isprsjprs.2009.10.003
         - [3] Schmidt, J., & Osebold, R. (2017). Environmental Management Systems as A Driver for Sustainability: State of Implementation, Benefits, and Barriers in German Construction Companies. *Journal of Civil Engineering and Management*, 23(1). 150-162. https://doi.org/10.3846/13923730.2014.946441
         """
+        )
+
+# ==============================================================================
+# SECTION 4: MODEL
+# ==============================================================================
+
+with tab4:
+    st.badge(
+        "**Evaluasi Model Proyeksi XGBoost**",
+        color="primary",
+    )
+
+    col1_metrik_img, col2_metrik_insight = st.columns([1.9, 2.1])
+    with col1_metrik_img:
+        with st.container(border=True):
+            fig = go.Figure(
+                data=[
+                    go.Bar(
+                        name="RMSE",
+                        x=["RMSE"],
+                        y=[0.0539],
+                        text=["0.0539"],
+                        textposition="outside",
+                        marker_color="#F5C9B0",
+                        textfont=dict(family="Poppins", size=12, color="black"),
+                    ),
+                    go.Bar(
+                        name="MAE",
+                        x=["MAE"],
+                        y=[0.0409],
+                        text=["0.0409"],
+                        textposition="outside",
+                        marker_color="#A6B28B",
+                        textfont=dict(family="Poppins", size=12, color="black"),
+                    ),
+                    go.Bar(
+                        name="R²",
+                        x=["R²"],
+                        y=[0.8648],
+                        text=["0.8648"],
+                        textposition="outside",
+                        marker_color="#1C352D",
+                        textfont=dict(family="Poppins", size=12, color="black"),
+                    ),
+                ]
+            )
+
+            fig.update_layout(
+                xaxis={"tickfont": {"family": "Poppins", "size": 12, "color": "black"}},
+                yaxis={
+                    "title": {
+                        "text": "Nilai",
+                        "font": {"family": "Poppins", "size": 12, "color": "black"},
+                    },
+                    "tickfont": {"family": "Poppins", "size": 12, "color": "black"},
+                    "range": [0, 1],
+                },
+                legend={
+                    "orientation": "h",
+                    "yanchor": "top",
+                    "y": -0.15,
+                    "xanchor": "center",
+                    "x": 0.5,
+                    "font": {"family": "Poppins", "size": 12, "color": "black"},
+                },
+                font={"family": "Poppins"},
+                plot_bgcolor="#fdfaf6",
+                paper_bgcolor="#fdfaf6",
+                margin=dict(l=0, r=0, t=10, b=30),
+                height=335,
+                showlegend=True,
+            )
+
+            fig.update_xaxes(showgrid=False)
+            fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor="rgba(0,0,0,0.1)")
+
+            st.plotly_chart(fig, use_container_width=True)
+
+    with col2_metrik_insight:
+        with st.container(border=True):
+            st.write("💡**Quick Insight**")
+            st.markdown(
+                f"""
+                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**sangat kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**].⁽¹⁾ 
+                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**86.48%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi cukup tepat**].⁽²⁾
+                """,
+                unsafe_allow_html=True,
+            )
+            st.success("✅ Model XGBoost **LAYAK** untuk proyeksi NDMI 2029.")
+            st.success("✅ Data proyeksi NDMI 2029 **VALID** untuk prediksi LST 2029.")
+
+    st.badge(
+        "**Perbandingan Peta NDMI Aktual vs Proyeksi**",
+        color="primary",
+    )
+
+    col_peta_perbandingan = st.columns(1)
+    with col_peta_perbandingan[0]:
+        with st.container(border=True):
+            try:
+
+                def process_raster_data_with_threshold(data, thresholds):
+                    data = data.astype("float32")
+                    data = np.where((data < -1) | (data > 1), np.nan, data)
+
+                    colors = {
+                        "very_low": 0,
+                        "low": 1,
+                        "medium": 2,
+                        "high": 3,
+                    }
+
+                    classified_data = np.full(data.shape, np.nan, dtype=np.float32)
+                    valid_mask = ~np.isnan(data)
+                    very_low_mask = valid_mask & (data <= thresholds["low"])
+                    low_mask = (
+                        valid_mask
+                        & (data > thresholds["low"])
+                        & (data <= thresholds["medium"])
+                    )
+                    medium_mask = (
+                        valid_mask
+                        & (data > thresholds["medium"])
+                        & (data <= thresholds["high"])
+                    )
+                    high_mask = valid_mask & (data > thresholds["high"])
+
+                    classified_data[very_low_mask] = colors["very_low"]
+                    classified_data[low_mask] = colors["low"]
+                    classified_data[medium_mask] = colors["medium"]
+                    classified_data[high_mask] = colors["high"]
+
+                    return classified_data
+
+                thresholds = {
+                    "aktual_2024": {"low": 0.015, "medium": 0.162, "high": 0.309},
+                    "proyeksi_2024": {
+                        "low": 0.025,
+                        "medium": 0.162,
+                        "high": 0.299,
+                    },
+                    "proyeksi_2029": {"low": 0.020, "medium": 0.161, "high": 0.303},
+                }
+
+                # Aktual NDMI 2024
+                with rasterio.open("tif/ndmi2024kpy.tif") as src:
+                    data_2024_actual = src.read(1)
+                    bounds_actual = src.bounds
+                    height, width = data_2024_actual.shape
+                    x_actual = np.linspace(
+                        bounds_actual.left, bounds_actual.right, width
+                    )
+                    y_actual = np.linspace(
+                        bounds_actual.bottom, bounds_actual.top, height
+                    )
+                    data_2024_actual = np.flipud(data_2024_actual)
+                    data_2024_actual = process_raster_data_with_threshold(
+                        data_2024_actual, thresholds["aktual_2024"]
+                    )
+
+                # Proyeksi NDMI 2024
+                with rasterio.open("tif/proyeksi_ndmi2024kpy.tif") as src:
+                    data_2024_pred = src.read(1)
+                    bounds_pred = src.bounds
+                    height, width = data_2024_pred.shape
+                    x_pred_24 = np.linspace(bounds_pred.left, bounds_pred.right, width)
+                    y_pred_24 = np.linspace(bounds_pred.bottom, bounds_pred.top, height)
+                    data_2024_pred = np.flipud(data_2024_pred)
+                    data_2024_pred = process_raster_data_with_threshold(
+                        data_2024_pred, thresholds["proyeksi_2024"]
+                    )
+
+                # Proyeksi NDMI 2029
+                with rasterio.open("tif/ndmi2029kpy.tif") as src:
+                    data_2029_pred = src.read(1)
+                    bounds_2029 = src.bounds
+                    height, width = data_2029_pred.shape
+                    x_pred_29 = np.linspace(bounds_2029.left, bounds_2029.right, width)
+                    y_pred_29 = np.linspace(bounds_2029.bottom, bounds_2029.top, height)
+                    data_2029_pred = np.flipud(data_2029_pred)
+                    data_2029_pred = process_raster_data_with_threshold(
+                        data_2029_pred, thresholds["proyeksi_2029"]
+                    )
+
+                colorscale = [
+                    [0.0, "rgb(148, 137, 121)"],
+                    [0.33, "rgb(255, 255, 224)"],
+                    [0.67, "rgb(173, 216, 230)"],
+                    [1.0, "rgb(0, 0, 139)"],
+                ]
+
+                fig = make_subplots(
+                    rows=1,
+                    cols=3,
+                    subplot_titles=[
+                        "Aktual NDBI 2024",
+                        "Proyeksi NDBI 2024",
+                        "Proyeksi NDBI 2029",
+                    ],
+                    horizontal_spacing=0.08,
+                )
+
+                fig.add_trace(
+                    go.Heatmap(
+                        z=data_2024_actual,
+                        x=x_actual,
+                        y=y_actual,
+                        colorscale=colorscale,
+                        zmin=0,
+                        zmax=3,
+                        showscale=False,
+                        hovertemplate="<extra></extra>",
+                    ),
+                    row=1,
+                    col=1,
+                )
+
+                fig.add_trace(
+                    go.Heatmap(
+                        z=data_2024_pred,
+                        x=x_pred_24,
+                        y=y_pred_24,
+                        colorscale=colorscale,
+                        zmin=0,
+                        zmax=3,
+                        showscale=False,
+                        hovertemplate="<extra></extra>",
+                    ),
+                    row=1,
+                    col=2,
+                )
+
+                fig.add_trace(
+                    go.Heatmap(
+                        z=data_2029_pred,
+                        x=x_pred_29,
+                        y=y_pred_29,
+                        colorscale=colorscale,
+                        zmin=0,
+                        zmax=3,
+                        showscale=False,
+                        hovertemplate="<extra></extra>",
+                    ),
+                    row=1,
+                    col=3,
+                )
+
+                legend_data = [
+                    {
+                        "name": "Sangat Rendah",
+                        "color": "rgb(148, 137, 121)",
+                    },
+                    {
+                        "name": "Rendah",
+                        "color": "rgb(255, 255, 224)",
+                    },
+                    {
+                        "name": "Sedang",
+                        "color": "rgb(173, 216, 230)",
+                    },
+                    {
+                        "name": "Tinggi",
+                        "color": "rgb(0, 0, 139)",
+                    },
+                ]
+
+                for i, legend_item in enumerate(legend_data):
+                    fig.add_trace(
+                        go.Scatter(
+                            x=[None],
+                            y=[None],
+                            mode="markers",
+                            marker=dict(
+                                size=11, color=legend_item["color"], symbol="square"
+                            ),
+                            name=legend_item["name"],
+                            showlegend=True,
+                            hovertemplate="<extra></extra>",
+                        )
+                    )
+
+                fig.update_layout(
+                    height=507,
+                    showlegend=True,
+                    font=dict(family="Poppins, sans-serif", size=12, color="black"),
+                    plot_bgcolor="#fdfaf6",
+                    paper_bgcolor="#fdfaf6",
+                    margin=dict(l=50, r=50, t=50, b=100),
+                    legend=dict(
+                        orientation="h",
+                        yanchor="top",
+                        y=-0.2,
+                        xanchor="center",
+                        x=0.5,
+                        bgcolor="rgba(0,0,0,0)",
+                        bordercolor="rgba(0,0,0,0)",
+                        borderwidth=0,
+                        font=dict(size=12, color="black"),
+                    ),
+                )
+
+                for i in range(1, 4):
+                    fig.update_xaxes(
+                        showgrid=False,
+                        zeroline=False,
+                        row=1,
+                        col=i,
+                        tickfont=dict(size=12, color="black"),
+                        title_font=dict(size=12, color="black"),
+                    )
+                    fig.update_yaxes(
+                        showgrid=False,
+                        zeroline=False,
+                        row=1,
+                        col=i,
+                        tickfont=dict(size=12, color="black"),
+                        title_font=dict(size=12, color="black"),
+                    )
+
+                for annotation in fig.layout.annotations:
+                    annotation.font.size = 12
+                    annotation.font.color = "black"
+
+                st.plotly_chart(fig, use_container_width=True)
+
+            except Exception as e:
+                st.error(f"Error: {str(e)}")
+
+    st.badge(
+        "**Tabel Perbandingan Sampel Nilai NDMI Aktual vs Proyeksi**",
+        color="primary",
+    )
+
+    col_sampel_perbandingan = st.columns(1)
+    with col_sampel_perbandingan[0]:
+        csv_path = "csv/ndmiSampelModel.csv"
+
+        try:
+            df = pd.read_csv(csv_path)
+
+            def format_ndmi_value(value):
+                try:
+                    return f"{float(value):.3f}"
+                except:
+                    return str(value)
+
+            def convert_df_to_html_ndmi(input_df):
+                formatters = {}
+                for col in input_df.columns:
+                    if (
+                        "ndmi" in col.lower()
+                        or "aktual" in col.lower()
+                        or "proyeksi" in col.lower()
+                    ):
+                        formatters[col] = format_ndmi_value
+
+                return input_df.to_html(
+                    escape=False,
+                    formatters=formatters,
+                    table_id="ndmi-sample-table",
+                    classes="table table-striped",
+                    index=False,
+                )
+
+            html_table = convert_df_to_html_ndmi(df)
+
+            st.markdown(
+                """
+                <style>
+                #ndmi-sample-table { 
+                    width: 100%; 
+                    border-collapse: collapse; 
+                    margin: 0px 0 10px 0; 
+                    font-family: 'Poppins', sans-serif;
+                    margin-top: -15px;
+                    margin-bottom: 15px;
+                }
+                #ndmi-sample-table th, #ndmi-sample-table td { 
+                    border: 1px solid #ddd; 
+                    padding: 8px; 
+                    text-align: center; 
+                    vertical-align: middle; 
+                    font-size: 14px;
+                }
+                #ndmi-sample-table th { 
+                    background-color: #E4EFE7; 
+                    font-weight: bold; 
+                    color: #333;
+                }
+                #ndmi-sample-table td:not(:first-child) {
+                    font-family: 'Courier New', monospace;
+                }
+                .stContainer > div > div > div > div { 
+                    padding-top: 0rem !important; 
+                }
+                </style>
+                <div style="margin-top: -25px;"></div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+            st.markdown(html_table, unsafe_allow_html=True)
+
+        except FileNotFoundError:
+            st.error(f"File '{csv_path}' tidak ditemukan!")
+        except Exception as e:
+            st.error(f"Error dalam menampilkan tabel sampel NDMI: {str(e)}")
+
+    with st.expander("Lihat Referensi"):
+        st.markdown(
+            """
+            - [1] Nurdin, Suarna, N., Prihartono, W. (2025). Algoritma Regresi Linier untuk Prediksi Penggunaan Volume Air Berdasarkan Jenis Pelanggan PDAM. *Jurnal Kecerdasan Buatan dan Teknologi Informasi*, 4(1). 43-52. https://doi.org/10.69916/jkbti.v4i1.187
+            - [2] Man, A., Chaichana, C., Wicharuck, S., Rinchumphu, D. (2022). *Predicting Sunlight Availability for Vertical Shelves using Simulation*. *IOP Conference Series: Earth and Environmental Science*. 1094 012011. https://doi.org/10.1088/1755-1315/1094/1/012011
+            """
         )
