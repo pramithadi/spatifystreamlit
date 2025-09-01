@@ -1102,7 +1102,7 @@ with tab4:
             st.markdown(
                 f"""
                 - :green-background[**Akurasi**] model prediksi penutup lahan menunjukkan angka yang :green-background[**tinggi**] sebesar :green-background[**89.63%**] setelah dilakukan validasi dengan data aktual terkini.
-                - :green-background[**Koefisien kappa**] sebesar :green-background[**83.51%**] masuk ke dalam kategori :green-background[***almost perfect agreement***⁽¹⁾], menunjukkan tingkat kesepakatan yang :green-background[**sangat baik**].
+                - :green-background[**Koefisien kappa**] sebesar :green-background[**83.51%**] masuk ke dalam kategori :green-background[**almost perfect agreement**⁽¹⁾], menunjukkan tingkat kesepakatan yang :green-background[**sangat baik**].
                 """,
                 unsafe_allow_html=True,
             )
@@ -1227,7 +1227,7 @@ with tab4:
             )
 
     st.badge(
-        "**Perbandingan Peta Penutup Lahan Aktual vs Prediksi**",
+        "**Perbandingan Visual Peta Penutup Lahan Aktual vs Prediksi**",
         color="primary",
     )
 

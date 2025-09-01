@@ -1330,7 +1330,7 @@ with tab4:
             st.success("✅ Data proyeksi NDMI 2029 **VALID** untuk prediksi LST 2029.")
 
     st.badge(
-        "**Perbandingan Peta NDMI Aktual vs Proyeksi**",
+        "**Perbandingan Visual Peta NDMI Aktual vs Proyeksi**",
         color="primary",
     )
 

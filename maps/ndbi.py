@@ -437,13 +437,13 @@ with tab1:
         col1_peta_metric, col2_peta_metric, col3_peta_metric = st.columns([1, 1, 1])
         with col1_peta_metric:
             with st.container(border=True):
-                st.metric("NDBI Min", f"{selected_data['min']:.2f}")
+                st.metric("NDBI Min", f"{selected_data['min']:.1f}")
         with col2_peta_metric:
             with st.container(border=True):
-                st.metric("NDBI Max", f"{selected_data['max']:.2f}")
+                st.metric("NDBI Max", f"{selected_data['max']:.1f}")
         with col3_peta_metric:
             with st.container(border=True):
-                st.metric("NDBI Mean", f"{selected_data['mean']:.2f}")
+                st.metric("NDBI Mean", f"{selected_data['mean']:.1f}")
 
         # Container Selectbox Kecamatan
         with st.container(border=True):
@@ -725,8 +725,8 @@ with tab2:
                 """
                 💡**Quick Insight**
                 - Nilai NDBI berkisar antara :green-background[**-1 hingga +1**]. :green-background[**Semakin tinggi**] nilai mengindikasikan adanya :green-background[**dominasi area terbangun**]. Sebaliknya, :green-background[**semakin rendah**] menunjukkan area :green-background[**bervegetasi**] atau :green-background[**tubuh air**].
-                - NDBI di :green-background[**kawasan perkotaan:**] cenderung :green-background[**naik**] sejak 1999 dan diproyeksi akan :green-background[**terus naik**] sekitar 0.005 pada 2029.
-                - NDBI di :green-background[**kawasan non-perkotaan:**] cenderung :green-background[**fluktuatif**] dan diproyeksi akan :green-background[**turun**] sekitar 0.003 pada 2029.
+                - NDBI di :green-background[**kawasan perkotaan**] cenderung :green-background[**naik**] sejak 1999 dan diproyeksi akan :green-background[**terus naik**] sekitar 0.005 pada 2029.
+                - NDBI di :green-background[**kawasan non-perkotaan**] cenderung :green-background[**fluktuatif**] dan diproyeksi akan :green-background[**turun**] sekitar 0.003 pada 2029.
                 """
             )
 
@@ -1323,8 +1323,8 @@ with tab4:
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**sangat kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**].⁽¹⁾ 
-                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**86.48%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi cukup tepat**].⁽²⁾
+                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**sangat kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**]⁽¹⁾ .
+                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**86.48%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi cukup tepat**]⁽²⁾.
                 """,
                 unsafe_allow_html=True,
             )
@@ -1332,7 +1332,7 @@ with tab4:
             st.success("✅ Data proyeksi NDBI 2029 **VALID** untuk prediksi LST 2029.")
 
     st.badge(
-        "**Perbandingan Peta NDBI Aktual vs Proyeksi**",
+        "**Perbandingan Visual Peta NDBI Aktual vs Proyeksi**",
         color="primary",
     )
 
