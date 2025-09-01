@@ -446,15 +446,15 @@ def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
 
     # Update Layout
     fig.update_layout(
-        height=266.5,
+        height=266,
         showlegend=True,
         template="plotly_white",
         font=dict(
-            family="Poppins, sans-serif",  # Font Poppins
-            size=10,
-            color="black",  # Font Color hitam
+            family="Poppins, sans-serif",
+            size=12,
+            color="black",
         ),
-        margin=dict(t=30, b=20, l=20, r=20),
+        margin=dict(t=30, b=0, l=20, r=20),
         # Styling Sumbu X dan Y
         xaxis=dict(
             title=dict(
@@ -470,8 +470,15 @@ def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
             ),
             tickfont=dict(color="black", family="Poppins, sans-serif"),
         ),
-        # Styling untuk legend
-        legend=dict(font=dict(color="black", family="Poppins, sans-serif")),
+        # Styling untuk Legenda
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.55,
+            xanchor="center",
+            x=0.47,
+            font=dict(family="Poppins, sans-serif", size=14, color="black"),
+        ),
     )
 
     # Box Info - Persamaan Regresi dan R²
@@ -1044,7 +1051,7 @@ with tab4:
                 """,
                 unsafe_allow_html=True,
             )
-            st.success("✅ Model XGBoost **LAYAK** untuk prediksi LST 2029.")
+            st.success("✅ Model XGBoost **LAYAK** untuk prediksi LST 2029!")
 
     # Plot SHAP
     st.badge(
@@ -1499,10 +1506,10 @@ with tab5:
             color="primary",
         )
 
-        col1_regresi_ndbi, col2_regresi_ndbi = st.columns([2.1, 1.9])
+        col1_regresi_ndbi, col2_regresi_ndbi = st.columns([2, 2])
         with col1_regresi_ndbi:
             with st.container(border=True):
-                # Membuat plot LST vs NDBI
+                # Membuat Plot LST vs NDBI
                 fig_ndbi, r2_ndbi, p_val_ndbi, slope_ndbi = create_regression_plot(
                     df_regression,
                     "NDBI",
@@ -1539,7 +1546,7 @@ with tab5:
             color="primary",
         )
 
-        col1_regresi_ndmi, col2_regresi_ndmi = st.columns([2.1, 1.9])
+        col1_regresi_ndmi, col2_regresi_ndmi = st.columns([2, 2])
         with col1_regresi_ndmi:
             with st.container(border=True):
                 # Membuat plot LST vs NDMI
@@ -1579,7 +1586,7 @@ with tab5:
             color="primary",
         )
 
-        col1_regresi_ndvi, col2_regresi_ndvi = st.columns([2.1, 1.9])
+        col1_regresi_ndvi, col2_regresi_ndvi = st.columns([2, 2])
         with col1_regresi_ndvi:
             with st.container(border=True):
                 # Membuat plot LST vs NDVI
