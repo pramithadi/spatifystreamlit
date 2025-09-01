@@ -960,9 +960,239 @@ with tab2:
 # ==============================================================================
 # SECTION 3: VALIDASI
 # ==============================================================================
-
 with tab3:
-    st.write("Page under construction.")
+    try:
+        # Load CSV Sampel LST untuk Validasi
+        validation_data = pd.read_csv("csv/lstSampelValidasi.csv")
+
+        # Hapus Nilai NaN
+        validation_data = validation_data.dropna()
+
+        # Ekstraksi Nilai dari Field
+        lstAktual_values = validation_data["LST Aktual"].values  # Pengukuran lapangan
+        lstReferensi_values = validation_data["LST Referensi"].values  # Citra satelit
+
+        # Hitung Metrik Regresi
+        slope, intercept, r_value, p_val, std_err = stats.linregress(
+            lstReferensi_values, lstAktual_values  # X: satelit, Y: lapangan
+        )
+
+        # R-squared (Coefficient of Determination)
+        r_squared = r_value**2
+
+        # RMSE
+        rmse = np.sqrt(mean_squared_error(lstAktual_values, lstReferensi_values))
+
+        # MAE
+        mae = mean_absolute_error(lstAktual_values, lstReferensi_values)
+
+        # Buat Persamaan
+        if intercept >= 0:
+            equation = f"y = {slope:.2f}x + {intercept:.2f}"
+        else:
+            equation = f"y = {slope:.2f}x - {abs(intercept):.2f}"
+
+        # Row Diagram Garis dan Validasi LST
+        st.badge(
+            "**Validasi LST: Citra Landsat 8 OLI/TIRS vs Pengukuran Lapangan (2024)**",
+            color="primary",
+        )
+
+        col1_validate, col2_validate = st.columns([2.2, 1.8])
+        with col1_validate:
+            # Container Grafik Regresi
+            with st.container(border=True):
+                # Buat Scatterplot
+                fig = px.scatter(
+                    x=lstReferensi_values,
+                    y=lstAktual_values,
+                    labels={"x": "LST Referensi (°C)", "y": "LST Lapangan (°C)"},
+                    opacity=0.6,
+                    color_discrete_sequence=["#1f77b4"],
+                )
+
+                # Garis Regresi Linear
+                x_range = np.linspace(
+                    lstReferensi_values.min(), lstReferensi_values.max(), 100
+                )
+                y_regression = slope * x_range + intercept
+
+                fig.add_trace(
+                    go.Scatter(
+                        x=x_range,
+                        y=y_regression,
+                        mode="lines",
+                        name="Garis Regresi",
+                        line=dict(color="red", width=2),
+                    )
+                )
+
+                # # Garis 1:1 (Perfect Agreement)
+                # min_val = min(lstReferensi_values.min(), lstAktual_values.min())
+                # max_val = max(lstReferensi_values.max(), lstAktual_values.max())
+                # fig.add_trace(
+                #     go.Scatter(
+                #         x=[min_val, max_val],
+                #         y=[min_val, max_val],
+                #         mode="lines",
+                #         name="Line of Identity",
+                #         line=dict(color="gray", width=1, dash="dash"),
+                #     )
+                # )
+
+                # Update Layout
+                fig.update_layout(
+                    height=360,
+                    showlegend=True,
+                    template="plotly_white",
+                    font=dict(
+                        family="Poppins, sans-serif",
+                        size=12,
+                        color="black",
+                    ),
+                    margin=dict(t=30, b=10, l=20, r=20),
+                    xaxis=dict(
+                        title=dict(
+                            text="LST Satelit (°C)",
+                            font=dict(color="black", family="Poppins, sans-serif"),
+                        ),
+                        tickfont=dict(color="black", family="Poppins, sans-serif"),
+                    ),
+                    yaxis=dict(
+                        title=dict(
+                            text="LST Lapangan (°C)",
+                            font=dict(color="black", family="Poppins, sans-serif"),
+                        ),
+                        tickfont=dict(color="black", family="Poppins, sans-serif"),
+                    ),
+                    legend={
+                        "orientation": "h",
+                        "yanchor": "top",
+                        "y": -0.25,
+                        "xanchor": "center",
+                        "x": 0.5,
+                        "font": {"family": "Poppins", "size": 14, "color": "black"},
+                    },
+                )
+
+                # Box Info Persamaan
+                fig.add_annotation(
+                    x=0.02,
+                    y=0.98,
+                    xref="paper",
+                    yref="paper",
+                    text=f"<b>{equation}</b>",
+                    showarrow=False,
+                    font=dict(size=12, color="black", family="Poppins, sans-serif"),
+                    bgcolor="#fdfaf6",
+                    bordercolor="black",
+                    borderwidth=1,
+                    borderpad=7,
+                    xanchor="left",
+                    yanchor="top",
+                )
+
+                st.plotly_chart(fig, use_container_width=True)
+
+        with col2_validate:
+            # Row Metrics
+            col1_metric, col2_metric, col3_metric = st.columns([1, 1, 1])
+
+            with col1_metric:
+                with st.container(border=True):
+                    st.metric(
+                        label="R²",
+                        value=f"{r_squared:.2f}",
+                        help="Koefisien Determinasi (0-1)",
+                    )
+
+            with col2_metric:
+                with st.container(border=True):
+                    st.metric(
+                        label="RMSE",
+                        value=f"{rmse:.2f}°C",
+                        help="Root Mean Square Error",
+                    )
+
+            with col3_metric:
+                with st.container(border=True):
+                    st.metric(
+                        label="MAE",
+                        value=f"{mae:.2f}°C",
+                        help="Mean Absolute Error",
+                    )
+
+            # Container Analisis Validasi
+            with st.container(border=True):
+                st.markdown("💡**Interpretasi Validasi**")
+
+                # Interpretasi R²
+                if r_squared >= 0.9:
+                    r2_interpretation = "Sangat Baik"
+                    r2_color = "🟢"
+                elif r_squared >= 0.7:
+                    r2_interpretation = "Baik"
+                    r2_color = "🟢"
+                elif r_squared >= 0.5:
+                    r2_interpretation = "Sedang"
+                    r2_color = "🟡"
+                else:
+                    r2_interpretation = "Buruk"
+                    r2_color = "🔴"
+
+                # Interpretasi RMSE berdasarkan standar LST (1-2°C)
+                if rmse <= 1.0:
+                    rmse_interpretation = "Sangat Baik"
+                    rmse_color = "🟢"
+                elif rmse <= 2.0:
+                    rmse_interpretation = "Baik"
+                    rmse_color = "🟢"
+                elif rmse <= 3.0:
+                    rmse_interpretation = "Sedang"
+                    rmse_color = "🟡"
+                else:
+                    rmse_interpretation = "Buruk"
+                    rmse_color = "🔴"
+
+                st.markdown(
+                    f"""
+                - **Sampel**: {len(lstAktual_values)} titik
+                - **R²**: {r2_interpretation}⁽¹⁾
+                - **RMSE**: {rmse_interpretation}⁽²⁾
+                - **p-value**: {p_val:.3f}⁽⁴⁾
+                """
+                )
+
+                # Status Validasi berdasarkan standar LST
+                if rmse <= 1.0 and r_squared >= 0.7:
+                    st.success("✅ EXCELLENT! Akurasi tinggi untuk aplikasi LST")
+                elif rmse <= 2.0 and r_squared >= 0.5:
+                    st.success("✅ VALID! Memenuhi standar akurasi LST")
+                elif rmse <= 3.0 and r_squared >= 0.3:
+                    st.warning("⚠️ ACCEPTABLE — Dapat digunakan dengan catatan")
+                else:
+                    st.error("❌ POOR — Tidak memenuhi standar akurasi LST")
+
+    except FileNotFoundError:
+        st.error("❌ File 'csv/lstSampelValidasi.csv' tidak ditemukan!")
+        st.info(
+            "Pastikan file CSV hasil sampling sudah tersedia dengan kolom 'LST Aktual' dan 'LST Referensi'"
+        )
+
+    except Exception as e:
+        st.error(f"❌ Error dalam memproses data: {str(e)}")
+        st.info(
+            "Periksa format file CSV dan nama kolom ('LST Aktual' dan 'LST Referensi')"
+        )
+
+    with st.expander("Lihat Referensi"):
+        st.markdown(
+            """
+        - [1] Ratner, B. (2009). The Correlation Coefficient: Its Values Range Between +1/-1, or Do They?. *Journal of Targeting, Measurement and Analysis for Marketing*, 17. 139-142. https://doi.org/10.1057/jt.2009.5
+        - [2] Chen, J., Zhu, X., Imura, H., Chen, X. (2010). Consistency of Accuracy Assessment Indices for Soft Classification: Simulation Analysis. *ISPRS Journal of Photogrammetry and Remote Sensing*, 65(6). 156-164. https://doi.org/10.1016/j.isprsjprs.2009.10.003
+        - [3] Schmidt, J., & Osebold, R. (2017). Environmental Management Systems as A Driver for Sustainability: State of Implementation, Benefits, and Barriers in German Construction Companies. *Journal of Civil Engineering and Management*, 23(1). 150-162. https://doi.org/10.3846/13923730.2014.946441
+        """
+        )
 
 # ==============================================================================
 # SECTION 4: MODEL
@@ -1086,8 +1316,8 @@ with tab4:
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**LST 2019**] dinyatakan sebagai fitur yang :green-background[**paling berkontribusi**] dalam prediksi LST 2024; diikuti :green-background[**koordinat**], :green-background[**elevasi**], :green-background[**NDVI 2024**], :green-background[**NDBI 2024**], dan :green-background[**NDVI 2019**].
-                - Fitur dengan :green-background[**kontribusi lebih kecil**] meliputi :green-background[**penutup lahan**], :green-background[**NDMI**], :green-background[**NDBI 2019**], dan :green-background[**slope**].
+                - :green-background[**LST 2019**] dinyatakan sebagai fitur yang :green-background[**paling berkontribusi**] dalam prediksi LST 2024; diikuti :green-background[**koordinat**], :green-background[**elevasi**], :green-background[**NDVI 2024**], :green-background[**lst 2024**], dan :green-background[**NDVI 2019**].
+                - Fitur dengan :green-background[**kontribusi lebih kecil**] meliputi :green-background[**penutup lahan**], :green-background[**NDMI**], :green-background[**lst 2019**], dan :green-background[**slope**].
                 - Titik merah (LST tinggi) di sisi kanan dengan :green-background[**nilai SHAP positif**]. Artinya, ketika :green-background[**LST 2019**] memiliki :green-background[**nilai tinggi**], maka LST 2019 berkontribusi :green-background[**positif**] (meningkatkan) terhadap prediksi LST 2024.
                 - Titik biru (LST rendah) di sisi kiri dengan :green-background[**nilai SHAP negatif**]. Artinya, ketika :green-background[**LST 2019**] memiliki :green-background[**nilai rendah**], maka LST 2019 berkontribusi :green-background[**negatif**] (menurunkan) terhadap prediksi LST 2024.
                 """,
@@ -1126,8 +1356,8 @@ with tab4:
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**LST 2024**] dinyatakan sebagai fitur yang :green-background[**paling berkontribusi**] dalam prediksi LST 2029; diikuti informasi :green-background[**koordinat**], :green-background[**elevasi**], :green-background[**NDVI 2029**], :green-background[**NDVI 2024**], :green-background[**NDBI 2029**], dan :green-background[**penutup lahan 2029**].
-                - Fitur dengan :green-background[**kontribusi lebih kecil**] meliputi :green-background[**NDMI**], :green-background[**NDBI 2024**],:green-background[**penutup lahan 2024**], dan :green-background[**slope**].
+                - :green-background[**LST 2024**] dinyatakan sebagai fitur yang :green-background[**paling berkontribusi**] dalam prediksi LST 2029; diikuti informasi :green-background[**koordinat**], :green-background[**elevasi**], :green-background[**NDVI 2029**], :green-background[**NDVI 2024**], :green-background[**lst 2029**], dan :green-background[**penutup lahan 2029**].
+                - Fitur dengan :green-background[**kontribusi lebih kecil**] meliputi :green-background[**NDMI**], :green-background[**lst 2024**],:green-background[**penutup lahan 2024**], dan :green-background[**slope**].
                 - Titik merah (LST tinggi) di sisi kanan dengan :green-background[**nilai SHAP positif**]. Artinya, ketika :green-background[**LST 2024**] memiliki :green-background[**nilai tinggi**], maka LST 2024 berkontribusi :green-background[**positif**] (meningkatkan) terhadap prediksi LST 2029.
                 - Titik biru (LST rendah) di sisi kiri dengan :green-background[**nilai SHAP negatif**]. Artinya, ketika :green-background[**LST 2024**] memiliki :green-background[**nilai rendah**], maka LST 2024 berkontribusi :green-background[**negatif**] (menurunkan) terhadap prediksi LST 2029.
                 """,
@@ -1502,43 +1732,43 @@ with tab5:
 
         # Row Diagram Garis & Ranking LST
         st.badge(
-            "**Scatter Plot Regresi Linier LST dan NDBI**",
+            "**Scatter Plot Regresi Linier LST dan lst**",
             color="primary",
         )
 
-        col1_regresi_ndbi, col2_regresi_ndbi = st.columns([2, 2])
-        with col1_regresi_ndbi:
+        col1_regresi_lst, col2_regresi_lst = st.columns([2, 2])
+        with col1_regresi_lst:
             with st.container(border=True):
-                # Membuat Plot LST vs NDBI
-                fig_ndbi, r2_ndbi, p_val_ndbi, slope_ndbi = create_regression_plot(
+                # Membuat Plot LST vs lst
+                fig_lst, r2_lst, p_val_lst, slope_lst = create_regression_plot(
                     df_regression,
-                    "NDBI",
+                    "lst",
                     "LST",
-                    "Regresi Linier: LST vs NDBI",
-                    "NDBI",
+                    "Regresi Linier: LST vs lst",
+                    "lst",
                     "LST (°C)",
                 )
 
-                if fig_ndbi is not None:
-                    st.plotly_chart(fig_ndbi, use_container_width=True)
+                if fig_lst is not None:
+                    st.plotly_chart(fig_lst, use_container_width=True)
                 else:
-                    st.error("Data tidak dapat diproses untuk NDBI")
+                    st.error("Data tidak dapat diproses untuk lst")
 
-        with col2_regresi_ndbi:
+        with col2_regresi_lst:
             with st.container(border=True):
                 st.markdown("💡**Quick Insight**")
-                if fig_ndbi is not None:
-                    insight_ndbi, is_influential_ndbi = interpret_regression(
-                        r2_ndbi, p_val_ndbi, slope_ndbi, "NDBI"
+                if fig_lst is not None:
+                    insight_lst, is_influential_lst = interpret_regression(
+                        r2_lst, p_val_lst, slope_lst, "lst"
                     )
-                    st.markdown(insight_ndbi)
+                    st.markdown(insight_lst)
 
-                    if is_influential_ndbi:
+                    if is_influential_lst:
                         st.success(
-                            "✅ NDBI berpengaruh positif signifikan terhadap LST!"
+                            "✅ lst berpengaruh positif signifikan terhadap LST!"
                         )
                     else:
-                        st.warning("❌ NDBI tidak berpengaruh terhadap LST!")
+                        st.warning("❌ lst tidak berpengaruh terhadap LST!")
 
         # Row Diagram Garis & Ranking LST
         st.badge(

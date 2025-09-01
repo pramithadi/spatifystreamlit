@@ -1036,7 +1036,7 @@ with tab3:
                 # Status Validasi
                 abs_corr = abs(correlation_coef)
                 if abs_corr >= 0.7 and rmse <= 0.1:
-                    st.success("✅ VALID! Data layak untuk prediksi LST")
+                    st.success("✅ VALID! Data layak untuk prediksi LST!")
                 elif abs_corr >= 0.5 and rmse <= 0.15:
                     st.warning("⚠️ CUKUP VALID — Data dapat digunakan dengan catatan.")
                 elif abs_corr >= 0.3 and rmse <= 0.2:
@@ -1326,8 +1326,8 @@ with tab4:
                 """,
                 unsafe_allow_html=True,
             )
-            st.success("✅ Model XGBoost **LAYAK** untuk proyeksi NDMI 2029.")
-            st.success("✅ Data proyeksi NDMI 2029 **VALID** untuk prediksi LST 2029.")
+            st.success("✅ Model XGBoost **LAYAK** untuk proyeksi NDMI 2029!")
+            st.success("✅ Data proyeksi NDMI 2029 **VALID** untuk prediksi LST 2029!")
 
     st.badge(
         "**Perbandingan Visual Peta NDMI Aktual vs Proyeksi**",

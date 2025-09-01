@@ -1039,7 +1039,7 @@ with tab4:
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([1.7, 2.3])
+    col1_metrik_img, col2_metrik_insight = st.columns([1.8, 2.2])
     with col1_metrik_img:
         with st.container(border=True):
             fig = go.Figure(
@@ -1050,7 +1050,7 @@ with tab4:
                         y=[0.8963],
                         text=["0.8963"],
                         textposition="outside",
-                        marker_color="#DEE8CE",
+                        marker_color="#CEE6AB",
                         textfont=dict(family="Poppins", size=12, color="black"),
                     ),
                     go.Bar(
