@@ -1,4 +1,4 @@
-No,Kode,Koordinat X,Koordinat Y,Tanggal,Waktu,Kondisi Cuaca,LST Referensi,Pengukuran LST 1,Pengukuran LST 2,Pengukuran LST 3,LST Aktual
+No,Kode,Koordinat X,Koordinat Y,Tanggal,Waktu,Kondisi Cuaca,LST Landsat 8 (°C),Pengukuran LST (1),Pengukuran LST (2),Pengukuran LST (3),LST Aktual (°C)
 1,01VEG,110.381736,-7.659466,5-Jul-2025,10:40 WIB,Cerah Berawan,33.4,31.80,31.50,31.40,31.57
 2,02VEG,110.346652,-7.837944,6-Jul-2025,11:39 WIB,Cerah Sedikit Berawan,37.71,37.20,37.40,37.30,37.30
 3,03VEG,110.439326,-7.641971,5-Jul-2025,11:42 WIB,Cerah Berawan,32.76,32.90,32.40,32.70,32.67

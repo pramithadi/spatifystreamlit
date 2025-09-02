@@ -847,21 +847,21 @@ with tab3:
         validation_data = validation_data.dropna()
 
         # Ekstraksi Nilai dari Field
-        landsat_values = validation_data["ndviLandsat"].values
-        sentinel_values = validation_data["ndviSentinel"].values
+        sentinel_values = validation_data["ndviSentinel"].values  # X
+        landsat_values = validation_data["ndviLandsat"].values  # Y
 
         # Hitung Korelasi Pearson
-        correlation_coef, p_value = stats.pearsonr(landsat_values, sentinel_values)
+        correlation_coef, p_value = stats.pearsonr(sentinel_values, landsat_values)
 
         # RMSE
-        rmse = np.sqrt(mean_squared_error(landsat_values, sentinel_values))
+        rmse = np.sqrt(mean_squared_error(sentinel_values, landsat_values))
 
         # MAE
-        mae = mean_absolute_error(landsat_values, sentinel_values)
+        mae = mean_absolute_error(sentinel_values, landsat_values)
 
         # Hitung Persamaan Linear
         slope, intercept, r_value, p_val, std_err = stats.linregress(
-            landsat_values, sentinel_values
+            sentinel_values, landsat_values
         )
 
         # Buat Persamaan
@@ -880,17 +880,17 @@ with tab3:
         with col1_validate:
             # Container Grafik Korelasi Pearson
             with st.container(border=True):
-                # Buat Scatterplot
+                # Buat Scatterplot (X = Sentinel, Y = Landsat)
                 fig = px.scatter(
-                    x=landsat_values,
-                    y=sentinel_values,
-                    labels={"x": "NDVI Landsat 8", "y": "NDVI Sentinel-2"},
+                    x=sentinel_values,
+                    y=landsat_values,
+                    labels={"x": "NDVI Sentinel-2", "y": "NDVI Landsat 8"},
                     opacity=0.6,
                     color_discrete_sequence=["#1f77b4"],
                 )
 
-                # Garis Trend (Memvisualisasikan Hubungan Linear)
-                x_range = np.linspace(landsat_values.min(), landsat_values.max(), 100)
+                # Garis Trend (Y = slope*X + intercept)
+                x_range = np.linspace(sentinel_values.min(), sentinel_values.max(), 100)
                 y_trend = slope * x_range + intercept
 
                 fig.add_trace(
@@ -905,26 +905,26 @@ with tab3:
 
                 # Update Layout
                 fig.update_layout(
-                    height=360,
+                    height=362,
                     showlegend=True,
                     template="plotly_white",
                     font=dict(
                         family="Poppins, sans-serif",  # Font Poppins
                         size=12,
-                        color="black",  # Font color hitam
+                        color="black",
                     ),
                     margin=dict(t=30, b=20, l=20, r=20),
                     # Styling Sumbu X dan Y
                     xaxis=dict(
                         title=dict(
-                            text="NDVI Landsat 8",
+                            text="NDVI Sentinel-2",
                             font=dict(color="black", family="Poppins, sans-serif"),
                         ),
                         tickfont=dict(color="black", family="Poppins, sans-serif"),
                     ),
                     yaxis=dict(
                         title=dict(
-                            text="NDVI Sentinel-2",
+                            text="NDVI Landsat 8",
                             font=dict(color="black", family="Poppins, sans-serif"),
                         ),
                         tickfont=dict(color="black", family="Poppins, sans-serif"),
@@ -951,7 +951,7 @@ with tab3:
                     bgcolor="#fdfaf6",
                     bordercolor="black",
                     borderwidth=1,
-                    borderpad=7,  # Tambah Padding Internal
+                    borderpad=7,
                     xanchor="left",
                     yanchor="top",
                 )

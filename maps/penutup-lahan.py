@@ -1015,7 +1015,7 @@ def display_validation_content(year):
 
 with tab3:
     st.badge(
-        "**Uji Akurasi di Penutup Lahan Kawasan Perkotaan Yogyakarta dan Sekitarnya**",
+        "**Uji Akurasi Penutup Lahan Kawasan Perkotaan Yogyakarta dan Sekitarnya**",
         color="primary",
     )
 
