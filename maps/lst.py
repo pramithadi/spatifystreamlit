@@ -1135,7 +1135,7 @@ with tab3:
         )
 
     st.badge(
-        "**Tabel Perbandingan Sampel Nilai LST Aktual vs Prediksi**",
+        "**Tabel Perbandingan Nilai LST Landsat 8 vs LST Aktual**",
         color="primary",
     )
 

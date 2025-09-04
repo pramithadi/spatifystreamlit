@@ -1,7 +1,8 @@
 import streamlit as st
+import math
 
 st.set_page_config(
-    page_title="GEE Apps — Spatify",
+    page_title="Galeri — Spatify",
     layout="wide",
     initial_sidebar_state="expanded",  # collapsed
 )
@@ -38,6 +39,15 @@ st.markdown(
         color: #000000 !important;
         font-weight: 600 !important;
     }
+    .stApp > header {
+        color: #000000 !important;
+    }
+    .stApp {
+        color: #000000 !important;
+    }
+    .stMarkdown {
+        color: #000000 !important;
+    }
     div[data-testid="stVerticalBlockBorderWrapper"] {
         padding: 12px !important;
     }
@@ -53,29 +63,38 @@ st.markdown(
         transform: translateY(-4px) !important;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
         border-color: #fdfaf6 !important;
-    }   
-    .stLinkButton > a {
+    }     
+    .stTabs [data-baseweb="tab-highlight"] {
+        background-color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button:hover {
+        color: #705c53 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button:hover [data-baseweb="tab-highlight"] {
+        background-color: #705c53 !important;
+    }
+    .stTabs {
+        margin-top: 0rem !important;
+    }
+    .stDownloadButton > button {
         background-color: #E4EFE7 !important;
         color: black !important;
         border: none !important;
-        border-radius: 5px !important;
+        border-radius: 3px !important;
         padding: 8px 16px !important;
         font-weight: 500 !important;
         transition: all 0.3s ease !important;
-        text-decoration: none !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
     }
-    .stLinkButton > a:hover {
+    .stDownloadButton > button:hover {
         background-color: #6A9C89 !important;
         color: white !important;
         transform: translateY(-2px) !important;
         # box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3) !important;
     }
-    .stLinkButton > a:active {
+    .stDownloadButton > button:active {
         transform: translateY(0px) !important;
     }
     </style>
@@ -83,56 +102,20 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+st.header("Galeri")
+st.write("Momen-momen kecil yang terdokumentasi selama survei lapangan.")
 
-st.header("Google Earth Engine Applications")
-st.write("Visualisasi data dalam GEE Apps dapat diamati pada tautan berikut.")
-col1, col2, col3, col4, col5 = st.columns(5, gap="small")
-with col1:
-    with st.container(border=False):
-        st.write("**LST**")
-        st.image("./assets/lst.png")
-        st.link_button(
-            label="GEE Apps",
-            url="",
-            icon=":material/map:",
-        )
+# jumlah foto
+n_fotos = 45
+# jumlah kolom per baris
+n_cols = 5
 
-with col2:
-    with st.container(border=False):
-        st.write("**NDBI**")
-        st.image("./assets/ndbi.png")
-        st.link_button(
-            label="GEE Apps",
-            url="",
-            icon=":material/map:",
-        )
-
-with col3:
-    with st.container(border=False):
-        st.write("**NDMI**")
-        st.image("./assets/ndmi.png")
-        st.link_button(
-            label="GEE Apps",
-            url="",
-            icon=":material/map:",
-        )
-
-with col4:
-    with st.container(border=False):
-        st.write("**NDVI**")
-        st.image("./assets/ndvi.png")
-        st.link_button(
-            label="GEE Apps",
-            url="https://ee-pramithadi.projects.earthengine.app/view/spatifyndvi",
-            icon=":material/map:",
-        )
-
-with col5:
-    with st.container(border=False):
-        st.write("**Penutup Lahan**")
-        st.image("./assets/lulc.png")
-        st.link_button(
-            label="GEE Apps",
-            url="https://ee-pramithadi.projects.earthengine.app/view/spatifylulc",
-            icon=":material/map:",
-        )
+# loop per baris
+for i in range(0, n_fotos, n_cols):
+    cols = st.columns(n_cols, gap="small")
+    for j, col in enumerate(cols):
+        foto_index = i + j + 1  # karena nama file mulai dari 1
+        if foto_index <= n_fotos:  # biar gak lewat 45
+            with col:
+                with st.container(border=False):
+                    st.image(f"galeri/dazzcam{foto_index}.jpg")

@@ -2,54 +2,68 @@ import streamlit as st
 import os
 
 st.set_page_config(
-    page_title="Download Peta",
-    # layout="wide",
+    page_title="Download Peta — Spatify",
+    layout="wide",
+    initial_sidebar_state="expanded",  # collapsed
 )
 
+# ==============================================================================
+# CUSTOM CSS
+# ==============================================================================
 st.markdown(
     """
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        div[data-testid="stMarkdownContainer"] * {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .stMarkdown p {
-            font-size: 14px !important;
-            margin-bottom: 8px !important;
-        }
-        .stSubheader {
-            font-size: 16px !important;
-            margin-bottom: 12px !important;
-        }
-        div[data-testid="stVerticalBlockBorderWrapper"] {
-            padding: 12px !important;
-        }
-        
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 3px !important;
-            padding: 12px !important;
-            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-            background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-            transition: all 0.3s ease !important;
-        }
-
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-            transform: translateY(-4px) !important;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-            border-color: #fdfaf6 !important;
-        }
-    </style>
-""",
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    """
-<style>
+    .main {
+        padding-top: 0rem !important;
+    }
+    .block-container {
+        padding-top: 0.5rem !important;
+    }
+    .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    div[data-testid="stMarkdownContainer"] * {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    .stMarkdown p {
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+    }
+    .stSubheader {
+        font-size: 16px !important;
+        margin-bottom: 12px !important;
+    }
+    div[data-testid="stMarkdownContainer"] h1 {
+        color: #000000 !important;
+        font-weight: 600 !important;
+    }
+    .stApp > header {
+        color: #000000 !important;
+    }
+    .stApp {
+        color: #000000 !important;
+    }
+    .stMarkdown {
+        color: #000000 !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        padding: 12px !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 1px !important;
+        padding: 12px !important;
+        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+        transition: all 0.3s ease !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+        border-color: #fdfaf6 !important;
+    }     
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -63,7 +77,7 @@ st.markdown(
         background-color: #705c53 !important;
     }
     .stTabs {
-        margin-top: -5rem !important;
+        margin-top: 0rem !important;
     }
     .stDownloadButton > button {
         background-color: #E4EFE7 !important;
@@ -83,9 +97,8 @@ st.markdown(
     .stDownloadButton > button:active {
         transform: translateY(0px) !important;
     }
-    
-</style>
-""",
+    </style>
+    """,
     unsafe_allow_html=True,
 )
 
@@ -123,14 +136,25 @@ def create_download_section(title, image_path, file_path, file_name, key_suffix)
         )
 
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
-    ["**LST**", "**NDBI**", "**NDMI**", "**NDVI**", "**Penutup Lahan**"]
+st.header("Download Peta")
+(
+    tab1,
+    tab2,
+    tab3,
+    tab4,
+    tab5,
+) = st.tabs(
+    [
+        "🌡️ LST",
+        "🏭 NDBI",
+        "💧 NDMI",
+        "🌳 NDVI",
+        "🏞️ Penutup Lahan",
+    ]
 )
 
 with tab1:
-    st.header("Download Peta LST")
-
-    col1, col2 = st.columns(2, gap="small")
+    col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         column_download_section("LST 1999")
         with st.container(border=False):
@@ -153,7 +177,6 @@ with tab1:
                 "lst_2004",
             )
 
-    col3, col4, col5 = st.columns(3, gap="small")
     with col3:
         column_download_section("LST 2009")
         with st.container(border=False):
@@ -164,7 +187,7 @@ with tab1:
                 "LST 2009.pdf",
                 "lst_2009",
             )
-
+    col4, col5, col6, col7 = st.columns(4, gap="small")
     with col4:
         column_download_section("LST 2014")
         with st.container(border=False):
@@ -187,7 +210,6 @@ with tab1:
                 "lst_2019",
             )
 
-    col6, col7 = st.columns(2, gap="small")
     with col6:
         column_download_section("LST 2024")
         with st.container(border=False):
@@ -204,15 +226,13 @@ with tab1:
         with st.container(border=False):
             create_download_section(
                 "LST 2029",
-                "./assets/lst.png",
+                "./assets/LST 2029.png",
                 "./downloads/LST 2029.pdf",
                 "LST 2029.pdf",
                 "lst_2029",
             )
 
 with tab2:
-    st.header("Download Peta NDBI")
-
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         column_download_section("NDBI 1999")
@@ -247,7 +267,7 @@ with tab2:
                 "ndbi_2009",
             )
 
-    col4, col5, col6 = st.columns(3, gap="small")
+    col4, col5, col6, col7 = st.columns(4, gap="small")
     with col4:
         column_download_section("NDBI 2014")
         with st.container(border=False):
@@ -281,9 +301,18 @@ with tab2:
                 "ndbi_2024",
             )
 
-with tab3:
-    st.header("Download Peta NDMI")
+    with col7:
+        column_download_section("NDBI 2029")
+        with st.container(border=False):
+            create_download_section(
+                "NDBI 2029",
+                "./assets/NDBI 2029.png",
+                "./downloads/NDBI 2029.pdf",
+                "NDBI 2029.pdf",
+                "ndbi_2029",
+            )
 
+with tab3:
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         column_download_section("NDMI 1999")
@@ -318,7 +347,7 @@ with tab3:
                 "ndmi_2009",
             )
 
-    col4, col5, col6 = st.columns(3, gap="small")
+    col4, col5, col6, col7 = st.columns(4, gap="small")
     with col4:
         column_download_section("NDMI 2014")
         with st.container(border=False):
@@ -352,9 +381,18 @@ with tab3:
                 "ndmi_2024",
             )
 
-with tab4:
-    st.header("Download Peta NDVI")
+    with col7:
+        column_download_section("NDMI 2029")
+        with st.container(border=False):
+            create_download_section(
+                "NDMI 2029",
+                "./assets/NDMI 2029.png",
+                "./downloads/NDMI 2029.pdf",
+                "NDMI 2029.pdf",
+                "ndmi_2029",
+            )
 
+with tab4:
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         column_download_section("NDVI 1999")
@@ -389,7 +427,7 @@ with tab4:
                 "ndvi_2009",
             )
 
-    col4, col5, col6 = st.columns(3, gap="small")
+    col4, col5, col6, col7 = st.columns(4, gap="small")
     with col4:
         column_download_section("NDVI 2014")
         with st.container(border=False):
@@ -423,10 +461,19 @@ with tab4:
                 "ndvi_2024",
             )
 
-with tab5:
-    st.header("Download Peta Penutup Lahan")
+    with col7:
+        column_download_section("NDVI 2029")
+        with st.container(border=False):
+            create_download_section(
+                "NDVI 2029",
+                "./assets/NDVI 2029.png",
+                "./downloads/NDVI 2029.pdf",
+                "NDVI 2029.pdf",
+                "ndvi_2029",
+            )
 
-    col1, col2 = st.columns(2, gap="small")
+with tab5:
+    col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         column_download_section("Penutup Lahan 1999")
         with st.container(border=False):
@@ -449,7 +496,6 @@ with tab5:
                 "lulc_2004",
             )
 
-    col3, col4, col5 = st.columns(3, gap="small")
     with col3:
         column_download_section("Penutup Lahan 2009")
         with st.container(border=False):
@@ -461,6 +507,7 @@ with tab5:
                 "lulc_2009",
             )
 
+    col4, col5, col6, col7 = st.columns(4, gap="small")
     with col4:
         column_download_section("Penutup Lahan 2014")
         with st.container(border=False):
@@ -483,7 +530,6 @@ with tab5:
                 "lulc_2019",
             )
 
-    col6, col7 = st.columns(2, gap="small")
     with col6:
         column_download_section("Penutup Lahan 2024")
         with st.container(border=False):
@@ -500,7 +546,7 @@ with tab5:
         with st.container(border=False):
             create_download_section(
                 "Penutup Lahan 2029",
-                "./assets/lulc.png",
+                "./assets/Penutup Lahan 2029.png",
                 "./downloads/Penutup Lahan 2029.pdf",
                 "Penutup Lahan 2029.pdf",
                 "lulc_2029",

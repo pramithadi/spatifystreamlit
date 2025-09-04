@@ -1,55 +1,68 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Dataset",
-    # layout="wide",
+    page_title="Dataset — Spatify",
+    layout="wide",
+    initial_sidebar_state="expanded",  # collapsed
 )
 
+# ==============================================================================
+# CUSTOM CSS
+# ==============================================================================
 st.markdown(
     """
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        div[data-testid="stMarkdownContainer"] * {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .stMarkdown p {
-            font-size: 14px !important;
-            margin-bottom: 8px !important;
-        }
-        .stSubheader {
-            font-size: 16px !important;
-            margin-bottom: 12px !important;
-        }
-        
-        div[data-testid="stVerticalBlockBorderWrapper"] {
-            padding: 12px !important;
-        }
-        
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 3px !important;
-            padding: 12px !important;
-            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-            background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-            transition: all 0.3s ease !important;
-        }
-
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-            transform: translateY(-4px) !important;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-            border-color: #fdfaf6 !important;
-        }
-    </style>
-""",
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    """
-<style>
+    .main {
+        padding-top: 0rem !important;
+    }
+    .block-container {
+        padding-top: 0.5rem !important;
+    }
+    .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    div[data-testid="stMarkdownContainer"] * {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    .stMarkdown p {
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+    }
+    .stSubheader {
+        font-size: 16px !important;
+        margin-bottom: 12px !important;
+    }
+    div[data-testid="stMarkdownContainer"] h1 {
+        color: #000000 !important;
+        font-weight: 600 !important;
+    }
+    .stApp > header {
+        color: #000000 !important;
+    }
+    .stApp {
+        color: #000000 !important;
+    }
+    .stMarkdown {
+        color: #000000 !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        padding: 12px !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 1px !important;
+        padding: 12px !important;
+        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+        transition: all 0.3s ease !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+        border-color: #fdfaf6 !important;
+    }     
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -63,10 +76,11 @@ st.markdown(
         background-color: #705c53 !important;
     }
     .stTabs {
-        margin-top: -5rem !important;
+        margin-top: 0rem !important;
     }
-    .stCode {
-        margin-bottom: 0.5rem !important;
+
+    div[data-testid="stToolbar"] {
+        min-height: 40px !important;
     }
     
     .stLinkButton > a {
@@ -84,26 +98,24 @@ st.markdown(
         width: 100% !important;
         box-sizing: border-box !important;
     }
-        
     .stLinkButton > a:hover {
         background-color: #6A9C89 !important;
         color: white !important;
         transform: translateY(-2px) !important;
         # box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3) !important;
     }
-        
     .stLinkButton > a:active {
         transform: translateY(0px) !important;
     }
-</style>
-""",
+    </style>
+    """,
     unsafe_allow_html=True,
 )
 
-tab1, tab2 = st.tabs(["**Katalog**", "**Snippets**"])
+st.header("Dataset dan Snippets")
+(tab1, tab2) = st.tabs(["Katalog", "Snippets"])
 
 with tab1:
-    st.subheader("Katalog Data")
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         st.badge("**Citra Landsat 5 TM**", color="primary")
@@ -209,7 +221,6 @@ with tab1:
             )
 
 with tab2:
-    st.subheader("Snippets")
     st.badge("**Citra Landsat 5 TM Surface Reflectance**", color="primary")
     snippetLandsat5 = """var dataset = ee.ImageCollection('LANDSAT/LT05/C02/T1_L2')"""
     st.code(snippetLandsat5, language="javascript", line_numbers=True)

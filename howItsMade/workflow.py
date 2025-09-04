@@ -2,65 +2,68 @@ import streamlit as st
 from streamlit_image_comparison import image_comparison
 
 st.set_page_config(
-    page_title="Alur Pemrosesan",
-    # layout="wide",
+    page_title="Workflow — Spatify",
+    layout="wide",
+    initial_sidebar_state="expanded",  # collapsed
 )
 
+# ==============================================================================
+# CUSTOM CSS
+# ==============================================================================
 st.markdown(
     """
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        div[data-testid="stMarkdownContainer"] * {
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .stMarkdown p {
-            font-size: 14px !important;
-            margin-bottom: 8px !important;
-            text-align: justify !important;
-            line-height: 1.6 !important;
-        }
-        .stSubheader {
-            font-size: 16px !important;
-            margin-bottom: 12px !important;
-        }
-        div[data-testid="stVerticalBlockBorderWrapper"] {
-            padding: 12px !important;
-        }
-        
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 10px !important;
-            padding: 12px !important;
-            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-            background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-            transition: all 0.3s ease !important;
-        }
-
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-            transform: translateY(-4px) !important;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-            border-color: #fdfaf6 !important;
-        }
-        
-        /* Custom class for justified text */
-        .justified-text {
-            text-align: justify !important;
-            line-height: 1.6 !important;
-            font-size: 14px !important;
-            margin-bottom: 8px !important;
-            font-family: 'Poppins', sans-serif !important;
-        }
-    </style>
-""",
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    """
-<style>
+    .main {
+        padding-top: 0rem !important;
+    }
+    .block-container {
+        padding-top: 1rem !important;
+    }
+    .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    div[data-testid="stMarkdownContainer"] * {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    .stMarkdown p {
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+    }
+    .stSubheader {
+        font-size: 16px !important;
+        margin-bottom: 12px !important;
+    }
+    div[data-testid="stMarkdownContainer"] h1 {
+        color: #000000 !important;
+        font-weight: 600 !important;
+    }
+    .stApp > header {
+        color: #000000 !important;
+    }
+    .stApp {
+        color: #000000 !important;
+    }
+    .stMarkdown {
+        color: #000000 !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        padding: 12px !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 1px !important;
+        padding: 12px !important;
+        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+        transition: all 0.3s ease !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+        border-color: #fdfaf6 !important;
+    }     
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -74,42 +77,51 @@ st.markdown(
         background-color: #705c53 !important;
     }
     .stTabs {
-        margin-top: -5rem !important;
+        margin-top: 0rem !important;
     }
-    .stCode {
-        margin-bottom: 0.5rem !important;
+
+    div[data-testid="stToolbar"] {
+        min-height: 40px !important;
     }
-</style>
-""",
+        
+    /* Custom Justified */
+    .justified-text {
+        text-align: justify !important;
+        line-height: 1.6 !important;
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+        font-family: 'Poppins', sans-serif !important;
+    }
+    </style>
+    """,
     unsafe_allow_html=True,
 )
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
+# st.header("Workflow")
+(tab1, tab2, tab3, tab4, tab5) = st.tabs(
     [
-        "**Diagram Alir**",
-        "**Prapengolahan Data**",
-        "**Pengolahan Data**",
-        "**Validasi Data**",
-        "**Pemodelan Prediksi**",
+        "🛠️ **Diagram Alir**",
+        "🧹 **Prapengolahan Data**",
+        "💻 **Pengolahan Data**",
+        "✅ **Validasi Data**",
+        "⚙️ **Pemodelan Prediksi**",
     ]
 )
 
 with tab1:
-    st.subheader("Diagram Alir")
+    st.badge("**Diagram Alir Penelitian**", color="primary")
     with st.container(border=False):
         st.image(
             "./assets/diagram_alir2.svg",
-            caption="Diagram Alir Penelitian",
         )
 
 with tab2:
-    st.subheader("Prapengolahan Data")
     # Penyaringan Citra
     st.badge("**Penyaringan Citra**", color="primary")
     st.markdown(
         """
         <div class="justified-text">
-        Tahap ini bertujuan untuk menyortir citra dalam Google Earth Engine sesuai dengan batasan penelitian.
+        Penyaringan citra bertujuan untuk <strong>menyortir citra</strong> dalam Google Earth Engine sesuai dengan batasan penelitian yang telah ditetapkan.
         </div>
         """,
         unsafe_allow_html=True,
@@ -131,7 +143,7 @@ var landsat2024 = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
     st.markdown(
         """
         <div class="justified-text">
-        <strong>Scaling Factor</strong> digunakan untuk mengembalikan nilai radiansi dan reflektansi citra Landsat Surface Reflectance yang sebelumnya berformat <strong>integer</strong> menjadi <strong>float</strong> agar hasil pengolahan data memiliki ketelitian hingga tingkat desimal (USGS, 2023).
+        <strong>Scaling factor</strong> dilakukan untuk mengembalikan nilai radiansi dan reflektansi citra Landsat Surface Reflectance yang sebelumnya berformat <strong>integer</strong> menjadi <strong>float</strong> agar hasil pengolahan data memiliki ketelitian hingga tingkat desimal (USGS, 2023).
         </div>
         """,
         unsafe_allow_html=True,
@@ -152,7 +164,7 @@ function applyScaleFactors(image) {
     st.markdown(
         """
         <div class="justified-text">
-        <strong>Cloud Masking</strong> metode <strong>Quality Assesment (QA)</strong> merupakan teknik untuk mengurangi tutupan awan dalam citra (Sinabutar <em>et al.</em>, 2020). Metode ini bekerja otomatis dengan memberi tanda pada piksel-piksel awan kemudian menyortir piksel tersebut agar tidak digunakan dalam analisis. Celah yang kosong lantas diisi dengan piksel lain yang lebih bersih melalui teknik <strong>Median Composite</strong>.
+        <strong>Cloud masking</strong> metode <strong>Quality Assesment (QA)</strong> merupakan teknik untuk mengurangi tutupan awan dalam citra (Sinabutar <em>et al.</em>, 2020). Metode ini bekerja otomatis dengan memberi tanda pada piksel-piksel awan kemudian menyortir piksel tersebut agar tidak digunakan dalam analisis. Celah yang kosong lantas diisi dengan piksel lain yang lebih bersih melalui teknik <strong>median composite</strong>.
         </div>
         """,
         unsafe_allow_html=True,
@@ -174,9 +186,8 @@ function maskLsr(image) {
 
     # Hasil Prapengolahan Data
     st.write(
-        "Berikut merupakan contoh tampilan citra **Landsat 8 Surface Reflectance** tahun 2024 **sebelum** dan **sesudah** dilakukan tahap pembersihan awan:"
+        "Berikut merupakan contoh tampilan citra Landsat 8 Surface Reflectance tahun 2024 **sebelum** dan **sesudah** dilakukan cloud masking:"
     )
-    from streamlit_image_comparison import image_comparison
 
     image_comparison(
         img1="./assets/before.png",
@@ -200,22 +211,21 @@ function maskLsr(image) {
 
 # tab 3
 with tab3:
-    st.subheader("Pengolahan Data")
     option = st.pills(
         "**Lihat Pengolahan:**",
         [
-            "🌡️ LST",
+            "🌡️ Suhu Permukaan Lahan",
             "🏭 NDBI",
             "💧 NDMI",
             "🌳 NDVI",
             "🏞️ Penutup Lahan",
             "🌋 Elevasi dan Slope",
         ],
-        default="🌡️ LST",
+        default="🌡️ Suhu Permukaan Lahan",
     )
 
-    if option == "🌡️ LST":
-        st.subheader("**Suhu Permukaan Lahan (LST)**")
+    if option == "🌡️ Suhu Permukaan Lahan":
+        st.subheader("**Suhu Permukaan Lahan**")
         st.markdown(
             """
             <div class="justified-text">
@@ -230,7 +240,7 @@ with tab3:
         st.markdown(
             """
         <div class="justified-text">
-        Nilai radiansi spektral pada dataset Landsat Surface Reflectance telah dikalibrasi secara otomatis melalui penerapan function <strong>Scaling Factor</strong> dalam tahapan prapengolahan data. Dengan demikian, nilai radiansi spektral dari saluran termal citra Landsat Surface Reflectance dapat langsung digunakan untuk perhitungan LST.
+        <strong>Nilai radiansi spektral</strong> pada dataset Landsat Surface Reflectance <strong>telah dikalibrasi</strong> secara otomatis melalui penerapan function <strong>Scaling Factor</strong>. Dengan demikian, nilai radiansi spektral dari saluran termal dataset ini dapat langsung digunakan dalam perhitungan LST.
         </div>
         """,
             unsafe_allow_html=True,
@@ -244,7 +254,7 @@ with tab3:
         st.markdown(
             """
         <div class="justified-text">
-        Emisivitas permukaan (ε) adalah kemampuan suatu objek dalam menyerap radiasi matahari dan memancarkan radiasi termal (Mallick <em>et al.</em>, 2012). Penelitian ini menggunakan pendekatan NDVI dan Proportion of Vegetation (Pv) untuk mendapatkan nilai emisivitas permukaan. Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
+        <strong>Emisivitas permukaan (ε)</strong> adalah kemampuan suatu objek dalam <strong>menyerap radiasi</strong> matahari dan <strong>memancarkan</strong> radiasi <strong>termal</strong> (Mallick <em>et al.</em>, 2012). Penelitian ini menggunakan pendekatan <strong>NDVI</strong> dan <strong>Proportion of Vegetation (Pv)</strong> untuk mendapatkan nilai emisivitas permukaan. Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -368,7 +378,7 @@ var emisi2024 = pv2024.multiply(k1).add(k2).rename('emisi2024');
         st.markdown(
             """
         <div class="justified-text">
-        Brightness temperature merupakan representasi suhu permukaan yang diperoleh dari radiasi termal objek kemudian direkam oleh sensor termal dan disajikan dalam satuan kelvin (Jatayu & Susetyo, 2017). Penerapan function Scaling Factor di tahapan sebelumnya telah mengkalibrasi saluran termal ke dalam satuan kelvin sehingga dapat langsung dimanfaatkan sebagai nilai brightness temperature (Waleed & Sajjad, 2022). Adapun saluran termal yang digunakan berasal dari band 6 untuk citra Landsat 5 dan Landsat 7, serta band 10 untuk citra Landsat 8.
+        <strong>Brightness temperature</strong> adalah <strong>representasi suhu permukaan</strong> dari radiasi termal objek yang direkam oleh sensor termal dan disajikan ke dalam satuan <strong>kelvin</strong> (Jatayu & Susetyo, 2017). Penerapan function Scaling Factor telah <strong>mengkalibrasi</strong> saluran termal ke dalam satuan kelvin sehingga <strong>dapat langsung dimanfaatkan sebagai nilai brightness temperature</strong> (Waleed & Sajjad, 2022). Saluran termal citra Landsat 5 dan Landsat 7 adalah band 6, sedangkan dalam citra Landsat 8 adalah band 10.
         </div>
         """,
             unsafe_allow_html=True,
@@ -386,7 +396,7 @@ var bt2024 = landsat2024.select('ST_B10');
         st.markdown(
             """
         <div class="justified-text">
-        Perhitungan LST melibatkan nilai brightness temperature, emisivitas permukaan, panjang gelombang saluran termal, serta nilai radiasi emisivitas yang diestimasi dari konstanta Planck, Stefan-Boltzmann, dan kecepatan cahaya (Waleed & Sajjad, 2022). Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
+        Nilai emisivitas permukaan dan brightness temperature yang telah didapatkan lantas <strong>dikalkulasi</strong> dengan <strong>panjang gelombang saluran termal</strong> dan nilai <strong>radiasi emisivitas</strong> yang diestimasi dari konstanta Planck, Stefan-Boltzmann, dan nilai kecepatan cahaya (Waleed & Sajjad, 2022). Untuk mendapatkan <strong>nilai LST</strong> dalam <strong>derajat celcius</strong> tidak luput untuk mengonversi hasilnya dengan 273.15. Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -444,7 +454,7 @@ var lst2024 = bt2024.expression(
         st.markdown(
             """
             <div class="justified-text">
-            Perhitungan NDBI diestimasi dengan memanfaatkan saluran reflektif inframerah-dekat (NIR) dan inframerah-gelombang pendek (SWIR) yang sangat sensitif terhadap area terbangun (Wicaksono <em>et al.</em>, 2021). Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
+            Perhitungan <strong>indeks kerapatan area terbangun</strong> (NDBI) diestimasi dengan memanfaatkan <strong>saluran reflektif inframerah-dekat (NIR)</strong> dan <strong>inframerah-gelombang pendek (SWIR)</strong> yang sangat sensitif terhadap area terbangun (Wicaksono <em>et al.</em>, 2021). Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -496,7 +506,7 @@ var ndbi2024 = landsat2024.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndbi
         st.markdown(
             """
             <div class="justified-text">
-            NDMI dihitung dengan memanfaatkan saluran near-infrared (NIR) dan shortwave infrared (SWIR) serupa dengan NDBI. Namun, terdapat perbedaan urutan saluran reflektif yang digunakan dalam formula sebagaimana dirumuskan oleh Gao (1996). Perhitungan NDMI menempatkan saluran NIR sebagai pengurang, berbeda dengan NDBI yang menggunakan SWIR di posisi tersebut. Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
+            <strong>Indeks kelembapan vegetasi</strong> (NDMI) dihitung dengan memanfaatkan <strong>saluran reflektif inframerah-gelombang pendek (SWIR)</strong> dan <strong>inframerah-dekat (NIR)</strong> serupa NDBI. Namun, terdapat perbedaan urutan saluran reflektif yang digunakan dalam formula sebagaimana dirumuskan oleh Gao (1996). Perhitungan NDMI menempatkan saluran NIR sebagai pengurang, berbeda dengan NDBI yang menggunakan SWIR di posisi tersebut. Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -548,7 +558,7 @@ var ndmi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B6']).rename('ndbi
         st.markdown(
             """
             <div class="justified-text">
-            Perhitungan NDVI dilakukan dengan memanfaatkan reflektansi saluran inframerah-dekat (NIR) dan saluran merah (red) (Estoque <em>et al.</em>, 2017). Kedua saluran ini sensitif terhadap pigmen klorofil dan struktur sel daun sehingga dapat memetakan perbedaan kecerahan antara lahan bervegetasi dan non-vegetasi (‘Ain, 2021). Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
+            Perhitungan <strong>indeks kerapatan vegetasi</strong> (NDVI) dilakukan dengan memanfaatkan reflektansi <strong>saluran inframerah-dekat (NIR)</strong> dan <strong>saluran merah (red)</strong> (Estoque <em>et al.</em>, 2017). Kedua saluran ini sensitif terhadap pigmen klorofil dan struktur sel daun sehingga dapat memetakan perbedaan kecerahan antara lahan bervegetasi dan non-vegetasi (‘Ain, 2021). Berikut rumus dan contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -601,7 +611,7 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
         st.markdown(
             """
             <div class="justified-text">
-            Penutup lahan dipetakan menggunakan <strong>klasifikasi supervised</strong> pada citra multispektral. Metode ini memanfaatkan sampel dari tiap kelas penutup lahan untuk melatih model klasifikasi. Prosedur klasifikasi penutup lahan di Google Earth Engine ditunjukkan berikut:
+            Penutup lahan dipetakan menggunakan <strong>klasifikasi supervised</strong> pada citra multispektral. Metode ini <strong>memanfaatkan sampel</strong> dari tiap kelas penutup lahan untuk <strong>melatih model klasifikasi</strong>. Prosedur klasifikasi supervised penutup lahan di Google Earth Engine ditunjukkan berikut ini:
         </div>
         """,
             unsafe_allow_html=True,
@@ -612,7 +622,7 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
         st.markdown(
             """
         <div class="justified-text">        
-        <strong>Training area</strong> adalah kumpulan sampel dari setiap kelas penutup lahan yang akan diklasifikasi. Klasifikasi penutup lahan mengacu pada sistem <strong>SNI 7645:2010</strong> yang telah disesuaikan dengan kondisi penutup lahan di lokasi penelitian. Kelas yang digunakan dalam penelitian ini meliputi <strong>vegetasi, badan air, lahan terbangun, dan lahan terbuka</strong>. Berikut contoh implementasi kode dalam Google Earth Engine.
+        <strong>Training area</strong> adalah kumpulan sampel dari setiap kelas penutup lahan yang akan diklasifikasi. Klasifikasi penutup lahan mengacu pada sistem <strong>SNI 7645:2010</strong> yang telah disesuaikan dengan kondisi penutup lahan di lokasi penelitian. Kelas yang digunakan dalam penelitian ini meliputi <strong>vegetasi, tubuh air, lahan terbangun, dan lahan terbuka</strong>. Berikut contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -645,7 +655,7 @@ print(trainImage)
 
         # Sebaran Training Area
         st.write(
-            "Di bawah ini merupakan visualisasi sebaran training area pada citra Landsat 8 Surface Reflectance tahun 2024:"
+            "Di bawah ini merupakan visualisasi sebaran training area pada citra Landsat 8 Surface Reflectance tahun 2024."
         )
         st.image(
             "./assets/training_area.png",
@@ -661,7 +671,7 @@ print(trainImage)
         st.markdown(
             """
         <div class="justified-text">        
-        Training area dilatih menggunakan algoritma <strong>Classification and Regression Tree (CART)</strong>, yakni algoritma machine learning dengan skema decision tree (pohon keputusan) yang umum digunakan dalam klasifikasi penutup lahan (Krzywinski & Altman, 2017). Algoritma ini membangun aturan klasifikasi dari sampel training area yang ada lalu menerapkannya untuk memetakan kelas penutup lahan pada setiap piksel citra. Berikut contoh implementasi kode dalam Google Earth Engine.
+        Training area dilatih menggunakan algoritma <strong>Classification and Regression Tree (CART)</strong> yakni algoritma <strong>machine learning</strong> dengan skema <strong>decision tree (pohon keputusan)</strong> yang umum digunakan dalam klasifikasi penutup lahan (Krzywinski & Altman, 2017). Algoritma ini membangun <strong>aturan klasifikasi<strong> dari sampel training area yang ada lalu <strong>menerapkannya</strong> untuk <strong>memetakan kelas penutup lahan</strong> pada setiap piksel citra. Berikut contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -695,7 +705,7 @@ Map.addLayer(lulc2024, {palette: landcoverPalette, min: 0, max:3}, 'Klasifikasi 
 
         # Hasil Klasifikasi Penutup Lahan
         st.write(
-            "Visualisasi dari hasil klasifikasi penutup lahan di lokasi penelitian tahun 2024 ditunjukkan berikut ini:"
+            "Visualisasi dari hasil klasifikasi penutup lahan di lokasi penelitian tahun 2024 ditunjukkan pada gambar berikut."
         )
         st.image(
             "./assets/hasil_klasifikasi.png",
@@ -707,11 +717,11 @@ Map.addLayer(lulc2024, {palette: landcoverPalette, min: 0, max:3}, 'Klasifikasi 
         )
 
         # Uji Akurasi Klasifikasi
-        st.badge("**3. Uji Akurasi Klasifikasi (Confusion Matrix)**", color="primary")
+        st.badge("**3. Uji Akurasi Klasifikasi**", color="primary")
         st.markdown(
             """
         <div class="justified-text">        
-        Uji akurasi ini membandingkan hasil klasifikasi model CART dengan data training dan testing yang dibagi dengan skema split <strong>80% untuk training</strong> dan <strong>20% untuk testing</strong>. Hasil <strong>Confusion Matrix</strong> menunjukkan akurasi keseluruhan mencapai <strong>91,43%</strong>. Berikut contoh implementasi kode dalam Google Earth Engine.
+        <strong>Uji akurasi</strong> ini <strong>membandingkan hasil klasifikasi</strong> model CART dengan <strong>data training</strong> dan <strong>testing</strong> yang dibagi dengan skema split <strong>80% untuk training</strong> dan <strong>20% untuk testing</strong>. Hasil <strong>matriks konfusi</strong> menunjukkan <strong>akurasi keseluruhan</strong> mencapai <strong>91.43%</strong>. Berikut contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -735,29 +745,6 @@ print('Consumers Accuracy:', confusionMatrix.consumersAccuracy());
 """
         st.code(codeUjiAkurasi, language="javascript", line_numbers=True)
 
-        # Hasil Uji Akurasi Klasifikasi
-        st.markdown(
-            """
-        <div class="justified-text">        
-        Nilai <strong>Producers Accuracy</strong> dan <strong>Consumers Accuracy</strong>:<br>
-        • <strong>Kelas 0 (Vegetasi)</strong>: produsen 100%, konsumen 93%<br>
-        • <strong>Kelas 1 (Tubuh Air)</strong>: produsen 100%, konsumen 100%<br>
-        • <strong>Kelas 2 (Lahan Terbangun)</strong>: produsen 75%, konsumen 85,71%<br>
-        • <strong>Kelas 3 (Lahan Terbuka)</strong>: produsen 83,33%, konsumen 83,33%<br>
-        Dengan demikian, dapat disimpulkan bahwa model CART tergolong baik untuk klasifikasi penutup lahan tahun 2024 di lokasi penelitian meski masih terdapat ruang untuk perbaikan pada kelas lahan terbangun dan lahan terbuka.
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
-        )
-
-        st.image(
-            "./assets/confusion_matrix.png",
-            caption="Hasil Confusion Matrix Model CART pada Klasifikasi Penutup Lahan Tahun 2024",
-        )
-
         st.markdown(
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
         )
@@ -774,7 +761,7 @@ print('Consumers Accuracy:', confusionMatrix.consumersAccuracy());
         st.markdown(
             """
             <div class="justified-text">
-           Citra radar NASA SRTM telah tersedia dalam format <em>digital elevation model</em> (DEM) sehingga data elevasi yang dibutuhkan dapat langsung diekstraksi tanpa memerlukan proses konversi tambahan. Sementara data slope dapat diturunkan melalui Google Earth Engine API <strong>ee.Terrain.slope()</strong> yang akan menghitung kemiringan lereng berdasarkan nilai elevasi. Berikut contoh implementasi kode dalam Google Earth Engine.
+           <strong>Citra radar NASA SRTM</strong> telah tersedia dalam format <strong>digital elevation model (DEM)</strong> sehingga data <strong>elevasi</strong> yang dibutuhkan <strong>dapat langsung diekstraksi</strong> tanpa memerlukan proses konversi tambahan. Sementara data <strong>slope</strong> dapat diturunkan melalui <strong>application programming interface (API)</strong> Google Earth Engine bernama <strong>ee.Terrain.slope()</strong> yang akan <strong>menghitung kemiringan lereng</strong> berdasarkan nilai elevasi. Berikut contoh implementasi kode dalam Google Earth Engine.
         </div>
         """,
             unsafe_allow_html=True,
@@ -792,32 +779,43 @@ var slope = ee.Terrain.slope(elevation);
         st.code(codeDEM, language="javascript", line_numbers=True)
 
 with tab4:
-    st.subheader("Validasi")
     option = st.pills(
         "**Lihat Validasi:**",
         [
-            "🌡️ LST",
             "🌳 Indeks",
             "🏞️ Penutup Lahan",
+            "🌡️ Suhu Permukaan Lahan",
         ],
-        default="🌡️ LST",
+        default="🌳 Indeks",
     )
 
-    if option == "🌡️ LST":
-        st.subheader("**Suhu Permukaan Lahan (LST)**")
+    if option == "🌳 Indeks":
+        st.subheader("**Indeks**")
+        st.write("Page under construction.")
+    elif option == "🏞️ Penutup Lahan":
+        st.subheader("**Penutup Lahan**")
+        st.write("Page under construction.")
+    elif option == "🌡️ Suhu Permukaan Lahan":
+        st.subheader("**Suhu Permukaan Lahan**")
         st.write("Page under construction.")
 
 with tab5:
-    st.subheader("Prediksi")
     option = st.pills(
         "**Lihat Prediksi:**",
         [
-            "🌡️ LST",
             "🏞️ Penutup Lahan",
+            "🌳 Indeks",
+            "🌡️ Suhu Permukaan Lahan",
         ],
-        default="🌡️ LST",
+        default="🏞️ Penutup Lahan",
     )
 
-    if option == "🌡️ LST":
-        st.subheader("**Suhu Permukaan Lahan (LST)**")
+    if option == "🏞️ Penutup Lahan":
+        st.subheader("**Penutup Lahan**")
+        st.write("Page under construction.")
+    elif option == "🌳 Indeks":
+        st.subheader("**Indeks**")
+        st.write("Page under construction.")
+    elif option == "🌡️ Suhu Permukaan Lahan":
+        st.subheader("**Suhu Permukaan Lahan**")
         st.write("Page under construction.")
