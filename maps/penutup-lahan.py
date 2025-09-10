@@ -793,7 +793,7 @@ with tab2:
 
 # Fungsi untuk Membuat Matriks Konfusi
 def create_confusion_matrix(df):
-    y_true = df["PL Referensi"]
+    y_true = df["PL Klasifikasi"]
     y_pred = df["PL Aktual"]
     classes = ["Vegetasi", "Tubuh Air", "Lahan Terbangun", "Lahan Terbuka"]
 

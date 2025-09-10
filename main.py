@@ -163,7 +163,7 @@ pg = st.navigation(
     {
         "": [home],
         "Analisis": [lulc, ndbi, ndmi, ndvi, lst],
-        "How It's Made": [dataset, workflow, project, gee_apps],
+        "How It's Made": [dataset, workflow, gee_apps],
         "Get Results": [download_peta, galeri],
     }
 )
