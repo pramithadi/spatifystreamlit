@@ -275,23 +275,31 @@ with tab3:
             unsafe_allow_html=True,
         )
 
-        # Rumus NDVI
-        def display_equation(title, equation):
-            st.markdown(f"**{title}**")
-            st.latex(equation)
+        # Rumus Validasi LST
+        def display_equation_validate(equation):
+            st.markdown(f"$${equation}$$", unsafe_allow_html=True)
 
-        display_equation(
-            "Rumus NDVI",
+        st.markdown(
+            """
+        <div class="justified-text">
+        <strong>• NDVI</strong>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # 1. Rumus NDVI
+        display_equation_validate(
             r"NDVI = \frac{NIR - Red}{NIR + Red}",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Keterangan:</strong><br>
+        <strong>dengan:</strong><br>
         NDVI = Normalized Difference Vegetation Index<br>
-        NIR = Band 4 (Landsat 5 dan Landsat 7), Band 5 (Landsat 8)<br>
-        Red = Band 3 (Landsat 5 dan Landsat 7), Band 4 (Landsat 8)
+        NIR = band 4 (Landsat 5 dan Landsat 7), band 5 (Landsat 8)<br>
+        Red = band 3 (Landsat 5 dan Landsat 7), band 4 (Landsat 8)
         </div>
         """,
             unsafe_allow_html=True,
@@ -310,24 +318,28 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
         )
 
-        # Rumus Proporsi Vegetasi
-        def display_equation(title, equation):
-            st.markdown(f"**{title}**")
-            st.latex(equation)
+        st.markdown(
+            """
+        <div class="justified-text">
+        <strong>• Proportion of Vegetation</strong>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
 
-        display_equation(
-            "Rumus Proportion of Vegetation",
+        # 2. Rumus Pv
+        display_equation_validate(
             r"Pv = \left( \frac{NDVI - NDVI_{min}}{NDVI_{max} - NDVI_{min}} \right)^2",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Keterangan:</strong><br>
+        <strong>dengan:</strong><br>
         Pv = Proportion of Vegetation<br>
-        NDVI = Nilai NDVI<br>
-        NDVImin = Nilai Minimum NDVI <br>
-        NDVImax = Nilai Maksimum NDVI
+        NDVI = nilai NDVI<br>
+        NDVI<sub>min</sub> = nilai minimum NDVI <br>
+        NDV<sub>max</sub> = nilai maksimum NDVI
         </div>
         """,
             unsafe_allow_html=True,
@@ -358,20 +370,24 @@ var pv2024 = (ndvi2024.subtract(ndvi2024min).divide(ndvi2024max.subtract(ndvi202
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
         )
 
-        # Rumus Emisivitas Permukaan
-        def display_equation(title, equation):
-            st.markdown(f"**{title}**")
-            st.latex(equation)
+        st.markdown(
+            """
+        <div class="justified-text">
+        <strong>• Emisivitas Permukaan</strong>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
 
-        display_equation(
-            "Rumus Emisivitas Permukaan",
+        # 1. Rumus Emisivitas Permukaan
+        display_equation_validate(
             r"\epsilon = 0.004 \times \text{Pv} + 0.986",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Keterangan:</strong><br>
+        <strong>dengan:</strong><br>
         ε = Emisivitas Permukaan<br>
         Pv = Nilai Proportion of Vegetation
         </div>
@@ -424,23 +440,24 @@ var bt2024 = landsat2024.select('ST_B10');
             unsafe_allow_html=True,
         )
 
-        # Rumus LST
-        def display_equation(title, equation):
-            st.markdown(f"**{title}**")
-            st.latex(equation)
-            # st.markdown(
-            #     "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
-            # )
+        # st.markdown(
+        #     """
+        # <div class="justified-text">
+        # <strong>• Land Surface Temperature</strong>
+        # </div>
+        # """,
+        #     unsafe_allow_html=True,
+        # )
 
-        display_equation(
-            "Rumus LST",
+        # 3. Rumus LST
+        display_equation_validate(
             r"LST = \left( \frac{B_T}{1 + \left( \frac{\lambda \cdot B_T}{\rho} \right) \cdot \ln \epsilon} \right) - 273.15",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Keterangan:</strong><br>
+        <strong>dengan:</strong><br>
         LST = Suhu Permukaan Lahan (°C)<br>
         BT = Nilai Brightness Temperature (K)<br>
         λ = Panjang Gelombang Saluran Termal (11,5 µm)<br>
@@ -486,23 +503,21 @@ var lst2024 = bt2024.expression(
             unsafe_allow_html=True,
         )
 
-        # Rumus NDBI
-        def display_equation(title, equation):
-            st.markdown(f"**{title}**")
-            st.latex(equation)
+        def display_equation_validate(equation):
+            st.markdown(f"$${equation}$$", unsafe_allow_html=True)
 
-        display_equation(
-            "Rumus NDBI",
+        # Rumus NDBI
+        display_equation_validate(
             r"NDBI = \frac{SWIR - NIR}{SWIR + NIR}",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Keterangan:</strong><br>
+        <strong>dengan:</strong><br>
         NDBI = Normalized Difference Built-Up Index<br>
-        SWIR = Band 5 (Landsat 5 dan Landsat 7), Band 6 (Landsat 8)<br>
-        NIR = Band 4 (Landsat 5 dan Landsat 7), Band 5 (Landsat 8)
+        SWIR = band 5 (Landsat 5 dan Landsat 7), band 6 (Landsat 8)<br>
+        NIR = band 4 (Landsat 5 dan Landsat 7), band 5 (Landsat 8)
         </div>
         """,
             unsafe_allow_html=True,
@@ -539,23 +554,21 @@ var ndbi2024 = landsat2024.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndbi
             unsafe_allow_html=True,
         )
 
-        # Rumus NDMI
-        def display_equation(title, equation):
-            st.markdown(f"**{title}**")
-            st.latex(equation)
+        def display_equation_validate(equation):
+            st.markdown(f"$${equation}$$", unsafe_allow_html=True)
 
-        display_equation(
-            "Rumus NDMI",
+        # Rumus NDMI
+        display_equation_validate(
             r"NDMI = \frac{NIR - SWIR}{NIR + SWIR}",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Keterangan:</strong><br>
+        <strong>dengan:</strong><br>
         NDMI = Normalized Difference Moisture Index<br>
-        NIR = Band 4 (Landsat 5 dan Landsat 7), Band 5 (Landsat 8)<br>
-        SWIR = Band 5 (Landsat 5 dan Landsat 7), Band 6 (Landsat 8)
+        NIR = band 4 (Landsat 5 dan Landsat 7), Band 5 (Landsat 8)<br>
+        SWIR = band 5 (Landsat 5 dan Landsat 7), Band 6 (Landsat 8)
         </div>
         """,
             unsafe_allow_html=True,
@@ -592,26 +605,20 @@ var ndmi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B6']).rename('ndbi
             unsafe_allow_html=True,
         )
 
-        # Rumus NDVI
-        def display_equation(title, equation):
-            st.markdown(f"**{title}**")
-            st.latex(equation)
-            # st.markdown(
-            #     "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
-            # )
+        def display_equation_validate(equation):
+            st.markdown(f"$${equation}$$", unsafe_allow_html=True)
 
-        display_equation(
-            "Rumus NDVI",
+        display_equation_validate(
             r"NDVI = \frac{NIR - Red}{NIR + Red}",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Keterangan:</strong><br>
+        <strong>dengan:</strong><br>
         NDVI = Normalized Difference Vegetation Index<br>
-        NIR = Band 4 (Landsat 5 dan Landsat 7), Band 5 (Landsat 8)<br>
-        Red = Band 3 (Landsat 5 dan Landsat 7), Band 4 (Landsat 8)
+        NIR = band 4 (Landsat 5 dan Landsat 7), band 5 (Landsat 8)<br>
+        Red = band 3 (Landsat 5 dan Landsat 7), band 4 (Landsat 8)
         </div>
         """,
             unsafe_allow_html=True,
@@ -843,23 +850,31 @@ with tab4:
             unsafe_allow_html=True,
         )
 
-        # Rumus NDBI
-        def display_equation(title, equation):
-            st.markdown(f"**{title}**")
-            st.latex(equation)
+        # Rumus Validasi LST
+        def display_equation_validate(equation):
+            st.markdown(f"$${equation}$$", unsafe_allow_html=True)
 
-        display_equation(
-            "Rumus NDBI",
-            r"NDBI = \frac{SWIR - NIR}{SWIR + NIR}",
+        st.markdown(
+            """
+        <div class="justified-text">
+        <strong>• NDBI</strong>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # 1. Rumus NDBI
+        display_equation_validate(
+            r"\frac{SWIR - NIR}{SWIR + NIR}",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Keterangan:</strong><br>
+        dengan:<br>
         NDBI = Normalized Difference Built-Up Index<br>
-        SWIR-1 = Band 11<br>
-        NIR = Band 8
+        SWIR-1 = band 11<br>
+        NIR = band 8
         </div>
         """,
             unsafe_allow_html=True,
@@ -867,25 +882,29 @@ with tab4:
 
         st.markdown(
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        <strong>• NDMI</strong>
+        </div>
+        """,
+            unsafe_allow_html=True,
         )
 
         # Rumus NDMI
-        def display_equation(title, equation):
-            st.markdown(f"**{title}**")
-            st.latex(equation)
-
-        display_equation(
-            "Rumus NDMI",
-            r"NDMI = \frac{NIR - SWIR}{NIR + SWIR}",
+        display_equation_validate(
+            r"\frac{NIR - SWIR}{NIR + SWIR}",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Keterangan:</strong><br>
+        dengan:<br>
         NDMI = Normalized Difference Moisture Index<br>
-        NIR = Band 8<br>
-        SWIR-1 = Band 11
+        NIR = band 8<br>
+        SWIR-1 = band 11
         </div>
         """,
             unsafe_allow_html=True,
@@ -895,23 +914,26 @@ with tab4:
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
         )
 
-        # Rumus NDVI
-        def display_equation(title, equation):
-            st.markdown(f"**{title}**")
-            st.latex(equation)
+        st.markdown(
+            """
+        <div class="justified-text">
+        <strong>• NDVI</strong>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
 
-        display_equation(
-            "Rumus NDVI",
-            r"NDVI = \frac{NIR - Red}{NIR + Red}",
+        display_equation_validate(
+            r"\frac{NIR - Red}{NIR + Red}",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Keterangan:</strong><br>
+        dengan:<br>
         NDVI = Normalized Difference Vegetation Index<br>
-        NIR = Band 8<br>
-        Red = Band 4
+        NIR = band 8<br>
+        Red = band 4
         </div>
         """,
             unsafe_allow_html=True,
@@ -1092,7 +1114,7 @@ print('MAE (Mean Absolute Error):', mae.get('mean'));
     elif option == "🏞️ Penutup Lahan":
         st.subheader("**Penutup Lahan**")
         st.badge(
-            "**Sampling dan Validasi**",
+            "**1. Sampling dan Validasi**",
             color="primary",
         )
         st.markdown(
@@ -1330,7 +1352,7 @@ Export.table.toDrive({
         )
 
         st.badge(
-            "**Uji Akurasi**",
+            "**2. Uji Akurasi**",
             color="primary",
         )
 
@@ -1643,12 +1665,20 @@ Export.table.toDrive({
         )
 
         st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        st.markdown(
             """
             <div class="justified-text">
             Visualisasi validasi ditampilkan dalam bentuk scatterplot regresi yang memperlihatkan distribusi nilai aktual terhadap hasil ekstraksi lengkap dengan garis regresi dan nilai koefisien determinasi.
             </div>
             """,
             unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
         )
 
         with st.expander("Lihat Referensi"):
