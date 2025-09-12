@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xml:lang="en"><Esri><CreaDate>20250912</CreaDate><CreaTime>10363300</CreaTime><ArcGISFormat>1.0</ArcGISFormat><ArcGISstyle>FGDC CSDGM Metadata</ArcGISstyle><SyncOnce>TRUE</SyncOnce><DataProperties><lineage><Process ToolSource="c:\program files (x86)\arcgis\desktop10.8\ArcToolbox\Toolboxes\Spatial Analyst Tools.tbx\ExtractByMask" Date="20250912" Time="103633">ExtractByMask prediksi_pl_2029.tif AOI_PA_KPY_Sekitarnya_OUTLINE D:\final_project\streamlit\tif\pl2029kpy_aktual.tif</Process></lineage></DataProperties></Esri></metadata>

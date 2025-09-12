@@ -196,23 +196,6 @@ function maskLsr(image) {
 
     st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
 
-    # # Hasil Prapengolahan Data
-    # st.write(
-    #     "Berikut merupakan contoh tampilan citra Landsat 8 Surface Reflectance tahun 2024 **sebelum** dan **sesudah** dilakukan cloud masking:"
-    # )
-
-    # image_comparison(
-    #     img1="./assets/before.png",
-    #     img2="./assets/after.png",
-    #     label1="Sebelum",
-    #     label2="Sesudah",
-    #     width=700,
-    #     starting_position=50,
-    #     show_labels=True,
-    #     make_responsive=True,
-    # )
-    # st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
-
     with st.expander("Lihat Referensi"):
         st.markdown(
             """
@@ -244,7 +227,7 @@ with tab3:
         st.markdown(
             """
             <div class="justified-text">
-            Ekstraksi <strong>suhu permukaan lahan</strong> atau <strong>land surface temperature (LST)</strong> dalam penelitian ini menggunakan metode <strong>Single-Channel</strong> yang dikembangkan oleh Jiménez-Muñoz & Sobrino (2010). Metode ini terdiri atas empat tahap perhitungan, yaitu:
+            Ekstraksi suhu permukaan lahan atau land surface temperature (LST) dilakukan dengan metode <strong>Single-Channel</strong> yang dikembangkan oleh Jiménez-Muñoz & Sobrino (2010).
         </div>
         """,
             unsafe_allow_html=True,
@@ -255,7 +238,7 @@ with tab3:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Nilai radiansi spektral</strong> pada dataset Landsat Surface Reflectance <strong>telah dikalibrasi</strong> secara otomatis melalui penerapan function <strong>Scaling Factor</strong>. Dengan demikian, nilai radiansi spektral dari saluran termal dataset ini dapat langsung digunakan dalam perhitungan LST.
+        <strong>Nilai radiansi spektral</strong> pada citra Landsat Surface Reflectance <strong>telah dikalibrasi</strong> secara otomatis melalui penerapan function <strong>Scaling Factor</strong>. Dengan demikian, nilai radiansi spektral dari saluran termal dataset ini dapat langsung digunakan dalam perhitungan LST.
         </div>
         """,
             unsafe_allow_html=True,
@@ -412,7 +395,7 @@ var emisi2024 = pv2024.multiply(k1).add(k2).rename('emisi2024');
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Brightness temperature</strong> merupakan <strong>nilai suhu permukaan</strong> dari radiasi termal objek yang direkam oleh sensor termal dan disajikan ke dalam satuan <strong>kelvin</strong> (Jatayu & Susetyo, 2017). Penerapan function Scaling Factor telah <strong>mengkalibrasi</strong> saluran termal ke dalam satuan kelvin sehingga <strong>dapat langsung dimanfaatkan sebagai nilai brightness temperature</strong> (Waleed & Sajjad, 2022). Saluran termal citra Landsat 5 dan Landsat 7 adalah band 6, sedangkan dalam citra Landsat 8 adalah band 10.
+        <strong>Brightness temperature</strong> merupakan <strong>nilai suhu permukaan</strong> dari radiasi termal objek yang direkam oleh sensor termal dan disimpan dalam satuan <strong>kelvin</strong> (Jatayu & Susetyo, 2017). Penerapan function Scaling Factor telah <strong>mengkalibrasi</strong> saluran termal ke dalam satuan kelvin sehingga <strong>dapat langsung dimanfaatkan sebagai nilai brightness temperature</strong> (Waleed & Sajjad, 2022).
         </div>
         """,
             unsafe_allow_html=True,
@@ -434,20 +417,11 @@ var bt2024 = landsat2024.select('ST_B10');
         st.markdown(
             """
         <div class="justified-text">
-        Nilai emisivitas permukaan dan brightness temperature yang telah didapatkan lantas <strong>dikalkulasi</strong> dengan <strong>panjang gelombang saluran termal</strong> dan nilai <strong>radiasi emisivitas</strong> yang diestimasi dari konstanta Planck, Stefan-Boltzmann, dan nilai kecepatan cahaya (Waleed & Sajjad, 2022). Untuk mendapatkan <strong>nilai LST</strong> dalam <strong>derajat celcius</strong> tidak luput untuk mengonversi hasilnya dengan 273.15.
+        Nilai emisivitas permukaan dan brightness temperature yang telah didapatkan lalu <strong>dikalkulasi</strong> dengan <strong>panjang gelombang saluran termal</strong> dan nilai <strong>radiasi emisivitas</strong> (Waleed & Sajjad, 2022). Untuk mendapatkan <strong>nilai LST</strong> dalam <strong>derajat celcius</strong> maka perlu mengonversi hasilnya dengan 273.15.
         </div>
         """,
             unsafe_allow_html=True,
         )
-
-        # st.markdown(
-        #     """
-        # <div class="justified-text">
-        # <strong>• Land Surface Temperature</strong>
-        # </div>
-        # """,
-        #     unsafe_allow_html=True,
-        # )
 
         # 3. Rumus LST
         display_equation_validate(
@@ -649,7 +623,7 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
         st.markdown(
             """
             <div class="justified-text">
-            Penutup lahan dipetakan menggunakan <strong>klasifikasi supervised</strong> pada citra multispektral. Metode ini <strong>memanfaatkan sampel</strong> dari tiap kelas penutup lahan untuk <strong>melatih model klasifikasi</strong>. Prosedur klasifikasi supervised penutup lahan di Google Earth Engine ditunjukkan berikut ini.
+            Penutup lahan dipetakan menggunakan metode <strong>klasifikasi supervised</strong> pada citra multispektral. Metode ini <strong>memanfaatkan sampel</strong> dari tiap kelas penutup lahan untuk <strong>melatih model klasifikasi</strong>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -660,7 +634,7 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
         st.markdown(
             """
         <div class="justified-text">        
-        <strong>Training area</strong> adalah kumpulan sampel dari setiap kelas penutup lahan yang akan diklasifikasi. Klasifikasi penutup lahan mengacu pada sistem <strong>SNI 7645:2010</strong> yang telah disesuaikan dengan kondisi penutup lahan di lokasi penelitian. Kelas yang digunakan dalam penelitian ini meliputi <strong>vegetasi, tubuh air, lahan terbangun, dan lahan terbuka</strong>.
+        <strong>Training area</strong> adalah kumpulan sampel dari setiap kelas penutup lahan yang akan diklasifikasi. Klasifikasi penutup lahan mengacu pada sistem <strong>SNI 7645:2010</strong> yang telah disesuaikan dengan kondisi penutup lahan di lokasi penelitian. Kelas yang dipetakan meliputi <strong>vegetasi, tubuh air, lahan terbangun, dan lahan terbuka</strong>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -692,13 +666,9 @@ print(trainImage)
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
         )
 
-        # Sebaran Training Area
-        st.write(
-            "Di bawah ini adalah visualisasi sebaran training area pada citra Landsat 8 Surface Reflectance tahun 2024."
-        )
         st.image(
             "./assets/training_area2.png",
-            caption="Persebaran Sampel Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya Tahun 2024",
+            caption="Persebaran Sampel Penutup Lahan Tahun 2024",
         )
 
         st.markdown(
@@ -710,7 +680,7 @@ print(trainImage)
         st.markdown(
             """
         <div class="justified-text">        
-        Training area dianalisis menggunakan algoritma <strong>Classification and Regression Tree (CART)</strong>, yaitu metode <strong>machine learning</strong> berbasis <strong>decision tree (pohon keputusan)</strong> yang banyak digunakan dalam klasifikasi penutup lahan (Krzywinski & Altman, 2017). Algoritma ini membentuk <strong>aturan klasifikasi</strong> dari sampel training area yang tersedia kemudian <strong>diaplikasikan</strong> untuk <strong>mengidentifikasi kelas penutup lahan</strong> pada setiap piksel citra.
+        Training area dianalisis menggunakan algoritma <strong>Classification and Regression Tree (CART)</strong>. CART akan membentuk <strong>aturan klasifikasi</strong> dari sampel training area yang tersedia lalu <strong>diaplikasikan</strong> untuk <strong>mengidentifikasi kelas penutup lahan</strong> pada setiap piksel citra.
         </div>
         """,
             unsafe_allow_html=True,
@@ -743,55 +713,44 @@ Map.addLayer(lulc2024, {palette: landcoverPalette, min: 0, max:3}, 'Klasifikasi 
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
         )
 
-        # Hasil Klasifikasi Penutup Lahan
-        st.write(
-            "Visualisasi dari hasil klasifikasi penutup lahan di lokasi penelitian tahun 2024 ditunjukkan pada gambar berikut."
-        )
         st.image(
             "./assets/hasil_klasifikasi2.png",
-            caption="Visualisasi Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya Tahun 2024",
+            caption="Hasil Klasifikasi Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya Tahun 2024",
         )
 
-        st.markdown(
-            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
-        )
+        # st.markdown(
+        #     "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        # )
 
-        # Uji Akurasi Klasifikasi
-        st.badge("**3. Uji Akurasi Klasifikasi**", color="primary")
-        st.markdown(
-            """
-        <div class="justified-text">        
-        <strong>Uji akurasi</strong> ini <strong>membandingkan hasil klasifikasi</strong> model CART dengan <strong>data training</strong> dan <strong>testing</strong> yang dibagi dengan skema split <strong>80% untuk training</strong> dan <strong>20% untuk testing</strong>. Hasil <strong>matriks konfusi</strong> menunjukkan <strong>akurasi keseluruhan</strong> mencapai <strong>91.43%</strong>. Berikut contoh implementasi kode dalam Google Earth Engine.
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
+        # # Uji Akurasi Model Klasifikasi
+        # st.badge("**3. Uji Akurasi Model Klasifikasi**", color="primary")
+        # st.markdown(
+        #     """
+        # <div class="justified-text">
+        # <strong>Uji akurasi</strong> pada tahap ini dilakukan untuk <strong>membandingkan hasil klasifikasi</strong> model CART dengan <strong>data training</strong> dan <strong>testing</strong> yang dibagi dengan skema split <strong>80% untuk training</strong> dan <strong>20% untuk testing</strong>. Hasil <strong>matriks konfusi</strong> menunjukkan <strong>akurasi keseluruhan</strong> mencapai <strong>91.43%</strong>. Berikut contoh implementasi kode dalam Google Earth Engine.
+        # </div>
+        # """,
+        #     unsafe_allow_html=True,
+        # )
 
-        codeUjiAkurasi = """
-// Uji Akurasi 
-var confusionMatrix = ee.ConfusionMatrix(testSet.classify(classifier)
-    .errorMatrix({
-      actual: 'Class',
-      predicted: 'classification'
-    }));
+    #         codeUjiAkurasi = """
+    # // Uji Akurasi
+    # var confusionMatrix = ee.ConfusionMatrix(testSet.classify(classifier)
+    #     .errorMatrix({
+    #       actual: 'Class',
+    #       predicted: 'classification'
+    #     }));
 
-print('Confusion Matrix:', confusionMatrix);
-print('Overall Accuracy:', confusionMatrix.accuracy());
-print('Producers Accuracy:', confusionMatrix.producersAccuracy());
-print('Consumers Accuracy:', confusionMatrix.consumersAccuracy());
-"""
-        st.code(codeUjiAkurasi, language="javascript", line_numbers=True)
+    # print('Confusion Matrix:', confusionMatrix);
+    # print('Overall Accuracy:', confusionMatrix.accuracy());
+    # print('Producers Accuracy:', confusionMatrix.producersAccuracy());
+    # print('Consumers Accuracy:', confusionMatrix.consumersAccuracy());
+    # """
+    #         st.code(codeUjiAkurasi, language="javascript", line_numbers=True)
 
-        st.markdown(
-            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
-        )
-
-        with st.expander("Lihat Referensi"):
-            st.markdown(
-                """
-                - Krzywinski, M., & Altman, N. (2017). Classification and Regression Trees. *Nature Methods*, 14(8). 757-758. https://doi.org/10.1038/nmeth.4370 
-                """
-            )
+    #         st.markdown(
+    #             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+    #         )
 
     elif option == "🌋 Elevasi dan Slope":
         st.subheader("**Elevasi dan Slope**")
@@ -871,7 +830,7 @@ with tab4:
         st.markdown(
             """
         <div class="justified-text">
-        dengan:<br>
+        <strong>dengan:</strong><br>
         NDBI = Normalized Difference Built-Up Index<br>
         SWIR-1 = band 11<br>
         NIR = band 8
@@ -901,7 +860,7 @@ with tab4:
         st.markdown(
             """
         <div class="justified-text">
-        dengan:<br>
+        <strong>dengan:</strong><br>
         NDMI = Normalized Difference Moisture Index<br>
         NIR = band 8<br>
         SWIR-1 = band 11
@@ -930,7 +889,7 @@ with tab4:
         st.markdown(
             """
         <div class="justified-text">
-        dengan:<br>
+        <strong>dengan:</strong><br>
         NDVI = Normalized Difference Vegetation Index<br>
         NIR = band 8<br>
         Red = band 4
@@ -1031,20 +990,6 @@ var samplesVal = stackedNDBI.sample({
   seed: 42,
   geometries: true
 });
-
-// Filter Titik Sampel (Rentang NDBI -1 hingga 1)
-var cleanSamplesVal = samplesVal.filter(
-  ee.Filter.and(
-    ee.Filter.gte('ndbiSentinel', -1),
-    ee.Filter.lte('ndbiSentinel', 1),
-    ee.Filter.gte('ndbiLandsat', -1),
-    ee.Filter.lte('ndbiLandsat', 1),
-    ee.Filter.notNull(['ndbiSentinel']),
-    ee.Filter.notNull(['ndbiLandsat'])
-  )
-);
-
-print('Jumlah Sampel Bersih:', cleanSamplesVal.size());
 """
         st.code(codeSamplingSentinel, language="javascript", line_numbers=True)
 
@@ -1135,7 +1080,7 @@ print('MAE (Mean Absolute Error):', mae.get('mean'));
         st.markdown(
             """
         <div class="justified-text">
-        dengan:<br>
+        <strong>dengan:</strong><br>
         n = jumlah total sampel<br>
         Z² = standar deviasi normal untuk tingkat kepercayaan 95% (bernilai 2)<br>
         p = akurasi yang diharapkan (%)<br>
@@ -1168,7 +1113,7 @@ print('MAE (Mean Absolute Error):', mae.get('mean'));
         st.markdown(
             """
         <div class="justified-text">
-        dengan:<br>
+        <strong>dengan:</strong><br>
         n<sub>h</sub> = jumlah sampel pada strata h<br>
         N<sub>h</sub> = jumlah populasi strata h<br>
         N = jumlah total populasi<br>
@@ -1571,7 +1516,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        dengan:<br>
+        <strong>dengan:</strong><br>
         N = Total sampel<br>
         X<sub>+i</sub> = jumlah sampel dalam baris ke-i<br>
         X<sub>i+</sub> = jumlah sampel dalam kolom ke-i<br>
@@ -1654,7 +1599,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        dengan:<br>
+        <strong>dengan:</strong><br>
         Y<sub>i</sub> = nilai LST hasil pengukuran lapangan<br>
         Ŷ<sub>i</sub> = nilai LST hasil pengolahan citra Landsat 8<br>
         Ȳ = rata-rata nilai LST dari pengukuran lapangan<br>

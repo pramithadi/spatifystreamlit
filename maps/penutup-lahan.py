@@ -632,7 +632,10 @@ with tab1:
         ).add_to(m)
 
         # Panggil GeoTiff Penutup Lahan
-        tif_path = f"tif/pl{option}kpy.tif"
+        if option == "2029":
+            tif_path = "tif/pl2029kpy_aktual.tif"
+        else:
+            tif_path = f"tif/pl{option}kpy.tif"
 
         # Cek Ketersediaan Data kemudian Tampilkan ke Peta
         if os.path.exists(tif_path):
@@ -1050,7 +1053,7 @@ with tab4:
                         y=[0.8963],
                         text=["0.8963"],
                         textposition="outside",
-                        marker_color="#CEE6AB",
+                        marker_color="#1C352D",
                         textfont=dict(family="Poppins", size=12, color="black"),
                     ),
                     go.Bar(
@@ -1059,7 +1062,7 @@ with tab4:
                         y=[0.8351],
                         text=["0.8351"],
                         textposition="outside",
-                        marker_color="#BB6653",
+                        marker_color="#F5C9B0",
                         textfont=dict(family="Poppins", size=12, color="black"),
                     ),
                 ]
@@ -1264,7 +1267,7 @@ with tab4:
                     data_2024_pred = np.flipud(data_2024_pred)
                     data_2024_pred = process_raster_data(data_2024_pred)
 
-                with rasterio.open("tif/pl2029kpy.tif") as src:
+                with rasterio.open("tif/pl2029kpy_aktual.tif") as src:
                     data_2029_pred = src.read(1)
                     bounds_2029 = src.bounds
                     height, width = data_2029_pred.shape
