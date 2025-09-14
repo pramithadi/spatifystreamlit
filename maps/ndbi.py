@@ -112,7 +112,7 @@ stats_by_year = {
     "2014": {"min": -0.564, "max": 0.819, "mean": -0.179},
     "2019": {"min": -0.581, "max": 0.940, "mean": -0.161},
     "2024": {"min": -0.604, "max": 0.454, "mean": -0.162},
-    "2029": {"min": -0.471, "max": 0.228, "mean": -0.161},
+    "2029": {"min": -0.477, "max": 0.230, "mean": -0.156},
 }
 
 # Dictionary Threshold
@@ -123,7 +123,7 @@ threshold_dict = {
     "2014": {"low": -0.302, "medium": -0.179, "high": -0.056},
     "2019": {"low": -0.301, "medium": -0.161, "high": -0.022},
     "2024": {"low": -0.309, "medium": -0.162, "high": -0.015},
-    "2029": {"low": -0.303, "medium": -0.161, "high": -0.020},
+    "2029": {"low": -0.300, "medium": -0.156, "high": -0.012},
 }
 
 
@@ -437,13 +437,13 @@ with tab1:
         col1_peta_metric, col2_peta_metric, col3_peta_metric = st.columns([1, 1, 1])
         with col1_peta_metric:
             with st.container(border=True):
-                st.metric("NDBI Min", f"{selected_data['min']:.1f}")
+                st.metric("NDBI Min", f"{selected_data['min']:.2f}")
         with col2_peta_metric:
             with st.container(border=True):
-                st.metric("NDBI Max", f"{selected_data['max']:.1f}")
+                st.metric("NDBI Max", f"{selected_data['max']:.2f}")
         with col3_peta_metric:
             with st.container(border=True):
-                st.metric("NDBI Mean", f"{selected_data['mean']:.1f}")
+                st.metric("NDBI Mean", f"{selected_data['mean']:.2f}")
 
         # Container Selectbox Kecamatan
         with st.container(border=True):
@@ -558,7 +558,7 @@ with tab1:
 
         # Panggil GeoTiff dari Aset Lokal
         if option == "2029":
-            tif_path = "tif/ndbi2029kpy.tif"
+            tif_path = "tif/ndbi2029kpy_update.tif"
         else:
             tif_path = f"tif/ndbi{option}kpy.tif"
 
@@ -1381,7 +1381,7 @@ with tab4:
                         "medium": -0.162,
                         "high": -0.025,
                     },
-                    "proyeksi_2029": {"low": -0.303, "medium": -0.161, "high": -0.020},
+                    "proyeksi_2029": {"low": -0.300, "medium": -0.156, "high": -0.012},
                 }
 
                 # Aktual NDBI 2024
@@ -1401,7 +1401,7 @@ with tab4:
                     )
 
                 # Proyeksi NDBI 2024
-                with rasterio.open("tif/proyeksi_ndbi2024kpy.tif") as src:
+                with rasterio.open("tif/proyeksi_ndbi2024kpy_update.tif") as src:
                     data_2024_pred = src.read(1)
                     bounds_pred = src.bounds
                     height, width = data_2024_pred.shape
@@ -1413,7 +1413,7 @@ with tab4:
                     )
 
                 # Proyeksi NDBI 2029
-                with rasterio.open("tif/ndbi2029kpy.tif") as src:
+                with rasterio.open("tif/ndbi2029kpy_update.tif") as src:
                     data_2029_pred = src.read(1)
                     bounds_2029 = src.bounds
                     height, width = data_2029_pred.shape

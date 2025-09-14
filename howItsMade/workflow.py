@@ -1646,7 +1646,128 @@ with tab5:
 
     if option == "🏞️ Penutup Lahan":
         st.subheader("**Penutup Lahan**")
-        st.write("Page under construction.")
+
+        # Transisi Penutup Lahan
+        st.badge(
+            "**1. Perhitungan Transisi Penutup Lahan**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        Pada tahap ini, dilakukan perhitungan <strong>perubahan penutup lahan historis</strong> dari tahun 1999-2004, 2004-2009, 2009-2014, 2014-2019, dan 2019-2024 menggunakan metode <strong>Markov Chain</strong>. Dengan menganalisis transisi antar periode, model menghasilkan <strong>laju perubahan rata-rata per tahun</strong>. Laju inilah yang menjadi dasar untuk memproyeksikan <strong>jumlah total area yang akan berubah di masa depan</strong>.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Matriks Transisi
+        codeMatriksTransisi = """
+transition_quantities = []
+for i in range(len(YEARS) - 1):
+    t1, t2 = YEARS[i], YEARS[i+1]
+    cm = get_transition_matrix(os.path.join(PL_DIR, f'pl{t1}kpy.tif'), os.path.join(PL_DIR, f'pl{t2}kpy.tif'))
+    print(f"   -> Matriks Transisi (Jumlah Piksel) Periode {t1}-{t2}")
+    df_cm = pd.DataFrame(cm, index=CLASS_PROPERTY.values(), columns=CLASS_PROPERTY.values())
+    display(df_cm)
+    interval_quantity = cm[TARGET_TRANSITION['from'], TARGET_TRANSITION['to']]
+    transition_quantities.append(interval_quantity)
+    print(f"   -> Perubahan {t1}-{t2}: {interval_quantity} Piksel")
+
+avg_annual_rate = sum(transition_quantities) / (YEARS[-1] - YEARS[0])
+"""
+        st.code(codeMatriksTransisi, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Penentuan Lokasi Perubahan
+        st.badge(
+            "**2. Penentuan Lokasi Perubahan**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        Berikutnya, <strong>model XGBoost</strong> akan dilatih untuk menentukan <strong>area mana</strong> yang <strong>paling berpotensi</strong> mengalami perubahan. Pertimbangan penentuan lokasi perubahan ini didasarkan pada tiga faktor yaitu kondisi fisik (<strong>elevasi</strong> dan <strong>kemiringan lereng</strong>) serta <strong>pengaruh tetangga</strong> di sekitarnya yang merupakan implementasi dari <strong>Cellular Automata</strong>. Dengan mempertimbangkan faktor-faktor tersebut, model akan belajar dan menghasilkan output berupa <strong>peta kesesuaian (suitability map)</strong>.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Lokasi Perubahan
+        codeLokasiPerubahan = """
+# Menyiapkan Data Latih untuk Belajar
+df_train = pd.DataFrame({
+    'elevasi': map_elevasi[candidate_mask],
+    'slope': map_slope[candidate_mask],
+    'tetangga': feature_neighbor[candidate_mask], # Cellular Automata
+    'target': target_change[candidate_mask]
+})
+
+X = df_train.drop('target', axis=1) # Fitur
+y = df_train['target'] # Target
+pos_weight_ratio = np.sum(y == 0) / np.sum(y == 1) if np.sum(y == 1) > 0 else 1
+
+# Melatih Model XGBoost
+suitability_model = xgb.XGBClassifier(objective='binary:logistic', scale_pos_weight=pos_weight_ratio, eval_metric='logloss', random_state=42)
+suitability_model.fit(X, y)
+"""
+        st.code(codeLokasiPerubahan, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Alokasi Perubahan dan Generate Peta
+        st.badge(
+            "**3. Alokasi Perubahan dan Generate Peta**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        Terakhir, model akan menggabungkan hasil dari dua tahap sebelumnya. <strong>Jumlah total area yang akan berubah</strong> (dari tahap 1) <strong>dialokasikan</strong> ke lokasi-lokasi dengan <strong>skor kesesuaian tertinggi</strong> (dari tahap 2). Area yang paling berpotensi akan diprioritaskan terlebih dahulu untuk berubah hingga target jumlah perubahan yang telah ditentukan terpenuhi. Hasil akhir dari proses ini adalah <strong>peta prediksi penutup lahan tahun 2029</strong> yang menunjukkan di mana perubahan lahan di masa depan diperkirakan akan terjadi.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Alokasi
+        codeAlokasi = """
+# Jumlah Piksel yang Akan Berubah
+projection_interval = PREDICTION_YEAR - VALIDATION_YEAR
+projection_quantity_normal = int(avg_annual_rate * projection_interval)
+projection_quantity_scenario = int(projection_quantity_normal * ACCELERATION_FACTOR)
+
+with rasterio.open(os.path.join(PL_DIR, f'pl{VALIDATION_YEAR}kpy.tif')) as src:
+    base_map_prediction = src.read(1)
+neighbor_feature_prediction = create_neighborhood_feature(base_map_prediction, TARGET_TRANSITION['to'])
+
+df_predict_2029 = pd.DataFrame({
+    'elevasi': map_elevasi[valid_mask],
+    'slope': map_slope[valid_mask],
+    'tetangga': neighbor_feature_prediction[valid_mask]
+})
+
+# Alokasi Perubahan ke Lokasi dengan Kesesuaian Tertinggi
+map_prediksi_2029 = allocate_changes(
+    base_map_prediction,
+    suitability_map_prediction,
+    projection_quantity_scenario,
+    TARGET_TRANSITION
+)
+"""
+        st.code(codeAlokasi, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
     elif option == "🌳 Indeks":
         st.subheader("**Indeks**")
         st.write("Page under construction.")
