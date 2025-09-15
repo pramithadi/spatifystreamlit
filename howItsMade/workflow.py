@@ -1779,7 +1779,7 @@ map_prediksi_2029 = allocate_changes(
         st.markdown(
             """
         <div class="justified-text">
-        Nilai sebuah indeks di masa depan dapat diprediksi dengan melihat tren nilainya di masa lalu dan kondisi penutup lahan pada masa tersebut. Dari hipotesis tersebut, maka disusunlah <strong>"bahan ajar"</strong> yang berisi kumpulan <strong>"soal-soal"</strong> yang dalam machine learning disebut sebagai <strong>feature (X)</strong> dan <strong>"kunci jawabannya"</strong> yang disebut <strong>target (y)</strong>. <strong>Feature</strong> yang digunakan untuk <strong>melatih model XGBoost</strong> dalam proyeksi indeks tahun 2024 adalah nilai <strong>indeks</strong> tahun <strong>2019</strong>, <strong>penutup lahan</strong> tahun <strong>2024</strong>, <strong>elevasi</strong>, dan <strong>slope</strong>. Sementara itu, <strong>targetnya</strong> adalah nilai <strong>indeks</strong> aktual tahun <strong>2024/strong>.
+        Nilai sebuah indeks di masa depan dapat diprediksi dengan melihat tren nilainya di masa lalu dan kondisi penutup lahan pada masa tersebut. Dari hipotesis tersebut, maka disusunlah <strong>"bahan ajar"</strong> yang berisi kumpulan <strong>"soal-soal"</strong> yang dalam machine learning disebut sebagai <strong>feature (X)</strong> dan <strong>"kunci jawabannya"</strong> yang disebut <strong>target (y)</strong>. <strong>Feature</strong> yang digunakan untuk <strong>melatih model XGBoost</strong> dalam proyeksi indeks tahun 2024 adalah nilai <strong>indeks</strong> tahun <strong>2019</strong>, <strong>penutup lahan</strong> tahun <strong>2024</strong>, <strong>elevasi</strong>, dan <strong>slope</strong>. Sementara itu, <strong>targetnya</strong> adalah nilai <strong>indeks</strong> aktual tahun <strong>2024</strong>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1788,14 +1788,14 @@ map_prediksi_2029 = allocate_changes(
         # Kode Data Training
         codeDataTraining = """
 training_feature_paths = {
-        'ndbi_2019': os.path.join(BASE_DIR, 'NDBI', 'ndbi2019kpy.tif'),
-        'ndmi_2019': os.path.join(BASE_DIR, 'NDMI', 'ndmi2019kpy.tif'),
-        'ndvi_2019': os.path.join(BASE_DIR, 'NDVI', 'ndvi2019kpy.tif'),
-        'pl_2024': os.path.join(PL_DIR, f'pl{VALIDATION_YEAR}kpy.tif'),
-        'elevasi': os.path.join(DEM_DIR, 'elevasi.tif'),
-        'slope': os.path.join(DEM_DIR, 'slope.tif'),
-        'target': os.path.join(INDEX_DIR, f'{index}{VALIDATION_YEAR}kpy.tif'),
-    }
+    'ndbi_2019': os.path.join(BASE_DIR, 'NDBI', 'ndbi2019kpy.tif'),
+    'ndmi_2019': os.path.join(BASE_DIR, 'NDMI', 'ndmi2019kpy.tif'),
+    'ndvi_2019': os.path.join(BASE_DIR, 'NDVI', 'ndvi2019kpy.tif'),
+    'pl_2024': os.path.join(PL_DIR, f'pl{VALIDATION_YEAR}kpy.tif'),
+    'elevasi': os.path.join(DEM_DIR, 'elevasi.tif'),
+    'slope': os.path.join(DEM_DIR, 'slope.tif'),
+    'target': os.path.join(INDEX_DIR, f'{index}{VALIDATION_YEAR}kpy.tif'),
+}
 
 df_training, raster_meta = raster_to_df(training_feature_paths, sample_size=SAMPLING_SIZE)
 """
@@ -1844,7 +1844,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Model XGBoost</strong> kemudian <strong>dilatih</strong> untuk <strong>belajar</strong> dan menganalisis pola-pola dari puluhan ribu sampel piksel yang terdapat dalam <strong>bahan ajar (X_train, y_train)</strong>. Tujuannya untuk memproyeksikan nilai indeks pada tahun 2024. Setelah proses training selesai, model XGBoost lantas <strong>diuji</strong> dengan <strong>data testing (X_test)</strong>. Hasil ujian tersebut lalu <strong>dievaluasi</strong> dengan kunci jawabannya <strong>(y_test)</strong> menggunakan metrik <strong>RMSE, MAE, dan R²</strong> untuk menilai seberapa akurat model XGBoost ini bekerja.
+        <strong>Model XGBoost</strong> kemudian <strong>dilatih</strong> untuk <strong>belajar</strong> dan menganalisis pola-pola dari puluhan ribu sampel piksel yang terdapat dalam <strong>bahan ajar (X_train, y_train)</strong>. Tujuannya untuk memproyeksikan nilai indeks pada tahun 2024. Setelah proses training selesai, model XGBoost lantas <strong>diuji</strong> dengan <strong>data testing (X_test)</strong>. Hasil ujian tersebut lalu <strong>dievaluasi</strong> dengan <strong>kunci jawabannya (y_test)</strong> menggunakan metrik <strong>RMSE</strong>, <strong>MAE</strong>, dan <strong>R²</strong> untuk menilai seberapa akurat model XGBoost ini bekerja.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1854,10 +1854,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
         codeTrainingEvaluasi = """
 # Membuat dan Melatih Model XGBoost 
 model = xgb.XGBRegressor(
-        objective='reg:squarederror', n_estimators=1000, learning_rate=0.05,
-        max_depth=7, subsample=0.8, n_jobs=-1, random_state=42,
-        early_stopping_rounds=50
-    )
+    objective='reg:squarederror', n_estimators=1000, learning_rate=0.05,
+    max_depth=7, subsample=0.8, n_jobs=-1, random_state=42,
+    early_stopping_rounds=50
+)
+
 model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
 
 # Menguji Model dengan Data Testing
@@ -1885,7 +1886,7 @@ metrics = {
         st.markdown(
             """
         <div class="justified-text">
-        Setelah <strong>terbukti andal</strong>, model XGBoost lantas digunakan untuk tujuan utamanya yaitu <strong>memproyeksikan</strong> nilai <strong>indeks</strong> pada tahun <strong>2029</strong>. Pada tahap ini, model diberikan satu <strong>set data input baru</strong> yang terdiri atas nilai <strong>indeks</strong> tahun <strong>2024</strong>, <strong>penutup lahan</strong> tahun <strong>2029</strong>, <strong>elevasi</strong>, dan <strong>slope</strong>. Model yang sudah terlatih ini kemudian menerapkan pengetahuannya pada data input baru tersebut untuk memprediksikan nilai indeks pada tahun 2029 untuk setiap piksel. Hasilnya adalah peta proyeksi masing-masing indeks (NDBI, NDMI, dan NDVI) tahun 2029.
+        Setelah <strong>terbukti andal</strong>, model XGBoost lantas digunakan untuk tujuan utamanya yaitu <strong>memproyeksikan</strong> nilai <strong>indeks</strong> pada tahun <strong>2029</strong>. Pada tahap ini, model diberikan satu <strong>set data input baru</strong> yang terdiri atas nilai <strong>indeks</strong> tahun <strong>2024</strong>, <strong>penutup lahan</strong> tahun <strong>2029</strong>, <strong>elevasi</strong>, dan <strong>slope</strong>. Model yang sudah terlatih ini kemudian menerapkan pengetahuannya pada data input baru tersebut untuk memproyeksi nilai indeks pada tahun 2029 untuk setiap piksel. Hasilnya adalah peta proyeksi masing-masing indeks (NDBI, NDMI, dan NDVI) tahun 2029.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1895,13 +1896,13 @@ metrics = {
         codePrediksiIndeks = """
 # Menyiapkan Set Data Input
 prediction_feature_paths = {
-        'ndbi_2024': os.path.join(BASE_DIR, 'NDBI', 'ndbi2024kpy.tif'),
-        'ndmi_2024': os.path.join(BASE_DIR, 'NDMI', 'ndmi2024kpy.tif'),
-        'ndvi_2024': os.path.join(BASE_DIR, 'NDVI', 'ndvi2024kpy.tif'),
-        'pl_2029': os.path.join(OUTPUT_DIR, f'prediksi_pl_{PREDICTION_YEAR}.tif'),
-        'elevasi': os.path.join(DEM_DIR, 'elevasi.tif'),
-        'slope': os.path.join(DEM_DIR, 'slope.tif'),
-    }
+    'ndbi_2024': os.path.join(BASE_DIR, 'NDBI', 'ndbi2024kpy.tif'),
+    'ndmi_2024': os.path.join(BASE_DIR, 'NDMI', 'ndmi2024kpy.tif'),
+    'ndvi_2024': os.path.join(BASE_DIR, 'NDVI', 'ndvi2024kpy.tif'),
+    'pl_2029': os.path.join(OUTPUT_DIR, f'prediksi_pl_{PREDICTION_YEAR}.tif'),
+    'elevasi': os.path.join(DEM_DIR, 'elevasi.tif'),
+    'slope': os.path.join(DEM_DIR, 'slope.tif'),
+}
 
 # Mengaplikasikan Model XGBoost yang Sudah Terlatih
 predicted_2029_values = model.predict(df_prediction[X.columns])
@@ -1928,17 +1929,51 @@ save_geotiff(path_proyeksi_2029, predicted_2029_values, prediction_mask, raster_
         st.markdown(
             """
         <div class="justified-text">
-        ...
+        Tahap pertama dari proses pemodelan prediksi LST adalah menyusun <strong>"bahan ajar"</strong> yang berisi kumpulan <strong>"soal-soal" (feature, X)</strong> dan <strong>"kunci jawabannya" (target, y)</strong>. Dalam prediksi LST 2024, <strong>feature</strong> yang digunakan untuk melatih <strong>model XGBoost</strong> dirinci sebagai berikut:<br>
+        • LST 2019, NDBI 2019, NDMI 2019, NDVI 2019, penutup lahan 2019,<br>
+        • NDBI 2024, NDMI 2024, NDVI 2024, penutup lahan 2024,<br>
+        • elevasi, slope, dan koordinat (X, Y)<br>
+        sedangkan <strong>targetnya</strong> adalah nilai LST aktual tahun 2024.
         </div>
         """,
             unsafe_allow_html=True,
         )
 
         # Kode Data Training
-        codeDataTraining = """
-...
+        codeDataTrainingLST = """
+df_full, meta = build_dataset(years=[2019], target_year=2024)
+
+target_column = f'LST {VALIDATION_YEAR}'
+features = df_full.drop(target_column, axis=1)
+target = df_full[target_column]
 """
-        st.code(codeDataTraining, language="python", line_numbers=True)
+        st.code(codeDataTrainingLST, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Train Test Split
+        st.badge(
+            "**2. Train Test Split**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        Bahan ajar yang telah disusun selanjutnya <strong>dibagi</strong> menjadi dua bagian, yaitu <strong>80%</strong> sebagai <strong>data training (X_train, y_train)</strong> untuk <strong>melatih model</strong> dan <strong>20%</strong> sebagai <strong>data testing (X_test, y_test)</strong> untuk <strong>menguji akurasi model</strong>.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Training dan Evaluasi Model
+        codeTrainTestSplitLST = """
+# Membagi Data (80% Training, 20% Testing)
+X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=42)
+"""
+        st.code(codeTrainTestSplitLST, language="python", line_numbers=True)
 
         st.markdown(
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
@@ -1946,49 +1981,108 @@ save_geotiff(path_proyeksi_2029, predicted_2029_values, prediction_mask, raster_
 
         # Training dan Evaluasi Model
         st.badge(
-            "**2. Training dan Evaluasi Model**",
+            "**3. Training dan Evaluasi Model**",
             color="primary",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        ...
+        <strong>Model XGBoost</strong> kemudian <strong>dilatih</strong> untuk menganalisis pola-pola yang terdapat dalam <strong>bahan ajar (X_train, y_train)</strong>. Setelah proses training selesai, model XGBoost lalu <strong>diuji</strong> dengan <strong>data testing (X_test)</strong> untuk memprediksi nilai LST pada tahun 2024. Hasil ujian tersebut lalu <strong>dievaluasi</strong> dengan <strong>kunci jawabannya (y_test)</strong> menggunakan metrik <strong>RMSE</strong>, <strong>MAE</strong>, dan <strong>R²</strong> untuk menilai seberapa akurat model XGBoost ini bekerja.
         </div>
         """,
             unsafe_allow_html=True,
         )
 
         # Kode Training dan Evaluasi Model
-        codeTrainingEvaluasi = """
-...
+        codeTrainingEvaluasiLST = """
+# Membuat dan Melatih Model XGBoost
+model = xgb.XGBRegressor(objective='reg:squarederror', n_estimators=1000, learning_rate=0.05,
+                        max_depth=7, subsample=0.8, n_jobs=-1, random_state=42,
+                        early_stopping_rounds=50)
+                         
+model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
+
+# Menguji Model dengan Data Testing
+predictions_test = model.predict(X_test)
+
+# Evaluasi Model
+validation_metrics = {
+    'RMSE': np.sqrt(mean_squared_error(y_test, predictions_test)),
+    'MAE': mean_absolute_error(y_test, predictions_test),
+    'R-Squared': r2_score(y_test, predictions_test)
+}
 """
-        st.code(codeTrainingEvaluasi, language="python", line_numbers=True)
+        st.code(codeTrainingEvaluasiLST, language="python", line_numbers=True)
 
         st.markdown(
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
         )
 
-        # Prediksi Indeks Tahun 2029
+        # Prediksi LST Tahun 2029
         st.badge(
-            "**3. Prediksi Indeks Tahun 2029**",
+            "**4. Prediksi LST Tahun 2029**",
             color="primary",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        ...
+        Setelah <strong>terbukti andal</strong>, model XGBoost lantas dapat digunakan untuk tujuan utamanya yakni <strong>memprediksi</strong> nilai <strong>LST</strong> pada tahun <strong>2029</strong>. Pada tahap ini, model diberikan satu <strong>set data input baru</strong> yang dirinci sebagai berikut:<br>
+        • LST 2024, NDBI 2024, NDMI 2024, NDVI 2024, penutup lahan 2024,<br>
+        • NDBI 2029, NDMI 2029, NDVI 2029, penutup lahan 2029,<br>
+        • elevasi, slope, dan koordinat (X, Y)<br>
+        <br>
+        Model yang sudah terlatih ini kemudian menerapkan pengetahuannya pada data input baru tersebut untuk memprediksi nilai LST pada tahun 2029 untuk setiap piksel. Hasilnya adalah peta prediksi LST tahun 2029.
         </div>
         """,
             unsafe_allow_html=True,
         )
 
-        # Kode Prediksi Indeks 2029
-        codePrediksiIndeks = """
-...
+        # Kode Prediksi LST 2029
+        codePrediksiLST = """
+# Menyiapkan Set Data Input
+df_prediction, meta_prediction = build_dataset(years=[2024], target_year=2029, is_prediction=True)
+
+# Mengaplikasikan Model XGBoost yang Sudah Terlatih
+predicted_values_2029 = model.predict(df_for_model)
+
+# Menyimpan Hasil Prediksi LST 2029
+output_path = os.path.join(OUTPUT_DIR, f'prediksi_lst_{PREDICTION_YEAR}.tif')
 """
-        st.code(codePrediksiIndeks, language="python", line_numbers=True)
+        st.code(codePrediksiLST, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Analisis SHAP
+        st.badge(
+            "**5. Analisis Kontribusi Fitur dengan SHAP**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        Untuk menganalisis <strong>tingkat kontribusi</strong> masing-masing <strong>fitur</strong> dalam <strong>prediksi LST</strong> ini digunakanlah metode <strong>SHAP (SHapley Additive exPlanations)</strong>. SHAP adalah library yang akan <strong>"membongkar"</strong> bagaimana setiap fitur memengaruhi hasil prediksi model XGBoost. Dengan ini, faktor-faktor kunci yang paling berpengaruh terhadap perubahan LST di masa depan dapat teridentifikasi.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Analisis SHAP
+        codeAnalisisSHAP = """
+# Menyiapkan SHAP Explainer
+explainer = shap.TreeExplainer(model)
+
+# Menghitung Nilai SHAP untuk Sampel Data
+shap_values = explainer(shap_sample)
+
+# Membuat Plot SHAP
+shap.summary_plot(shap_values, shap_sample, plot_type="dot")
+"""
+        st.code(codeAnalisisSHAP, language="python", line_numbers=True)
 
         st.markdown(
             "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
