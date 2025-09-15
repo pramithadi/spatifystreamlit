@@ -633,7 +633,7 @@ with tab1:
 
         # Panggil GeoTiff Penutup Lahan
         if option == "2029":
-            tif_path = "tif/pl2029kpy_aktual.tif"
+            tif_path = "tif/output_pl2029kpy.tif"
         else:
             tif_path = f"tif/pl{option}kpy.tif"
 
@@ -1258,7 +1258,7 @@ with tab4:
                     data_2024_actual = np.flipud(data_2024_actual)
                     data_2024_actual = process_raster_data(data_2024_actual)
 
-                with rasterio.open("tif/prediksi_pl2024kpy.tif") as src:
+                with rasterio.open("tif/output_prediksi_pl2024kpy.tif") as src:
                     data_2024_pred = src.read(1)
                     bounds_pred = src.bounds
                     height, width = data_2024_pred.shape
@@ -1267,7 +1267,7 @@ with tab4:
                     data_2024_pred = np.flipud(data_2024_pred)
                     data_2024_pred = process_raster_data(data_2024_pred)
 
-                with rasterio.open("tif/pl2029kpy_aktual.tif") as src:
+                with rasterio.open("tif/output_pl2029kpy.tif") as src:
                     data_2029_pred = src.read(1)
                     bounds_2029 = src.bounds
                     height, width = data_2029_pred.shape

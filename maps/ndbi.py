@@ -558,7 +558,7 @@ with tab1:
 
         # Panggil GeoTiff dari Aset Lokal
         if option == "2029":
-            tif_path = "tif/ndbi2029kpy_update.tif"
+            tif_path = "tif/output_ndbi2029kpy.tif"
         else:
             tif_path = f"tif/ndbi{option}kpy.tif"
 
@@ -1401,7 +1401,7 @@ with tab4:
                     )
 
                 # Proyeksi NDBI 2024
-                with rasterio.open("tif/proyeksi_ndbi2024kpy_update.tif") as src:
+                with rasterio.open("tif/output_proyeksi_ndbi2024kpy.tif") as src:
                     data_2024_pred = src.read(1)
                     bounds_pred = src.bounds
                     height, width = data_2024_pred.shape
@@ -1413,7 +1413,7 @@ with tab4:
                     )
 
                 # Proyeksi NDBI 2029
-                with rasterio.open("tif/ndbi2029kpy_update.tif") as src:
+                with rasterio.open("tif/output_ndbi2029kpy.tif") as src:
                     data_2029_pred = src.read(1)
                     bounds_2029 = src.bounds
                     height, width = data_2029_pred.shape

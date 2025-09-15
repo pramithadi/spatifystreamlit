@@ -682,7 +682,7 @@ with tab1:
 
         # Panggil GeoTiff dari Aset Lokal
         if option == "2029":
-            tif_path = "tif/lst2029kpy.tif"
+            tif_path = "tif/output_lst2029kpy.tif"
         else:
             tif_path = f"tif/lst{option}kpy.tif"
 
@@ -1476,7 +1476,7 @@ with tab4:
                     )
 
                 # Prediksi LST 2024
-                with rasterio.open("tif/prediksi_lst2024kpy.tif") as src:
+                with rasterio.open("tif/output_prediksi_lst2024kpy.tif") as src:
                     data_2024_pred = src.read(1)
                     # Handle NoData
                     if src.nodata is not None:
@@ -1493,7 +1493,7 @@ with tab4:
                     )
 
                 # Prediksi LST 2029
-                with rasterio.open("tif/lst2029kpy.tif") as src:
+                with rasterio.open("tif/output_lst2029kpy.tif") as src:
                     data_2029_pred = src.read(1)
                     # Handle NoData
                     if src.nodata is not None:

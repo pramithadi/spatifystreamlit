@@ -113,10 +113,9 @@ st.markdown(
 # ==============================================================================
 with tab1:
     st.badge("**Diagram Alir Penelitian**", color="primary")
-    with st.container(border=False):
-        st.image(
-            "./assets/diagram_alir2.svg",
-        )
+    st.image(
+        "./assets/diagram_alir2.svg",
+    )
 
 # ==============================================================================
 # PRAPENGOLAHAN DATA
@@ -1731,7 +1730,7 @@ suitability_model.fit(X, y)
         st.markdown(
             """
         <div class="justified-text">
-        Terakhir, model akan menggabungkan hasil dari dua tahap sebelumnya. <strong>Jumlah total area yang akan berubah</strong> (dari tahap 1) <strong>dialokasikan</strong> ke lokasi-lokasi dengan <strong>skor kesesuaian tertinggi</strong> (dari tahap 2). Area yang paling berpotensi akan diprioritaskan terlebih dahulu untuk berubah hingga target jumlah perubahan yang telah ditentukan terpenuhi. Hasil akhir dari proses ini adalah <strong>peta prediksi penutup lahan tahun 2029</strong> yang menunjukkan di mana perubahan lahan di masa depan diperkirakan akan terjadi.
+        Terakhir, model akan menggabungkan hasil dari dua tahap sebelumnya. <strong>Jumlah total area yang akan berubah</strong> (dari tahap 1) <strong>dialokasikan</strong> ke lokasi-lokasi dengan <strong>skor kesesuaian tertinggi</strong> (dari tahap 2). Area yang paling berpotensi akan diprioritaskan terlebih dahulu untuk berubah hingga target jumlah perubahan yang telah ditentukan terpenuhi. Hasil akhir dari proses ini adalah <strong>peta prediksi penutup lahan tahun 2029</strong> yang menunjukkan di mana perubahan lahan di masa depan.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1770,7 +1769,227 @@ map_prediksi_2029 = allocate_changes(
 
     elif option == "🌳 Indeks":
         st.subheader("**Indeks**")
-        st.write("Page under construction.")
+
+        # Persiapan Data Training
+        st.badge(
+            "**1. Persiapan Data Training**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        Nilai sebuah indeks di masa depan dapat diprediksi dengan melihat tren nilainya di masa lalu dan kondisi penutup lahan pada masa tersebut. Dari hipotesis tersebut, maka disusunlah <strong>"bahan ajar"</strong> yang berisi kumpulan <strong>"soal-soal"</strong> yang dalam machine learning disebut sebagai <strong>feature (X)</strong> dan <strong>"kunci jawabannya"</strong> yang disebut <strong>target (y)</strong>. <strong>Feature</strong> yang digunakan untuk <strong>melatih model XGBoost</strong> dalam proyeksi indeks tahun 2024 adalah nilai <strong>indeks</strong> tahun <strong>2019</strong>, <strong>penutup lahan</strong> tahun <strong>2024</strong>, <strong>elevasi</strong>, dan <strong>slope</strong>. Sementara itu, <strong>targetnya</strong> adalah nilai <strong>indeks</strong> aktual tahun <strong>2024/strong>.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Data Training
+        codeDataTraining = """
+training_feature_paths = {
+        'ndbi_2019': os.path.join(BASE_DIR, 'NDBI', 'ndbi2019kpy.tif'),
+        'ndmi_2019': os.path.join(BASE_DIR, 'NDMI', 'ndmi2019kpy.tif'),
+        'ndvi_2019': os.path.join(BASE_DIR, 'NDVI', 'ndvi2019kpy.tif'),
+        'pl_2024': os.path.join(PL_DIR, f'pl{VALIDATION_YEAR}kpy.tif'),
+        'elevasi': os.path.join(DEM_DIR, 'elevasi.tif'),
+        'slope': os.path.join(DEM_DIR, 'slope.tif'),
+        'target': os.path.join(INDEX_DIR, f'{index}{VALIDATION_YEAR}kpy.tif'),
+    }
+
+df_training, raster_meta = raster_to_df(training_feature_paths, sample_size=SAMPLING_SIZE)
+"""
+        st.code(codeDataTraining, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Train Test Split
+        st.badge(
+            "**2. Train Test Split**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        Bahan ajar yang telah disusun kemudian <strong>dibagi</strong> menjadi dua bagian, yaitu <strong>80%</strong> sebagai <strong>data training (X_train, y_train)</strong> untuk <strong>melatih model</strong> dan <strong>20%</strong> sebagai <strong>data testing (X_test, y_test)</strong> untuk <strong>menguji performa model</strong>.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Train Test Split
+        codeTrainTestSplit = """
+# Memisahkan Data Training dan Testing
+X = df_training.drop('target', axis=1)
+y = df_training['target']
+
+# Membagi Data (80% Training, 20% Testing)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+"""
+        st.code(codeTrainTestSplit, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Training dan Evaluasi Model
+        st.badge(
+            "**3. Training dan Evaluasi Model**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        <strong>Model XGBoost</strong> kemudian <strong>dilatih</strong> untuk <strong>belajar</strong> dan menganalisis pola-pola dari puluhan ribu sampel piksel yang terdapat dalam <strong>bahan ajar (X_train, y_train)</strong>. Tujuannya untuk memproyeksikan nilai indeks pada tahun 2024. Setelah proses training selesai, model XGBoost lantas <strong>diuji</strong> dengan <strong>data testing (X_test)</strong>. Hasil ujian tersebut lalu <strong>dievaluasi</strong> dengan kunci jawabannya <strong>(y_test)</strong> menggunakan metrik <strong>RMSE, MAE, dan R²</strong> untuk menilai seberapa akurat model XGBoost ini bekerja.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Training dan Evaluasi Model
+        codeTrainingEvaluasi = """
+# Membuat dan Melatih Model XGBoost 
+model = xgb.XGBRegressor(
+        objective='reg:squarederror', n_estimators=1000, learning_rate=0.05,
+        max_depth=7, subsample=0.8, n_jobs=-1, random_state=42,
+        early_stopping_rounds=50
+    )
+model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
+
+# Menguji Model dengan Data Testing
+y_pred_test = model.predict(X_test)
+
+# Evaluasi Model
+metrics = {
+    'RMSE': np.sqrt(mean_squared_error(y_test, y_pred_test)),
+    'MAE': mean_absolute_error(y_test, y_pred_test),
+    'R-Squared': r2_score(y_test, y_pred_test)
+}
+"""
+        st.code(codeTrainingEvaluasi, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Prediksi Indeks Tahun 2029
+        st.badge(
+            "**4. Prediksi Indeks Tahun 2029**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        Setelah <strong>terbukti andal</strong>, model XGBoost lantas digunakan untuk tujuan utamanya yaitu <strong>memproyeksikan</strong> nilai <strong>indeks</strong> pada tahun <strong>2029</strong>. Pada tahap ini, model diberikan satu <strong>set data input baru</strong> yang terdiri atas nilai <strong>indeks</strong> tahun <strong>2024</strong>, <strong>penutup lahan</strong> tahun <strong>2029</strong>, <strong>elevasi</strong>, dan <strong>slope</strong>. Model yang sudah terlatih ini kemudian menerapkan pengetahuannya pada data input baru tersebut untuk memprediksikan nilai indeks pada tahun 2029 untuk setiap piksel. Hasilnya adalah peta proyeksi masing-masing indeks (NDBI, NDMI, dan NDVI) tahun 2029.
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Prediksi Indeks 2029
+        codePrediksiIndeks = """
+# Menyiapkan Set Data Input
+prediction_feature_paths = {
+        'ndbi_2024': os.path.join(BASE_DIR, 'NDBI', 'ndbi2024kpy.tif'),
+        'ndmi_2024': os.path.join(BASE_DIR, 'NDMI', 'ndmi2024kpy.tif'),
+        'ndvi_2024': os.path.join(BASE_DIR, 'NDVI', 'ndvi2024kpy.tif'),
+        'pl_2029': os.path.join(OUTPUT_DIR, f'prediksi_pl_{PREDICTION_YEAR}.tif'),
+        'elevasi': os.path.join(DEM_DIR, 'elevasi.tif'),
+        'slope': os.path.join(DEM_DIR, 'slope.tif'),
+    }
+
+# Mengaplikasikan Model XGBoost yang Sudah Terlatih
+predicted_2029_values = model.predict(df_prediction[X.columns])
+
+# Menyimpan Hasil Proyeksi Indeks 2029
+path_proyeksi_2029 = os.path.join(OUTPUT_DIR, f'proyeksi_{index}_{PREDICTION_YEAR}.tif')
+save_geotiff(path_proyeksi_2029, predicted_2029_values, prediction_mask, raster_meta)
+"""
+        st.code(codePrediksiIndeks, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
     elif option == "🌡️ Suhu Permukaan Lahan":
         st.subheader("**Suhu Permukaan Lahan**")
-        st.write("Page under construction.")
+
+        # Persiapan Data Training
+        st.badge(
+            "**1. Persiapan Data Training**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        ...
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Data Training
+        codeDataTraining = """
+...
+"""
+        st.code(codeDataTraining, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Training dan Evaluasi Model
+        st.badge(
+            "**2. Training dan Evaluasi Model**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        ...
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Training dan Evaluasi Model
+        codeTrainingEvaluasi = """
+...
+"""
+        st.code(codeTrainingEvaluasi, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
+
+        # Prediksi Indeks Tahun 2029
+        st.badge(
+            "**3. Prediksi Indeks Tahun 2029**",
+            color="primary",
+        )
+
+        st.markdown(
+            """
+        <div class="justified-text">
+        ...
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Kode Prediksi Indeks 2029
+        codePrediksiIndeks = """
+...
+"""
+        st.code(codePrediksiIndeks, language="python", line_numbers=True)
+
+        st.markdown(
+            "<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
+        )
