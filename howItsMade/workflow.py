@@ -114,7 +114,7 @@ st.markdown(
 with tab1:
     st.badge("**Diagram Alir Penelitian**", color="primary")
     st.image(
-        "./assets/diagram_alir2.svg",
+        "./assets/diagram_alir.svg",
     )
 
 # ==============================================================================
@@ -1933,6 +1933,7 @@ save_geotiff(path_proyeksi_2029, predicted_2029_values, prediction_mask, raster_
         • LST 2019, NDBI 2019, NDMI 2019, NDVI 2019, penutup lahan 2019,<br>
         • NDBI 2024, NDMI 2024, NDVI 2024, penutup lahan 2024,<br>
         • elevasi, slope, dan koordinat (X, Y)<br>
+        <br>
         sedangkan <strong>targetnya</strong> adalah nilai LST aktual tahun 2024.
         </div>
         """,

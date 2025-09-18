@@ -85,54 +85,54 @@ st.markdown(
 
 
 st.header("Google Earth Engine Applications")
-st.write("Visualisasi data dalam GEE Apps dapat diamati pada tautan berikut.")
+st.write("Temukan berbagai visualisasi data interaktif melalui GEE Apps berikut.")
 col1, col2, col3, col4, col5 = st.columns(5, gap="small")
 with col1:
     with st.container(border=False):
-        st.write("**LST**")
-        st.image("./assets/lst.png")
+        st.badge("**LST**", color="primary")
+        st.image("./assets/GEE Apps LST.png")
         st.link_button(
             label="GEE Apps",
-            url="",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatify-lst",
             icon=":material/map:",
         )
 
 with col2:
     with st.container(border=False):
-        st.write("**NDBI**")
-        st.image("./assets/ndbi.png")
+        st.badge("**NDBI**", color="primary")
+        st.image("./assets/GEE Apps NDBI.png")
         st.link_button(
             label="GEE Apps",
-            url="",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatify-ndbi",
             icon=":material/map:",
         )
 
 with col3:
     with st.container(border=False):
-        st.write("**NDMI**")
-        st.image("./assets/ndmi.png")
+        st.badge("**NDMI**", color="primary")
+        st.image("./assets/GEE Apps NDMI.png")
         st.link_button(
             label="GEE Apps",
-            url="",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatify-ndmi",
             icon=":material/map:",
         )
 
 with col4:
     with st.container(border=False):
-        st.write("**NDVI**")
-        st.image("./assets/ndvi.png")
+        st.badge("**NDVI**", color="primary")
+        st.image("./assets/GEE Apps NDVI.png")
         st.link_button(
             label="GEE Apps",
-            url="https://ee-pramithadi.projects.earthengine.app/view/spatifyndvi",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatify-ndvi",
             icon=":material/map:",
         )
 
 with col5:
     with st.container(border=False):
-        st.write("**Penutup Lahan**")
-        st.image("./assets/lulc.png")
+        st.badge("**Penutup Lahan**", color="primary")
+        st.image("./assets/GEE Apps PL.png")
         st.link_button(
             label="GEE Apps",
-            url="https://ee-pramithadi.projects.earthengine.app/view/spatifylulc",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatify-pl",
             icon=":material/map:",
         )

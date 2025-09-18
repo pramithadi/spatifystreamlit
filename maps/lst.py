@@ -126,7 +126,7 @@ stats_dict = {
     "2029": {
         "min": 22.028,
         "max": 51.675,
-        "mean": 38.347,
+        "mean": 38.378,
     },
 }
 
@@ -139,9 +139,9 @@ threshold_dict = {
     "2019": {"low": 31.923, "medium": 35.739, "high": 39.556},
     "2024": {"low": 33.207, "medium": 37.262, "high": 41.317},
     "2029": {
-        "low": 34.022,
-        "medium": 38.347,
-        "high": 42.672,
+        "low": 34.041,
+        "medium": 38.378,
+        "high": 42.714,
     },
 }
 
@@ -746,10 +746,10 @@ with tab2:
     )
 
     st.badge(
-        "**Tren LST: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
+        "**Tren LST di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2.4, 1.6])
+    col1_tren_main, col2_tren_main = st.columns([2.3, 1.7])
     with col1_tren_main:
         # Container Grafik Tren
         with st.container(border=True):
@@ -823,8 +823,8 @@ with tab2:
                     x=0.5,
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
-                margin=dict(l=10, r=10, t=10, b=10),
-                height=370,
+                margin=dict(l=10, r=10, t=20, b=20),
+                height=422,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -840,7 +840,7 @@ with tab2:
             2014: {"mean": 36.630},
             2019: {"mean": 35.739},
             2024: {"mean": 37.262},
-            2029: {"mean": 38.347},
+            2029: {"mean": 38.378},
         }
 
         # Container Analisis Tren
@@ -848,15 +848,15 @@ with tab2:
             st.markdown(
                 """
                 💡**Quick Insight**
-                - Kedua kawasan menunjukkan :green-background[**pola fluktuasi yang serupa**]; di mana LST naik sejak 1999, mencapai puncak pada 2009 dan bergerak turun hingga 2019, lalu diprediksi akan naik pada 2029.
-                - :green-background[**Kawasan perkotaan:**] LST terendah tercatat 39.47°C (1999), LST tertinggi sebesar 43.28°C (2009), dan diprediksi :green-background[**naik**] menjadi 43.54°C (2029).
-                - :green-background[**Kawasan non-perkotaan:**] LST terendah tercatat 33.73°C (1999), LST tertinggi sebesar 36.86°C (2009), dan diprediksi :green-background[**naik**] menjadi 37.37°C (2029).
+                - Kedua kawasan menunjukkan :green-background[**pola fluktuasi yang serupa**] di mana :green-background[**LST mulai naik**] hingga mencapai puncak pada tahun 2009 dan setelahnya mulai :green-background[**bergerak turun**] hingga tahun 2019, tetapi :green-background[**diprediksi akan kembali naik**] pada tahun 2029 seiring masifnya pembangunan dan alih fungsi lahan.
+                - :green-background[**Di kawasan perkotaan,**] LST terendah tercatat sebesar 39.47°C (1999), sedangkan LST tertinggi sebesar 43.28°C (2009), dan diprediksi akan naik menjadi 43.56°C pada tahun 2029.
+                - :green-background[**Di kawasan non-perkotaan,**] LST terendah tercatat sebesar 33.73°C (1999), sedangkan LST tertinggi sebesar 36.86°C (2009), dan diprediksi akan naik menjadi 37.40°C pada tahun 2029.
                 """
             )
 
     # Row Diagram Garis & Ranking LST
     st.badge(
-        "**Top 38 Kecamatan: Suhu Permukaan Tertinggi (1999-2024)**",
+        "**38 Kecamatan dengan LST Tertinggi (1999-2024)**",
         color="primary",
     )
 
@@ -916,7 +916,7 @@ with tab2:
             + "LST Mean: %{customdata[1]:.2f}°C<extra></extra>",
             texttemplate="%{x:.2f}°C",
             textposition="outside",
-            textfont_size=10,
+            textfont_size=14,
             textfont_color="black",
         )
 
@@ -1113,14 +1113,14 @@ with tab3:
                 st.write("💡**Quick Insight**")
                 st.markdown(
                     f"""
-                    - :green-background[**Error**] (:green-background[**RMSE = 2.24°C**] dan :green-background[**MAE = 1.70°C**]) masih dianggap :green-background[**wajar**] karena batas toleransi kesalahan yang :green-background[**dapat diterima**] dalam pemodelan LST adalah :green-background[**± 2°C**]⁽¹⁾.
-                    - Sekitar :green-background[**75% (R²)**] variasi nilai LST aktual pengukuran lapangan :green-background[**dapat dijelaskan**] oleh LST citra Landsat 8. Keduanya memiliki :green-background[**hubungan**] yang :green-background[**cukup kuat**] (:green-background[**r = 0.87**])⁽²⁾.
+                    - Nilai error :green-background[**(RMSE = 2.24°C, MAE = 1.70°C)**] masih dianggap :green-background[**wajar**] karena batas toleransi kesalahan yang :green-background[**dapat diterima**] dalam pemodelan LST adalah :green-background[**± 2°C**]⁽¹⁾.
+                    - Sebanyak :green-background[**75%**] variasi nilai LST aktual dari pengukuran lapangan :green-background[**dapat dijelaskan**] oleh LST dari Landsat 8. Keduanya memiliki :green-background[**hubungan**] yang :green-background[**cukup kuat (r = 0.87)**]⁽²⁾.
                 """,
                     unsafe_allow_html=True,
                 )
 
                 # Status Validasi
-                st.success("✅ VALID! Data layak digunakan!")
+                st.success("✅ VALID! Data LST layak digunakan!")
 
     except FileNotFoundError:
         st.error("❌ File 'csv/lstSampelValidasi.csv' tidak ditemukan!")
@@ -1216,8 +1216,8 @@ with tab3:
     with st.expander("Lihat Referensi"):
         st.markdown(
             """
-        - [1] Ratner, B. (2009). The Correlation Coefficient: Its Values Range Between +1/-1, or Do They?. *Journal of Targeting, Measurement and Analysis for Marketing*, 17. 139-142. https://doi.org/10.1057/jt.2009.5
-        - [2] Arunab, K. S., & Mathew, A. (2024). Exploring Spatial Machine Learning Techniques for Improving Land Surface Temperature Prediction. *Kuwait Journal of Science*, 51. https://doi.org/10.1016/j.kjs.2024.100242 
+        - [1] Arunab, K. S., & Mathew, A. (2024). Exploring Spatial Machine Learning Techniques for Improving Land Surface Temperature Prediction. *Kuwait Journal of Science*, 51. https://doi.org/10.1016/j.kjs.2024.100242 
+        - [2] Ratner, B. (2009). The Correlation Coefficient: Its Values Range Between +1/-1, or Do They?. *Journal of Targeting, Measurement and Analysis for Marketing*, 17. 139-142. https://doi.org/10.1057/jt.2009.5
         """
         )
 
@@ -1343,8 +1343,8 @@ with tab4:
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**LST 2019**] dinyatakan sebagai fitur yang :green-background[**paling berkontribusi**] dalam prediksi LST 2024; diikuti :green-background[**koordinat**], :green-background[**elevasi**], :green-background[**NDVI 2024**], :green-background[**lst 2024**], dan :green-background[**NDVI 2019**].
-                - Fitur dengan :green-background[**kontribusi lebih kecil**] meliputi :green-background[**penutup lahan**], :green-background[**NDMI**], :green-background[**lst 2019**], dan :green-background[**slope**].
+                - :green-background[**LST 2019**] dinyatakan sebagai fitur yang :green-background[**paling berkontribusi**] dalam prediksi LST 2024; diikuti informasi :green-background[**koordinat**], :green-background[**elevasi**], :green-background[**NDVI 2024**], :green-background[**NDBI 2024**], dan :green-background[**NDVI 2019**].
+                - Fitur dengan :green-background[**kontribusi lebih kecil**] meliputi :green-background[**penutup lahan**], :green-background[**NDMI**], :green-background[**NDBI 2019**], dan :green-background[**slope**].
                 - Titik merah (LST tinggi) di sisi kanan dengan :green-background[**nilai SHAP positif**]. Artinya, ketika :green-background[**LST 2019**] memiliki :green-background[**nilai tinggi**], maka LST 2019 berkontribusi :green-background[**positif**] (meningkatkan) terhadap prediksi LST 2024.
                 - Titik biru (LST rendah) di sisi kiri dengan :green-background[**nilai SHAP negatif**]. Artinya, ketika :green-background[**LST 2019**] memiliki :green-background[**nilai rendah**], maka LST 2019 berkontribusi :green-background[**negatif**] (menurunkan) terhadap prediksi LST 2024.
                 """,
@@ -1383,8 +1383,8 @@ with tab4:
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**LST 2024**] dinyatakan sebagai fitur yang :green-background[**paling berkontribusi**] dalam prediksi LST 2029; diikuti informasi :green-background[**koordinat**], :green-background[**elevasi**], :green-background[**NDVI 2029**], :green-background[**NDVI 2024**], :green-background[**lst 2029**], dan :green-background[**penutup lahan 2029**].
-                - Fitur dengan :green-background[**kontribusi lebih kecil**] meliputi :green-background[**NDMI**], :green-background[**lst 2024**],:green-background[**penutup lahan 2024**], dan :green-background[**slope**].
+                - :green-background[**LST 2024**] dinyatakan sebagai fitur yang :green-background[**paling berkontribusi**] dalam prediksi LST 2029; diikuti informasi :green-background[**koordinat**], :green-background[**elevasi**], :green-background[**NDVI 2029**], :green-background[**NDVI 2024**], :green-background[**NDBI 2029**], dan :green-background[**penutup lahan 2029**].
+                - Fitur dengan :green-background[**kontribusi lebih kecil**] meliputi :green-background[**NDMI**], :green-background[**NDBI 2024**],:green-background[**penutup lahan 2024**], dan :green-background[**slope**].
                 - Titik merah (LST tinggi) di sisi kanan dengan :green-background[**nilai SHAP positif**]. Artinya, ketika :green-background[**LST 2024**] memiliki :green-background[**nilai tinggi**], maka LST 2024 berkontribusi :green-background[**positif**] (meningkatkan) terhadap prediksi LST 2029.
                 - Titik biru (LST rendah) di sisi kiri dengan :green-background[**nilai SHAP negatif**]. Artinya, ketika :green-background[**LST 2024**] memiliki :green-background[**nilai rendah**], maka LST 2024 berkontribusi :green-background[**negatif**] (menurunkan) terhadap prediksi LST 2029.
                 """,
@@ -1404,19 +1404,6 @@ with tab4:
 
                 def process_raster_data_with_threshold(data, thresholds):
                     data = data.astype("float32")
-
-                    # # Filter sesuai threshold LST (30-45°C range yang wajar untuk LST)
-                    # min_threshold = (
-                    #     min(thresholds["low"], thresholds["medium"], thresholds["high"])
-                    #     - 5
-                    # )
-                    # max_threshold = (
-                    #     max(thresholds["low"], thresholds["medium"], thresholds["high"])
-                    #     + 5
-                    # )
-                    # data = np.where(
-                    #     (data < min_threshold) | (data > max_threshold), np.nan, data
-                    # )
 
                     colors = {
                         "very_low": 0,
@@ -1451,7 +1438,7 @@ with tab4:
                 thresholds = {
                     "aktual_2024": {"low": 33.207, "medium": 37.262, "high": 41.317},
                     "prediksi_2024": {"low": 33.315, "medium": 37.267, "high": 41.218},
-                    "prediksi_2029": {"low": 34.022, "medium": 38.347, "high": 42.672},
+                    "prediksi_2029": {"low": 34.041, "medium": 38.378, "high": 42.714},
                 }
 
                 # Aktual LST 2024
