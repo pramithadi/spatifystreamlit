@@ -519,12 +519,12 @@ def interpret_regression(r2, p_value, slope, x_var):
     # Cek Pengaruh
     is_influential = r2 >= 0.1 and p_value < 0.05
 
-    direction = "meningkat" if slope > 0 else "menurun"
+    direction = "peningkatan" if slope > 0 else "penurunan"
 
     interpretation = f"""
-    - **Koefisien Determinasi (R²)**: Variabel :green-background[**{x_var}**] mampu menjelaskan variasi nilai LST sebesar :green-background[**{r2_percent:.2f}%**], sedangkan {100 - r2_percent:.2f}% sisanya dipengaruhi oleh faktor lain.⁽¹⁾
-    - **Slope**: Nilai LST :green-background[**{direction} {abs(slope):.2f}°C**] untuk setiap kenaikan 0.1 unit nilai {x_var}.
-    - **p-value**: {p_value:.3f} ({significance})⁽²⁾
+    - **Koefisien Determinasi (R²)**: Variabel :green-background[**{x_var}**] mampu menjelaskan :green-background[**{r2_percent:.2f}%**] variasi nilai LST, sedangkan {100 - r2_percent:.2f}% sisanya dipengaruhi oleh faktor lain.⁽¹⁾
+    - **Slope**: Setiap kenaikan 1.0 unit nilai {x_var} berasosiasi dengan {direction} LST sebesar :green-background[**{abs(slope):.2f}°C**].
+    - **p-value**: {p_value:.3f} ({significance}).⁽²⁾
     """
 
     return interpretation, is_influential
@@ -1343,10 +1343,11 @@ with tab4:
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**LST 2019**] dinyatakan sebagai fitur yang :green-background[**paling berkontribusi**] dalam prediksi LST 2024; diikuti informasi :green-background[**koordinat**], :green-background[**elevasi**], :green-background[**NDVI 2024**], :green-background[**NDBI 2024**], dan :green-background[**NDVI 2019**].
-                - Fitur dengan :green-background[**kontribusi lebih kecil**] meliputi :green-background[**penutup lahan**], :green-background[**NDMI**], :green-background[**NDBI 2019**], dan :green-background[**slope**].
-                - Titik merah (LST tinggi) di sisi kanan dengan :green-background[**nilai SHAP positif**]. Artinya, ketika :green-background[**LST 2019**] memiliki :green-background[**nilai tinggi**], maka LST 2019 berkontribusi :green-background[**positif**] (meningkatkan) terhadap prediksi LST 2024.
-                - Titik biru (LST rendah) di sisi kiri dengan :green-background[**nilai SHAP negatif**]. Artinya, ketika :green-background[**LST 2019**] memiliki :green-background[**nilai rendah**], maka LST 2019 berkontribusi :green-background[**negatif**] (menurunkan) terhadap prediksi LST 2024.
+                - :green-background[**LST 2019**] menjadi fitur dengan :green-background[**kontribusi tertinggi**]. Nilai LST yang tinggi di masa lalu :green-background[**mendorong prediksi LST 2024**] menjadi :green-background[**lebih tinggi**], begitu pula sebaliknya.
+                - :green-background[**Elevasi**] menunjukkan :green-background[**kontribusi negatif**]. Lokasi dengan elevasi tinggi cenderung memiliki prediksi nilai LST 2024 yang :green-background[**lebih rendah**].
+                - Lokasi di :green-background[**koordinat Y**] yang lebih besar (arah utara) cenderung :green-background[**menurunkan prediksi**] nilai LST 2024.
+                - :green-background[**NDVI 2024**] juga berkontribusi penting, di mana nilai indeks yang rendah cenderung :green-background[**meningkatkan prediksi**] nilai LST 2024.
+                - Fitur lain seperti :green-background[**penutup lahan**], :green-background[**NDMI**], dan :green-background[**slope**] memiliki pengaruh yang :green-background[**relatif lebih kecil**].
                 """,
                 unsafe_allow_html=True,
             )
@@ -1382,11 +1383,12 @@ with tab4:
         with st.container(border=True):
             st.write("💡**Quick Insight**")
             st.markdown(
-                f"""
-                - :green-background[**LST 2024**] dinyatakan sebagai fitur yang :green-background[**paling berkontribusi**] dalam prediksi LST 2029; diikuti informasi :green-background[**koordinat**], :green-background[**elevasi**], :green-background[**NDVI 2029**], :green-background[**NDVI 2024**], :green-background[**NDBI 2029**], dan :green-background[**penutup lahan 2029**].
-                - Fitur dengan :green-background[**kontribusi lebih kecil**] meliputi :green-background[**NDMI**], :green-background[**NDBI 2024**],:green-background[**penutup lahan 2024**], dan :green-background[**slope**].
-                - Titik merah (LST tinggi) di sisi kanan dengan :green-background[**nilai SHAP positif**]. Artinya, ketika :green-background[**LST 2024**] memiliki :green-background[**nilai tinggi**], maka LST 2024 berkontribusi :green-background[**positif**] (meningkatkan) terhadap prediksi LST 2029.
-                - Titik biru (LST rendah) di sisi kiri dengan :green-background[**nilai SHAP negatif**]. Artinya, ketika :green-background[**LST 2024**] memiliki :green-background[**nilai rendah**], maka LST 2024 berkontribusi :green-background[**negatif**] (menurunkan) terhadap prediksi LST 2029.
+                f"""               
+                - :green-background[**LST 2024**] menjadi fitur dengan :green-background[**kontribusi tertinggi**]. Nilai LST yang tinggi di masa lalu :green-background[**mendorong prediksi LST 2029**] menjadi :green-background[**lebih tinggi**], begitu pula sebaliknya.
+                - :green-background[**Elevasi**] menunjukkan :green-background[**kontribusi negatif**]. Lokasi dengan elevasi tinggi cenderung memiliki prediksi nilai LST 2029 yang :green-background[**lebih rendah**].
+                - Lokasi di :green-background[**koordinat Y**] yang lebih besar (arah utara) cenderung :green-background[**menurunkan prediksi**] nilai LST 2029.
+                - :green-background[**NDVI 2029**] juga berkontribusi penting, di mana nilai indeks yang rendah cenderung :green-background[**meningkatkan prediksi**] nilai LST 2029.
+                - Fitur lain seperti :green-background[**penutup lahan**], :green-background[**NDMI**], dan :green-background[**slope**] memiliki pengaruh yang :green-background[**relatif lebih kecil**].
                 """,
                 unsafe_allow_html=True,
             )
@@ -1819,7 +1821,7 @@ with tab5:
 
                     if is_influential_ndmi:
                         st.success(
-                            "✅ NDMI berpengaruh positif signifikan terhadap LST!"
+                            "✅ NDMI berpengaruh negatif signifikan terhadap LST!"
                         )
                     else:
                         st.warning("❌ NDMI tidak berpengaruh terhadap LST!")
@@ -1859,7 +1861,7 @@ with tab5:
 
                     if is_influential_ndvi:
                         st.success(
-                            "✅ NDVI berpengaruh positif signifikan terhadap LST!"
+                            "✅ NDVI berpengaruh negatif signifikan terhadap LST!"
                         )
                     else:
                         st.warning("❌ NDVI tidak berpengaruh terhadap LST!")
