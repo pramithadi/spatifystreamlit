@@ -505,13 +505,13 @@ def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
 def interpret_regression(r2, p_value, slope, x_var):
     # Interpretasi Signifikansi
     if p_value <= 0.001:
-        significance = "Sangat Signifikan"
+        significance = "sangat signifikan"
     elif p_value <= 0.01:
-        significance = "Amat Signifikan"
+        significance = "signifikan"
     elif p_value <= 0.05:
-        significance = "Signifikan"
+        significance = "cukup signifikan"
     else:
-        significance = "Tidak Signifikan"
+        significance = "tidak signifikan"
 
     # Interpretasi R²
     r2_percent = r2 * 100
@@ -522,9 +522,9 @@ def interpret_regression(r2, p_value, slope, x_var):
     direction = "peningkatan" if slope > 0 else "penurunan"
 
     interpretation = f"""
-    - **Koefisien Determinasi (R²)**: Variabel :green-background[**{x_var}**] mampu menjelaskan :green-background[**{r2_percent:.2f}%**] variasi nilai LST, sedangkan {100 - r2_percent:.2f}% sisanya dipengaruhi oleh faktor lain.⁽¹⁾
+    - **Koefisien Determinasi (R²)**: Variabel :green-background[**{x_var}**] mampu menjelaskan :green-background[**{r2_percent:.2f}%**] variasi nilai LST, sedangkan {100 - r2_percent:.2f}% sisanya dipengaruhi oleh faktor lain<sup>[1]</sup>.
     - **Slope**: Setiap kenaikan 1.0 unit nilai {x_var} berasosiasi dengan {direction} LST sebesar :green-background[**{abs(slope):.2f}°C**].
-    - **p-value**: {p_value:.3f} ({significance}).⁽²⁾
+    - **p-value**: {p_value:.3f} ({significance})<sup>[2]</sup>.
     """
 
     return interpretation, is_influential
@@ -856,7 +856,7 @@ with tab2:
 
     # Row Diagram Garis & Ranking LST
     st.badge(
-        "**38 Kecamatan dengan LST Tertinggi (1999-2024)**",
+        "**Peringkat Kecamatan Berdasarkan Rata-rata LST (1999-2024)**",
         color="primary",
     )
 
@@ -998,7 +998,7 @@ with tab3:
             color="primary",
         )
 
-        col1_validate, col2_validate = st.columns([1.9, 2.1])
+        col1_validate, col2_validate = st.columns([2.4, 1.6])
         with col1_validate:
             with st.container(border=True):
                 # Buat Scatterplot (X = Satelit, Y = Lapangan)
@@ -1028,7 +1028,7 @@ with tab3:
 
                 # Update Layout
                 fig.update_layout(
-                    height=406,
+                    height=438.5,
                     showlegend=True,
                     template="plotly_white",
                     font=dict(
@@ -1113,8 +1113,8 @@ with tab3:
                 st.write("💡**Quick Insight**")
                 st.markdown(
                     f"""
-                    - Nilai error :green-background[**(RMSE = 2.24°C, MAE = 1.70°C)**] masih dianggap :green-background[**wajar**] karena batas toleransi kesalahan yang :green-background[**dapat diterima**] dalam pemodelan LST adalah :green-background[**± 2°C**]⁽¹⁾.
-                    - Sebanyak :green-background[**75%**] variasi nilai LST aktual dari pengukuran lapangan :green-background[**dapat dijelaskan**] oleh LST dari Landsat 8. Keduanya memiliki :green-background[**hubungan**] yang :green-background[**cukup kuat (r = 0.87)**]⁽²⁾.
+                    - Nilai error (RMSE = 2.24°C, MAE = 1.70°C) masih berada dalam batas yang :green-background[**dapat diterima**] karena :green-background[**toleransi kesalahan**] pada pemodelan LST adalah :green-background[**± 2°C**]<sup>[1]</sup>.
+                    - Sebanyak :green-background[**75%**] variasi LST aktual :green-background[**dapat dijelaskan**] oleh LST Landsat 8 dengan :green-background[**hubungan**] yang :green-background[**cukup kuat**] (:green-background[**r = 0.87**])<sup>[2]</sup>.
                 """,
                     unsafe_allow_html=True,
                 )
@@ -1227,11 +1227,11 @@ with tab3:
 
 with tab4:
     st.badge(
-        "**Evaluasi Model Prediksi XGBoost**",
+        "**Evaluasi Model XGBoost untuk Prediksi LST**",
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([1.9, 2.1])
+    col1_metrik_img, col2_metrik_insight = st.columns([2, 2])
     with col1_metrik_img:
         with st.container(border=True):
             fig = go.Figure(
@@ -1288,7 +1288,7 @@ with tab4:
                 plot_bgcolor="#fdfaf6",
                 paper_bgcolor="#fdfaf6",
                 margin=dict(l=0, r=0, t=20, b=30),
-                height=342.5,
+                height=353,
                 showlegend=True,
             )
 
@@ -1302,9 +1302,9 @@ with tab4:
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**relatif kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**]⁽¹⁾.
-                - :green-background[**Error prediksi < 1°C**] masih dianggap :green-background[**wajar**] karena batas toleransi kesalahan yang :green-background[**dapat diterima**] data latih dalam prediksi LST adalah :green-background[**± 2°C**]⁽²⁾.
-                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**96.09%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi sangat baik**]⁽³⁾.
+                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**relatif kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**]<sup>[1]</sup>.
+                - :green-background[**Error prediksi < 1°C**] masih dianggap :green-background[**wajar**] karena batas toleransi kesalahan yang :green-background[**dapat diterima**] data latih dalam prediksi LST adalah :green-background[**± 2°C**]<sup>[2]</sup>.
+                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**96.09%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi sangat baik**]<sup>[3]</sup>.
                 """,
                 unsafe_allow_html=True,
             )
@@ -1326,7 +1326,7 @@ with tab4:
             with st.expander("🧰 **Quick Guide: Plot SHAP**"):
                 st.markdown(
                     f"""
-                        - **SHAP (SHapley Additive exPlanations)** adalah sebuah framework untuk menafsirkan model prediksi⁽⁴⁾. SHAP bekerja selayaknya "blackbox" untuk **mengungkap kontribusi** atau tingkat kepentingan setiap **fitur** pada suatu prediksi tertentu.
+                        - **SHAP (SHapley Additive exPlanations)** adalah sebuah framework untuk menafsirkan model prediksi<sup>[4]</sup>. SHAP bekerja selayaknya "blackbox" untuk **mengungkap kontribusi** atau tingkat kepentingan setiap **fitur** pada suatu prediksi tertentu.
                         - **Sumbu Y** merupakan **daftar fitur** dalam model yang telah **diurutkan** sesuai tingkat **kepentingannya**.
                         - **Sumbu X** adalah **nilai SHAP** yang menunjukkan **dampak** pada output model. Semakin jauh sebuah titik dari garis nol (ke kanan atau ke kiri), semakin besar dampaknya pada prediksi.
                         - **Nilai positif**: fitur tersebut **mendorong** prediksi ke **nilai** yang lebih **tinggi**.
@@ -1367,7 +1367,7 @@ with tab4:
             with st.expander("🧰 **Quick Guide: Plot SHAP**"):
                 st.markdown(
                     f"""
-                        - **SHAP (SHapley Additive exPlanations)** adalah sebuah framework untuk menafsirkan model prediksi⁽⁴⁾. SHAP bekerja selayaknya "blackbox" untuk **mengungkap kontribusi** atau tingkat kepentingan setiap **fitur** pada suatu prediksi tertentu.
+                        - **SHAP (SHapley Additive exPlanations)** adalah sebuah framework untuk menafsirkan model prediksi<sup>[4]</sup>. SHAP bekerja selayaknya "blackbox" untuk **mengungkap kontribusi** atau tingkat kepentingan setiap **fitur** pada suatu prediksi tertentu.
                         - **Sumbu Y** merupakan **daftar fitur** dalam model yang telah **diurutkan** sesuai tingkat **kepentingannya**.
                         - **Sumbu X** adalah **nilai SHAP** yang menunjukkan **dampak** pada output model. Semakin jauh sebuah titik dari garis nol (ke kanan atau ke kiri), semakin besar dampaknya pada prediksi.
                         - **Nilai positif**: fitur tersebut **mendorong** prediksi ke **nilai** yang lebih **tinggi**.
@@ -1777,7 +1777,7 @@ with tab5:
                     insight_ndbi, is_influential_ndbi = interpret_regression(
                         r2_ndbi, p_val_ndbi, slope_ndbi, "NDBI"
                     )
-                    st.markdown(insight_ndbi)
+                    st.markdown(insight_ndbi, unsafe_allow_html=True)
 
                     if is_influential_ndbi:
                         st.success(
@@ -1817,7 +1817,7 @@ with tab5:
                     insight_ndmi, is_influential_ndmi = interpret_regression(
                         r2_ndmi, p_val_ndmi, slope_ndmi, "NDMI"
                     )
-                    st.markdown(insight_ndmi)
+                    st.markdown(insight_ndmi, unsafe_allow_html=True)
 
                     if is_influential_ndmi:
                         st.success(
@@ -1857,7 +1857,7 @@ with tab5:
                     insight_ndvi, is_influential_ndvi = interpret_regression(
                         r2_ndvi, p_val_ndvi, slope_ndvi, "NDVI"
                     )
-                    st.markdown(insight_ndvi)
+                    st.markdown(insight_ndvi, unsafe_allow_html=True)
 
                     if is_influential_ndvi:
                         st.success(

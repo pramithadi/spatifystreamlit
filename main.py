@@ -136,14 +136,16 @@ lst = st.Page(
 )
 
 # Section How It's Made
-dataset = st.Page("howItsMade/dataset.py", title="Dataset", icon=":material/database:")
+dataset = st.Page(
+    "how-its-made/dataset.py", title="Dataset", icon=":material/database:"
+)
 workflow = st.Page(
-    "howItsMade/workflow.py",
+    "how-its-made/workflow.py",
     title="Alur Proses",
     icon=":material/flowchart:",
 )
 project = st.Page(
-    "howItsMade/proyek.py",
+    "how-its-made/proyek.py",
     title="Project",
     icon=":material/code_blocks:",
 )
@@ -153,18 +155,18 @@ gee_apps = st.Page(
 
 # Get Results Section
 download_peta = st.Page(
-    "getResults/download-peta.py", title="Download Peta", icon=":material/download:"
+    "get-results/download-peta.py", title="Download Peta", icon=":material/download:"
 )
 galeri = st.Page(
-    "getResults/galeri.py", title="Galeri", icon=":material/gallery_thumbnail:"
+    "get-results/galeri.py", title="Galeri", icon=":material/gallery_thumbnail:"
 )
 
 pg = st.navigation(
     {
         "": [home],
         "Analisis": [lulc, ndbi, ndmi, ndvi, lst],
-        "How It's Made": [dataset, workflow, gee_apps],
-        "Get Results": [download_peta],
+        "How It's Made": [dataset, workflow],
+        "Get Results": [download_peta, gee_apps],
     }
 )
 pg.run()

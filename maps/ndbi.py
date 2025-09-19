@@ -490,9 +490,9 @@ with tab1:
 
                 # Pengkondisian Tahun 2029
                 if option == "2029":
-                    description = f"Tingkat kerapatan area terbangun di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] :green-background[**diprediksi**] sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai rata-rata NDBI tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
+                    description = f"Nilai rata-rata NDBI di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] :green-background[**diprediksi**] sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
                 else:
-                    description = f"Tingkat kerapatan area terbangun di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDBI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
+                    description = f"Nilai rata-rata NDBI di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] tercatat sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
 
                 st.write(description)
 
@@ -622,10 +622,10 @@ with tab2:
 
     # Grafik Garis Tren NDBI
     st.badge(
-        "**Tren NDBI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
+        "**Tren NDBI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2.4, 1.6])
+    col1_tren_main, col2_tren_main = st.columns([2, 2])
     with col1_tren_main:
         # Container Grafik Tren
         with st.container(border=True):
@@ -716,7 +716,7 @@ with tab2:
             2014: {"mean": -0.179},
             2019: {"mean": -0.161},
             2024: {"mean": -0.162},
-            2029: {"mean": -0.161},
+            2029: {"mean": -0.156},
         }
 
         # Container Analisis Tren
@@ -724,15 +724,15 @@ with tab2:
             st.markdown(
                 """
                 💡**Quick Insight**
-                - Nilai NDBI berkisar antara :green-background[**-1 hingga +1**]. :green-background[**Semakin tinggi**] nilai mengindikasikan adanya :green-background[**dominasi area terbangun**]. Sebaliknya, :green-background[**semakin rendah**] menunjukkan area :green-background[**bervegetasi**] atau :green-background[**tubuh air**].
-                - NDBI di :green-background[**kawasan perkotaan**] cenderung :green-background[**naik**] sejak 1999 dan diproyeksi akan :green-background[**terus naik**] sekitar 0.005 pada 2029.
-                - NDBI di :green-background[**kawasan non-perkotaan**] cenderung :green-background[**fluktuatif**] dan diproyeksi akan :green-background[**turun**] sekitar 0.003 pada 2029.
+                - Nilai :green-background[**NDBI**] berkisar dari :green-background[**-1**] (area bervegetasi atau tubuh air) hingga :green-background[**+1**] (area terbangun).
+                - Terlihat tren yang kontras antara kedua kawasan. Sejak 1999, :green-background[**NDBI**] di :green-background[**kawasan perkotaan**] terus :green-background[**meningkat secara konsisten**], mengindikasikan :green-background[**laju pembangunan**] yang terus berjalan dan diprediksi akan berlanjut.
+                - Sebaliknya, :green-background[**kawasan non-perkotaan**] menunjukkan :green-background[**NDBI**] yang :green-background[**cenderung stabil**] dan :green-background[**fluktuatif**] di angka :green-background[**negatif**]. Kondisi tersebut mengindikasikan bahwa :green-background[**lahan non-terbangun**] (dalam hal ini vegetasi) masih :green-background[**terjaga**] dan :green-background[**tidak mengalami perubahan masif**].
                 """
             )
 
     # Row Diagram Garis & Ranking NDBI
     st.badge(
-        "**Top 38 Kecamatan: Kerapatan Area Terbangun Tertinggi (1999-2024)**",
+        "**Peringkat Kecamatan Berdasarkan Rata-rata NDBI (1999-2024)**",
         color="primary",
     )
 
@@ -766,72 +766,72 @@ with tab2:
         df_ranking["Zona_Label"] = df_ranking["Zona"].map(
             {"Urban": "Perkotaan", "Rural": "Non-Perkotaan"}
         )
-        with st.container(border=True):
-            # Buat Bar
-            fig = px.bar(
-                df_ranking,
-                x="Mean_NDBI",
-                y="Y_Label",
-                color="Zona",
-                color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
-                orientation="h",
-                labels={
-                    "Mean_NDBI": "NDBI Mean",
-                    "Y_Label": "",
-                    "Zona": "Kawasan",
-                },
-                # Isi Hover
-                hover_data={"Mean_NDBI": ":.3f", "Zona": False, "Y_Label": False},
-                custom_data=["Zona_Label", "Mean_NDBI"],
-            )
 
-            # Update Hover Template
-            fig.update_traces(
-                hovertemplate="<b>%{y}</b><br>"
-                + "Kawasan: %{customdata[0]}<br>"
-                + "NDBI Mean: %{customdata[1]:.3f}<extra></extra>",
-                texttemplate="%{x:.3f}",
-                textposition="outside",
-                textfont_size=12,
-                textfont_color="black",
-            )
+        # Buat Bar
+        fig = px.bar(
+            df_ranking,
+            x="Mean_NDBI",
+            y="Y_Label",
+            color="Zona",
+            color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
+            orientation="h",
+            labels={
+                "Mean_NDBI": "NDBI Mean",
+                "Y_Label": "",
+                "Zona": "Kawasan",
+            },
+            # Isi Hover
+            hover_data={"Mean_NDBI": ":.3f", "Zona": False, "Y_Label": False},
+            custom_data=["Zona_Label", "Mean_NDBI"],
+        )
 
-            # Update dan Styling Bar Plot
-            fig.update_layout(
-                height=800,
-                font=dict(family="Poppins", size=12),
-                title_font_size=12,
-                xaxis_title_font_size=12,
-                yaxis_title_font_size=12,
-                showlegend=True,
-                legend=dict(
-                    orientation="v",
-                    yanchor="bottom",
-                    y=0.02,
-                    xanchor="right",
-                    x=0.98,
-                    font=dict(family="Poppins"),
-                ),
-                yaxis=dict(
-                    categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
-                ),
-                title="",
-                margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
-            )
+        # Update Hover Template
+        fig.update_traces(
+            hovertemplate="<b>%{y}</b><br>"
+            + "Kawasan: %{customdata[0]}<br>"
+            + "NDBI Mean: %{customdata[1]:.3f}<extra></extra>",
+            texttemplate="%{x:.3f}",
+            textposition="outside",
+            textfont_size=12,
+            textfont_color="black",
+        )
 
-            # Sumbu Warna Hitam
-            fig.update_xaxes(title_font_color="black", tickfont_color="black")
-            fig.update_yaxes(title_font_color="black", tickfont_color="black")
+        # Update dan Styling Bar Plot
+        fig.update_layout(
+            height=800,
+            font=dict(family="Poppins", size=12),
+            title_font_size=12,
+            xaxis_title_font_size=12,
+            yaxis_title_font_size=12,
+            showlegend=True,
+            legend=dict(
+                orientation="v",
+                yanchor="bottom",
+                y=0.02,
+                xanchor="right",
+                x=0.98,
+                font=dict(family="Poppins"),
+            ),
+            yaxis=dict(
+                categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
+            ),
+            title="",
+            margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
+        )
 
-            # Update Legenda
-            for trace in fig.data:
-                if trace.name == "Urban":
-                    trace.name = "Perkotaan"
-                elif trace.name == "Rural":
-                    trace.name = "Non-Perkotaan"
+        # Sumbu Warna Hitam
+        fig.update_xaxes(title_font_color="black", tickfont_color="black")
+        fig.update_yaxes(title_font_color="black", tickfont_color="black")
 
-            # Display Bar Plot
-            st.plotly_chart(fig, use_container_width=True)
+        # Update Legenda
+        for trace in fig.data:
+            if trace.name == "Urban":
+                trace.name = "Perkotaan"
+            elif trace.name == "Rural":
+                trace.name = "Non-Perkotaan"
+
+        # Display Bar Plot
+        st.plotly_chart(fig, use_container_width=True)
 
 # ==============================================================================
 # SECTION 3: VALIDASI
@@ -875,7 +875,7 @@ with tab3:
             color="primary",
         )
 
-        col1_validate, col2_validate = st.columns([2.4, 1.6])
+        col1_validate, col2_validate = st.columns([2.2, 1.8])
         with col1_validate:
             # Container Grafik Korelasi Pearson
             with st.container(border=True):
@@ -904,7 +904,7 @@ with tab3:
 
                 # Update Layout
                 fig.update_layout(
-                    height=362,
+                    height=445,
                     showlegend=True,
                     template="plotly_white",
                     font=dict(
@@ -990,57 +990,36 @@ with tab3:
             with st.container(border=True):
                 st.markdown("💡**Quick Insight**")
 
-                # Interpretasi Korelasi
-                if correlation_coef == 0:
-                    corr_interpretation = "Tidak Ada Korelasi"
-                    corr_color = "🔴"
-                elif correlation_coef == 1:
-                    corr_interpretation = "Korelasi Positif Sempurna"
-                    corr_color = "🔵"
-                elif correlation_coef == -1:
-                    corr_interpretation = "Korelasi Negatif Sempurna"
-                    corr_color = "🔵"
-                elif 0 < correlation_coef < 0.3:
-                    corr_interpretation = "Korelasi Positif Lemah"
-                    corr_color = "🟡"
-                elif -0.3 < correlation_coef < 0:
-                    corr_interpretation = "Korelasi Negatif Lemah"
-                    corr_color = "🟡"
-                elif 0.3 <= correlation_coef < 0.7:
-                    corr_interpretation = "Korelasi Positif Sedang"
-                    corr_color = "🟠"
-                elif -0.7 < correlation_coef <= -0.3:
-                    corr_interpretation = "Korelasi Negatif Sedang"
-                    corr_color = "🟠"
-                elif 0.7 <= correlation_coef < 1:
-                    corr_interpretation = "Korelasi Positif Kuat"
-                    corr_color = "🟢"
-                elif -1 < correlation_coef <= -0.7:
-                    corr_interpretation = "Korelasi Negatif Kuat"
-                    corr_color = "🟢"
-                else:
-                    corr_interpretation = "Tidak Terdefinisi"
-                    corr_color = "🔴"
+                # st.markdown(
+                #     f"""
+                #     - Terdapat hubungan positif yang kuat antara data NDBI dari Landsat 8 dan Sentinel-2 dengan nilai korelasi {correlation_coef:.3f}<sup>[1]</sup>.
+                #     - Tingkat akurasi tinggi dengan nilai error (RMSE dan MAE) kecil yang menunjukkan hasil pengolahan NDBI dari kedua satelit hampir identik<sup>[2]</sup>.
+                #     - Hubungan NDBI antar kedua satelit valid secara statistik dengan nilai p-value sangat signifikan (< 0.01)<sup>[3]</sup>.
+                # """,
+                #     unsafe_allow_html=True,
+                # )
 
                 st.markdown(
                     f"""
-                - **Sampel**: {len(landsat_values)}
-                - **Korelasi (r)**: {corr_interpretation}⁽¹⁾
-                - **Akurasi (RMSE)**: Baik⁽²⁾
-                - **p-value**: {p_value:.3f} (Sangat Signifikan)⁽³⁾
-                """
+                    - **Korelasi Sangat Kuat**: NDBI Landsat 8 dan Sentinel-2 memiliki hubungan kuat (:green-background[**r**] = :green-background[**{correlation_coef:.3f}**])<sup>[1]</sup>.
+                    - **Akurasi Tinggi**: :green-background[**Kesalahan**] antar data :green-background[**sangat kecil**] (RMSE = {rmse:.3f}, MAE = {mae:.3f}) menandakan hasil pengolahan NDBI kedua satelit hampir :green-background[**identik**]<sup>[2]</sup>.
+                    - Hubungan kedua NDBI :green-background[**valid secara statistik**] dengan nilai :green-background[**p-value sangat signifikan**] (< 0.01)<sup>[3]</sup>.
+                """,
+                    unsafe_allow_html=True,
                 )
 
                 # Status Validasi
                 abs_corr = abs(correlation_coef)
                 if abs_corr >= 0.7 and rmse <= 0.1:
-                    st.success("✅ VALID! Data layak untuk prediksi LST!")
+                    st.success("✅ VALID! Data NDBI layak untuk prediksi LST!")
                 elif abs_corr >= 0.5 and rmse <= 0.15:
-                    st.warning("⚠️ CUKUP VALID — Data dapat digunakan dengan catatan.")
+                    st.warning(
+                        "⚠️ CUKUP VALID — Data NDBI dapat digunakan dengan catatan."
+                    )
                 elif abs_corr >= 0.3 and rmse <= 0.2:
-                    st.warning("⚠️ KURANG VALID — Data perlu perbaikan.")
+                    st.warning("⚠️ KURANG VALID — Data NDBI perlu perbaikan.")
                 else:
-                    st.error("❌ TIDAK VALID — Data tidak layak digunakan.")
+                    st.error("❌ TIDAK VALID — Data NDBI tidak layak digunakan.")
 
     except FileNotFoundError:
         st.error("❌ File 'csv/ndbiSampelValidasi.csv' tidak ditemukan!")
@@ -1248,11 +1227,11 @@ with tab3:
 
 with tab4:
     st.badge(
-        "**Evaluasi Model Proyeksi XGBoost**",
+        "**Evaluasi Model XGBoost untuk Proyeksi Indeks**",
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([1.9, 2.1])
+    col1_metrik_img, col2_metrik_insight = st.columns([2, 2])
     with col1_metrik_img:
         with st.container(border=True):
             fig = go.Figure(
@@ -1309,7 +1288,7 @@ with tab4:
                 plot_bgcolor="#fdfaf6",
                 paper_bgcolor="#fdfaf6",
                 margin=dict(l=0, r=0, t=10, b=30),
-                height=335,
+                height=341.5,
                 showlegend=True,
             )
 
@@ -1323,8 +1302,8 @@ with tab4:
             st.write("💡**Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**sangat kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**]⁽¹⁾ .
-                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**86.48%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi cukup tepat**]⁽²⁾.
+                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**sangat kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**]<sup>[1]</sup>.
+                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**86.48%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi cukup tepat**]<sup>[2]</sup>.
                 """,
                 unsafe_allow_html=True,
             )

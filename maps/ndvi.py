@@ -491,9 +491,9 @@ with tab1:
 
                 # Pengkondisian Tahun 2029
                 if option == "2029":
-                    description = f"Tingkat kerapatan vegetasi di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] diprediksi sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai rata-rata NDVI tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki :green-background[**kerapatan vegetasi**] yang :green-background[**{deskripsi}**]."
+                    description = f"Nilai rata-rata NDVI di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] diprediksi sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai rata-rata NDVI tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki :green-background[**kerapatan vegetasi**] yang :green-background[**{deskripsi}**]."
                 else:
-                    description = f"Tingkat kerapatan vegetasi di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDVI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan vegetasi**] yang :green-background[**{deskripsi}**]."
+                    description = f"Nilai rata-rata NDVI di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] tercatat sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan vegetasi**] yang :green-background[**{deskripsi}**]."
 
                 st.write(description)
 
@@ -623,7 +623,7 @@ with tab2:
 
     # Row Diagram Garis & Ranking NDVI
     st.badge(
-        "**Tren NDVI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
+        "**Tren NDVI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.4, 1.6])
@@ -717,7 +717,7 @@ with tab2:
             2014: {"mean": 0.596},
             2019: {"mean": 0.587},
             2024: {"mean": 0.592},
-            2029: {"mean": 0.592},
+            2029: {"mean": 0.585},
         }
 
         # Container Analisis Tren

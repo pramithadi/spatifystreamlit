@@ -492,9 +492,9 @@ with tab1:
 
                 # Pengkondisian Tahun 2029
                 if option == "2029":
-                    description = f"Tingkat kelembapan vegetasi di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] diprediksi sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai rata-rata NDMI tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki :green-background[**kelembapan vegetasi**] yang :green-background[**{deskripsi}**]."
+                    description = f"Nilai rata-rata NDMI di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] diprediksi sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai rata-rata NDMI tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki :green-background[**kelembapan vegetasi**] yang :green-background[**{deskripsi}**]."
                 else:
-                    description = f"Tingkat kelembapan vegetasi di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] menunjukkan nilai rata-rata NDMI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kelembapan vegetasi**] yang :green-background[**{deskripsi}**]."
+                    description = f"Nilai rata-rata NDBI di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] tercatat sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kelembapan vegetasi**] yang :green-background[**{deskripsi}**]."
 
                 st.write(description)
 
@@ -624,7 +624,7 @@ with tab2:
 
     # Row Diagram Garis & Ranking NDMI
     st.badge(
-        "**Tren NDMI: Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2024)**",
+        "**Tren NDMI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.4, 1.6])
@@ -718,7 +718,7 @@ with tab2:
             2014: {"mean": 0.179},
             2019: {"mean": 0.161},
             2024: {"mean": 0.162},
-            2029: {"mean": 0.161},
+            2029: {"mean": 0.156},
         }
 
         # Container Analisis Tren
