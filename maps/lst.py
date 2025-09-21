@@ -446,7 +446,7 @@ def create_regression_plot(df, x_col, y_col, title, x_label, y_label):
 
     # Update Layout
     fig.update_layout(
-        height=266,
+        height=323.9,
         showlegend=True,
         template="plotly_white",
         font=dict(
@@ -522,9 +522,9 @@ def interpret_regression(r2, p_value, slope, x_var):
     direction = "peningkatan" if slope > 0 else "penurunan"
 
     interpretation = f"""
-    - **Koefisien Determinasi (R²)**: Variabel :green-background[**{x_var}**] mampu menjelaskan :green-background[**{r2_percent:.2f}%**] variasi nilai LST, sedangkan {100 - r2_percent:.2f}% sisanya dipengaruhi oleh faktor lain<sup>[1]</sup>.
-    - **Slope**: Setiap kenaikan 1.0 unit nilai {x_var} berasosiasi dengan {direction} LST sebesar :green-background[**{abs(slope):.2f}°C**].
-    - **p-value**: {p_value:.3f} ({significance})<sup>[2]</sup>.
+    - **Koefisien determinasi (R²)** menunjukkan bahwa **{x_var}** mampu menjelaskan :green-background[**{r2_percent:.2f}%**] variasi nilai LST, sedangkan {100 - r2_percent:.2f}% sisanya dipengaruhi oleh faktor lain<sup>[1]</sup>.
+    - Setiap **kenaikan 1.0 unit nilai {x_var}** berasosiasi dengan **{direction}** LST sebesar :green-background[**{abs(slope):.2f}°C**].
+    - Terdapat **hubungan positif yang {significance}** secara statistik antara {x_var} dan LST dibuktikan dengan nilai :green-background[**p-value < {p_value:.3f}**]<sup>[2]</sup>.
     """
 
     return interpretation, is_influential
@@ -607,14 +607,14 @@ with tab1:
         # Container Analisis LST per Kecamatan
         if selected_kecamatan and selected_kecamatan != "" and kec_year:
             with st.container(border=True):
-                st.write("💡**Quick Insight**")
+                st.write("💡 **Quick Insight**")
                 kecamatan_data = kec_year[selected_kecamatan]
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
 
                 # Pengkondisian Tahun 2029
                 if option == "2029":
-                    description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] :green-background[**diprediksi**] sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
+                    description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] **diprediksi** sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
                 else:
                     description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] memiliki rata-rata suhu sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
 
@@ -824,7 +824,7 @@ with tab2:
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=20, b=20),
-                height=422,
+                height=370,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -847,10 +847,10 @@ with tab2:
         with st.container(border=True):
             st.markdown(
                 """
-                💡**Quick Insight**
-                - Kedua kawasan menunjukkan :green-background[**pola fluktuasi yang serupa**] di mana :green-background[**LST mulai naik**] hingga mencapai puncak pada tahun 2009 dan setelahnya mulai :green-background[**bergerak turun**] hingga tahun 2019, tetapi :green-background[**diprediksi akan kembali naik**] pada tahun 2029 seiring masifnya pembangunan dan alih fungsi lahan.
-                - :green-background[**Di kawasan perkotaan,**] LST terendah tercatat sebesar 39.47°C (1999), sedangkan LST tertinggi sebesar 43.28°C (2009), dan diprediksi akan naik menjadi 43.56°C pada tahun 2029.
-                - :green-background[**Di kawasan non-perkotaan,**] LST terendah tercatat sebesar 33.73°C (1999), sedangkan LST tertinggi sebesar 36.86°C (2009), dan diprediksi akan naik menjadi 37.40°C pada tahun 2029.
+                💡 **Quick Insight**
+                - :green-background[**Kawasan perkotaan**] Yogyakarta secara konsisten menunjukkan suhu permukaan yang **jauh lebih tinggi** dibandingkan :green-background[**kawasan non-perkotaan**] yang menjadi sebuah indikasi dari fenomena *urban heat island*.
+                - **Suhu di kawasan perkotaan** menunjukkan **tren pemanasan** dalam jangka panjang yang diprediksi akan mencapai puncaknya pada tahun 2029 dengan rata-rata LST sebesar :green-background[**43.56°C**].
+                - Meskipun lebih sejuk, kawasan **non-perkotaan** juga tidak luput dari **tren pemanasan** serupa dan diprediksi akan terus meningkat dengan rata-rata LST sebesar :green-background[**37.40°C**] pada tahun 2029.
                 """
             )
 
@@ -998,7 +998,7 @@ with tab3:
             color="primary",
         )
 
-        col1_validate, col2_validate = st.columns([2.4, 1.6])
+        col1_validate, col2_validate = st.columns([2.2, 1.8])
         with col1_validate:
             with st.container(border=True):
                 # Buat Scatterplot (X = Satelit, Y = Lapangan)
@@ -1028,7 +1028,7 @@ with tab3:
 
                 # Update Layout
                 fig.update_layout(
-                    height=438.5,
+                    height=412,
                     showlegend=True,
                     template="plotly_white",
                     font=dict(
@@ -1110,11 +1110,11 @@ with tab3:
 
             # Container Analisis Validasi
             with st.container(border=True):
-                st.write("💡**Quick Insight**")
+                st.write("💡 **Quick Insight**")
                 st.markdown(
                     f"""
-                    - Nilai error (RMSE = 2.24°C, MAE = 1.70°C) masih berada dalam batas yang :green-background[**dapat diterima**] karena :green-background[**toleransi kesalahan**] pada pemodelan LST adalah :green-background[**± 2°C**]<sup>[1]</sup>.
-                    - Sebanyak :green-background[**75%**] variasi LST aktual :green-background[**dapat dijelaskan**] oleh LST Landsat 8 dengan :green-background[**hubungan**] yang :green-background[**cukup kuat**] (:green-background[**r = 0.87**])<sup>[2]</sup>.
+                    - Nilai *error* khususnya MAE (1.70°C) masih berada dalam **batas yang dapat diterima** karena toleransi kesalahan pada pemodelan LST adalah :green-background[**± 2°C**]<sup>[1]</sup>.
+                    - Sebanyak :green-background[**75%**] variasi LST aktual **dapat dijelaskan** oleh LST Landsat 8 yang menunjukkan **hubungan cukup kuat** (:green-background[**r = 0.87**])<sup>[2]</sup>.
                 """,
                     unsafe_allow_html=True,
                 )
@@ -1231,7 +1231,7 @@ with tab4:
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([2, 2])
+    col1_metrik_img, col2_metrik_insight = st.columns([1.9, 2.1])
     with col1_metrik_img:
         with st.container(border=True):
             fig = go.Figure(
@@ -1288,7 +1288,7 @@ with tab4:
                 plot_bgcolor="#fdfaf6",
                 paper_bgcolor="#fdfaf6",
                 margin=dict(l=0, r=0, t=20, b=30),
-                height=353,
+                height=324,
                 showlegend=True,
             )
 
@@ -1299,16 +1299,15 @@ with tab4:
 
     with col2_metrik_insight:
         with st.container(border=True):
-            st.write("💡**Quick Insight**")
+            st.write("💡 **Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**relatif kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**]<sup>[1]</sup>.
-                - :green-background[**Error prediksi < 1°C**] masih dianggap :green-background[**wajar**] karena batas toleransi kesalahan yang :green-background[**dapat diterima**] data latih dalam prediksi LST adalah :green-background[**± 2°C**]<sup>[2]</sup>.
-                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**96.09%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi sangat baik**]<sup>[3]</sup>.
+                - Model prediksi memiliki **tingkat akurasi sangat tinggi** dibuktikan dengan nilai *error* :green-background[**RMSE (0.7894)**] dan :green-background[**MAE (0.6162)**] yang rendah<sup>[1]</sup>. *Error* prediksi **dianggap wajar** karena masih berada dalam rentang toleransi yang diizinkan untuk pemodelan LST (:green-background[**± 2°C**])<sup>[2]</sup>.
+                - **Koefisien determinasi (R²)** menunjukkan nilai :green-background[**96.09%**] artinya model mampu **menjelaskan mayoritas variasi** data LST dengan **sangat baik**<sup>[3]</sup>.
                 """,
                 unsafe_allow_html=True,
             )
-            st.success("✅ Model XGBoost **LAYAK** untuk prediksi LST 2029!")
+            st.success("✅ Model **LAYAK** untuk memprediksi LST 2029!")
 
     # Plot SHAP
     st.badge(
@@ -1316,38 +1315,76 @@ with tab4:
         color="primary",
     )
 
-    col1_2024, col2_2024 = st.columns([2.21, 1.79])
+    col1_2024, col2_2024 = st.columns([2.225, 1.775])
     with col1_2024:
         with st.container(border=True):
             st.image("img/shapLST2024.png")
 
     with col2_2024:
         with st.container(border=True):
-            with st.expander("🧰 **Quick Guide: Plot SHAP**"):
-                st.markdown(
-                    f"""
-                        - **SHAP (SHapley Additive exPlanations)** adalah sebuah framework untuk menafsirkan model prediksi<sup>[4]</sup>. SHAP bekerja selayaknya "blackbox" untuk **mengungkap kontribusi** atau tingkat kepentingan setiap **fitur** pada suatu prediksi tertentu.
-                        - **Sumbu Y** merupakan **daftar fitur** dalam model yang telah **diurutkan** sesuai tingkat **kepentingannya**.
-                        - **Sumbu X** adalah **nilai SHAP** yang menunjukkan **dampak** pada output model. Semakin jauh sebuah titik dari garis nol (ke kanan atau ke kiri), semakin besar dampaknya pada prediksi.
-                        - **Nilai positif**: fitur tersebut **mendorong** prediksi ke **nilai** yang lebih **tinggi**.
-                        - **Nilai negatif**: fitur tersebut **mendorong** prediksi ke **nilai** yang lebih **rendah**.
-                        - **Nilai nol**: fitur tersebut **tidak berdampak** pada prediksi.
-                        - **Warna titik** menunjukkan **nilai asli** dari fitur tersebut.
-                        - Warna **merah/pink** (high) menunjukkan **nilai fitur** yang **tinggi**.
-                        - Warna **biru** (low) menunjukkan **nilai fitur** yang **rendah**.
-                    """,
-                    unsafe_allow_html=True,
+            with st.expander("🧰 **Quick Guide: Plot Beeswarm SHAP**"):
+                st.html(
+                    """
+                    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+                    <style>
+                        .shap-guide {
+                            font-family: 'Poppins', sans-serif;
+                            font-size: 16px;
+                            line-height: 1.6;
+                        }
+                        .shap-guide ol, 
+                        .shap-guide ul {
+                            margin-left: 20px;
+                            margin-top: 4px;
+                            margin-bottom: 4px;
+                        }
+                        .shap-guide li {
+                            margin-bottom: 4px;
+                            line-height: 1.6;
+                        }
+                        .shap-guide hr {
+                            margin: 16px 0;
+                        }
+                    </style>
+
+                    <div class="shap-guide">
+                        <p><b>SHAP (SHapley Additive exPlanations)</b> adalah sebuah metode untuk menafsirkan model 
+                        <i>machine learning</i> yang kompleks <sup>[4]</sup>. SHAP bekerja selayaknya <i>'blackbox'</i> untuk 
+                        <b>mengungkap kontribusi</b> setiap fitur terhadap prediksi.</p>
+
+                        <hr>
+
+                        <p><b>Panduan Membaca Plot:</b></p>
+                        <ol>
+                            <li>
+                                <b>Apa Fitur yang Paling Berpengaruh?</b><br>
+                                Lihat urutan pada <b>sumbu Y</b>. Fitur yang berada <b>paling atas</b> adalah fitur yang memiliki kontribusi terbesar dalam prediksi.
+                            </li>
+                            <li>
+                                <b>Bagaimana Arah Pengaruhnya?</b><br>
+                                Lihat posisi titik pada <b>sumbu X</b> dan <b>warnanya</b>.
+                                <ul style="margin-left:20px; margin-top:6px; list-style-type: disc; list-style-position: outside;">
+                                    <li>Titik di <b>kanan</b> → Mendorong prediksi <b>naik</b> (lebih tinggi).</li>
+                                    <li>Titik di <b>kiri</b> → Mendorong prediksi <b>turun</b> (lebih rendah).</li>
+                                    <li>Warna <b>merah/pink</b> → Nilai fitur <b>tinggi</b> (misal: LST 2019 tinggi).</li>
+                                    <li>Warna <b>biru</b> → Nilai fitur <b>rendah</b> (misal: LST 2019 rendah).</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                    """
                 )
 
         with st.container(border=True):
-            st.write("💡**Quick Insight**")
+            st.write("💡 **Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**LST 2019**] menjadi fitur dengan :green-background[**kontribusi tertinggi**]. Nilai LST yang tinggi di masa lalu :green-background[**mendorong prediksi LST 2024**] menjadi :green-background[**lebih tinggi**], begitu pula sebaliknya.
-                - :green-background[**Elevasi**] menunjukkan :green-background[**kontribusi negatif**]. Lokasi dengan elevasi tinggi cenderung memiliki prediksi nilai LST 2024 yang :green-background[**lebih rendah**].
-                - Lokasi di :green-background[**koordinat Y**] yang lebih besar (arah utara) cenderung :green-background[**menurunkan prediksi**] nilai LST 2024.
-                - :green-background[**NDVI 2024**] juga berkontribusi penting, di mana nilai indeks yang rendah cenderung :green-background[**meningkatkan prediksi**] nilai LST 2024.
-                - Fitur lain seperti :green-background[**penutup lahan**], :green-background[**NDMI**], dan :green-background[**slope**] memiliki pengaruh yang :green-background[**relatif lebih kecil**].
+                - **LST 2019** menjadi fitur dengan **kontribusi tertinggi**. Nilai LST yang tinggi di masa lalu **mendorong** prediksi LST 2024 menjadi :green-background[**lebih tinggi**], begitu pula sebaliknya.
+                - **Elevasi** menunjukkan **kontribusi negatif**. Lokasi dengan elevasi tinggi cenderung memiliki prediksi nilai LST 2024 yang :green-background[**lebih rendah**].
+                - Lokasi di **koordinat Y** yang lebih besar (arah utara) cenderung :green-background[**menurunkan prediksi**] nilai LST 2024.
+                - **NDVI 2024** juga berkontribusi penting, di mana nilai indeks yang rendah cenderung :green-background[**meningkatkan prediksi**] nilai LST 2024.
+                - Fitur lain seperti **penutup lahan**, **NDMI**, dan **slope** memiliki pengaruh yang **relatif lebih kecil**.
                 """,
                 unsafe_allow_html=True,
             )
@@ -1357,38 +1394,76 @@ with tab4:
         color="primary",
     )
 
-    col1_2029, col2_2029 = st.columns([2.21, 1.79])
+    col1_2029, col2_2029 = st.columns([2.225, 1.775])
     with col1_2029:
         with st.container(border=True):
             st.image("img/shapLST2029.png")
 
     with col2_2029:
         with st.container(border=True):
-            with st.expander("🧰 **Quick Guide: Plot SHAP**"):
-                st.markdown(
-                    f"""
-                        - **SHAP (SHapley Additive exPlanations)** adalah sebuah framework untuk menafsirkan model prediksi<sup>[4]</sup>. SHAP bekerja selayaknya "blackbox" untuk **mengungkap kontribusi** atau tingkat kepentingan setiap **fitur** pada suatu prediksi tertentu.
-                        - **Sumbu Y** merupakan **daftar fitur** dalam model yang telah **diurutkan** sesuai tingkat **kepentingannya**.
-                        - **Sumbu X** adalah **nilai SHAP** yang menunjukkan **dampak** pada output model. Semakin jauh sebuah titik dari garis nol (ke kanan atau ke kiri), semakin besar dampaknya pada prediksi.
-                        - **Nilai positif**: fitur tersebut **mendorong** prediksi ke **nilai** yang lebih **tinggi**.
-                        - **Nilai negatif**: fitur tersebut **mendorong** prediksi ke **nilai** yang lebih **rendah**.
-                        - **Nilai nol**: fitur tersebut **tidak berdampak** pada prediksi.
-                        - **Warna titik** menunjukkan **nilai asli** dari fitur tersebut.
-                        - Warna **merah/pink** (high) menunjukkan **nilai fitur** yang **tinggi**.
-                        - Warna **biru** (low) menunjukkan **nilai fitur** yang **rendah**.
-                    """,
-                    unsafe_allow_html=True,
+            with st.expander("🧰 **Quick Guide: Plot Beeswarm SHAP**"):
+                st.html(
+                    """
+                    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+                    <style>
+                        .shap-guide {
+                            font-family: 'Poppins', sans-serif;
+                            font-size: 16px;
+                            line-height: 1.6;
+                        }
+                        .shap-guide ol, 
+                        .shap-guide ul {
+                            margin-left: 20px;
+                            margin-top: 4px;
+                            margin-bottom: 4px;
+                        }
+                        .shap-guide li {
+                            margin-bottom: 4px;
+                            line-height: 1.6;
+                        }
+                        .shap-guide hr {
+                            margin: 16px 0;
+                        }
+                    </style>
+
+                    <div class="shap-guide">
+                        <p><b>SHAP (SHapley Additive exPlanations)</b> adalah sebuah metode untuk menafsirkan model 
+                        <i>machine learning</i> yang kompleks <sup>[4]</sup>. SHAP bekerja selayaknya <i>'blackbox'</i> untuk 
+                        <b>mengungkap kontribusi</b> setiap fitur terhadap prediksi.</p>
+
+                        <hr>
+
+                        <p><b>Panduan Membaca Plot:</b></p>
+                        <ol>
+                            <li>
+                                <b>Apa Fitur yang Paling Berpengaruh?</b><br>
+                                Lihat urutan pada <b>sumbu Y</b>. Fitur yang berada <b>paling atas</b> adalah fitur yang memiliki kontribusi terbesar dalam prediksi.
+                            </li>
+                            <li>
+                                <b>Bagaimana Arah Pengaruhnya?</b><br>
+                                Lihat posisi titik pada <b>sumbu X</b> dan <b>warnanya</b>.
+                                <ul style="margin-left:20px; margin-top:6px; list-style-type: disc; list-style-position: outside;">
+                                    <li>Titik di <b>kanan</b> → Mendorong prediksi <b>naik</b> (lebih tinggi).</li>
+                                    <li>Titik di <b>kiri</b> → Mendorong prediksi <b>turun</b> (lebih rendah).</li>
+                                    <li>Warna <b>merah/pink</b> → Nilai fitur <b>tinggi</b> (misal: LST 2024 tinggi).</li>
+                                    <li>Warna <b>biru</b> → Nilai fitur <b>rendah</b> (misal: LST 2024 rendah).</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                    """
                 )
 
         with st.container(border=True):
-            st.write("💡**Quick Insight**")
+            st.write("💡 **Quick Insight**")
             st.markdown(
                 f"""               
-                - :green-background[**LST 2024**] menjadi fitur dengan :green-background[**kontribusi tertinggi**]. Nilai LST yang tinggi di masa lalu :green-background[**mendorong prediksi LST 2029**] menjadi :green-background[**lebih tinggi**], begitu pula sebaliknya.
-                - :green-background[**Elevasi**] menunjukkan :green-background[**kontribusi negatif**]. Lokasi dengan elevasi tinggi cenderung memiliki prediksi nilai LST 2029 yang :green-background[**lebih rendah**].
-                - Lokasi di :green-background[**koordinat Y**] yang lebih besar (arah utara) cenderung :green-background[**menurunkan prediksi**] nilai LST 2029.
-                - :green-background[**NDVI 2029**] juga berkontribusi penting, di mana nilai indeks yang rendah cenderung :green-background[**meningkatkan prediksi**] nilai LST 2029.
-                - Fitur lain seperti :green-background[**penutup lahan**], :green-background[**NDMI**], dan :green-background[**slope**] memiliki pengaruh yang :green-background[**relatif lebih kecil**].
+                - **LST 2024** menjadi fitur dengan **kontribusi tertinggi**. Nilai LST yang tinggi di masa lalu **mendorong prediksi LST 2029** menjadi :green-background[**lebih tinggi**], begitu pula sebaliknya.
+                - **Elevasi** menunjukkan **kontribusi negatif**. Lokasi dengan elevasi tinggi cenderung memiliki prediksi nilai LST 2029 yang :green-background[**lebih rendah**].
+                - Lokasi di **koordinat Y** yang lebih besar (arah utara) cenderung :green-background[**menurunkan prediksi**] nilai LST 2029.
+                - **NDVI 2029** juga berkontribusi penting, di mana nilai indeks yang rendah cenderung :green-background[**meningkatkan prediksi**] nilai LST 2029.
+                - Fitur lain seperti **penutup lahan**, **NDMI**, dan **slope** memiliki pengaruh yang **relatif lebih kecil**.
                 """,
                 unsafe_allow_html=True,
             )
@@ -1596,7 +1671,7 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=507,
+                    height=509,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",
@@ -1641,7 +1716,6 @@ with tab4:
 
             except Exception as e:
                 st.error(f"Error: {str(e)}")
-                # DEBUGGING: Print traceback untuk info lebih detail
                 import traceback
 
                 st.error(f"Traceback: {traceback.format_exc()}")
@@ -1772,7 +1846,7 @@ with tab5:
 
         with col2_regresi_ndbi:
             with st.container(border=True):
-                st.markdown("💡**Quick Insight**")
+                st.markdown("💡 **Quick Insight**")
                 if fig_ndbi is not None:
                     insight_ndbi, is_influential_ndbi = interpret_regression(
                         r2_ndbi, p_val_ndbi, slope_ndbi, "NDBI"
@@ -1780,9 +1854,7 @@ with tab5:
                     st.markdown(insight_ndbi, unsafe_allow_html=True)
 
                     if is_influential_ndbi:
-                        st.success(
-                            "✅ NDBI berpengaruh positif signifikan terhadap LST!"
-                        )
+                        st.success("✅ NDBI berpengaruh signifikan terhadap LST!")
                     else:
                         st.warning("❌ NDBI tidak berpengaruh terhadap LST!")
 
@@ -1812,7 +1884,7 @@ with tab5:
 
         with col2_regresi_ndmi:
             with st.container(border=True):
-                st.markdown("💡**Quick Insight**")
+                st.markdown("💡 **Quick Insight**")
                 if fig_ndmi is not None:
                     insight_ndmi, is_influential_ndmi = interpret_regression(
                         r2_ndmi, p_val_ndmi, slope_ndmi, "NDMI"
@@ -1820,9 +1892,7 @@ with tab5:
                     st.markdown(insight_ndmi, unsafe_allow_html=True)
 
                     if is_influential_ndmi:
-                        st.success(
-                            "✅ NDMI berpengaruh negatif signifikan terhadap LST!"
-                        )
+                        st.success("✅ NDMI berpengaruh  signifikan terhadap LST!")
                     else:
                         st.warning("❌ NDMI tidak berpengaruh terhadap LST!")
 
@@ -1852,7 +1922,7 @@ with tab5:
 
         with col2_regresi_ndvi:
             with st.container(border=True):
-                st.markdown("💡**Quick Insight**")
+                st.markdown("💡 **Quick Insight**")
                 if fig_ndvi is not None:
                     insight_ndvi, is_influential_ndvi = interpret_regression(
                         r2_ndvi, p_val_ndvi, slope_ndvi, "NDVI"
@@ -1860,9 +1930,7 @@ with tab5:
                     st.markdown(insight_ndvi, unsafe_allow_html=True)
 
                     if is_influential_ndvi:
-                        st.success(
-                            "✅ NDVI berpengaruh negatif signifikan terhadap LST!"
-                        )
+                        st.success("✅ NDVI berpengaruh signifikan terhadap LST!")
                     else:
                         st.warning("❌ NDVI tidak berpengaruh terhadap LST!")
 

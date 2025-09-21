@@ -479,7 +479,7 @@ with tab1:
         # Container Analisis NDMI per Kecamatan
         if selected_kecamatan and selected_kecamatan != "" and kecamatan_data_year:
             with st.container(border=True):
-                st.write("💡**Quick Insight**")
+                st.write("💡 **Quick Insight**")
                 kecamatan_data = kecamatan_data_year[selected_kecamatan]
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
@@ -725,7 +725,7 @@ with tab2:
         with st.container(border=True):
             st.markdown(
                 """
-                💡**Quick Insight**
+                💡 **Quick Insight**
                 - Nilai NDMI berkisar antara :green-background[**-1 hingga +1**]. :green-background[**Semakin tinggi**] nilai mengindikasikan :green-background[**adanya kandungan air yang tinggi pada vegetasi**] dan begitupun sebaliknya.
                 - Nilai NDMI di :green-background[**kawasan perkotaan**] cenderung :green-background[**turun**] sejak 1999 dan diproyeksi akan :green-background[**terus turun**] sekitar 0.005 pada 2029.
                 - Nilai NDMI di :green-background[**kawasan non-perkotaan**] cenderung :green-background[**fluktuatif**] di awal 1999, lalu mulai naik sejak 2019, dan diproyeksi akan :green-background[**terus naik**] sekitar 0.003 pada 2029.
@@ -990,7 +990,7 @@ with tab3:
 
             # Container Analisis Tren
             with st.container(border=True):
-                st.markdown("💡**Quick Insight**")
+                st.markdown("💡 **Quick Insight**")
 
                 # Interpretasi Korelasi
                 if correlation_coef == 0:
@@ -1318,7 +1318,7 @@ with tab4:
 
     with col2_metrik_insight:
         with st.container(border=True):
-            st.write("💡**Quick Insight**")
+            st.write("💡 **Quick Insight**")
             st.markdown(
                 f"""
                 - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**sangat kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**].⁽¹⁾ 

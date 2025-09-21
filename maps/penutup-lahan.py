@@ -457,20 +457,10 @@ def generate_quick_insight(penutup_lahan_df):
             return f"{trend_type} akan **stabil** di **{area_2024:.1f} km²** pada tahun 2029"
 
     markdown_tren = f"""
-    💡**Quick Insight**\n
-    **Perubahan Luas Penutup Lahan**\n
-    :green-background[**Vegetasi**:]
-    - Turun sekitar **{abs(pct_change_vegetasi_hist):.0f}%**, dari **{data_1999['vegetasi_km2']:.1f} km²** (1999) menjadi **{data_2024['vegetasi_km2']:.1f} km²** (2024).
-    - {get_trend_description(pct_change_vegetasi_pred, data_2024['vegetasi_km2'], data_2029['vegetasi_km2'], "Diprediksi")}.\n
-    :green-background[**Tubuh air**:]
-    - Turun sekitar **{abs(pct_change_tubuh_air_hist):.0f}%**, dari **{data_1999['tubuh_air_km2']:.1f} km²** (1999) menjadi **{data_2024['tubuh_air_km2']:.1f} km²** (2024).
-    - {get_trend_description(pct_change_tubuh_air_pred, data_2024['tubuh_air_km2'], data_2029['tubuh_air_km2'], "Diprediksi")}.\n
-    :green-background[**Lahan terbangun**:]
-    - Naik sekitar **{pct_change_terbangun_hist:.0f}%**, dari **{data_1999['lahan_terbangun_km2']:.1f} km²** (1999) menjadi **{data_2024['lahan_terbangun_km2']:.1f} km²** (2024).
-    - {get_trend_description(pct_change_terbangun_pred, data_2024['lahan_terbangun_km2'], data_2029['lahan_terbangun_km2'], "Diprediksi")}.\n
-    :green-background[**Lahan terbuka**:]
-    - Naik sekitar **{pct_change_terbuka_hist:.0f}%**, dari **{data_1999['lahan_terbuka_km2']:.1f} km²** (1999) menjadi **{data_2024['lahan_terbuka_km2']:.1f} km²** (2024).
-    - {get_trend_description(pct_change_terbuka_pred, data_2024['lahan_terbuka_km2'], data_2029['lahan_terbuka_km2'], "Diprediksi")}.
+    💡 **Quick Insight**\n
+    - **Vegetasi**: Mengalami penurunan terbesar sekitar :green-background[**{abs(pct_change_vegetasi_hist):.0f}%**], dari :green-background[**{data_1999['vegetasi_km2']:.1f} km²**] (1999) menjadi :green-background[**{data_2024['vegetasi_km2']:.1f} km²**] (2024), dan diprediksi akan terus menyusut.
+    - **Tubuh Air** dan **Lahan Terbuka**: Keduanya juga menunjukkan **tren penurunan** dalam jangka panjang.
+    - **Lahan Terbangun**: Satu-satunya kelas yang naik secara masif sebesar :green-background[**{pct_change_terbangun_hist:.0f}%**] dari :green-background[**{data_1999['lahan_terbangun_km2']:.1f} km²**] (1999) menjadi :green-background[**{data_2024['lahan_terbangun_km2']:.1f} km²**] (2024), dan diprediksi akan terus berekspansi hingga :green-background[**{data_2029['lahan_terbangun_km2']:.1f} km²**] pada tahun 2029.
     """
 
     return markdown_tren
@@ -532,7 +522,7 @@ with tab1:
         # Container Quick Insight
         if selected_kecamatan:
             with st.container(border=True):
-                st.write("💡**Quick Insight**")
+                st.write("💡 **Quick Insight**")
 
                 kec_data = get_kec_by_year_name(
                     penutup_lahan_kec_df, option, selected_kecamatan
@@ -544,17 +534,13 @@ with tab1:
                     st.write(
                         f"Persentase penutup lahan di :green-background[**{jenis_kec} {selected_kecamatan}**] pada tahun :green-background[**{option}**] yakni:"
                     )
+                    st.write(f"• **Vegetasi**: {kec_data['vegetasi_pct']:.2f}%")
+                    st.write(f"• **Tubuh Air**: {kec_data['tubuh_air_pct']:.2f}%")
                     st.write(
-                        f"• Vegetasi: :green-background[**{kec_data['vegetasi_pct']:.2f}%**]"
+                        f"• **Lahan Terbangun**: {kec_data['lahan_terbangun_pct']:.2f}%"
                     )
                     st.write(
-                        f"• Tubuh Air: :green-background[**{kec_data['tubuh_air_pct']:.2f}%**]"
-                    )
-                    st.write(
-                        f"• Lahan Terbangun: :green-background[**{kec_data['lahan_terbangun_pct']:.2f}%**]"
-                    )
-                    st.write(
-                        f"• Lahan Terbuka: :green-background[**{kec_data['lahan_terbuka_pct']:.2f}%**]"
+                        f"• **Lahan Terbuka**: {kec_data['lahan_terbuka_pct']:.2f}%"
                     )
 
                     # Kesimpulan
@@ -569,11 +555,11 @@ with tab1:
                     # Pengkondisian untuk tahun 2029
                     if str(option) == "2029":
                         st.write(
-                            f"**Kesimpulan**: {jenis_kec} {selected_kecamatan} :green-background[**diprediksi akan didominasi**] oleh :green-background[**{dominan_kec}**]."
+                            f"**Kesimpulan**: {jenis_kec} {selected_kecamatan} **diprediksi** akan **didominasi** oleh :green-background[**{dominan_kec}**]."
                         )
                     else:
                         st.write(
-                            f"**Kesimpulan**: {jenis_kec} {selected_kecamatan} :green-background[**didominasi**] oleh :green-background[**{dominan_kec}**]."
+                            f"**Kesimpulan**: {jenis_kec} {selected_kecamatan} **didominasi** oleh :green-background[**{dominan_kec}**]."
                         )
                 else:
                     st.write(
@@ -765,19 +751,19 @@ with tab2:
                     gridcolor="#9A9A9A",
                     zerolinecolor="#9A9A9A",
                     range=[0, 100],
-                    dtick=10,  # Interval
-                    tickvals=list(range(0, 101, 10)),
+                    dtick=20,  # Interval
+                    tickvals=list(range(0, 101, 20)),
                 ),
                 legend=dict(
                     orientation="h",
                     yanchor="top",
-                    y=-0.1,
+                    y=-0.3,
                     xanchor="center",
                     x=0.5,
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
-                margin=dict(l=10, r=10, t=10, b=80),
-                height=653,
+                margin=dict(l=20, r=20, t=20, b=80),
+                height=345,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -1038,11 +1024,11 @@ with tab3:
 
 with tab4:
     st.badge(
-        "**Evaluasi Model Prediksi Cellular Automata-Markov Chain dan XGBoost**",
+        "**Evaluasi Model Terintegrasi Cellular Automata-Markov Chain dan XGBoost untuk Prediksi Penutup Lahan**",
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([1.85, 2.15])
+    col1_metrik_img, col2_metrik_insight = st.columns([1.8, 2.2])
     with col1_metrik_img:
         with st.container(border=True):
             fig = go.Figure(
@@ -1081,7 +1067,7 @@ with tab4:
                 legend={
                     "orientation": "h",
                     "yanchor": "top",
-                    "y": -0.15,
+                    "y": -0.2,
                     "xanchor": "center",
                     "x": 0.5,
                     "font": {"family": "Poppins", "size": 12, "color": "black"},
@@ -1089,8 +1075,8 @@ with tab4:
                 font={"family": "Poppins"},
                 plot_bgcolor="#fdfaf6",
                 paper_bgcolor="#fdfaf6",
-                margin=dict(l=20, r=20, t=20, b=60),
-                height=263,
+                margin=dict(l=20, r=20, t=20, b=30),
+                height=241,
                 showlegend=True,
             )
 
@@ -1101,11 +1087,11 @@ with tab4:
 
     with col2_metrik_insight:
         with st.container(border=True):
-            st.write("💡**Quick Insight**")
+            st.write("💡 **Quick Insight**")
             st.markdown(
                 f"""
-                - Model prediksi penutup lahan menunjukkan :green-background[**akurasi**] yang :green-background[**tinggi**] sebesar :green-background[**89.63%**] setelah divalidasi dengan data aktual terkini.
-                - :green-background[**Koefisien kappa**] sebesar :green-background[**83.51%**] masuk ke dalam kategori :green-background[**almost perfect agreement**⁽¹⁾] yang menunjukkan tingkat kesepakatan :green-background[**sangat baik**].
+                - Model prediksi penutup lahan menunjukkan **akurasi tinggi** sebesar :green-background[**89.63%**] setelah divalidasi dengan data aktual terkini.
+                - Koefisien kappa sebesar :green-background[**83.51%**] masuk ke dalam kategori *almost perfect agreement* yang menunjukkan tingkat kesepakatan **sangat baik**<sup>[1]</sup>.
                 """,
                 unsafe_allow_html=True,
             )
@@ -1207,22 +1193,22 @@ with tab4:
 
     with col2_report_insight:
         with st.container(border=True):
-            with st.expander("📐**Penjelasan Metrik**"):
+            with st.expander("🧰 **Quick Guide: Metrik Precision, Recall, F1-Score**"):
                 st.markdown(
                     f"""
-                        - **Precision** menjawab pertanyaan "dari semua yang diprediksi sebagai kelas X, berapa % yang benar?"
-                        - **Recall** menjawab pertanyaan "dari semua kelas X yang sebenarnya ada, berapa % yang berhasil ditemukan?"
-                        - **F1-Score** adalah nilai gabungan Precision & Recall (semakin mendekati 1, maka model semakin baik)⁽²⁾
+                        - **Precision** menjawab pertanyaan, "Dari semua yang diprediksi sebagai kelas X, berapa persen yang benar?"
+                        - **Recall** menjawab pertanyaan, "Dari semua kelas X yang sebenarnya ada, berapa persen yang berhasil ditemukan model?"
+                        - **F1-Score** adalah rata-rata gabungan dari Precision dan Recall. Semakin mendekati 1, performa model semakin baik<sup>[2]</sup>.
                     """,
                     unsafe_allow_html=True,
                 )
 
         with st.container(border=True):
-            st.write("💡**Quick Insight**")
+            st.write("💡 **Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**Vegetasi**] dan :green-background[**lahan terbangun**] menunjukkan performa terbaik dengan nilai :green-background[**F1-Score tinggi**] (0.88 dan 0.77) yang mengindikasikan bahwa :green-background[**model dapat mengidentifikasi**] kedua kelas ini dengan baik.
-                - :green-background[**Tubuh air**] dan :green-background[**lahan terbuka**] memiliki performa rendah dengan nilai F1-score 0.36 dan 0.14, menunjukkan :green-background[**model kesulitan membedakan**] kedua kelas tersebut. Hal ini dapat disebabkan oleh :green-background[**keterbatasan data training**] atau :green-background[**kemiripan spektral**] dengan kelas lain.
+                - Model menunjukkan **performa terbaik** dalam mengidentifikasi kelas **vegetasi** dan **lahan terbangun**. Hal ini dibuktikan dengan nilai **F1-Score tinggi** masing-masing sebesar :green-background[**0.88**] dan :green-background[**0.77**].
+                - Sebaliknya, model menunjukkan **performa yang lebih rendah** dalam mengidentifikasi kelas **tubuh air** dan **lahan terbuka**. Nilai **F1-Score rendah** menunjukkan model kesulitan membedakan kedua kelas tersebut. Hal ini dapat disebabkan oleh :green-background[**keterbatasan sampel training**] atau :green-background[**kemiripan spektral**] dengan kelas lain.
                 """,
                 unsafe_allow_html=True,
             )

@@ -420,7 +420,7 @@ with tab1:
         color="primary",
     )
 
-    col1_peta, col2_peta = st.columns([2.5, 1.5])
+    col1_peta, col2_peta = st.columns([2.6, 1.4])
 
     with col2_peta:
         with st.container(border=True):
@@ -477,7 +477,7 @@ with tab1:
         # Container Analisis NDBI per Kecamatan
         if selected_kecamatan and selected_kecamatan != "" and kecamatan_data_year:
             with st.container(border=True):
-                st.write("💡**Quick Insight**")
+                st.write("💡 **Quick Insight**")
                 kecamatan_data = kecamatan_data_year[selected_kecamatan]
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
@@ -490,9 +490,9 @@ with tab1:
 
                 # Pengkondisian Tahun 2029
                 if option == "2029":
-                    description = f"Nilai rata-rata NDBI di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] :green-background[**diprediksi**] sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
+                    description = f"Pada tahun :green-background[**{option}**], **{toponim} {selected_kecamatan}** :green-background[**diprediksi**] memiliki nilai rata-rata NDBI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai ini mengindikasikan bahwa :green-background[**{toponim} {selected_kecamatan}**] memiliki tingkat **kerapatan area terbangun** yang :green-background[**{deskripsi}**] pada masa mendatang."
                 else:
-                    description = f"Nilai rata-rata NDBI di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] tercatat sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan area terbangun**] dan :green-background[**mobilitas penduduk**] yang :green-background[**{deskripsi}**]."
+                    description = f"Pada tahun :green-background[**{option}**], **{toponim} {selected_kecamatan}** memiliki nilai rata-rata NDBI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai ini mengindikasikan bahwa :green-background[**{toponim} {selected_kecamatan}**] memiliki tingkat **kerapatan area terbangun** yang :green-background[**{deskripsi}**]."
 
                 st.write(description)
 
@@ -625,7 +625,7 @@ with tab2:
         "**Tren NDBI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2, 2])
+    col1_tren_main, col2_tren_main = st.columns([2.2, 1.8])
     with col1_tren_main:
         # Container Grafik Tren
         with st.container(border=True):
@@ -700,7 +700,7 @@ with tab2:
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=318,
+                height=345,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -723,10 +723,10 @@ with tab2:
         with st.container(border=True):
             st.markdown(
                 """
-                💡**Quick Insight**
+                💡 **Quick Insight**
                 - Nilai :green-background[**NDBI**] berkisar dari :green-background[**-1**] (area bervegetasi atau tubuh air) hingga :green-background[**+1**] (area terbangun).
-                - Terlihat tren yang kontras antara kedua kawasan. Sejak 1999, :green-background[**NDBI**] di :green-background[**kawasan perkotaan**] terus :green-background[**meningkat secara konsisten**], mengindikasikan :green-background[**laju pembangunan**] yang terus berjalan dan diprediksi akan berlanjut.
-                - Sebaliknya, :green-background[**kawasan non-perkotaan**] menunjukkan :green-background[**NDBI**] yang :green-background[**cenderung stabil**] dan :green-background[**fluktuatif**] di angka :green-background[**negatif**]. Kondisi tersebut mengindikasikan bahwa :green-background[**lahan non-terbangun**] (dalam hal ini vegetasi) masih :green-background[**terjaga**] dan :green-background[**tidak mengalami perubahan masif**].
+                - Terlihat tren yang kontras antara kedua kawasan. Sejak 1999, NDBI di :green-background[**kawasan perkotaan**] terus **meningkat secara konsisten**, mengindikasikan :green-background[**laju pembangunan**] yang **terus berjalan** dan diprediksi akan berlanjut.
+                - Sebaliknya, :green-background[**kawasan non-perkotaan**] menunjukkan NDBI yang cenderung **stabil** dan **fluktuatif** di angka :green-background[**negatif**]. Kondisi tersebut mengindikasikan bahwa **lahan non-terbangun** (dalam hal ini vegetasi) masih terjaga dan **tidak mengalami perubahan masif**.
                 """
             )
 
@@ -988,22 +988,12 @@ with tab3:
 
             # Container Analisis Tren
             with st.container(border=True):
-                st.markdown("💡**Quick Insight**")
-
-                # st.markdown(
-                #     f"""
-                #     - Terdapat hubungan positif yang kuat antara data NDBI dari Landsat 8 dan Sentinel-2 dengan nilai korelasi {correlation_coef:.3f}<sup>[1]</sup>.
-                #     - Tingkat akurasi tinggi dengan nilai error (RMSE dan MAE) kecil yang menunjukkan hasil pengolahan NDBI dari kedua satelit hampir identik<sup>[2]</sup>.
-                #     - Hubungan NDBI antar kedua satelit valid secara statistik dengan nilai p-value sangat signifikan (< 0.01)<sup>[3]</sup>.
-                # """,
-                #     unsafe_allow_html=True,
-                # )
-
+                st.markdown("💡 **Quick Insight**")
                 st.markdown(
                     f"""
                     - **Korelasi Sangat Kuat**: NDBI Landsat 8 dan Sentinel-2 memiliki hubungan kuat (:green-background[**r**] = :green-background[**{correlation_coef:.3f}**])<sup>[1]</sup>.
-                    - **Akurasi Tinggi**: :green-background[**Kesalahan**] antar data :green-background[**sangat kecil**] (RMSE = {rmse:.3f}, MAE = {mae:.3f}) menandakan hasil pengolahan NDBI kedua satelit hampir :green-background[**identik**]<sup>[2]</sup>.
-                    - Hubungan kedua NDBI :green-background[**valid secara statistik**] dengan nilai :green-background[**p-value sangat signifikan**] (< 0.01)<sup>[3]</sup>.
+                    - **Akurasi Tinggi**: Kesalahan antar data :green-background[**sangat kecil**] (RMSE = {rmse:.3f}, MAE = {mae:.3f}) menandakan hasil pengolahan NDBI kedua satelit hampir :green-background[**identik**]<sup>[2]</sup>.
+                    - Hubungan kedua NDBI :green-background[**valid secara statistik**] dengan nilai **p-value sangat signifikan** (< 0.01)<sup>[3]</sup>.
                 """,
                     unsafe_allow_html=True,
                 )
@@ -1231,7 +1221,7 @@ with tab4:
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([2, 2])
+    col1_metrik_img, col2_metrik_insight = st.columns([1.85, 2.15])
     with col1_metrik_img:
         with st.container(border=True):
             fig = go.Figure(
@@ -1299,16 +1289,18 @@ with tab4:
 
     with col2_metrik_insight:
         with st.container(border=True):
-            st.write("💡**Quick Insight**")
+            st.write("💡 **Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**sangat kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**]<sup>[1]</sup>.
-                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**86.48%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi cukup tepat**]<sup>[2]</sup>.
+                - **RMSE** dan **MAE** menunjukkan nilai yang **sangat kecil** artinya model proyeksi memiliki :green-background[**tingkat kesalahan**] yang **sangat rendah**<sup>[1]</sup>.
+                - **Koefisien determinasi (R²)** menunjukkan bahwa :green-background[**86.48%**] variasi data **dapat dijelaskan oleh model** yang mengindikasikan **hasil proyeksi akurat**<sup>[2]</sup>.
                 """,
                 unsafe_allow_html=True,
             )
-            st.success("✅ Model XGBoost **LAYAK** untuk proyeksi NDBI 2029!")
-            st.success("✅ Data proyeksi NDBI 2029 **VALID** untuk prediksi LST 2029!")
+            st.success("✅ Model **LAYAK** untuk memproyeksikan NDBI 2029!")
+            st.success(
+                "✅ Data proyeksi NDBI 2029 **VALID** untuk memprediksi LST 2029!"
+            )
 
     st.badge(
         "**Perbandingan Visual Peta NDBI Aktual vs Proyeksi**",
