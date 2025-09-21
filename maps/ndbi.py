@@ -622,7 +622,7 @@ with tab2:
 
     # Grafik Garis Tren NDBI
     st.badge(
-        "**Tren NDBI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
+        "**Tren NDBI di Kawasan Perkotaan dan Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.2, 1.8])
@@ -871,7 +871,7 @@ with tab3:
 
         # Row Diagram Garis dan Validasi NDBI
         st.badge(
-            "**Korelasi Pearson NDBI: Landsat 8 vs Sentinel-2 (2024)**",
+            "**Korelasi Pearson NDBI Landsat 8 dan Sentinel-2 (2024)**",
             color="primary",
         )
 
@@ -1001,7 +1001,7 @@ with tab3:
                 # Status Validasi
                 abs_corr = abs(correlation_coef)
                 if abs_corr >= 0.7 and rmse <= 0.1:
-                    st.success("✅ VALID! Data NDBI layak untuk prediksi LST!")
+                    st.success("✅ VALID! Data NDBI layak untuk memprediksi LST!")
                 elif abs_corr >= 0.5 and rmse <= 0.15:
                     st.warning(
                         "⚠️ CUKUP VALID — Data NDBI dapat digunakan dengan catatan."
@@ -1023,7 +1023,7 @@ with tab3:
             "Periksa format file CSV dan nama kolom ('ndbiLandsat' dan 'ndbiSentinel')"
         )
 
-    # Row Peta NDBI Landsat 8 vs Sentinel-2
+    # Row Peta NDBI Landsat 8 dan Sentinel-2
     # Threshold untuk Peta Validasi
     validation_thresholds = {
         "landsat": {"low": -0.309, "medium": -0.162, "high": -0.015},
@@ -1031,7 +1031,7 @@ with tab3:
     }
 
     st.badge(
-        "**Peta NDBI: Landsat 8 vs Sentinel-2 (2024)**",
+        "**Peta NDBI Landsat 8 dan Sentinel-2 (2024)**",
         color="primary",
     )
     col_peta_sentinel = st.columns(1)
@@ -1303,7 +1303,7 @@ with tab4:
             )
 
     st.badge(
-        "**Perbandingan Visual Peta NDBI Aktual vs Proyeksi**",
+        "**Perbandingan Visual Peta NDBI Aktual dan Proyeksi**",
         color="primary",
     )
 
@@ -1540,7 +1540,7 @@ with tab4:
                 st.error(f"Error: {str(e)}")
 
     st.badge(
-        "**Tabel Perbandingan Sampel Nilai NDBI Aktual vs Proyeksi**",
+        "**Tabel Perbandingan Sampel Nilai NDBI Aktual dan Proyeksi**",
         color="primary",
     )
 

@@ -1214,7 +1214,7 @@ with tab4:
             )
 
     st.badge(
-        "**Perbandingan Visual Peta Penutup Lahan Aktual vs Prediksi**",
+        "**Perbandingan Visual Peta Penutup Lahan Aktual dan Prediksi**",
         color="primary",
     )
 

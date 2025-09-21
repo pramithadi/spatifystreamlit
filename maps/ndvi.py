@@ -623,7 +623,7 @@ with tab2:
 
     # Row Diagram Garis & Ranking NDVI
     st.badge(
-        "**Tren NDVI di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
+        "**Tren NDVI di Kawasan Perkotaan dan Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.4, 1.6])
@@ -872,7 +872,7 @@ with tab3:
 
         # Row Diagram Garis dan Validasi NDVI
         st.badge(
-            "**Korelasi Pearson NDVI: Landsat 8 vs Sentinel-2 (2024)**",
+            "**Korelasi Pearson NDVI: Landsat 8 dan Sentinel-2 (2024)**",
             color="primary",
         )
 
@@ -1055,7 +1055,7 @@ with tab3:
             "Periksa format file CSV dan nama kolom ('ndviLandsat' dan 'ndviSentinel')"
         )
 
-    # Row Peta NDVI Landsat 8 vs Sentinel-2
+    # Row Peta NDVI Landsat 8 dan Sentinel-2
     # Threshold untuk Peta Validasi
     validation_thresholds = {
         "landsat": {"low": 0.426, "medium": 0.592, "high": 0.758},
@@ -1063,7 +1063,7 @@ with tab3:
     }
 
     st.badge(
-        "**Peta NDVI: Landsat 8 vs Sentinel-2 (2024)**",
+        "**Peta NDVI: Landsat 8 dan Sentinel-2 (2024)**",
         color="primary",
     )
     with st.container(border=True):
@@ -1329,7 +1329,7 @@ with tab4:
             st.success("✅ Data proyeksi NDVI 2029 **VALID** untuk prediksi LST 2029!")
 
     st.badge(
-        "**Perbandingan Visual Peta NDVI Aktual vs Proyeksi**",
+        "**Perbandingan Visual Peta NDVI Aktual dan Proyeksi**",
         color="primary",
     )
 
@@ -1566,7 +1566,7 @@ with tab4:
                 st.error(f"Error: {str(e)}")
 
     st.badge(
-        "**Tabel Perbandingan Sampel Nilai NDVI Aktual vs Proyeksi**",
+        "**Tabel Perbandingan Sampel Nilai NDVI Aktual dan Proyeksi**",
         color="primary",
     )
 

@@ -734,7 +734,7 @@ with tab1:
 # SECTION 2: TREN
 # ==============================================================================
 with tab2:
-    # Grafik Tren LST Perkotaan vs Non-Perkotaan
+    # Grafik Tren LST Perkotaan dan Non-Perkotaan
     df_urban_rural = pd.read_csv("./csv/lstStatsKec.csv")
 
     lst_urban_rural = (
@@ -746,7 +746,7 @@ with tab2:
     )
 
     st.badge(
-        "**Tren LST di Kawasan Perkotaan vs Non-Perkotaan Yogyakarta (1999-2029)**",
+        "**Tren LST di Kawasan Perkotaan dan Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
     col1_tren_main, col2_tren_main = st.columns([2.3, 1.7])
@@ -994,7 +994,7 @@ with tab3:
 
         # Row Diagram Garis dan Validasi LST
         st.badge(
-            "**Validasi LST Landsat 8 vs LST Pengukuran Lapangan (2024)**",
+            "**Validasi LST Landsat 8 dan LST Pengukuran Lapangan (2024)**",
             color="primary",
         )
 
@@ -1135,7 +1135,7 @@ with tab3:
         )
 
     st.badge(
-        "**Tabel Perbandingan Nilai LST Landsat 8 vs LST Aktual**",
+        "**Tabel Perbandingan Nilai LST Landsat 8 dan LST Aktual**",
         color="primary",
     )
 
@@ -1470,7 +1470,7 @@ with tab4:
 
     # Peta Perbandingan
     st.badge(
-        "**Perbandingan Visual Peta LST Aktual vs Prediksi**",
+        "**Perbandingan Visual Peta LST Aktual dan Prediksi**",
         color="primary",
     )
 
@@ -1721,7 +1721,7 @@ with tab4:
                 st.error(f"Traceback: {traceback.format_exc()}")
 
     st.badge(
-        "**Tabel Perbandingan Sampel Nilai LST Aktual vs Prediksi**",
+        "**Tabel Perbandingan Sampel Nilai LST Aktual dan Prediksi**",
         color="primary",
     )
 
@@ -1829,12 +1829,12 @@ with tab5:
         col1_regresi_ndbi, col2_regresi_ndbi = st.columns([2, 2])
         with col1_regresi_ndbi:
             with st.container(border=True):
-                # Membuat plot LST vs NDBI
+                # Membuat plot LST dan NDBI
                 fig_ndbi, r2_ndbi, p_val_ndbi, slope_ndbi = create_regression_plot(
                     df_regression,
                     "NDBI",
                     "LST",
-                    "Regresi Linier: LST vs NDBI",
+                    "Regresi Linier: LST dan NDBI",
                     "NDBI",
                     "LST (°C)",
                 )
@@ -1867,12 +1867,12 @@ with tab5:
         col1_regresi_ndmi, col2_regresi_ndmi = st.columns([2, 2])
         with col1_regresi_ndmi:
             with st.container(border=True):
-                # Membuat plot LST vs NDMI
+                # Membuat plot LST dan NDMI
                 fig_ndmi, r2_ndmi, p_val_ndmi, slope_ndmi = create_regression_plot(
                     df_regression,
                     "NDMI",
                     "LST",
-                    "Regresi Linier: LST vs NDMI",
+                    "Regresi Linier: LST dan NDMI",
                     "NDMI",
                     "LST (°C)",
                 )
@@ -1905,12 +1905,12 @@ with tab5:
         col1_regresi_ndvi, col2_regresi_ndvi = st.columns([2, 2])
         with col1_regresi_ndvi:
             with st.container(border=True):
-                # Membuat plot LST vs NDVI
+                # Membuat plot LST dan NDVI
                 fig_ndvi, r2_ndvi, p_val_ndvi, slope_ndvi = create_regression_plot(
                     df_regression,
                     "NDVI",
                     "LST",
-                    "Regresi Linier: LST vs NDVI",
+                    "Regresi Linier: LST dan NDVI",
                     "NDVI",
                     "LST (°C)",
                 )
