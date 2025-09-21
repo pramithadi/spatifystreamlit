@@ -421,7 +421,7 @@ with tab1:
         color="primary",
     )
 
-    col1_peta, col2_peta = st.columns([2.5, 1.5])
+    col1_peta, col2_peta = st.columns([2.6, 1.4])
 
     with col2_peta:
         with st.container(border=True):
@@ -491,9 +491,9 @@ with tab1:
 
                 # Pengkondisian Tahun 2029
                 if option == "2029":
-                    description = f"Nilai rata-rata NDVI di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] diprediksi sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai rata-rata NDVI tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} :green-background[**diprediksi**] memiliki :green-background[**kerapatan vegetasi**] yang :green-background[**{deskripsi}**]."
+                    description = f"Pada tahun :green-background[**{option}**], **{toponim} {selected_kecamatan}** :green-background[**diprediksi**] memiliki nilai rata-rata NDVI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai ini mengindikasikan bahwa :green-background[**{toponim} {selected_kecamatan}**] memiliki tingkat **kerapatan vegetasi** yang :green-background[**{deskripsi}**] pada masa mendatang."
                 else:
-                    description = f"Nilai rata-rata NDVI di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] tercatat sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai tersebut mengindikasikan bahwa {toponim} {selected_kecamatan} memiliki tingkat :green-background[**kerapatan vegetasi**] yang :green-background[**{deskripsi}**]."
+                    description = f"Pada tahun :green-background[**{option}**], **{toponim} {selected_kecamatan}** memiliki nilai rata-rata NDVI sebesar :green-background[**{kecamatan_data['mean']:.3f}**]. Nilai ini mengindikasikan bahwa :green-background[**{toponim} {selected_kecamatan}**] memiliki tingkat **kerapatan vegetasi** yang :green-background[**{deskripsi}**]."
 
                 st.write(description)
 
@@ -626,7 +626,7 @@ with tab2:
         "**Tren NDVI di Kawasan Perkotaan dan Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2.4, 1.6])
+    col1_tren_main, col2_tren_main = st.columns([2.2, 1.8])
     with col1_tren_main:
         # Container Grafik Tren
         with st.container(border=True):
@@ -701,7 +701,7 @@ with tab2:
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=20, b=5),
-                height=370,
+                height=320,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -725,15 +725,15 @@ with tab2:
             st.markdown(
                 """
                 💡 **Quick Insight**
-                - Nilai NDVI berkisar antara :green-background[**-1 hingga +1**]. :green-background[**Semakin tinggi**] nilai mengindikasikan :green-background[**rapatnya vegetasi**]. Sebaliknya, :green-background[**semakin rendah**] menunjukkan :green-background[**area tidak bervegetasi**] atau :green-background[**tubuh air**].
-                - Nilai NDVI di :green-background[**kawasan perkotaan**] cukup :green-background[**fluktuatif**] di awal 1999, lalu mulai turun sejak 2014, dan diproyeksi akan :green-background[**terus turun**] sekitar 0.002 pada 2029.
-                - Nilai NDVI di :green-background[**kawasan non-perkotaan**] cenderung :green-background[**fluktuatif**] di awal 1999 dan mulai stabil sejak 2014 serta diproyeksi akan :green-background[**terus naik**] sekitar 0.005 pada 2029.
+                - Nilai :green-background[**NDVI**] berkisar dari :green-background[**-1**] (area non-vegetasi) hingga :green-background[**+1**]. Semakin tinggi nilainya, semakin rapat vegetasinya.
+                - Terlihat tren yang sangat kontras. :green-background[**Kawasan non-perkotaan**] secara konsisten menunjukkan nilai NDVI yang :green-background[**sangat tinggi (di atas 0.5)**], mengindikasikan **area dengan kehijauan vegetasi yang terjaga**.
+                - Sebaliknya, :green-background[**kawasan non-perkotaan**] memiliki nilai NDVI yang :green-background[**jauh lebih rendah**] dan diproyeksikan akan terus **menurun**. Pola ini menandakan **berkurangnya kerapatan vegetasi** seiring waktu.
                 """
             )
 
     # Row Diagram Garis & Ranking NDVI
     st.badge(
-        "**Top 38 Kecamatan: Kerapatan Vegetasi Tertinggi (1999-2024)**",
+        "**Peringkat Kecamatan Berdasarkan Rata-rata NDVI (1999-2024)**",
         color="primary",
     )
 
@@ -872,11 +872,11 @@ with tab3:
 
         # Row Diagram Garis dan Validasi NDVI
         st.badge(
-            "**Korelasi Pearson NDVI: Landsat 8 dan Sentinel-2 (2024)**",
+            "**Korelasi Pearson NDVI Landsat 8 dan Sentinel-2 (2024)**",
             color="primary",
         )
 
-        col1_validate, col2_validate = st.columns([2.4, 1.6])
+        col1_validate, col2_validate = st.columns([2.2, 1.8])
         with col1_validate:
             # Container Grafik Korelasi Pearson
             with st.container(border=True):
@@ -905,7 +905,7 @@ with tab3:
 
                 # Update Layout
                 fig.update_layout(
-                    height=362,
+                    height=445,
                     showlegend=True,
                     template="plotly_white",
                     font=dict(
@@ -1025,11 +1025,11 @@ with tab3:
 
                 st.markdown(
                     f"""
-                - **Sampel**: {len(landsat_values)}
-                - **Korelasi (r)**: {corr_interpretation}⁽¹⁾
-                - **Akurasi (RMSE)**: Baik⁽²⁾
-                - **p-value**: {p_value:.3f} (Sangat Signifikan)⁽³⁾
-                """
+                    - **Korelasi Sangat Kuat**: NDVI Landsat 8 dan Sentinel-2 memiliki hubungan kuat (:green-background[**r**] = :green-background[**{correlation_coef:.3f}**])<sup>[1]</sup>.
+                    - **Akurasi Tinggi**: Kesalahan antar data :green-background[**sangat kecil**] (RMSE = {rmse:.3f}, MAE = {mae:.3f}) menandakan hasil pengolahan NDVI kedua satelit hampir :green-background[**identik**]<sup>[2]</sup>.
+                    - Hubungan kedua NDVI :green-background[**valid secara statistik**] dengan nilai **p-value sangat signifikan** (< 0.01)<sup>[3]</sup>.
+                """,
+                    unsafe_allow_html=True,
                 )
 
                 # Status Validasi
@@ -1249,7 +1249,7 @@ with tab4:
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([1.9, 2.1])
+    col1_metrik_img, col2_metrik_insight = st.columns([1.85, 2.15])
     with col1_metrik_img:
         with st.container(border=True):
             fig = go.Figure(
@@ -1320,13 +1320,16 @@ with tab4:
             st.write("💡 **Quick Insight**")
             st.markdown(
                 f"""
-                - :green-background[**RMSE**] dan :green-background[**MAE**] menunjukkan nilai yang :green-background[**sangat kecil**] artinya model prediksi memiliki :green-background[**tingkat kesalahan**] yang :green-background[**sangat rendah**].⁽¹⁾ 
-                - :green-background[**Koefisien determinasi (R²)**] menunjukkan bahwa :green-background[**87.65%**] variasi data :green-background[**dapat dijelaskan oleh model**] sehingga dapat dikatakan bahwa :green-background[**hasil prediksi cukup tepat**].⁽²⁾
+                - **RMSE** dan **MAE** menunjukkan nilai yang **sangat kecil** artinya model proyeksi memiliki :green-background[**tingkat kesalahan**] yang **sangat rendah**<sup>[1]</sup>.
+                - **Koefisien determinasi (R²)** menunjukkan bahwa :green-background[**87.65%**] variasi data **dapat dijelaskan oleh model** yang mengindikasikan **hasil proyeksi akurat**<sup>[2]</sup>.
                 """,
                 unsafe_allow_html=True,
             )
-            st.success("✅ Model XGBoost **LAYAK** untuk proyeksi NDVI 2029!")
-            st.success("✅ Data proyeksi NDVI 2029 **VALID** untuk prediksi LST 2029!")
+
+            st.success("✅ Model **LAYAK** untuk memproyeksikan NDVI 2029!")
+            st.success(
+                "✅ Data proyeksi NDVI 2029 **VALID** untuk memprediksi LST 2029!"
+            )
 
     st.badge(
         "**Perbandingan Visual Peta NDVI Aktual dan Proyeksi**",

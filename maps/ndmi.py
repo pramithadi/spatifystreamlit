@@ -1326,6 +1326,7 @@ with tab4:
                 """,
                 unsafe_allow_html=True,
             )
+
             st.success("✅ Model **LAYAK** untuk memproyeksikan NDMI 2029!")
             st.success(
                 "✅ Data proyeksi NDMI 2029 **VALID** untuk memprediksi LST 2029!"
