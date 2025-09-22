@@ -139,9 +139,10 @@ ndvi = st.Page("maps/ndvi.py", title="NDVI", icon=":material/psychiatry:")
 dataset = st.Page(
     "how-its-made/dataset.py", title="Dataset", icon=":material/database:"
 )
-workflow = st.Page(
-    "how-its-made/workflow.py",
-    title="Alur Proses",
+alat = st.Page("how-its-made/alat.py", title="Alat", icon=":material/construction:")
+metodologi = st.Page(
+    "how-its-made/metodologi.py",
+    title="Metodologi",
     icon=":material/flowchart:",
 )
 project = st.Page(
@@ -149,24 +150,26 @@ project = st.Page(
     title="Project",
     icon=":material/code_blocks:",
 )
-gee_apps = st.Page(
-    "maps/gee-apps.py", title="GEE Apps", icon=":material/globe_location_pin:"
-)
 
 # Get Results Section
 download_peta = st.Page(
-    "get-results/download-peta.py", title="Download Peta", icon=":material/download:"
+    "get-results/download-peta.py", title="Unduh Peta", icon=":material/download:"
 )
 galeri = st.Page(
     "get-results/galeri.py", title="Galeri", icon=":material/gallery_thumbnail:"
+)
+gee_apps = st.Page(
+    "get-results/gee-apps.py",
+    title="Earth Engine Apps",
+    icon=":material/globe_location_pin:",
 )
 
 pg = st.navigation(
     {
         "": [home],
-        "Analisis": [lst, lulc, ndbi, ndmi, ndvi],
-        "How It's Made": [dataset, workflow],
-        "Get Results": [download_peta, gee_apps],
+        "Dasbor Analisis": [lst, ndbi, ndmi, ndvi, lulc],
+        "Telisik Proses": [alat, dataset, metodologi],
+        "Eksplorasi Hasil": [download_peta, gee_apps],
     }
 )
 pg.run()

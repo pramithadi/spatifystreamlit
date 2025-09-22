@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_image_comparison import image_comparison
 
 st.set_page_config(
-    page_title="Workflow — Spatify",
+    page_title="Metodologi — Spatify",
     layout="wide",
     initial_sidebar_state="expanded",  # collapsed
 )
@@ -97,7 +97,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# st.header("Workflow")
+# st.header("Metodologi")
 (tab1, tab2, tab3, tab4, tab5) = st.tabs(
     [
         "🛠️ **Diagram Alir**",
@@ -114,7 +114,7 @@ st.markdown(
 with tab1:
     st.badge("**Diagram Alir Penelitian**", color="primary")
     st.image(
-        "./assets/diagram_alir.svg",
+        "./assets/diagram_alir3.svg",
     )
 
 # ==============================================================================
@@ -122,11 +122,11 @@ with tab1:
 # ==============================================================================
 with tab2:
     # Penyaringan Citra
-    st.badge("**Penyaringan Citra**", color="primary")
+    st.badge("**1. Penyaringan Citra**", color="primary")
     st.markdown(
         """
         <div class="justified-text">
-        Tahap ini bertujuan untuk <strong>menyortir citra</strong> dalam Google Earth Engine sesuai dengan batasan penelitian yang telah ditetapkan.
+        Tahap ini bertujuan untuk <b>menyortir citra</b> dalam Google Earth Engine sesuai dengan batasan penelitian yang telah ditetapkan.
         </div>
         """,
         unsafe_allow_html=True,
@@ -134,7 +134,7 @@ with tab2:
 
     codePenyaringanCitra = """
 var landsat2024 = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
-    .filterDate('2024-04-21', '2024-10-31') // Mengacu pada kajian Periode Normal Rata-rata Klimatologi 1991-2020 dari Badan Meteorologi Klimatologi dan Geofisika
+    .filterDate('2024-04-21', '2024-10-31') // Periode Normal Rata-rata Klimatologi 1991-2020 menurut BMKG
     .filterBounds(loc)
     .map(applyScaleFactors8) // Function Scaling Factor
     .map(maskLsr) // Function Cloud Masking
@@ -146,11 +146,11 @@ var landsat2024 = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
     st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
 
     # Scaling Factor
-    st.badge("**Scaling Factor**", color="primary")
+    st.badge("**2. *Scaling Factor***", color="primary")
     st.markdown(
         """
         <div class="justified-text">
-        <strong>Scale factor</strong> digunakan untuk mengembalikan nilai radiansi dan reflektansi citra Landsat Surface Reflectance yang sebelumnya berformat <strong>integer</strong> menjadi <strong>float</strong> agar data memiliki ketelitian sampai level desimal (USGS, 2023).
+        <b><i>Scale factor</i></b> digunakan untuk <b>mengembalikan nilai</b> radiansi dan reflektansi citra Landsat <i>Surface Reflectance</i> yang awalnya berformat <b><i>integer</i></b> menjadi <b><i>float</i></b> agar data memiliki ketelitian sampai level desimal (USGS, 2023).
         </div>
         """,
         unsafe_allow_html=True,
@@ -169,11 +169,11 @@ function applyScaleFactors(image) {
     st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
 
     # Cloud Masking
-    st.badge("**Cloud Masking**", color="primary")
+    st.badge("**3. *Cloud Masking***", color="primary")
     st.markdown(
         """
         <div class="justified-text">
-        <strong>Cloud masking</strong> metode <strong>Quality Assesment (QA)</strong> merupakan teknik untuk mengurangi tutupan awan dalam citra (Sinabutar <em>et al.</em>, 2020).
+        <b><i>Cloud masking</i></b> metode <b><i>quality assesment</i></b> <b>(QA)</b> merupakan teknik untuk <b>mengurangi tutupan awan</b> dalam citra (Sinabutar <em>et al.</em>, 2020).
         </div>
         """,
         unsafe_allow_html=True,
@@ -226,7 +226,7 @@ with tab3:
         st.markdown(
             """
             <div class="justified-text">
-            Ekstraksi suhu permukaan lahan atau land surface temperature (LST) dilakukan dengan metode <strong>Single-Channel</strong> yang dikembangkan oleh Jiménez-Muñoz & Sobrino (2010).
+            Ekstraksi <b>suhu permukaan lahan</b> atau <i>land surface temperature</i> (LST) dilakukan dengan metode <b><i>Single-Channel</i></b> yang dikembangkan oleh Jiménez-Muñoz & Sobrino (2010).
         </div>
         """,
             unsafe_allow_html=True,
@@ -237,7 +237,7 @@ with tab3:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Nilai radiansi spektral</strong> pada citra Landsat Surface Reflectance <strong>telah dikalibrasi</strong> secara otomatis melalui penerapan function <strong>Scaling Factor</strong>. Dengan demikian, nilai radiansi spektral dari saluran termal dataset ini dapat langsung digunakan dalam perhitungan LST.
+        <b>Nilai radiansi spektral</b> pada citra Landsat <i>Surface Reflectance</i> <b>telah dikalibrasi</b> secara otomatis melalui pengaplikasian <i>function</i> <b>Scaling Factor</b>. Dengan demikian, nilai radiansi spektral dari saluran termal di dataset ini dapat langsung digunakan dalam perhitungan LST.
         </div>
         """,
             unsafe_allow_html=True,
@@ -251,7 +251,7 @@ with tab3:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Emisivitas permukaan (ε)</strong> merupakan kapabilitas suatu objek dalam <strong>menyerap radiasi</strong> dari matahari dan <strong>memantulkan</strong> energi panas (radiasi <strong>termal</strong>) (Mallick <em>et al.</em>, 2012). Nilai emisivitas permukaan dalam penelitian ini dihitung menggunakan pendekatan <strong>NDVI</strong> dan <strong>Proportion of Vegetation (Pv)</strong>.
+        <b>Emisivitas permukaan (ε)</b> merupakan kapabilitas suatu objek dalam <b>menyerap radiasi</b> dari matahari dan <b>memantulkan</b> energi panas (radiasi termal) (Mallick <em>et al.</em>, 2012). Nilai emisivitas permukaan dalam penelitian ini dihitung menggunakan pendekatan NDVI dan <i>Proportion of Vegetation</i> (Pv).
         </div>
         """,
             unsafe_allow_html=True,
@@ -264,7 +264,7 @@ with tab3:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• NDVI</strong>
+        <b>• NDVI</b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -278,10 +278,10 @@ with tab3:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        NDVI = Normalized Difference Vegetation Index<br>
-        NIR = band 4 (Landsat 5 dan Landsat 7), band 5 (Landsat 8)<br>
-        Red = band 3 (Landsat 5 dan Landsat 7), band 4 (Landsat 8)
+        <b>dengan:</b><br>
+        NDVI = <i>Normalized Difference Vegetation Index</i><br>
+        NIR = <i>band</i> 4 (Landsat 5 dan Landsat 7), <i>band</i> 5 (Landsat 8)<br>
+        Red = <i>band</i> 3 (Landsat 5 dan Landsat 7), <i>band</i> 4 (Landsat 8)
         </div>
         """,
             unsafe_allow_html=True,
@@ -303,7 +303,7 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• Proportion of Vegetation</strong>
+        <b>• <i>Proportion of Vegetation</i> (Pv)</b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -317,11 +317,11 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        Pv = Proportion of Vegetation<br>
+        <b>dengan:</b><br>
+        Pv = proporsi vegetasi<br>
         NDVI = nilai NDVI<br>
         NDVI<sub>min</sub> = nilai minimum NDVI <br>
-        NDV<sub>max</sub> = nilai maksimum NDVI
+        NDVI<sub>max</sub> = nilai maksimum NDVI
         </div>
         """,
             unsafe_allow_html=True,
@@ -329,21 +329,7 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
 
         # Kode Pv
         codePv = """
-// Perhitungan Proportion of Vegetation (Pv)
-var ndvi2024min = ee.Number(ndvi2024.reduceRegion({
-  reducer: ee.Reducer.min(),
-  geometry: loc,
-  scale: 30,
-  maxPixels: 1e9
-}).values().get(0));
-
-var ndvi2024max = ee.Number(ndvi2024.reduceRegion({
-  reducer: ee.Reducer.max(),
-  geometry: loc,
-  scale: 30,
-  maxPixels: 1e9
-}).values().get(0));
-
+// Perhitungan Pv
 var pv2024 = (ndvi2024.subtract(ndvi2024min).divide(ndvi2024max.subtract(ndvi2024min))).pow(ee.Number(2)).rename('pv2024');
 """
         st.code(codePv, language="javascript", line_numbers=True)
@@ -355,7 +341,7 @@ var pv2024 = (ndvi2024.subtract(ndvi2024min).divide(ndvi2024max.subtract(ndvi202
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• Emisivitas Permukaan</strong>
+        <b>• Emisivitas Permukaan</b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -369,9 +355,9 @@ var pv2024 = (ndvi2024.subtract(ndvi2024min).divide(ndvi2024max.subtract(ndvi202
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        ε = Emisivitas Permukaan<br>
-        Pv = Nilai Proportion of Vegetation
+        <b>dengan:</b><br>
+        ε = emisivitas permukaan<br>
+        Pv = nilai Pv
         </div>
         """,
             unsafe_allow_html=True,
@@ -390,11 +376,11 @@ var emisi2024 = pv2024.multiply(k1).add(k2).rename('emisi2024');
         )
 
         # Perhitungan Brightness Temperature
-        st.badge("**3. Perhitungan Brightness Temperature**", color="primary")
+        st.badge("**3. Perhitungan *Brightness Temperature***", color="primary")
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Brightness temperature</strong> merupakan <strong>nilai suhu permukaan</strong> dari radiasi termal objek yang direkam oleh sensor termal dan disimpan dalam satuan <strong>kelvin</strong> (Jatayu & Susetyo, 2017). Penerapan function Scaling Factor telah <strong>mengkalibrasi</strong> saluran termal ke dalam satuan kelvin sehingga <strong>dapat langsung dimanfaatkan sebagai nilai brightness temperature</strong> (Waleed & Sajjad, 2022).
+        <b><i>Brightness temperature</i></b> merupakan <b>nilai suhu permukaan</b> dari radiasi termal objek yang direkam oleh sensor termal kemudian disimpan dalam satuan <b>kelvin</b> (Jatayu & Susetyo, 2017). Penerapan <i>function scaling factor</i> di tahap sebelumnya telah <b>mengkalibrasi</b> saluran termal ke dalam satuan kelvin sehingga <b>dapat langsung dimanfaatkan</b> sebagai nilai <i>brightness temperature</i> (Waleed & Sajjad, 2022).
         </div>
         """,
             unsafe_allow_html=True,
@@ -416,7 +402,7 @@ var bt2024 = landsat2024.select('ST_B10');
         st.markdown(
             """
         <div class="justified-text">
-        Nilai emisivitas permukaan dan brightness temperature yang telah didapatkan lalu <strong>dikalkulasi</strong> dengan <strong>panjang gelombang saluran termal</strong> dan nilai <strong>radiasi emisivitas</strong> (Waleed & Sajjad, 2022). Untuk mendapatkan <strong>nilai LST</strong> dalam <strong>derajat celcius</strong> maka perlu mengonversi hasilnya dengan 273.15.
+        Nilai emisivitas permukaan dan <i>brightness temperature</i> yang telah didapatkan lalu <b>dikalkulasi</b> dengan <b>panjang gelombang saluran termal</b> dan nilai <b>radiasi emisivitas</b> (Waleed & Sajjad, 2022). Untuk mendapatkan <b>nilai LST</b> dalam derajat <b>celcius</b> maka perlu mengonversi hasilnya dengan nilai 273.15.
         </div>
         """,
             unsafe_allow_html=True,
@@ -430,12 +416,12 @@ var bt2024 = landsat2024.select('ST_B10');
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        LST = Suhu Permukaan Lahan (°C)<br>
-        BT = Nilai Brightness Temperature (K)<br>
-        λ = Panjang Gelombang Saluran Termal (11,5 µm)<br>
-        ρ = Radiasi Emisivitas (1,438 × 10-2 mK)<br>
-        ε = Nilai Emisivitas Permukaan
+        <b>dengan:</b><br>
+        LST = suhu permukaan lahan (°C)<br>
+        BT = nilai <i>brightness temperature</i> (K)<br>
+        λ = panjang gelombang saluran termal (11,5 µm)<br>
+        ρ = radiasi emisivitas (1,438 × 10-2 mK)<br>
+        ε = nilai emisivitas permukaan
         </div>
         """,
             unsafe_allow_html=True,
@@ -470,7 +456,7 @@ var lst2024 = bt2024.expression(
         st.markdown(
             """
             <div class="justified-text">
-            Perhitungan <strong>indeks kerapatan area terbangun</strong> (NDBI) dilakukan dengan mengekstraksi nilai dari <strong>saluran reflektif inframerah-dekat (NIR)</strong> dan <strong>inframerah-gelombang pendek (SWIR)</strong> yang sangat sensitif terhadap area terbangun (Wicaksono <em>et al.</em>, 2021).
+            Perhitungan <b>indeks kerapatan area terbangun</b> (NDBI) dilakukan dengan mengekstraksi nilai dari <b>saluran reflektif inframerah-dekat (NIR)</b> dan <b>inframerah-gelombang pendek (SWIR)</b> yang sangat sensitif terhadap area terbangun (Wicaksono <em>et al.</em>, 2021).
         </div>
         """,
             unsafe_allow_html=True,
@@ -487,10 +473,10 @@ var lst2024 = bt2024.expression(
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        NDBI = Normalized Difference Built-Up Index<br>
-        SWIR = band 5 (Landsat 5 dan Landsat 7), band 6 (Landsat 8)<br>
-        NIR = band 4 (Landsat 5 dan Landsat 7), band 5 (Landsat 8)
+        <b>dengan:</b><br>
+        NDBI = <i>Normalized Difference Built-Up Index</i><br>
+        SWIR = <i>band</i> 5 (Landsat 5 dan Landsat 7), <i>band</i> 6 (Landsat 8)<br>
+        NIR = <i>band</i> 4 (Landsat 5 dan Landsat 7), <i>band</i> 5 (Landsat 8)
         </div>
         """,
             unsafe_allow_html=True,
@@ -521,7 +507,7 @@ var ndbi2024 = landsat2024.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndbi
         st.markdown(
             """
             <div class="justified-text">
-            <strong>Indeks kelembapan vegetasi</strong> (NDMI) dihitung dengan memanfaatkan <strong>saluran reflektif inframerah-gelombang pendek (SWIR)</strong> dan <strong>inframerah-dekat (NIR)</strong> serupa NDBI. Namun, terdapat perbedaan urutan saluran reflektif yang digunakan dalam formula sebagaimana dirumuskan oleh Gao (1996). Perhitungan NDMI menempatkan saluran NIR sebagai pengurang, berbeda dengan NDBI yang menggunakan SWIR di posisi tersebut.
+            <b>Indeks kelembapan vegetasi</b> (NDMI) dihitung dengan memanfaatkan <b>saluran reflektif inframerah-gelombang pendek (SWIR)</b> dan <b>inframerah-dekat (NIR)</b> serupa NDBI. Namun, terdapat perbedaan urutan saluran reflektif yang digunakan dalam formula sebagaimana dirumuskan oleh Gao (1996). Perhitungan NDMI menempatkan saluran NIR sebagai pengurang, berbeda dengan NDBI yang menggunakan SWIR di posisi tersebut.
         </div>
         """,
             unsafe_allow_html=True,
@@ -538,10 +524,10 @@ var ndbi2024 = landsat2024.normalizedDifference(['SR_B6', 'SR_B5']).rename('ndbi
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        NDMI = Normalized Difference Moisture Index<br>
-        NIR = band 4 (Landsat 5 dan Landsat 7), Band 5 (Landsat 8)<br>
-        SWIR = band 5 (Landsat 5 dan Landsat 7), Band 6 (Landsat 8)
+        <b>dengan:</b><br>
+        NDMI = <i>Normalized Difference Moisture Index</i><br>
+        NIR = <i>band</i> 4 (Landsat 5 dan Landsat 7), <i>band</i> 5 (Landsat 8)<br>
+        SWIR = <i>band</i> 5 (Landsat 5 dan Landsat 7), <i>band</i> 6 (Landsat 8)
         </div>
         """,
             unsafe_allow_html=True,
@@ -572,7 +558,7 @@ var ndmi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B6']).rename('ndbi
         st.markdown(
             """
             <div class="justified-text">
-            Perhitungan <strong>indeks kerapatan vegetasi</strong> (NDVI) dilakukan dengan mengekstraksi nilai dari reflektansi <strong>saluran inframerah-dekat (NIR)</strong> dan <strong>saluran merah (red)</strong> (Estoque <em>et al.</em>, 2017).
+            Perhitungan <b>indeks kerapatan vegetasi</b> (NDVI) dilakukan dengan mengekstraksi nilai dari reflektansi <b>saluran inframerah-dekat (NIR)</b> dan <b>saluran merah <i>(red)</i></b> (Estoque <em>et al.</em>, 2017).
         </div>
         """,
             unsafe_allow_html=True,
@@ -588,10 +574,10 @@ var ndmi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B6']).rename('ndbi
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        NDVI = Normalized Difference Vegetation Index<br>
-        NIR = band 4 (Landsat 5 dan Landsat 7), band 5 (Landsat 8)<br>
-        Red = band 3 (Landsat 5 dan Landsat 7), band 4 (Landsat 8)
+        <b>dengan:</b><br>
+        NDVI = <i>Normalized Difference Vegetation Index</i><br>
+        NIR = <i>band</i> 4 (Landsat 5 dan Landsat 7), <i>band</i> 5 (Landsat 8)<br>
+        Red = <i>band</i> 3 (Landsat 5 dan Landsat 7), <i>band</i> 4 (Landsat 8)
         </div>
         """,
             unsafe_allow_html=True,
@@ -622,18 +608,18 @@ var ndvi2024 = landsat2024.normalizedDifference(['SR_B5', 'SR_B4']).rename('ndvi
         st.markdown(
             """
             <div class="justified-text">
-            Penutup lahan dipetakan menggunakan metode <strong>klasifikasi supervised</strong> pada citra multispektral. Metode ini <strong>memanfaatkan sampel</strong> dari tiap kelas penutup lahan untuk <strong>melatih model klasifikasi</strong>.
+            Penutup lahan dipetakan menggunakan metode <b>klasifikasi <i>supervised</i></b> pada citra multispektral. Metode ini <b>memanfaatkan sampel</b> dari tiap kelas penutup lahan untuk <b>melatih model klasifikasi</b>.
         </div>
         """,
             unsafe_allow_html=True,
         )
 
         # Pembuatan Training Area
-        st.badge("**1. Pembuatan Training Area**", color="primary")
+        st.badge("**1. Pembuatan *Training Area***", color="primary")
         st.markdown(
             """
         <div class="justified-text">        
-        <strong>Training area</strong> adalah kumpulan sampel dari setiap kelas penutup lahan yang akan diklasifikasi. Klasifikasi penutup lahan mengacu pada sistem <strong>SNI 7645:2010</strong> yang telah disesuaikan dengan kondisi penutup lahan di lokasi penelitian. Kelas yang dipetakan meliputi <strong>vegetasi, tubuh air, lahan terbangun, dan lahan terbuka</strong>.
+        <b><i>Training area</i></b> adalah kumpulan sampel dari setiap kelas penutup lahan yang akan diklasifikasi. Klasifikasi penutup lahan mengacu pada sistem <b>SNI 7645:2010</b> yang telah disesuaikan dengan kondisi penutup lahan di lokasi penelitian. Kelas yang dipetakan meliputi <b>vegetasi, tubuh air, lahan terbangun, dan lahan terbuka</b>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -667,7 +653,7 @@ print(trainImage)
 
         st.image(
             "./assets/training_area2.png",
-            caption="Persebaran Sampel Penutup Lahan Tahun 2024",
+            caption="Persebaran Sampel Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya Tahun 2024",
         )
 
         st.markdown(
@@ -675,11 +661,11 @@ print(trainImage)
         )
 
         # Klasifikasi Supervised
-        st.badge("**2. Klasifikasi Supervised**", color="primary")
+        st.badge("**2. Klasifikasi *Supervised***", color="primary")
         st.markdown(
             """
         <div class="justified-text">        
-        Training area dianalisis menggunakan algoritma <strong>Classification and Regression Tree (CART)</strong>. CART akan membentuk <strong>aturan klasifikasi</strong> dari sampel training area yang tersedia lalu <strong>diaplikasikan</strong> untuk <strong>mengidentifikasi kelas penutup lahan</strong> pada setiap piksel citra.
+        Training area dianalisis menggunakan algoritma <b><i>Classification and Regression Tree</i> (CART)</b>. CART akan membentuk <b>aturan klasifikasi</b> dari sampel training area yang tersedia lalu <b>diaplikasikan</b> untuk <b>mengidentifikasi kelas penutup lahan</b> pada setiap piksel citra.
         </div>
         """,
             unsafe_allow_html=True,
@@ -726,7 +712,7 @@ Map.addLayer(lulc2024, {palette: landcoverPalette, min: 0, max:3}, 'Klasifikasi 
         # st.markdown(
         #     """
         # <div class="justified-text">
-        # <strong>Uji akurasi</strong> pada tahap ini dilakukan untuk <strong>membandingkan hasil klasifikasi</strong> model CART dengan <strong>data training</strong> dan <strong>testing</strong> yang dibagi dengan skema split <strong>80% untuk training</strong> dan <strong>20% untuk testing</strong>. Hasil <strong>matriks konfusi</strong> menunjukkan <strong>akurasi keseluruhan</strong> mencapai <strong>91.43%</strong>. Berikut contoh implementasi kode dalam Google Earth Engine.
+        # <b>Uji akurasi</b> pada tahap ini dilakukan untuk <b>membandingkan hasil klasifikasi</b> model CART dengan <b>data training</b> dan <b>testing</b> yang dibagi dengan skema split <b>80% untuk training</b> dan <b>20% untuk testing</b>. Hasil <b>matriks konfusi</b> menunjukkan <b>akurasi keseluruhan</b> mencapai <b>91.43%</b>. Berikut contoh implementasi kode dalam Google Earth Engine.
         # </div>
         # """,
         #     unsafe_allow_html=True,
@@ -756,7 +742,7 @@ Map.addLayer(lulc2024, {palette: landcoverPalette, min: 0, max:3}, 'Klasifikasi 
         st.markdown(
             """
             <div class="justified-text">
-           <strong>Citra radar NASA SRTM</strong> sudah disediakan dalam format <strong>digital elevation model (DEM)</strong> sehingga informasi <strong>elevasi</strong> yang diperlukan <strong>dapat langsung diambil</strong> tanpa proses konversi tambahan, sedangkan data <strong>slope</strong> dapat diperoleh dengan memanfaatkan <strong>application programming interface (API)</strong> Google Earth Engine bernama <strong>ee.Terrain.slope()</strong> yang <strong>menghasilkan nilai kemiringan lereng</strong> dari data elevasi.
+           <b>Citra radar NASA SRTM</b> telah tersaji dalam format <b><i>digital elevation model</i> (DEM)</b> sehingga informasi <b>elevasi</b> yang diperlukan <b>dapat langsung diambil</b> tanpa proses konversi tambahan. Sementara itu, data <b><i>slope</i></b> dapat diperoleh dengan memanfaatkan <i>application programming interface</i> (API) Google Earth Engine bernama <b>ee.Terrain.slope()</b> yang akan <b>menghasilkan nilai kemiringan lereng</b> dari data elevasi.
         </div>
         """,
             unsafe_allow_html=True,
@@ -788,7 +774,7 @@ with tab4:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Data indeks spektral</strong>, baik NDBI, NDMI, dan NDVI dari citra <strong>Landsat Surface Reflectance</strong> yang <strong>beresolusi spasial 30 meter</strong> perlu <strong>divalidasi</strong> untuk memastikan <strong>akurasi data</strong>. Dalam penelitian ini, dilakukan <strong>perbandingan statistik</strong> dengan data sekunder dari citra lain yang memiliki resolusi spasial <strong>lebih tinggi</strong> yakni <strong>Sentinel-2 MSI Surface Reflectance</strong> yang <strong>beresolusi spasial 10 meter</strong>. Tahap validasi data indeks dari citra Landsat 8 tahun 2024 diuraikan sebagai berikut.
+        <b>Data indeks spektral</b>, baik NDBI, NDMI, dan NDVI dari citra <b>Landsat <i>Surface Reflectance</i></b> yang beresolusi spasial <b>30 meter</b> perlu <b>divalidasi</b> untuk memastikan <b>akurasi data</b>. Dalam penelitian ini, dilakukan <b>perbandingan statistik</b> dengan data sekunder dari citra lain yang memiliki resolusi spasial <b>lebih tinggi</b> yakni <b>Sentinel-2 MSI <i>Surface Reflectance</i></b> yang beresolusi spasial <b>10 meter</b>. Tahap validasi data indeks dari citra Landsat 8 tahun 2024 diuraikan sebagai berikut.
         </div>
         """,
             unsafe_allow_html=True,
@@ -815,7 +801,7 @@ with tab4:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• NDBI</strong>
+        <b>• NDBI</b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -829,10 +815,10 @@ with tab4:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        NDBI = Normalized Difference Built-Up Index<br>
-        SWIR-1 = band 11<br>
-        NIR = band 8
+        <b>dengan:</b><br>
+        NDBI = <i>Normalized Difference Built-Up Index</i><br>
+        SWIR = <i>band</i> 11<br>
+        NIR = <i>band</i> 8
         </div>
         """,
             unsafe_allow_html=True,
@@ -845,7 +831,7 @@ with tab4:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• NDMI</strong>
+        <b>• NDMI</b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -859,10 +845,10 @@ with tab4:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        NDMI = Normalized Difference Moisture Index<br>
-        NIR = band 8<br>
-        SWIR-1 = band 11
+        <b>dengan:</b><br>
+        NDMI = <i>Normalized Difference Moisture Index</i><br>
+        NIR = <i>band</i> 8<br>
+        SWIR-1 = <i>band</i> 11
         </div>
         """,
             unsafe_allow_html=True,
@@ -875,7 +861,7 @@ with tab4:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• NDVI</strong>
+        <b>• NDVI</b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -888,10 +874,10 @@ with tab4:
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        NDVI = Normalized Difference Vegetation Index<br>
-        NIR = band 8<br>
-        Red = band 4
+        <b>dengan:</b><br>
+        NDVI = <i>Normalized Difference Vegetation Index</i><br>
+        NIR = <i>band</i> 8<br>
+        Red = <i>band</i> 4
         </div>
         """,
             unsafe_allow_html=True,
@@ -929,14 +915,14 @@ var ndviSentinel = sentinel2024.normalizedDifference(['B8', 'B4'])
 
         # Resampling Resolusi Sentinel-2 (10m) ke Landsat 8 (30m)
         st.badge(
-            "**2. Resampling 30m**",
+            "**2. *Resampling* ke 30 Meter**",
             color="primary",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        Resolusi spasial data indeks Sentinel-2 yang semula 10 meter <strong>diatur ulang</strong> menjadi 30 meter menggunakan teknik <strong>resampling</strong> agar <strong>sesuai</strong> dengan <strong>resolusi citra Landsat</strong>.
+        Resolusi spasial data indeks Sentinel-2 yang semula 10 meter <b>diatur ulang</b> menjadi 30 meter menggunakan teknik <b><i>resampling</i></b> agar <b>sesuai</b> dengan <b>resolusi citra Landsat</b>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -970,7 +956,7 @@ var ndbiSentinel30m = ndbiSentinel
         st.markdown(
             """
         <div class="justified-text">
-        Untuk keperluan <strong>uji statistik</strong>, terlebih dahulu dibutuhkan <strong>sampel</strong> dari masing-masing data. Google Earth Engine menyediakan API <strong>ee.Image.sample</strong> yang memungkinkan <strong>pembuatan titik sampel secara acak</strong> dan otomatis.
+        Untuk keperluan <b>uji statistik</b>, terlebih dahulu dibutuhkan <b>sampel</b> dari masing-masing data. Google Earth Engine menyediakan API <b>ee.Image.sample</b> yang memungkinkan <b>pembuatan titik sampel secara acak</b> dan otomatis.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1005,7 +991,7 @@ var samplesVal = stackedNDBI.sample({
         st.markdown(
             """
         <div class="justified-text">
-        Validasi indeks dari citra Sentinel-2 dilakukan melalui <strong>uji statistik korelasi Pearson</strong> dan perhitungan nilai <strong>RMSE</strong> serta <strong>MAE</strong>.
+        Validasi indeks dari citra Sentinel-2 dilakukan melalui <b>uji statistik korelasi Pearson</b> dan perhitungan nilai <b>RMSE</b> serta <b>MAE</b>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1058,13 +1044,13 @@ print('MAE (Mean Absolute Error):', mae.get('mean'));
     elif option == "🏞️ Penutup Lahan":
         st.subheader("**Penutup Lahan**")
         st.badge(
-            "**1. Sampling dan Validasi**",
+            "**1. *Sampling* dan Validasi**",
             color="primary",
         )
         st.markdown(
             """
         <div class="justified-text">
-        Validasi penutup lahan dilakukan untuk menguji kesesuaian hasil klasifikasi dengan kondisi aktual. Jumlah total sampel ditentukan menggunakan rumus <strong>Fitzpatrick-Lins (1981)</strong> dengan asumsi <strong>akurasi yang diharapkan 85%</strong> dan <strong>toleransi kesalahan 10%</strong>.
+        Validasi penutup lahan dilakukan untuk menguji kesesuaian hasil klasifikasi dengan kondisi aktual. Jumlah total sampel ditentukan menggunakan rumus Fitzpatrick-Lins (1981) dengan asumsi <b>akurasi yang diharapkan 85%</b> dan <b>toleransi kesalahan 10%</b>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1079,7 +1065,7 @@ print('MAE (Mean Absolute Error):', mae.get('mean'));
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
+        <b>dengan:</b><br>
         n = jumlah total sampel<br>
         Z² = standar deviasi normal untuk tingkat kepercayaan 95% (bernilai 2)<br>
         p = akurasi yang diharapkan (%)<br>
@@ -1097,7 +1083,7 @@ print('MAE (Mean Absolute Error):', mae.get('mean'));
         st.markdown(
             """
         <div class="justified-text">
-        Hasil kalkulasi menunjukkan bahwa dibutuhkan sekitar <strong>51 titik sampel</strong> untuk mencapai skema akurasi tersebut. Distribusi sampel tiap kelas penutup lahan (strata) diestimasi dengan metode <strong>Proportional Random Sampling<strong>.
+        Hasil kalkulasi menunjukkan bahwa dibutuhkan sekitar <b>51 titik sampel</b> untuk mencapai skema akurasi tersebut. Selanjutnya, dilakukan distribusi titik sampel untuk tiap kelas penutup lahan (strata) yang diestimasi dengan metode <b><i>Proportional Random Sampling</i></b> berikut ini.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1112,7 +1098,7 @@ print('MAE (Mean Absolute Error):', mae.get('mean'));
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
+        <b>dengan:</b><br>
         n<sub>h</sub> = jumlah sampel pada strata h<br>
         N<sub>h</sub> = jumlah populasi strata h<br>
         N = jumlah total populasi<br>
@@ -1129,7 +1115,7 @@ print('MAE (Mean Absolute Error):', mae.get('mean'));
         st.markdown(
             """
         <div class="justified-text">
-        Dari perhitungan tersebut, maka <strong>distribusi sampel</strong> pada kelas <strong>vegetasi</strong> adalah sebesar <strong>33 titik</strong>, <strong>tubuh air 0 titik</strong>, <strong>lahan terbangun 12 titik</strong>, dan <strong>lahan terbuka 6 titik</strong>. Apabila terdapat kelas yang tidak memperoleh sampel (misalnya tubuh air), dilakukan <strong>realokasi</strong> dari strata dengan alokasi terbesar (contohnya vegetasi) tanpa mengubah proporsi secara signifikan. Pada kasus ini, vegetasi menyumbangkan 3 titik ke kelas tubuh air sehingga masing-masing kelas tetap <strong>dapat divalidasi akurasinya</strong>.
+        Dari perhitungan tersebut, maka <b>distribusi sampel</b> pada kelas vegetasi adalah sebesar <b>33 titik</b>, tubuh air <b>0 titik</b>, lahan terbangun <b>12 titik</b>, dan lahan terbuka <b>6 titik</b>. Apabila terdapat kelas yang tidak memperoleh sampel (misalnya tubuh air), maka dilakukan <b>realokasi</b> dari strata dengan alokasi terbesar (contohnya vegetasi) tanpa mengubah proporsi secara signifikan. Pada kasus ini, vegetasi menyumbangkan 3 titik ke kelas tubuh air sehingga masing-masing kelas tetap <b>dapat divalidasi akurasinya</b>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1142,7 +1128,7 @@ print('MAE (Mean Absolute Error):', mae.get('mean'));
         st.markdown(
             """
         <div class="justified-text">
-        Ekstraksi titik sampel dilakukan menggunakan Google Earth Engine (GEE) melalui API ee.Image.stratifiedSample. Setiap titik sampel berisi informasi kelas penutup lahan sekaligus nilai LST tahun 2024 karena citra hasil pengolahan LST tahun terkait turut dimasukkan dalam proses ekstraksi. Titik sampel kemudian diekspor dalam format CSV. Kode dalam Google Earth Engine untuk ekstraksi dan ekspor otomatis ditunjukkan berikut ini.
+        Ekstraksi titik sampel dilakukan menggunakan Google Earth Engine melalui API <b>ee.Image.stratifiedSample</b>. Setiap titik sampel berisi informasi kelas penutup lahan sekaligus nilai LST tahun 2024 karena citra hasil pengolahan LST tahun terkait turut dimasukkan dalam proses ekstraksi. Titik sampel kemudian diekspor dalam format CSV. Kode untuk ekstraksi dan mengekspor otomatis titik sampel ditunjukkan berikut ini.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1263,7 +1249,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        Validasi lapangan memanfaatkan aplikasi Google Maps (My Maps) untuk navigasi, Avenza Maps untuk plotting titik koordinat, GPS Map Camera untuk dokumentasi, dan Google Spreadsheet untuk pencatatan. Tabel checklist yang digunakan berisi informasi terkait:<br>
+        <b>Validasi lapangan</b> dilakukan dengan memanfaatkan aplikasi <b>Google Maps (My Maps)</b> untuk navigasi, <b>Avenza Maps</b> untuk <i>plotting</i> titik koordinat, <b>GPS Map Camera</b> untuk dokumentasi, dan <b>Google Spreadsheet</b> untuk pencatatan. Tabel <i>checklist</i> yang digunakan berisi informasi sebagai berikut:<br>
         • Nomor dan kode titik<br>
         • Koordinat (X, Y)<br>
         • Tanggal dan waktu observasi<br>
@@ -1271,8 +1257,8 @@ Export.table.toDrive({
         • Penutup lahan hasil klasifikasi<br>
         • Penutup lahan aktual<br>
         • Nilai LST hasil ekstraksi citra Landsat 8<br>
-        • Pengukuran LST (1), (2), (3)<br>
-        • LST aktual (rata-rata)<br>
+        • Pengukuran LST (ke-1), (ke-2), (ke-3)<br>
+        • LST aktual (rata-rata hasil pengukuran)<br>
         </div>
         """,
             unsafe_allow_html=True,
@@ -1285,7 +1271,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        Untuk data penutup lahan tahun 2014 dan 2019, validasi dilakukan dengan metode serupa, tetapi verifikasi dilakukan menggunakan citra dari Google Earth dengan timestamps yang disesuaikan dengan tahun terkait.        
+        Sementara itu, untuk <b>data penutup lahan tahun 2014 dan 2019</b>, validasi dilakukan dengan metode serupa, tetapi <b>verifikasi</b> dilakukan menggunakan <b>citra dari Google Earth</b> dengan <i>timestamps</i> yang telah disesuaikan dengan tahun terkait.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1303,7 +1289,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        Akurasi penutup lahan dihitung dengan matriks konfusi yang diadaptasi dari Stuckenberg (2013) sebagai berikut.
+        Akurasi penutup lahan dihitung dengan matriks konfusi yang diadaptasi dari Stuckenberg (2013) dengan format matriks sebagai berikut.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1420,7 +1406,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        Matriks konfusi menyajikan hasil perhitungan berupa <strong>user accuracy, producer accuracy, kesalahan omisi, kesalahan komisi, overall accuracy,</strong> dan <strong>kappa accuracy</strong>. Hasil perhitungan matriks tersebut menentukan apakah hasil klasifikasi penutup lahan <strong>dapat diterima atau tidak</strong> (Darmawan, 2023). Berikut ini adalah formula untuk menghitung masing-masing metrik akurasi tersebut.
+        Matriks konfusi menyajikan hasil perhitungan berupa <b><i>user accuracy</i>, <i>producer accuracy</i>, kesalahan omisi, kesalahan komisi, <i>overall accuracy</i>,</b> dan <b><i>kappa accuracy</i></b>. Hasil perhitungan matriks tersebut menentukan apakah hasil klasifikasi penutup lahan <b>dapat diterima atau tidak</b> (Darmawan, 2023). Berikut ini adalah formula untuk menghitung masing-masing metrik akurasi tersebut.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1433,7 +1419,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• Producer Accuracy</strong>
+        <b>• <i>Producer Accuracy</i></b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -1445,7 +1431,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• User Accuracy</strong>
+        <b>• <i>User Accuracy</i></b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -1459,7 +1445,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• Kesalahan Omisi</strong>
+        <b>• Kesalahan Omisi</b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -1473,7 +1459,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• Kesalahan Komisi</strong>
+        <b>• Kesalahan Komisi</b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -1487,7 +1473,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• Overall Accuracy</strong>
+        <b>• <i>Overall Accuracy</i></b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -1501,7 +1487,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• Kappa Accuracy</strong>
+        <b>• <i>Kappa Accuracy</i></b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -1515,8 +1501,8 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
-        N = Total sampel<br>
+        <b>dengan:</b><br>
+        N = total sampel<br>
         X<sub>+i</sub> = jumlah sampel dalam baris ke-i<br>
         X<sub>i+</sub> = jumlah sampel dalam kolom ke-i<br>
         X<sub>ii</sub> = nilai diagonal dari baris ke-i kolom ke-i<br>
@@ -1543,7 +1529,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Validasi suhu permukaan lahan (LST)</strong> dilakukan pada titik sampel yang sama dengan validasi penutup lahan sehingga kegiatan lapangan lebih efisien. Nilai LST lapangan diukur menggunakan <strong>termometer inframerah</strong> seri Fluke 561 dengan tiga kali pengulangan per titik untuk memperoleh rata-rata yang lebih stabil. Pengukuran LST lapangan dilaksanakan antara pukul 09.00-11.00 WIB dalam kondisi cuaca cerah untuk menyesuaikan dengan waktu perekaman citra satelit Landsat 8 (Atianta, 2020). <strong>Uji akurasi</strong> antara LST hasil ekstraksi citra Landsat 8 dengan data pengukuran lapangan dilakukan menggunakan metrik <strong>RMSE</strong> dan <strong>MAE</strong> untuk mengukur tingkat kesalahan, serta <strong>koefisien determinasi (R²)</strong> untuk menilai kesesuaian hubungan antar data. 
+        <b>Validasi suhu permukaan lahan (LST)</b> dilakukan pada titik sampel yang sama dengan validasi penutup lahan sehingga kegiatan lapangan lebih efisien. Nilai LST lapangan diukur menggunakan <b>termometer inframerah</b> seri Fluke 561 dengan tiga kali pengulangan per titik untuk memperoleh rata-rata yang lebih stabil. Pengukuran LST lapangan dilaksanakan antara pukul 09.00-11.00 WIB mulai bulan Juni hingga Agustus dalam kondisi cuaca cerah untuk menyesuaikan dengan waktu perekaman citra satelit Landsat 8 (Atianta, 2020). <b>Uji akurasi</b> antara LST hasil ekstraksi citra Landsat 8 dengan data pengukuran lapangan dilakukan menggunakan metrik <b>RMSE</b> dan <b>MAE</b> untuk mengukur tingkat kesalahan, serta <b>koefisien determinasi (R²)</b> untuk menilai kesesuaian hubungan antar data. 
         </div>
         """,
             unsafe_allow_html=True,
@@ -1556,7 +1542,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• Root Mean Square Error (RMSE)</strong>
+        <b>• <i>Root Mean Square Error (RMSE)</i></b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -1570,7 +1556,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• Mean Absolute Error (MAE)</strong>
+        <b>• <i>Mean Absolute Error (MAE)</i></b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -1584,7 +1570,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>• Koefisien Determinasi (R²)</strong>
+        <b>• Koefisien Determinasi (R²)</b>
         </div>
         """,
             unsafe_allow_html=True,
@@ -1598,7 +1584,7 @@ Export.table.toDrive({
         st.markdown(
             """
         <div class="justified-text">
-        <strong>dengan:</strong><br>
+        <b>dengan:</b><br>
         Y<sub>i</sub> = nilai LST hasil pengukuran lapangan<br>
         Ŷ<sub>i</sub> = nilai LST hasil pengolahan citra Landsat 8<br>
         Ȳ = rata-rata nilai LST dari pengukuran lapangan<br>
@@ -1615,7 +1601,7 @@ Export.table.toDrive({
         st.markdown(
             """
             <div class="justified-text">
-            Visualisasi validasi ditampilkan dalam bentuk scatterplot regresi yang memperlihatkan distribusi nilai aktual terhadap hasil ekstraksi lengkap dengan garis regresi dan nilai koefisien determinasi.
+            Visualisasi hasil uji akurasi  ditampilkan dalam bentuk <i>scatterplot</i> yang memperlihatkan distribusi nilai aktual terhadap hasil ekstraksi LST lengkap dengan garis regresi dan nilai koefisien determinasi.
             </div>
             """,
             unsafe_allow_html=True,
@@ -1655,7 +1641,7 @@ with tab5:
         st.markdown(
             """
         <div class="justified-text">
-        Pada tahap ini, dilakukan perhitungan <strong>perubahan penutup lahan historis</strong> dari tahun 1999-2004, 2004-2009, 2009-2014, 2014-2019, dan 2019-2024 menggunakan metode <strong>Markov Chain</strong>. Dengan menganalisis transisi antar periode, model menghasilkan <strong>laju perubahan rata-rata per tahun</strong>. Laju inilah yang menjadi dasar untuk memproyeksikan <strong>jumlah total area yang akan berubah di masa depan</strong>.
+        Pada tahap ini, dilakukan perhitungan <b>perubahan penutup lahan historis</b> dari tahun 1999-2004, 2004-2009, 2009-2014, 2014-2019, dan 2019-2024 menggunakan metode <b>Markov Chain</b>. Dengan menganalisis transisi antar periode, model menghasilkan <b>laju perubahan rata-rata per tahun</b>. Laju inilah yang menjadi dasar untuk memproyeksikan <b>jumlah total area yang akan berubah di masa depan</b>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1691,7 +1677,7 @@ avg_annual_rate = sum(transition_quantities) / (YEARS[-1] - YEARS[0])
         st.markdown(
             """
         <div class="justified-text">
-        Berikutnya, <strong>model XGBoost</strong> akan dilatih untuk menentukan <strong>area mana</strong> yang <strong>paling berpotensi</strong> mengalami perubahan. Pertimbangan penentuan lokasi perubahan ini didasarkan pada tiga faktor yaitu kondisi fisik (<strong>elevasi</strong> dan <strong>kemiringan lereng</strong>) serta <strong>pengaruh tetangga</strong> di sekitarnya yang merupakan implementasi dari <strong>Cellular Automata</strong>. Dengan mempertimbangkan faktor-faktor tersebut, model akan belajar dan menghasilkan output berupa <strong>peta kesesuaian (suitability map)</strong>.
+        Berikutnya, <b>model XGBoost</b> akan dilatih untuk menentukan <b>area mana</b> yang <b>paling berpotensi</b> mengalami perubahan. Pertimbangan penentuan lokasi perubahan ini didasarkan pada tiga faktor yaitu kondisi fisik (<b>elevasi</b> dan <b><i>slope</i></b>) serta <b>pengaruh tetangga</b> di sekitarnya yang merupakan implementasi dari <b>Cellular Automata</b>. Dengan mempertimbangkan faktor-faktor tersebut, model akan belajar dan menghasilkan output berupa <b>peta kesesuaian <i>(suitability map)</i></b>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1730,7 +1716,7 @@ suitability_model.fit(X, y)
         st.markdown(
             """
         <div class="justified-text">
-        Terakhir, model akan menggabungkan hasil dari dua tahap sebelumnya. <strong>Jumlah total area yang akan berubah</strong> (dari tahap 1) <strong>dialokasikan</strong> ke lokasi-lokasi dengan <strong>skor kesesuaian tertinggi</strong> (dari tahap 2). Area yang paling berpotensi akan diprioritaskan terlebih dahulu untuk berubah hingga target jumlah perubahan yang telah ditentukan terpenuhi. Hasil akhir dari proses ini adalah <strong>peta prediksi penutup lahan tahun 2029</strong> yang menunjukkan di mana perubahan lahan di masa depan.
+        Terakhir, model akan menggabungkan hasil dari dua tahap sebelumnya. <b>Jumlah total area yang akan berubah</b> (dari tahap 1) <b>dialokasikan</b> ke lokasi-lokasi dengan <b>skor kesesuaian tertinggi</b> (dari tahap 2). Area yang paling berpotensi akan diprioritaskan terlebih dahulu untuk berubah hingga target jumlah perubahan yang telah ditentukan terpenuhi. Hasil akhir dari proses ini adalah <b>peta prediksi penutup lahan tahun 2029</b> yang menunjukkan di mana perubahan lahan di masa depan.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1779,7 +1765,7 @@ map_prediksi_2029 = allocate_changes(
         st.markdown(
             """
         <div class="justified-text">
-        Nilai sebuah indeks di masa depan dapat diprediksi dengan melihat tren nilainya di masa lalu dan kondisi penutup lahan pada masa tersebut. Dari hipotesis tersebut, maka disusunlah <strong>"bahan ajar"</strong> yang berisi kumpulan <strong>"soal-soal"</strong> yang dalam machine learning disebut sebagai <strong>feature (X)</strong> dan <strong>"kunci jawabannya"</strong> yang disebut <strong>target (y)</strong>. <strong>Feature</strong> yang digunakan untuk <strong>melatih model XGBoost</strong> dalam proyeksi indeks tahun 2024 adalah nilai <strong>indeks</strong> tahun <strong>2019</strong>, <strong>penutup lahan</strong> tahun <strong>2024</strong>, <strong>elevasi</strong>, dan <strong>slope</strong>. Sementara itu, <strong>targetnya</strong> adalah nilai <strong>indeks</strong> aktual tahun <strong>2024</strong>.
+        Nilai sebuah indeks di masa depan dapat diprediksi dengan melihat tren nilainya di masa lalu dan kondisi penutup lahan pada masa tersebut. Dari hipotesis tersebut, maka disusunlah <b>'bahan ajar'</b> yang berisi kumpulan <b>'soal-soal'</b> yang dalam <i>machine learning</i> disebut sebagai <b><i>feature</i> (X)</b> dan <b>'kunci jawabannya'</b> yang disebut <b>target (y)</b>. <b><i>Feature</i></b> yang digunakan untuk <b>melatih model XGBoost</b> dalam proyeksi indeks tahun 2024 adalah nilai <b>indeks</b> tahun <b>2019</b>, <b>penutup lahan</b> tahun <b>2024</b>, <b>elevasi</b>, dan <b><i>slope</i></b>. Sementara itu, <b>targetnya</b> adalah nilai <b>indeks</b> aktual tahun <b>2024</b>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1807,14 +1793,14 @@ df_training, raster_meta = raster_to_df(training_feature_paths, sample_size=SAMP
 
         # Train Test Split
         st.badge(
-            "**2. Train Test Split**",
+            "**2. *Train Test Split***",
             color="primary",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        Bahan ajar yang telah disusun kemudian <strong>dibagi</strong> menjadi dua bagian, yaitu <strong>80%</strong> sebagai <strong>data training (X_train, y_train)</strong> untuk <strong>melatih model</strong> dan <strong>20%</strong> sebagai <strong>data testing (X_test, y_test)</strong> untuk <strong>menguji performa model</strong>.
+        Bahan ajar yang telah disusun kemudian <b>dibagi</b> menjadi dua bagian, yaitu <b>80%</b> sebagai <b>data <i>training</i> (X_train, y_train)</b> untuk <b>melatih model</b> dan <b>20%</b> sebagai <b>data <i>testing</i> (X_test, y_test)</b> untuk <b>menguji performa model</b>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1837,14 +1823,14 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
         # Training dan Evaluasi Model
         st.badge(
-            "**3. Training dan Evaluasi Model**",
+            "**3. *Training* dan Evaluasi Model**",
             color="primary",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Model XGBoost</strong> kemudian <strong>dilatih</strong> untuk <strong>belajar</strong> dan menganalisis pola-pola dari puluhan ribu sampel piksel yang terdapat dalam <strong>bahan ajar (X_train, y_train)</strong>. Tujuannya untuk memproyeksikan nilai indeks pada tahun 2024. Setelah proses training selesai, model XGBoost lantas <strong>diuji</strong> dengan <strong>data testing (X_test)</strong>. Hasil ujian tersebut lalu <strong>dievaluasi</strong> dengan <strong>kunci jawabannya (y_test)</strong> menggunakan metrik <strong>RMSE</strong>, <strong>MAE</strong>, dan <strong>R²</strong> untuk menilai seberapa akurat model XGBoost ini bekerja.
+        <b>Model XGBoost</b> kemudian <b>dilatih</b> untuk <b>belajar</b> dan menganalisis pola-pola dari puluhan ribu sampel piksel yang terdapat dalam <b>bahan ajar (X_train, y_train)</b>. Tujuannya untuk memproyeksikan nilai indeks pada tahun 2024. Setelah proses <i>training</i> selesai, model XGBoost lantas <b>diuji</b> dengan <b>data <i>testing</i> (X_test)</b>. Hasil ujian tersebut lalu <b>dievaluasi</b> dengan <b>kunci jawabannya (y_test)</b> menggunakan metrik <b>RMSE</b>, <b>MAE</b>, dan <b>R²</b> untuk menilai seberapa akurat model XGBoost ini bekerja.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1886,7 +1872,7 @@ metrics = {
         st.markdown(
             """
         <div class="justified-text">
-        Setelah <strong>terbukti andal</strong>, model XGBoost lantas digunakan untuk tujuan utamanya yaitu <strong>memproyeksikan</strong> nilai <strong>indeks</strong> pada tahun <strong>2029</strong>. Pada tahap ini, model diberikan satu <strong>set data input baru</strong> yang terdiri atas nilai <strong>indeks</strong> tahun <strong>2024</strong>, <strong>penutup lahan</strong> tahun <strong>2029</strong>, <strong>elevasi</strong>, dan <strong>slope</strong>. Model yang sudah terlatih ini kemudian menerapkan pengetahuannya pada data input baru tersebut untuk memproyeksi nilai indeks pada tahun 2029 untuk setiap piksel. Hasilnya adalah peta proyeksi masing-masing indeks (NDBI, NDMI, dan NDVI) tahun 2029.
+        Setelah <b>terbukti andal</b>, model XGBoost lantas digunakan untuk tujuan utamanya yaitu <b>memproyeksikan</b> nilai <b>indeks</b> pada tahun <b>2029</b>. Pada tahap ini, model diberikan satu <b><i>set</i> data <i>input</i> baru</b> yang terdiri atas nilai <b>indeks</b> tahun <b>2024</b>, <b>penutup lahan</b> tahun <b>2029</b>, <b>elevasi</b>, dan <b><i>slope</i></b>. Model yang sudah terlatih ini kemudian menerapkan pengetahuannya pada data <i>input</i> baru tersebut untuk memproyeksi nilai indeks pada tahun 2029 untuk setiap piksel. Hasilnya adalah peta proyeksi masing-masing indeks (NDBI, NDMI, dan NDVI) tahun 2029.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1922,19 +1908,19 @@ save_geotiff(path_proyeksi_2029, predicted_2029_values, prediction_mask, raster_
 
         # Persiapan Data Training
         st.badge(
-            "**1. Persiapan Data Training**",
+            "**1. Persiapan Data *Training***",
             color="primary",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        Tahap pertama dari proses pemodelan prediksi LST adalah menyusun <strong>"bahan ajar"</strong> yang berisi kumpulan <strong>"soal-soal" (feature, X)</strong> dan <strong>"kunci jawabannya" (target, y)</strong>. Dalam prediksi LST 2024, <strong>feature</strong> yang digunakan untuk melatih <strong>model XGBoost</strong> dirinci sebagai berikut:<br>
+        Tahap pertama dari proses pemodelan prediksi LST adalah menyusun <b>'bahan ajar'</b> yang berisi kumpulan <b>'soal-soal' (<i>feature</i>, X)</b> dan <b>'kunci jawabannya' (target, y)</b>. Dalam prediksi LST 2024, <b><i>feature</i></b> yang digunakan untuk melatih <b>model XGBoost</b> dirinci sebagai berikut:<br>
         • LST 2019, NDBI 2019, NDMI 2019, NDVI 2019, penutup lahan 2019,<br>
         • NDBI 2024, NDMI 2024, NDVI 2024, penutup lahan 2024,<br>
-        • elevasi, slope, dan koordinat (X, Y)<br>
+        • elevasi, <i>slope</i>, dan koordinat (X, Y)<br>
         <br>
-        sedangkan <strong>targetnya</strong> adalah nilai LST aktual tahun 2024.
+        sedangkan <b>targetnya</b> adalah nilai LST aktual tahun 2024.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1956,14 +1942,14 @@ target = df_full[target_column]
 
         # Train Test Split
         st.badge(
-            "**2. Train Test Split**",
+            "**2. *Train Test Split***",
             color="primary",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        Bahan ajar yang telah disusun selanjutnya <strong>dibagi</strong> menjadi dua bagian, yaitu <strong>80%</strong> sebagai <strong>data training (X_train, y_train)</strong> untuk <strong>melatih model</strong> dan <strong>20%</strong> sebagai <strong>data testing (X_test, y_test)</strong> untuk <strong>menguji akurasi model</strong>.
+        Bahan ajar yang telah disusun selanjutnya <b>dibagi</b> menjadi dua bagian, yaitu <b>80%</b> sebagai <b>data <i>training</i> (X_train, y_train)</b> untuk <b>melatih model</b> dan <b>20%</b> sebagai <b>data <i>testing</i> (X_test, y_test)</b> untuk <b>menguji akurasi model</b>.
         </div>
         """,
             unsafe_allow_html=True,
@@ -1982,14 +1968,14 @@ X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=
 
         # Training dan Evaluasi Model
         st.badge(
-            "**3. Training dan Evaluasi Model**",
+            "**3. *Training* dan Evaluasi Model**",
             color="primary",
         )
 
         st.markdown(
             """
         <div class="justified-text">
-        <strong>Model XGBoost</strong> kemudian <strong>dilatih</strong> untuk menganalisis pola-pola yang terdapat dalam <strong>bahan ajar (X_train, y_train)</strong>. Setelah proses training selesai, model XGBoost lalu <strong>diuji</strong> dengan <strong>data testing (X_test)</strong> untuk memprediksi nilai LST pada tahun 2024. Hasil ujian tersebut lalu <strong>dievaluasi</strong> dengan <strong>kunci jawabannya (y_test)</strong> menggunakan metrik <strong>RMSE</strong>, <strong>MAE</strong>, dan <strong>R²</strong> untuk menilai seberapa akurat model XGBoost ini bekerja.
+        <b>Model XGBoost</b> kemudian <b>dilatih</b> untuk menganalisis pola-pola yang terdapat dalam <b>bahan ajar (X_train, y_train)</b>. Setelah proses <i>training</i> selesai, model XGBoost lalu <b>diuji</b> dengan <b>data <i>testing</i> (X_test)</b> untuk memprediksi nilai LST pada tahun 2024. Hasil ujian tersebut lalu <b>dievaluasi</b> dengan <b>kunci jawabannya (y_test)</b> menggunakan metrik <b>RMSE</b>, <b>MAE</b>, dan <b>R²</b> untuk menilai seberapa akurat model XGBoost ini bekerja.
         </div>
         """,
             unsafe_allow_html=True,
@@ -2029,12 +2015,12 @@ validation_metrics = {
         st.markdown(
             """
         <div class="justified-text">
-        Setelah <strong>terbukti andal</strong>, model XGBoost lantas dapat digunakan untuk tujuan utamanya yakni <strong>memprediksi</strong> nilai <strong>LST</strong> pada tahun <strong>2029</strong>. Pada tahap ini, model diberikan satu <strong>set data input baru</strong> yang dirinci sebagai berikut:<br>
+        Setelah <b>terbukti andal</b>, model XGBoost lantas dapat digunakan untuk tujuan utamanya yakni <b>memprediksi</b> nilai <b>LST</b> pada tahun <b>2029</b>. Pada tahap ini, model diberikan satu <b><i>set</i> data <i>input</i> baru</b> yang dirinci sebagai berikut:<br>
         • LST 2024, NDBI 2024, NDMI 2024, NDVI 2024, penutup lahan 2024,<br>
         • NDBI 2029, NDMI 2029, NDVI 2029, penutup lahan 2029,<br>
-        • elevasi, slope, dan koordinat (X, Y)<br>
+        • elevasi, <i>slope</i>, dan koordinat (X, Y)<br>
         <br>
-        Model yang sudah terlatih ini kemudian menerapkan pengetahuannya pada data input baru tersebut untuk memprediksi nilai LST pada tahun 2029 untuk setiap piksel. Hasilnya adalah peta prediksi LST tahun 2029.
+        Model yang sudah terlatih ini kemudian menerapkan pengetahuannya pada data <i>input</i> baru tersebut untuk memprediksi nilai LST pada tahun 2029 untuk setiap piksel. Hasilnya adalah peta prediksi LST tahun 2029.
         </div>
         """,
             unsafe_allow_html=True,
@@ -2066,7 +2052,7 @@ output_path = os.path.join(OUTPUT_DIR, f'prediksi_lst_{PREDICTION_YEAR}.tif')
         st.markdown(
             """
         <div class="justified-text">
-        Untuk menganalisis <strong>tingkat kontribusi</strong> masing-masing <strong>fitur</strong> dalam <strong>prediksi LST</strong> ini digunakanlah metode <strong>SHAP (SHapley Additive exPlanations)</strong>. SHAP adalah library yang akan <strong>"membongkar"</strong> bagaimana setiap fitur memengaruhi hasil prediksi model XGBoost. Dengan ini, faktor-faktor kunci yang paling berpengaruh terhadap perubahan LST di masa depan dapat teridentifikasi.
+        Untuk menganalisis <b>tingkat kontribusi</b> masing-masing <b>fitur</b> dalam <b>prediksi LST</b> ini digunakanlah metode <b>SHAP (SHapley Additive exPlanations)</b>. SHAP adalah <i>library</i> yang akan <b>'membongkar'</b> bagaimana setiap fitur memengaruhi hasil prediksi model XGBoost. Dengan ini, faktor-faktor kunci yang paling berpengaruh terhadap perubahan LST di masa depan dapat teridentifikasi.
         </div>
         """,
             unsafe_allow_html=True,
