@@ -121,6 +121,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+st.logo(
+    "assets/logorec.png",
+    link=None,
+    icon_image="assets/logorec.png",  # ikon kecil (favicon di sidebar)
+)
+
 # Home Page
 home = st.Page("home.py", title="Beranda", icon=":material/home:", default=True)
 

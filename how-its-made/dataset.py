@@ -121,13 +121,15 @@ with tab1:
         st.badge("**Citra Landsat 5 TM**", color="primary")
         with st.container(border=False):
             st.image("./assets/landsat5cover.png")
-            st.write("**Koleksi:** Collection 2 Level 2 Tier 1 (Surface Reflectance)")
-            st.write("**Penyedia:** USGS")
-            st.write("**Resolusi:** 30m")
             st.write(
-                "**Bands:** Band 3 (Red), Band 4 (NIR), Band 5 (SWIR-1), Band 6 (Thermal)"
+                "**Koleksi:** *Collection* 2 *Level* 2 *Tier* 1 *(Surface Reflectance)*"
             )
-            st.write("**Tahun:** 1999, 2009")
+            st.write("**Penyedia:** USGS")
+            st.write("**Resolusi:** 30 meter")
+            st.write(
+                "**Saluran:** *Band* 3 (Red), *Band* 4 (NIR), *Band* 5 (SWIR-1), *Band* 6 (Thermal)"
+            )
+            st.write("**Tahun:** 1999 dan 2009")
             st.write("**Fungsi:** Ekstraksi LST, NDBI, NDMI, NDVI, dan Penutup Lahan")
             st.link_button(
                 label="Lihat Detail",
@@ -139,11 +141,13 @@ with tab1:
         st.badge("**Citra Landsat 7 ETM+**", color="primary")
         with st.container(border=True):
             st.image("./assets/landsat7cover.png")
-            st.write("**Koleksi:** Collection 2 Level 2 Tier 1 (Surface Reflectance)")
-            st.write("**Penyedia:** USGS")
-            st.write("**Resolusi:** 30m")
             st.write(
-                "**Bands:** Band 3 (Red), Band 4 (NIR), Band 5 (SWIR-1), Band 6 (Thermal)"
+                "**Koleksi:** *Collection* 2 *Level* 2 *Tier* 1 *(Surface Reflectance)*"
+            )
+            st.write("**Penyedia:** USGS")
+            st.write("**Resolusi:** 30 meter")
+            st.write(
+                "**Saluran:** *Band* 3 (Red), *Band* 4 (NIR), *Band* 5 (SWIR-1), *Band* 6 (Thermal)"
             )
             st.write("**Tahun:** 2004")
             st.write("**Fungsi:** Ekstraksi LST, NDBI, NDMI, NDVI, dan Penutup Lahan")
@@ -157,13 +161,15 @@ with tab1:
         st.badge("**Citra Landsat 8 OLI/TIRS**", color="primary")
         with st.container(border=True):
             st.image("./assets/landsat8cover.png")
-            st.write("**Koleksi:** Collection 2 Level 2 Tier 1 (Surface Reflectance)")
-            st.write("**Penyedia:** USGS")
-            st.write("**Resolusi:** 30m")
             st.write(
-                "**Bands:** Band 4 (Red), Band 5 (NIR), Band 6 (SWIR-1), Band 10 (TIRS-1)"
+                "**Koleksi:** *Collection* 2 *Level* 2 *Tier* 1 *(Surface Reflectance)*"
             )
-            st.write("**Tahun:** 2014, 2019, 2024")
+            st.write("**Penyedia:** USGS")
+            st.write("**Resolusi:** 30 meter")
+            st.write(
+                "**Saluran:** *Band* 4 (Red), *Band* 5 (NIR), *Band* 6 (SWIR-1), *Band* 10 (TIRS-1)"
+            )
+            st.write("**Tahun:** 2014, 2019, dan 2024")
             st.write("**Fungsi:** Ekstraksi LST, NDBI, NDMI, NDVI, dan Penutup Lahan")
             st.link_button(
                 label="Lihat Detail",
@@ -177,12 +183,12 @@ with tab1:
         with st.container(border=True):
             st.image("./assets/srtmcover.png")
             st.write(
-                "**Koleksi:** Shuttle Radar Topography Mission (SRTM) Digital Elevation"
+                "**Koleksi:** *Shuttle Radar Topography Mission* (SRTM) *Digital Elevation*"
             )
             st.write("**Penyedia:** NASA/USGS/JPL-Caltech")
-            st.write("**Resolusi:** 1 arc-second (30m)")
+            st.write("**Resolusi:** 1 *arc-second* (30 meter)")
             st.write("**Tahun:** 2000")
-            st.write("**Fungsi:** Ekstraksi Elevasi dan Slope")
+            st.write("**Fungsi:** Ekstraksi Elevasi dan *Slope*")
             st.link_button(
                 label="Lihat Detail",
                 url="https://developers.google.com/earth-engine/datasets/catalog/USGS_SRTMGL1_003",
@@ -193,12 +199,12 @@ with tab1:
         st.badge("**Citra Sentinel-2 MSI**", color="primary")
         with st.container(border=True):
             st.image("./assets/sentinel2cover.png")
-            st.write("**Koleksi:** Level-2A (Surface Reflectance)")
+            st.write("**Koleksi:** Level-2A *(Surface Reflectance)*")
             st.write("**Penyedia:** European Union/ESA/Copernicus")
-            st.write("**Resolusi:** 10m")
-            st.write("**Bands:** Band 4 (Red), Band 8 (NIR), Band 11 (SWIR-1)")
+            st.write("**Resolusi:** 10 meter")
+            st.write("**Saluran:** *Band* 4 (Red), *Band* 8 (NIR), *Band* 11 (SWIR-1)")
             st.write("**Tahun:** 2024")
-            st.write("**Fungsi:** Validasi Data NDBI, NDMI, NDVI")
+            st.write("**Fungsi:** Validasi Data Indeks")
             st.link_button(
                 label="Lihat Detail",
                 url="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
@@ -210,9 +216,11 @@ with tab1:
         with st.container(border=True):
             st.image("./assets/shpcover.png")
             st.write("**Penyedia:** Badan Informasi Geospasial")
-            st.write("**Cakupan**: Kabupaten Bantul, Kabupaten Sleman, Kota Yogyakarta")
             st.write(
-                "**Fungsi:** Area of Interest (AOI) Kawasan Perkotaan Yogyakarta dan Sekitarnya"
+                "**Cakupan**: Kabupaten Bantul, Kabupaten Sleman, dan Kota Yogyakarta"
+            )
+            st.write(
+                "**Fungsi:** *Shapefile Area of Interest* (AOI) Kawasan Perkotaan Yogyakarta dan Sekitarnya"
             )
             st.link_button(
                 label="Lihat Detail",
@@ -221,23 +229,23 @@ with tab1:
             )
 
 with tab2:
-    st.badge("**Citra Landsat 5 TM Surface Reflectance**", color="primary")
+    st.badge("**Citra Landsat 5 TM *Surface Reflectance***", color="primary")
     snippetLandsat5 = """var dataset = ee.ImageCollection('LANDSAT/LT05/C02/T1_L2')"""
     st.code(snippetLandsat5, language="javascript", line_numbers=True)
 
-    st.badge("**Citra Landsat 7 ETM+ Surface Reflectance**", color="primary")
+    st.badge("**Citra Landsat 7 ETM+ *Surface Reflectance***", color="primary")
     snippetLandsat7 = """var dataset = ee.ImageCollection('LANDSAT/LE07/C02/T1_L2')"""
     st.code(snippetLandsat7, language="javascript", line_numbers=True)
 
-    st.badge("**Citra Landsat 8 OLI/TIRS Surface Reflectance**", color="primary")
+    st.badge("**Citra Landsat 8 OLI/TIRS *Surface Reflectance***", color="primary")
     snippetLandsat8 = """var dataset = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')"""
     st.code(snippetLandsat8, language="javascript", line_numbers=True)
 
-    st.badge("**Citra Radar NASA SRTM**", color="primary")
+    st.badge("**Citra Radar NASA SRTM *Digital Elevation***", color="primary")
     snippetRadar = """var dataset = ee.Image('USGS/SRTMGL1_003')"""
     st.code(snippetRadar, language="javascript", line_numbers=True)
 
-    st.badge("**Citra Sentinel-2 MSI Surface Reflectance**", color="primary")
+    st.badge("**Citra Sentinel-2 MSI *Surface Reflectance***", color="primary")
     snippetSentinel = (
         """var dataset = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')"""
     )

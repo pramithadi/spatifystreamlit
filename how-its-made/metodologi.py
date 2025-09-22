@@ -114,7 +114,7 @@ st.markdown(
 with tab1:
     st.badge("**Diagram Alir Penelitian**", color="primary")
     st.image(
-        "./assets/diagram_alir3.svg",
+        "./assets/diagram_alir.svg",
     )
 
 # ==============================================================================
