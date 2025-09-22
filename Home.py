@@ -77,11 +77,11 @@ st.title("Spatify — Spatial Information of Yogyakarta City")
 st.write("---")
 st.success(
     """
-    Selamat datang di Spatify! Aplikasi *web* interaktif ini mengajak Anda untuk melihat bagaimana suhu permukaan, penutup lahan, kerapatan area terbangun dan vegetasi hingga kelembapannya di Kawasan Perkotaan Yogyakarta dan sekitarnya telah berubah selama 25 tahun terakhir (1999-2024). Temukan polanya dan lihat seperti apa prediksi kondisi di tahun 2029!
+    Selamat datang di **Spatify**! Aplikasi *web* interaktif ini mengajak Anda untuk melihat bagaimana **suhu permukaan, penutup lahan, kerapatan area terbangun** dan **vegetasi** hingga **kelembapannya** di Kawasan Perkotaan Yogyakarta dan sekitarnya **telah berubah** selama 25 tahun terakhir (1999-2024). Temukan polanya dan lihat seperti apa prediksi kondisi di tahun 2029!
     """
 )
 
-st.subheader("Mulai Eksplorasi Anda!")
+st.subheader("Mulai Eksplorasi!")
 st.markdown(
     """
     👈 **Gunakan menu di *sidebar* kiri** untuk memulai eksplorasi Anda ke tiga bagian utama aplikasi.
@@ -91,8 +91,8 @@ st.markdown(
     ### Dasbor Analisis
     *Apa yang ingin Anda ketahui? Mulai analisis Anda dari sini.*
 
-    Untuk memulai, silakan pilih salah satu parameter pada *sidebar*, lalu jelajahi lebih dalam melalui *tab* interaktif:
-    - **Peta**: Visualisasikan sebaran spasial data interaktif dari tahun ke tahun.
+    Untuk memulai, silakan pilih parameter pada *sidebar*, lalu jelajahi lebih dalam melalui *tab* interaktif:
+    - **Peta**: Visualisasikan sebaran spasial data secara interaktif dari tahun ke tahun.
     - **Tren**: Amati perubahan nilai rata-rata dari waktu ke waktu dalam bentuk grafik.
     - **Validasi**: Bandingkan data hasil ekstraksi dengan data observasi.
     - **Model**: Lihat akurasi model *machine learning* untuk prediksi masa depan.
@@ -122,28 +122,34 @@ st.markdown(
 with st.expander("Tentang Aplikasi"):
     st.markdown(
         """
-        Spatify dirancang dan dikembangkan oleh **Pramitha Dewi** di bawah bimbingan Bapak **Karen Slamet Hardjo, S.Si., M.Sc.** sebagai bagian dari Proyek Akhir di Program Studi **Sarjana Terapan Sistem Informasi Geografis, Sekolah Vokasi, Universitas Gadjah Mada** tahun 2025.
+        **Spatify** dirancang dan dikembangkan oleh **Pramitha Dewi** di bawah bimbingan Bapak **Karen Slamet Hardjo, S.Si., M.Sc.** sebagai bagian dari Proyek Akhir di Program Studi **Sarjana Terapan Sistem Informasi Geografis, Sekolah Vokasi, Universitas Gadjah Mada** tahun 2025.
         
-        Spatify dikembangkan untuk mencapai beberapa tujuan dalam penelitian ini, yaitu:
-        1.	Memetakan kondisi historis (1999-2024) berbagai parameter (LST, penutup lahan, dan indeks spektral) di Kawasan Perkotaan Yogyakarta dan sekitarnya menggunakan  Google Earth Engine.
-        2.	Memprediksi kondisi penutup lahan dan LST untuk tahun 2029 dengan model *machine learning* (XGBoost dan CA-Markov). 
-        3.	Menyajikan seluruh data historis dan prediksi dalam sebuah *web app* dan Earth Engine Apps yang interaktif.
-        
-        Setiap saran dan masukan untuk pengembangan aplikasi ini sangat berarti.
+        Spatify dikembangkan untuk mencapai beberapa tujuan dalam Proyek Akhir ini, yaitu:
+        - **Memetakan kondisi historis** (1999-2024) berbagai parameter (LST, penutup lahan, dan indeks spektral) di Kawasan Perkotaan Yogyakarta dan sekitarnya menggunakan  Google Earth Engine.
+        - **Memprediksi** kondisi penutup lahan dan LST untuk tahun 2029 dengan model *machine learning* (XGBoost dan CA-Markov).
+        - **Menyajikan seluruh data** historis dan prediksi dalam sebuah *web app* dan Earth Engine Apps yang interaktif.
         """
     )
 
 with st.expander("Tentang Pengembang"):
-    col1, col2 = st.columns([1.5, 2.5])
+    col1, col2 = st.columns([0.8, 3.2])
+
     with col1:
-        st.image("./assets/ava1.jpg", width=200)
+        # st.image("./assets/foto_profil_1.svg", width=142)
+
+        st.image("./assets/foto_profil_9.svg", width=142)
 
     with col2:
         st.markdown(
             """
-            **Pramitha Dewi** Mahasiswa Sarjana Terapan Sistem Informasi Geografis  
-            Sekolah Vokasi, Universitas Gadjah Mada
+            ##### Halo! Saya Pramitha 👋
 
-            [LinkedIn](https://www.linkedin.com/in/pramithadewi/) | [GitHub](https://github.com/pramithadewi)
-            """
+            Terima kasih telah menggunakan **Spatify**! Setiap saran untuk pengembangan aplikasi sangat berarti. **Mari terhubung dan berkolaborasi melalui**:
+
+            - **Email**: [pramitha.dewi@mail.ugm.ac.id](mailto:pramitha.dewi@mail.ugm.ac.id)  
+            - **LinkedIn**: [linkedin.com/in/pramithadi](https://linkedin.com/in/pramithadi)  
+            - **GitHub**: [github.com/pramithadi](https://github.com/pramithadi) 
+
+            """,
+            unsafe_allow_html=True,
         )
