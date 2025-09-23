@@ -150,25 +150,19 @@ threshold_dict = {
 # DEKLARASI FUNGSI
 # ==============================================================================
 @st.cache_data
-def load_and_process_shapefile(shapefile_path):
+@st.cache_data
+def load_and_prep_geojson(geojson_path):
     """
-    Membaca, menyederhanakan, dan mengonversi shapefile ke GeoJSON.
-    Semua proses berat ini akan di-cache.
+    Membaca GeoJSON, mengubahnya menjadi GeoDataFrame untuk manipulasi,
+    menambahkan kolom tooltip kustom, lalu mengembalikannya sebagai GeoJSON lagi.
+    Semua proses ini akan di-cache.
     """
-    print(f"CACHE MISS: Memproses shapefile dari {shapefile_path}")  # Debugging
+    print(f"CACHE MISS: Memproses GeoJSON dari {geojson_path}")
 
-    # 1. Membaca data
-    gdf = gpd.read_file(shapefile_path)
+    # 1. Baca file GeoJSON menjadi GeoDataFrame
+    gdf = gpd.read_file(geojson_path)
 
-    # 2. Pastikan CRS adalah WGS84
-    if gdf.crs != "EPSG:4326":
-        gdf = gdf.to_crs("EPSG:4326")
-
-    # 3. SEDERHANAKAN GEOMETRI (Langkah Kunci!)
-    #    Ini akan mengurangi detail poligon dan membuatnya jauh lebih ringan.
-    gdf["geometry"] = gdf["geometry"].simplify(tolerance=0.001, preserve_topology=True)
-
-    # 4. Buat kolom tooltip
+    # 2. Fungsi kustom Anda untuk membuat tooltip (Kapanewon/Kemantren)
     def create_tooltip_text(row):
         namobj = row.get("NAMOBJ", "Unknown")
         wadmkk = row.get("WADMKK", "")
@@ -177,12 +171,15 @@ def load_and_process_shapefile(shapefile_path):
         elif "Yogyakarta" in wadmkk:
             return f"Kemantren {namobj}"
         else:
+            # Fallback jika WADMKK tidak mengandung kata kunci
             return namobj
 
+    # 3. Terapkan fungsi tersebut untuk membuat kolom baru
     gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
 
-    # 5. Konversi ke GeoJSON dan kembalikan hasilnya
-    return gdf.to_json()
+    # 4. Kembalikan hasilnya sebagai GeoDataFrame
+    # Folium bisa langsung menerima GeoDataFrame dengan lebih efisien
+    return gdf
 
 
 @st.cache_data
@@ -250,7 +247,7 @@ def get_toponim(wadmkk):
 
 @st.cache_data
 def get_kecamatan_bounds(namobj):
-    shapefile_path = "shp/aoi_kpy.shp"
+    shapefile_path = "shp/aoi_kpy.json"
     try:
         gdf = gpd.read_file(shapefile_path)
 
@@ -268,14 +265,15 @@ def get_kecamatan_bounds(namobj):
         return None
 
 
-def add_shp_to_map(map_obj, shapefile_path):
+# GANTI FUNGSI LAMA DENGAN INI
+def add_shp_to_map(map_obj, geojson_path):
     try:
-        # 1. Panggil data GeoJSON yang sudah diproses & di-cache
-        geojson_data = load_and_process_shapefile(shapefile_path)
+        # Panggil GeoDataFrame yang sudah diproses & di-cache
+        gdf_processed = load_and_prep_geojson(geojson_path)
 
-        # 2. Langsung tambahkan ke peta (ini sangat cepat)
+        # Langsung tambahkan GeoDataFrame ke peta
         geojson_layer = folium.GeoJson(
-            geojson_data,
+            gdf_processed,  # Gunakan GeoDataFrame langsung
             style_function=lambda feature: {
                 "fillColor": "white",
                 "color": "black",
@@ -286,9 +284,10 @@ def add_shp_to_map(map_obj, shapefile_path):
                 "weight": 3,
                 "fillOpacity": 0.1,
             },
+            # Arahkan tooltip ke kolom kustom "tooltip_text" yang sudah kita buat
             tooltip=folium.features.GeoJsonTooltip(
                 fields=["tooltip_text"],
-                aliases=[""],
+                aliases=[""],  # Tidak perlu judul lagi karena sudah lengkap
                 style=(
                     "background-color: white; color: black; font-family: 'Poppins', sans-serif; font-size: 12px; padding: 8px; border: 1px solid black; border-radius: 3px;"
                 ),
@@ -299,6 +298,7 @@ def add_shp_to_map(map_obj, shapefile_path):
         geojson_layer.add_to(map_obj)
         return True
     except Exception as e:
+        print(f"ERROR saat menambahkan GeoJSON: {e}")
         return False
 
 
@@ -698,9 +698,9 @@ with tab1:
 
         # Panggil GeoTiff dari Aset Lokal
         if option == "2029":
-            tif_path = "tif/output_lst2029kpy.tif"
+            tif_path = "tif/output_lst2029kpy_COG.tif"
         else:
-            tif_path = f"tif/lst{option}kpy.tif"
+            tif_path = f"tif/lst{option}kpy_COG.tif"
 
         # Set Threshold untuk Tahun yang Dipilih
         thresholds = threshold_dict[option]
@@ -712,7 +712,7 @@ with tab1:
             st.warning(f"File GeoTIFF tidak ditemukan: {tif_path}")
 
         # Cek Ketersediaan AOI, Panggil Function Batas AOI, dan Tampilkan ke Peta
-        shapefile_path = "shp/aoi_kpy.shp"
+        shapefile_path = "shp/aoi_kpy.json"
         if os.path.exists(shapefile_path):
             add_shp_to_map(m, shapefile_path)
         else:
@@ -1535,7 +1535,7 @@ with tab4:
                 }
 
                 # Aktual LST 2024
-                with rasterio.open("tif/lst2024kpy.tif") as src:
+                with rasterio.open("tif/lst2024kpy_COG.tif") as src:
                     data_2024_actual = src.read(1)
                     # Handle NoData
                     if src.nodata is not None:
@@ -1573,7 +1573,7 @@ with tab4:
                     )
 
                 # Prediksi LST 2029
-                with rasterio.open("tif/output_lst2029kpy.tif") as src:
+                with rasterio.open("tif/output_lst2029kpy_COG.tif") as src:
                     data_2029_pred = src.read(1)
                     # Handle NoData
                     if src.nodata is not None:
