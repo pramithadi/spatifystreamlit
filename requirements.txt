@@ -1,5 +1,6 @@
 streamlit==1.46.0
 pandas==2.2.3
+numpy==1.26.4
 geopandas==0.13.2
 shapely==2.0.2
 pyproj==3.4.1
