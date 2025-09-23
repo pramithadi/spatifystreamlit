@@ -3,7 +3,7 @@ streamlit==1.46.0
 
 # Data Processing
 pandas==2.2.3
-numpy==2.0.2
+numpy==1.26.4
 
 # Geospatial - versi yang lebih kompatibel dengan Streamlit Cloud
 geopandas==0.14.4
