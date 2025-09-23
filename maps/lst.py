@@ -150,6 +150,28 @@ threshold_dict = {
 # DEKLARASI FUNGSI
 # ==============================================================================
 @st.cache_data
+def load_shapefile_data(shapefile_path):
+    """Fungsi untuk membaca shapefile dan akan di-cache."""
+    print(f"CACHE: Membaca shapefile dari {shapefile_path}")  # Debugging
+    gdf = gpd.read_file(shapefile_path)
+    # Konversi CRS sekali saja saat data dimuat
+    if gdf.crs != "EPSG:4326":
+        gdf = gdf.to_crs("EPSG:4326")
+    return gdf
+
+
+@st.cache_data
+def load_geotiff_data(tif_path):
+    """Fungsi untuk membaca GeoTIFF dan akan di-cache."""
+    print(f"CACHE: Membaca GeoTIFF dari {tif_path}")  # Debugging
+    with rasterio.open(tif_path) as src:
+        data = src.read(1)
+        bounds = src.bounds
+        nodata = src.nodata
+    return data, bounds, nodata
+
+
+@st.cache_data
 def load_stats_kec():
     """
     Load CSV Statistik LST tiap Kecamatan.
@@ -224,7 +246,7 @@ def get_kecamatan_bounds(namobj):
 def add_shp_to_map(map_obj, shapefile_path):
     try:
         # Geopandas untuk Membaca SHP
-        gdf = gpd.read_file(shapefile_path)
+        gdf = load_shapefile_data(shapefile_path)
 
         # Konversi ke WGS84
         if gdf.crs != "EPSG:4326":
@@ -321,16 +343,10 @@ def add_legend_to_map(map_obj, thresholds):
 
 def add_geotiff_to_map(map_obj, tif_path, thresholds):
     try:
-        with rasterio.open(tif_path) as src:
-            # Rasterio untuk Membaca Data Raster
-            data = src.read(1)
+        data, bounds, nodata_val = load_geotiff_data(tif_path)
 
-            # Menegaskan Batas
-            bounds = src.bounds
-
-            # Handle NoData dan Outlier Piksel
-            if hasattr(src, "nodata") and src.nodata is not None:
-                data = np.where(data == src.nodata, np.nan, data)
+        if nodata_val is not None:
+            data = np.where(data == nodata_val, np.nan, data)
 
             # Set Nilai 0 atau Negatif sebagai NoData
             data = np.where(data <= 0, np.nan, data)
