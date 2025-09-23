@@ -150,14 +150,39 @@ threshold_dict = {
 # DEKLARASI FUNGSI
 # ==============================================================================
 @st.cache_data
-def load_shapefile_data(shapefile_path):
-    """Fungsi untuk membaca shapefile dan akan di-cache."""
-    print(f"CACHE: Membaca shapefile dari {shapefile_path}")  # Debugging
+def load_and_process_shapefile(shapefile_path):
+    """
+    Membaca, menyederhanakan, dan mengonversi shapefile ke GeoJSON.
+    Semua proses berat ini akan di-cache.
+    """
+    print(f"CACHE MISS: Memproses shapefile dari {shapefile_path}")  # Debugging
+
+    # 1. Membaca data
     gdf = gpd.read_file(shapefile_path)
-    # Konversi CRS sekali saja saat data dimuat
+
+    # 2. Pastikan CRS adalah WGS84
     if gdf.crs != "EPSG:4326":
         gdf = gdf.to_crs("EPSG:4326")
-    return gdf
+
+    # 3. SEDERHANAKAN GEOMETRI (Langkah Kunci!)
+    #    Ini akan mengurangi detail poligon dan membuatnya jauh lebih ringan.
+    gdf["geometry"] = gdf["geometry"].simplify(tolerance=0.001, preserve_topology=True)
+
+    # 4. Buat kolom tooltip
+    def create_tooltip_text(row):
+        namobj = row.get("NAMOBJ", "Unknown")
+        wadmkk = row.get("WADMKK", "")
+        if "Sleman" in wadmkk or "Bantul" in wadmkk:
+            return f"Kapanewon {namobj}"
+        elif "Yogyakarta" in wadmkk:
+            return f"Kemantren {namobj}"
+        else:
+            return namobj
+
+    gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
+
+    # 5. Konversi ke GeoJSON dan kembalikan hasilnya
+    return gdf.to_json()
 
 
 @st.cache_data
@@ -245,32 +270,10 @@ def get_kecamatan_bounds(namobj):
 
 def add_shp_to_map(map_obj, shapefile_path):
     try:
-        # Geopandas untuk Membaca SHP
-        gdf = load_shapefile_data(shapefile_path)
+        # 1. Panggil data GeoJSON yang sudah diproses & di-cache
+        geojson_data = load_and_process_shapefile(shapefile_path)
 
-        # Konversi ke WGS84
-        if gdf.crs != "EPSG:4326":
-            gdf = gdf.to_crs("EPSG:4326")
-
-        # Function Tooltip (Toponim) sesuai Kabupaten/Kota
-        def create_tooltip_text(row):
-            namobj = row.get("NAMOBJ", "Unknown")
-            wadmkk = row.get("WADMKK", "")
-
-            if "Sleman" in wadmkk or "Bantul" in wadmkk:
-                return f"Kapanewon {namobj}"
-            elif "Yogyakarta" in wadmkk:
-                return f"Kemantren {namobj}"
-            else:
-                return namobj
-
-        # Tambahkan Kolom Custom Tooltip
-        gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
-
-        # Konversi ke GeoJSON
-        geojson_data = gdf.to_json()
-
-        # Tambahkan GeoJSON ke Peta Folium dengan Custom Tooltip
+        # 2. Langsung tambahkan ke peta (ini sangat cepat)
         geojson_layer = folium.GeoJson(
             geojson_data,
             style_function=lambda feature: {
@@ -278,11 +281,10 @@ def add_shp_to_map(map_obj, shapefile_path):
                 "color": "black",
                 "weight": 2,
                 "fillOpacity": 0.05,
-                "opacity": 1,
             },
             highlight_function=lambda feature: {
                 "weight": 3,
-                "fillOpacity": 0.1,  # Hover
+                "fillOpacity": 0.1,
             },
             tooltip=folium.features.GeoJsonTooltip(
                 fields=["tooltip_text"],
@@ -294,9 +296,7 @@ def add_shp_to_map(map_obj, shapefile_path):
             ),
             name="Batas Administrasi",
         )
-
         geojson_layer.add_to(map_obj)
-
         return True
     except Exception as e:
         return False
