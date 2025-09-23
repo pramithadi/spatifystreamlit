@@ -150,12 +150,11 @@ threshold_dict = {
 # DEKLARASI FUNGSI
 # ==============================================================================
 @st.cache_data
-@st.cache_data
 def load_and_prep_geojson(geojson_path):
     """
     Membaca GeoJSON, mengubahnya menjadi GeoDataFrame untuk manipulasi,
     menambahkan kolom tooltip kustom, lalu mengembalikannya sebagai GeoJSON lagi.
-    Semua proses ini akan di-cache.
+    Semua proses ini di-cache.
     """
     print(f"CACHE MISS: Memproses GeoJSON dari {geojson_path}")
 
@@ -265,7 +264,6 @@ def get_kecamatan_bounds(namobj):
         return None
 
 
-# GANTI FUNGSI LAMA DENGAN INI
 def add_shp_to_map(map_obj, geojson_path):
     try:
         # Panggil GeoDataFrame yang sudah diproses & di-cache
@@ -1556,7 +1554,7 @@ with tab4:
                     )
 
                 # Prediksi LST 2024
-                with rasterio.open("tif/output_prediksi_lst2024kpy.tif") as src:
+                with rasterio.open("tif/output_prediksi_lst2024kpy_COG.tif") as src:
                     data_2024_pred = src.read(1)
                     # Handle NoData
                     if src.nodata is not None:

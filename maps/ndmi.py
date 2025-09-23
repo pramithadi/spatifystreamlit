@@ -560,9 +560,9 @@ with tab1:
 
         # Panggil GeoTiff dari Aset Lokal
         if option == "2029":
-            tif_path = "tif/output_ndmi2029kpy.tif"
+            tif_path = "tif/output_ndmi2029kpy_COG.tif"
         else:
-            tif_path = f"tif/ndmi{option}kpy.tif"
+            tif_path = f"tif/ndmi{option}kpy_COG.tif"
 
         # Set Threshold untuk Tahun yang Dipilih
         thresholds = threshold_dict[option]
@@ -1120,8 +1120,8 @@ with tab3:
         ).add_to(dual_map.m2)
 
         # Path untuk File GeoTIFF
-        landsat_tif_path = "tif/ndmi2024kpy.tif"
-        sentinel_tif_path = "tif/ndmiSentinel30.tif"
+        landsat_tif_path = "tif/ndmi2024kpy_COG.tif"
+        sentinel_tif_path = "tif/ndmiSentinel30_COG.tif"
         shapefile_path = "shp/aoi_kpy.shp"
 
         # Tambahkan GeoTiff Landsat ke Sisi Kiri
@@ -1386,7 +1386,7 @@ with tab4:
                 }
 
                 # Aktual NDMI 2024
-                with rasterio.open("tif/ndmi2024kpy.tif") as src:
+                with rasterio.open("tif/ndmi2024kpy_COG.tif") as src:
                     data_2024_actual = src.read(1)
                     bounds_actual = src.bounds
                     height, width = data_2024_actual.shape
@@ -1402,7 +1402,7 @@ with tab4:
                     )
 
                 # Proyeksi NDMI 2024
-                with rasterio.open("tif/output_proyeksi_ndmi2024kpy.tif") as src:
+                with rasterio.open("tif/output_proyeksi_ndmi2024kpy_COG.tif") as src:
                     data_2024_pred = src.read(1)
                     bounds_pred = src.bounds
                     height, width = data_2024_pred.shape
@@ -1414,7 +1414,7 @@ with tab4:
                     )
 
                 # Proyeksi NDMI 2029
-                with rasterio.open("tif/output_ndmi2029kpy.tif") as src:
+                with rasterio.open("tif/output_ndmi2029kpy_COG.tif") as src:
                     data_2029_pred = src.read(1)
                     bounds_2029 = src.bounds
                     height, width = data_2029_pred.shape

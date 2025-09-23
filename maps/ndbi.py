@@ -131,6 +131,49 @@ threshold_dict = {
 # DEKLARASI FUNGSI
 # ==============================================================================
 @st.cache_data
+def load_and_prep_geojson(geojson_path):
+    """
+    Membaca GeoJSON, mengubahnya menjadi GeoDataFrame untuk manipulasi,
+    menambahkan kolom tooltip kustom, lalu mengembalikannya sebagai GeoJSON lagi.
+    Semua proses ini di-cache.
+    """
+    print(f"CACHE MISS: Memproses GeoJSON dari {geojson_path}")
+
+    # 1. Baca file GeoJSON menjadi GeoDataFrame
+    gdf = gpd.read_file(geojson_path)
+
+    # 2. Fungsi kustom Anda untuk membuat tooltip (Kapanewon/Kemantren)
+    def create_tooltip_text(row):
+        namobj = row.get("NAMOBJ", "Unknown")
+        wadmkk = row.get("WADMKK", "")
+        if "Sleman" in wadmkk or "Bantul" in wadmkk:
+            return f"Kapanewon {namobj}"
+        elif "Yogyakarta" in wadmkk:
+            return f"Kemantren {namobj}"
+        else:
+            # Fallback jika WADMKK tidak mengandung kata kunci
+            return namobj
+
+    # 3. Terapkan fungsi tersebut untuk membuat kolom baru
+    gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
+
+    # 4. Kembalikan hasilnya sebagai GeoDataFrame
+    # Folium bisa langsung menerima GeoDataFrame dengan lebih efisien
+    return gdf
+
+
+@st.cache_data
+def load_geotiff_data(tif_path):
+    """Fungsi untuk membaca GeoTIFF dan akan di-cache."""
+    print(f"CACHE: Membaca GeoTIFF dari {tif_path}")  # Debugging
+    with rasterio.open(tif_path) as src:
+        data = src.read(1)
+        bounds = src.bounds
+        nodata = src.nodata
+    return data, bounds, nodata
+
+
+@st.cache_data
 def load_kec_stats():
     """
     Load CSV Statistik NDBI tiap Kecamatan.
@@ -205,53 +248,28 @@ def get_kecamatan_bounds(namobj):
         return None
 
 
-def add_shp_to_map(map_obj, shapefile_path):
-    """
-    Menambahkan SHP Batas Administrasi ke Peta Folium.
-    """
+def add_shp_to_map(map_obj, geojson_path):
     try:
-        # Geopandas untuk Membaca SHP
-        gdf = gpd.read_file(shapefile_path)
+        # Panggil GeoDataFrame yang sudah diproses & di-cache
+        gdf_processed = load_and_prep_geojson(geojson_path)
 
-        # Konversi ke WGS84
-        if gdf.crs != "EPSG:4326":
-            gdf = gdf.to_crs("EPSG:4326")
-
-        # Function Tooltip (Toponim) sesuai Kabupaten/Kota
-        def create_tooltip_text(row):
-            namobj = row.get("NAMOBJ", "Unknown")
-            wadmkk = row.get("WADMKK", "")
-
-            if "Sleman" in wadmkk or "Bantul" in wadmkk:
-                return f"Kapanewon {namobj}"
-            elif "Yogyakarta" in wadmkk:
-                return f"Kemantren {namobj}"
-            else:
-                return namobj
-
-        # Tambahkan Kolom Custom Tooltip
-        gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
-
-        # Konversi ke GeoJSON
-        geojson_data = gdf.to_json()
-
-        # Tambahkan GeoJSON ke Peta Folium dengan Custom Tooltip
+        # Langsung tambahkan GeoDataFrame ke peta
         geojson_layer = folium.GeoJson(
-            geojson_data,
+            gdf_processed,  # Gunakan GeoDataFrame langsung
             style_function=lambda feature: {
                 "fillColor": "white",
                 "color": "black",
                 "weight": 2,
                 "fillOpacity": 0.05,
-                "opacity": 1,
             },
             highlight_function=lambda feature: {
                 "weight": 3,
-                "fillOpacity": 0.1,  # Hover
+                "fillOpacity": 0.1,
             },
+            # Arahkan tooltip ke kolom kustom "tooltip_text" yang sudah kita buat
             tooltip=folium.features.GeoJsonTooltip(
                 fields=["tooltip_text"],
-                aliases=[""],
+                aliases=[""],  # Tidak perlu judul lagi karena sudah lengkap
                 style=(
                     "background-color: white; color: black; font-family: 'Poppins', sans-serif; font-size: 12px; padding: 8px; border: 1px solid black; border-radius: 3px;"
                 ),
@@ -259,11 +277,10 @@ def add_shp_to_map(map_obj, shapefile_path):
             ),
             name="Batas Administrasi",
         )
-
         geojson_layer.add_to(map_obj)
-
         return True
     except Exception as e:
+        print(f"ERROR saat menambahkan GeoJSON: {e}")
         return False
 
 
@@ -311,6 +328,8 @@ def add_geotiff_to_map(map_obj, tif_path, thresholds):
     Menambahkan GeoTiff Penutup Lahan ke Peta Folium.
     """
     try:
+        data, bounds, nodata_val = load_geotiff_data(tif_path)
+
         with rasterio.open(tif_path) as src:
             # Rasterio untuk Membaca Data Raster
             data = src.read(1)
@@ -558,9 +577,9 @@ with tab1:
 
         # Panggil GeoTiff dari Aset Lokal
         if option == "2029":
-            tif_path = "tif/output_ndbi2029kpy.tif"
+            tif_path = "tif/output_ndbi2029kpy_COG.tif"
         else:
-            tif_path = f"tif/ndbi{option}kpy.tif"
+            tif_path = f"tif/ndbi{option}kpy_COG.tif"
 
         # Set Threshold untuk Tahun yang Dipilih
         thresholds = threshold_dict[option]
@@ -1089,8 +1108,8 @@ with tab3:
             ).add_to(dual_map.m2)
 
             # Path untuk File GeoTIFF
-            landsat_tif_path = "tif/ndbi2024kpy.tif"
-            sentinel_tif_path = "tif/ndbiSentinel30.tif"
+            landsat_tif_path = "tif/ndbi2024kpy_COG.tif"
+            sentinel_tif_path = "tif/ndbiSentinel30_COG.tif"
             shapefile_path = "shp/aoi_kpy.shp"
 
             # Tambahkan GeoTiff Landsat ke Sisi Kiri
@@ -1357,7 +1376,7 @@ with tab4:
                 }
 
                 # Aktual NDBI 2024
-                with rasterio.open("tif/ndbi2024kpy.tif") as src:
+                with rasterio.open("tif/ndbi2024kpy_COG.tif") as src:
                     data_2024_actual = src.read(1)
                     bounds_actual = src.bounds
                     height, width = data_2024_actual.shape
@@ -1373,7 +1392,7 @@ with tab4:
                     )
 
                 # Proyeksi NDBI 2024
-                with rasterio.open("tif/output_proyeksi_ndbi2024kpy.tif") as src:
+                with rasterio.open("tif/output_proyeksi_ndbi2024kpy_COG.tif") as src:
                     data_2024_pred = src.read(1)
                     bounds_pred = src.bounds
                     height, width = data_2024_pred.shape
@@ -1385,7 +1404,7 @@ with tab4:
                     )
 
                 # Proyeksi NDBI 2029
-                with rasterio.open("tif/output_ndbi2029kpy.tif") as src:
+                with rasterio.open("tif/output_ndbi2029kpy_COG.tif") as src:
                     data_2029_pred = src.read(1)
                     bounds_2029 = src.bounds
                     height, width = data_2029_pred.shape
