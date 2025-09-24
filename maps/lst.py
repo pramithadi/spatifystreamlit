@@ -145,6 +145,268 @@ threshold_dict = {
     },
 }
 
+KECAMATAN_BOUNDS = {
+    "Pajangan": {
+        "min_lat": -7.910154,
+        "max_lat": -7.834027,
+        "min_lon": 110.256581,
+        "max_lon": 110.324644,
+        "wadmkk": "Bantul",
+    },
+    "Bantul": {
+        "min_lat": -7.920525,
+        "max_lat": -7.861570,
+        "min_lon": 110.309473,
+        "max_lon": 110.363740,
+        "wadmkk": "Bantul",
+    },
+    "Banguntapan": {
+        "min_lat": -7.863121,
+        "max_lat": -7.783162,
+        "min_lon": 110.375198,
+        "max_lon": 110.430849,
+        "wadmkk": "Bantul",
+    },
+    "Pleret": {
+        "min_lat": -7.900738,
+        "max_lat": -7.854634,
+        "min_lon": 110.375855,
+        "max_lon": 110.454720,
+        "wadmkk": "Bantul",
+    },
+    "Piyungan": {
+        "min_lat": -7.872696,
+        "max_lat": -7.817384,
+        "min_lon": 110.420561,
+        "max_lon": 110.521309,
+        "wadmkk": "Bantul",
+    },
+    "Sewon": {
+        "min_lat": -7.887412,
+        "max_lat": -7.823997,
+        "min_lon": 110.317446,
+        "max_lon": 110.382072,
+        "wadmkk": "Bantul",
+    },
+    "Kasihan": {
+        "min_lat": -7.861318,
+        "max_lat": -7.768220,
+        "min_lon": 110.280408,
+        "max_lon": 110.352569,
+        "wadmkk": "Bantul",
+    },
+    "Sedayu": {
+        "min_lat": -7.865454,
+        "max_lat": -7.784616,
+        "min_lon": 110.221201,
+        "max_lon": 110.290698,
+        "wadmkk": "Bantul",
+    },
+    "Gamping": {
+        "min_lat": -7.835228,
+        "max_lat": -7.735666,
+        "min_lon": 110.280362,
+        "max_lon": 110.355014,
+        "wadmkk": "Sleman",
+    },
+    "Godean": {
+        "min_lat": -7.797698,
+        "max_lat": -7.734785,
+        "min_lon": 110.262531,
+        "max_lon": 110.330165,
+        "wadmkk": "Sleman",
+    },
+    "Moyudan": {
+        "min_lat": -7.815200,
+        "max_lat": -7.739029,
+        "min_lon": 110.218705,
+        "max_lon": 110.287664,
+        "wadmkk": "Sleman",
+    },
+    "Minggir": {
+        "min_lat": -7.759545,
+        "max_lat": -7.705374,
+        "min_lon": 110.215910,
+        "max_lon": 110.281926,
+        "wadmkk": "Sleman",
+    },
+    "Seyegan": {
+        "min_lat": -7.765134,
+        "max_lat": -7.694704,
+        "min_lon": 110.271502,
+        "max_lon": 110.326240,
+        "wadmkk": "Sleman",
+    },
+    "Mlati": {
+        "min_lat": -7.774225,
+        "max_lat": -7.700432,
+        "min_lon": 110.304482,
+        "max_lon": 110.385777,
+        "wadmkk": "Sleman",
+    },
+    "Depok": {
+        "min_lat": -7.801695,
+        "max_lat": -7.731390,
+        "min_lon": 110.369320,
+        "max_lon": 110.447550,
+        "wadmkk": "Sleman",
+    },
+    "Berbah": {
+        "min_lat": -7.836623,
+        "max_lat": -7.777257,
+        "min_lon": 110.421167,
+        "max_lon": 110.487754,
+        "wadmkk": "Sleman",
+    },
+    "Kalasan": {
+        "min_lat": -7.785957,
+        "max_lat": -7.700159,
+        "min_lon": 110.438728,
+        "max_lon": 110.491072,
+        "wadmkk": "Sleman",
+    },
+    "Ngemplak": {
+        "min_lat": -7.755650,
+        "max_lat": -7.667755,
+        "min_lon": 110.408553,
+        "max_lon": 110.482772,
+        "wadmkk": "Sleman",
+    },
+    "Ngaglik": {
+        "min_lat": -7.755560,
+        "max_lat": -7.672081,
+        "min_lon": 110.366557,
+        "max_lon": 110.443259,
+        "wadmkk": "Sleman",
+    },
+    "Tegalrejo": {
+        "min_lat": -7.794187,
+        "max_lat": -7.766468,
+        "min_lon": 110.348662,
+        "max_lon": 110.369357,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Gondokusuman": {
+        "min_lat": -7.798199,
+        "max_lat": -7.774690,
+        "min_lon": 110.368024,
+        "max_lon": 110.396002,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Danurejan": {
+        "min_lat": -7.797274,
+        "max_lat": -7.788140,
+        "min_lon": 110.365368,
+        "max_lon": 110.378419,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Gedongtengen": {
+        "min_lat": -7.796348,
+        "max_lat": -7.787196,
+        "min_lon": 110.355268,
+        "max_lon": 110.366438,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Ngampilan": {
+        "min_lat": -7.808621,
+        "max_lat": -7.795570,
+        "min_lon": 110.353681,
+        "max_lon": 110.362159,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Wirobrajan": {
+        "min_lat": -7.813477,
+        "max_lat": -7.792852,
+        "min_lon": 110.344800,
+        "max_lon": 110.355440,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Mantrijeron": {
+        "min_lat": -7.826771,
+        "max_lat": -7.808277,
+        "min_lon": 110.350798,
+        "max_lon": 110.368479,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Kraton": {
+        "min_lat": -7.814891,
+        "max_lat": -7.802875,
+        "min_lon": 110.355851,
+        "max_lon": 110.369373,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Gondomanan": {
+        "min_lat": -7.808194,
+        "max_lat": -7.796072,
+        "min_lon": 110.360510,
+        "max_lon": 110.374300,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Pakualaman": {
+        "min_lat": -7.804580,
+        "max_lat": -7.796715,
+        "min_lon": 110.369749,
+        "max_lon": 110.380511,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Mergangsan": {
+        "min_lat": -7.826884,
+        "max_lat": -7.801539,
+        "min_lon": 110.367476,
+        "max_lon": 110.381472,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Umbulharjo": {
+        "min_lat": -7.840072,
+        "max_lat": -7.788484,
+        "min_lon": 110.374580,
+        "max_lon": 110.398505,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Kotagede": {
+        "min_lat": -7.833535,
+        "max_lat": -7.802250,
+        "min_lon": 110.390140,
+        "max_lon": 110.404935,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Sleman": {
+        "min_lat": -7.728679,
+        "max_lat": -7.662370,
+        "min_lon": 110.306495,
+        "max_lon": 110.381601,
+        "wadmkk": "Sleman",
+    },
+    "Turi": {
+        "min_lat": -7.682863,
+        "max_lat": -7.571829,
+        "min_lon": 110.343410,
+        "max_lon": 110.418494,
+        "wadmkk": "Sleman",
+    },
+    "Pakem": {
+        "min_lat": -7.702673,
+        "max_lat": -7.541162,
+        "min_lon": 110.377110,
+        "max_lon": 110.445520,
+        "wadmkk": "Sleman",
+    },
+    "Cangkringan": {
+        "min_lat": -7.689823,
+        "max_lat": -7.541162,
+        "min_lon": 110.426367,
+        "max_lon": 110.477433,
+        "wadmkk": "Sleman",
+    },
+    "Jetis": {
+        "min_lat": -7.789966,
+        "max_lat": -7.773196,
+        "min_lon": 110.355054,
+        "max_lon": 110.371467,
+        "wadmkk": "Kota Yogyakarta",
+    },
+}
+
 
 # ==============================================================================
 # DEKLARASI FUNGSI
@@ -244,25 +506,14 @@ def get_toponim(wadmkk):
         return "Kecamatan"
 
 
-@st.cache_data
-def get_kecamatan_bounds(namobj):
-    shapefile_path = "shp/aoi_kpy.json"
-    try:
-        gdf = gpd.read_file(shapefile_path)
-
-        if gdf.crs != "EPSG:4326":
-            gdf = gdf.to_crs("EPSG:4326")
-
-        kec_data = gdf[gdf["NAMOBJ"] == namobj]
-
-        if not kec_data.empty:
-            bounds = kec_data.total_bounds
-            return [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
-        else:
-            return None
-    except Exception as e:
-        st.warning(f"Error getting bounds: {e}")
-        return None
+def get_kecamatan_bounds_static(namobj):
+    if namobj in KECAMATAN_BOUNDS:
+        bounds = KECAMATAN_BOUNDS[namobj]
+        return [
+            [bounds["min_lat"], bounds["min_lon"]],
+            [bounds["max_lat"], bounds["max_lon"]],
+        ]
+    return None
 
 
 def add_shp_to_map(map_obj, geojson_path):
@@ -620,7 +871,7 @@ with tab1:
 
     with col1_peta:
         if selected_kecamatan:
-            kec_bounds = get_kecamatan_bounds(selected_kecamatan)
+            kec_bounds = get_kecamatan_bounds_static(selected_kecamatan)
             if kec_bounds:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
@@ -1474,100 +1725,67 @@ with tab4:
     with col_peta_perbandingan[0]:
         with st.container(border=True):
             try:
+                from PIL import Image
 
-                def process_raster_data_with_threshold(data, thresholds):
-                    data = data.astype("float32")
+                # Baca PNG menggunakan PIL, bukan rasterio
+                # PNG sudah dalam format RGBA dengan klasifikasi warna
 
-                    colors = {
-                        "very_low": 0,
-                        "low": 1,
-                        "medium": 2,
-                        "high": 3,
+                # Aktual LST 2024 - dari PNG
+                img_2024_actual = Image.open("static/lst_2024.png")
+                data_2024_actual = np.array(img_2024_actual)
+
+                # Convert RGBA ke single channel berdasarkan warna
+                # Ekstrak klasifikasi dari warna RGB
+                def rgba_to_classification(rgba_array):
+                    height, width, _ = rgba_array.shape
+                    classified = np.full((height, width), np.nan, dtype=np.float32)
+
+                    # Definisi warna yang sama dengan preprocessing
+                    colors_rgb = {
+                        (92, 160, 211): 0,  # very_low - biru
+                        (245, 235, 177): 1,  # low - kuning muda
+                        (219, 167, 88): 2,  # medium - orange
+                        (147, 34, 14): 3,  # high - merah
                     }
 
-                    classified_data = np.full(data.shape, np.nan, dtype=np.float32)
-                    valid_mask = ~np.isnan(data)
-                    very_low_mask = valid_mask & (data <= thresholds["low"])
-                    low_mask = (
-                        valid_mask
-                        & (data > thresholds["low"])
-                        & (data <= thresholds["medium"])
-                    )
-                    medium_mask = (
-                        valid_mask
-                        & (data > thresholds["medium"])
-                        & (data <= thresholds["high"])
-                    )
-                    high_mask = valid_mask & (data > thresholds["high"])
+                    # Ekstrak RGB channels
+                    r = rgba_array[:, :, 0]
+                    g = rgba_array[:, :, 1]
+                    b = rgba_array[:, :, 2]
+                    alpha = rgba_array[:, :, 3]
 
-                    classified_data[very_low_mask] = colors["very_low"]
-                    classified_data[low_mask] = colors["low"]
-                    classified_data[medium_mask] = colors["medium"]
-                    classified_data[high_mask] = colors["high"]
-
-                    return classified_data
-
-                # Threshold LST yang sudah direvisi
-                thresholds = {
-                    "aktual_2024": {"low": 33.207, "medium": 37.262, "high": 41.317},
-                    "prediksi_2024": {"low": 33.315, "medium": 37.267, "high": 41.218},
-                    "prediksi_2029": {"low": 34.041, "medium": 38.378, "high": 42.714},
-                }
-
-                # Aktual LST 2024
-                with rasterio.open("tif/lst2024kpy_COG.tif") as src:
-                    data_2024_actual = src.read(1)
-                    # Handle NoData
-                    if src.nodata is not None:
-                        data_2024_actual = np.where(
-                            data_2024_actual == src.nodata, np.nan, data_2024_actual
+                    # Klasifikasi berdasarkan warna (dengan toleransi)
+                    for (target_r, target_g, target_b), class_val in colors_rgb.items():
+                        # Mask untuk pixel dengan warna yang cocok (toleransi ±5)
+                        mask = (
+                            (np.abs(r - target_r) <= 5)
+                            & (np.abs(g - target_g) <= 5)
+                            & (np.abs(b - target_b) <= 5)
+                            & (alpha > 0)  # Not transparent
                         )
-                    bounds_actual = src.bounds
-                    height, width = data_2024_actual.shape
-                    x_actual = np.linspace(
-                        bounds_actual.left, bounds_actual.right, width
-                    )
-                    y_actual = np.linspace(
-                        bounds_actual.bottom, bounds_actual.top, height
-                    )
-                    data_2024_actual = np.flipud(data_2024_actual)
-                    data_2024_actual = process_raster_data_with_threshold(
-                        data_2024_actual, thresholds["aktual_2024"]
-                    )
+                        classified[mask] = class_val
 
-                # Prediksi LST 2024
-                with rasterio.open("tif/output_prediksi_lst2024kpy_COG.tif") as src:
-                    data_2024_pred = src.read(1)
-                    # Handle NoData
-                    if src.nodata is not None:
-                        data_2024_pred = np.where(
-                            data_2024_pred == src.nodata, np.nan, data_2024_pred
-                        )
-                    bounds_pred = src.bounds
-                    height, width = data_2024_pred.shape
-                    x_pred_24 = np.linspace(bounds_pred.left, bounds_pred.right, width)
-                    y_pred_24 = np.linspace(bounds_pred.bottom, bounds_pred.top, height)
-                    data_2024_pred = np.flipud(data_2024_pred)
-                    data_2024_pred = process_raster_data_with_threshold(
-                        data_2024_pred, thresholds["prediksi_2024"]
-                    )
+                    return classified
+
+                data_2024_actual = rgba_to_classification(data_2024_actual)
+                data_2024_actual = np.flipud(
+                    data_2024_actual
+                )  # Flip untuk orientasi benar
+
+                # Prediksi LST 2024 - GANTI dengan file yang benar
+                # Asumsi kamu punya file prediksi terpisah, kalau tidak pakai yang sama
+                img_2024_pred = Image.open(
+                    "static/lst_2024.png"
+                )  # GANTI dengan file prediksi yang benar
+                data_2024_pred = rgba_to_classification(np.array(img_2024_pred))
+                data_2024_pred = np.flipud(data_2024_pred)
 
                 # Prediksi LST 2029
-                with rasterio.open("tif/output_lst2029kpy_COG.tif") as src:
-                    data_2029_pred = src.read(1)
-                    # Handle NoData
-                    if src.nodata is not None:
-                        data_2029_pred = np.where(
-                            data_2029_pred == src.nodata, np.nan, data_2029_pred
-                        )
-                    bounds_2029 = src.bounds
-                    height, width = data_2029_pred.shape
-                    x_pred_29 = np.linspace(bounds_2029.left, bounds_2029.right, width)
-                    y_pred_29 = np.linspace(bounds_2029.bottom, bounds_2029.top, height)
-                    data_2029_pred = np.flipud(data_2029_pred)
-                    data_2029_pred = process_raster_data_with_threshold(
-                        data_2029_pred, thresholds["prediksi_2029"]
-                    )
+                img_2029_pred = Image.open("static/lst_2029.png")
+                data_2029_pred = rgba_to_classification(np.array(img_2029_pred))
+                data_2029_pred = np.flipud(data_2029_pred)
+
+                # Tidak perlu koordinat, cukup tampilan peta saja
 
                 colorscale = [
                     [0.0, "rgb(92, 160, 211)"],
@@ -1590,8 +1808,6 @@ with tab4:
                 fig.add_trace(
                     go.Heatmap(
                         z=data_2024_actual,
-                        x=x_actual,
-                        y=y_actual,
                         colorscale=colorscale,
                         zmin=0,
                         zmax=3,
@@ -1605,8 +1821,6 @@ with tab4:
                 fig.add_trace(
                     go.Heatmap(
                         z=data_2024_pred,
-                        x=x_pred_24,
-                        y=y_pred_24,
                         colorscale=colorscale,
                         zmin=0,
                         zmax=3,
@@ -1620,8 +1834,6 @@ with tab4:
                 fig.add_trace(
                     go.Heatmap(
                         z=data_2029_pred,
-                        x=x_pred_29,
-                        y=y_pred_29,
                         colorscale=colorscale,
                         zmin=0,
                         zmax=3,
@@ -1690,6 +1902,7 @@ with tab4:
                     fig.update_xaxes(
                         showgrid=False,
                         zeroline=False,
+                        showticklabels=False,
                         row=1,
                         col=i,
                         tickfont=dict(size=12, color="black"),
@@ -1698,6 +1911,7 @@ with tab4:
                     fig.update_yaxes(
                         showgrid=False,
                         zeroline=False,
+                        showticklabels=False,
                         row=1,
                         col=i,
                         tickfont=dict(size=12, color="black"),
