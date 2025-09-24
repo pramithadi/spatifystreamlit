@@ -184,14 +184,12 @@ def load_and_prep_geojson(geojson_path):
 
 
 @st.cache_data
-def load_geotiff_data(tif_path):
-    """Fungsi untuk membaca GeoTIFF dan akan di-cache."""
-    print(f"CACHE: Membaca GeoTIFF dari {tif_path}")  # Debugging
+def load_geotiff_bounds(tif_path):
+    """Fungsi untuk membaca bounds GeoTIFF saja (untuk PNG overlay)."""
+    print(f"CACHE: Membaca bounds dari {tif_path}")
     with rasterio.open(tif_path) as src:
-        data = src.read(1)
         bounds = src.bounds
-        nodata = src.nodata
-    return data, bounds, nodata
+    return bounds
 
 
 @st.cache_data
@@ -361,76 +359,54 @@ def add_legend_to_map(map_obj, thresholds):
         return False
 
 
-def add_geotiff_to_map(map_obj, tif_path, thresholds):
+def add_png_to_map(map_obj, year, thresholds):
+    """
+    Menambahkan PNG preprocessed ke peta instead of processing GeoTIFF.
+    Fungsi ini jauh lebih cepat karena tidak ada processing runtime.
+    """
     try:
-        data, bounds, nodata_val = load_geotiff_data(tif_path)
+        # Path ke PNG yang sudah diproses
+        png_path = f"static/lst_{year}.png"
 
-        if nodata_val is not None:
-            data = np.where(data == nodata_val, np.nan, data)
-
-            # Set Nilai 0 atau Negatif sebagai NoData
-            data = np.where(data <= 0, np.nan, data)
-
-            # Warna untuk Setiap Kelas
-            colors = {
-                "very_low": [92, 160, 211, 255],  # #5ca0d3
-                "low": [245, 235, 177, 255],  # #f5ebb1
-                "medium": [219, 167, 88, 255],  # #dba758
-                "high": [147, 34, 14, 255],  # #93220e
-            }
-
-            # Buat Array Warna Berdasarkan Threshold (RGBA)
-            colored_data = np.zeros((data.shape[0], data.shape[1], 4), dtype=np.uint8)
-
-            # Mask untuk Data Valid
-            valid_mask = ~np.isnan(data)
-
-            # Klasifikasi Berdasarkan Threshold
-            very_low_mask = valid_mask & (data <= thresholds["low"])
-            low_mask = (
-                valid_mask & (data > thresholds["low"]) & (data <= thresholds["medium"])
+        # Check jika PNG file ada
+        if not os.path.exists(png_path):
+            st.error(
+                f"File PNG tidak ditemukan: {png_path}. Jalankan preprocessing script dulu!"
             )
-            medium_mask = (
-                valid_mask
-                & (data > thresholds["medium"])
-                & (data <= thresholds["high"])
-            )
-            high_mask = valid_mask & (data > thresholds["high"])
+            return False
 
-            # Pengaplikasian Warna Berdasarkan Klasifikasi
-            colored_data[very_low_mask] = colors["very_low"]
-            colored_data[low_mask] = colors["low"]
-            colored_data[medium_mask] = colors["medium"]
-            colored_data[high_mask] = colors["high"]
+        # Dapatkan bounds dari GeoTIFF asli untuk positioning
+        if year == "2029":
+            tif_path = "tif/output_lst2029kpy_COG.tif"
+        else:
+            tif_path = f"tif/lst{year}kpy_COG.tif"
 
-            # Set Area yang Tidak Valid dengan Warna Transparan
-            colored_data[~valid_mask] = [0, 0, 0, 0]
+        if not os.path.exists(tif_path):
+            st.warning(f"File GeoTIFF tidak ditemukan: {tif_path}")
+            return False
 
-            # Konversi ke PIL Image
-            img = Image.fromarray(colored_data, "RGBA")
+        # Load bounds dari GeoTIFF
+        bounds = load_geotiff_bounds(tif_path)
 
-            # Konversi ke base64
-            buffered = BytesIO()
-            img.save(buffered, format="PNG")
-            img_str = base64.b64encode(buffered.getvalue()).decode()
+        # Bounds untuk Folium
+        bounds_folium = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]
 
-            # Bounds untuk Folium
-            bounds_folium = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]
-
-            # Tambahkan ke Peta
-            lst_overlay = folium.raster_layers.ImageOverlay(
-                image=f"data:image/png;base64,{img_str}",
-                bounds=bounds_folium,
-                opacity=1.0,
-                interactive=True,
-                cross_origin=False,
-                zindex=1,
-                name="Suhu Permukaan Lahan",
-            )
-            lst_overlay.add_to(map_obj)
+        # Tambahkan PNG sebagai ImageOverlay
+        lst_overlay = folium.raster_layers.ImageOverlay(
+            image=png_path,  # Langsung path ke PNG file
+            bounds=bounds_folium,
+            opacity=1.0,
+            interactive=True,
+            cross_origin=False,
+            zindex=1,
+            name="Suhu Permukaan Lahan",
+        )
+        lst_overlay.add_to(map_obj)
 
         return True
+
     except Exception as e:
+        st.error(f"Error menambahkan PNG ke peta: {e}")
         return False
 
 
@@ -716,20 +692,13 @@ with tab1:
             control=True,
         ).add_to(m)
 
-        # Panggil GeoTiff dari Aset Lokal
-        if option == "2029":
-            tif_path = "tif/output_lst2029kpy_COG.tif"
-        else:
-            tif_path = f"tif/lst{option}kpy_COG.tif"
-
         # Set Threshold untuk Tahun yang Dipilih
         thresholds = threshold_dict[option]
 
-        # Cek Ketersediaan GeoTiff, Panggil Function GeoTiff, dan Tampilkan ke Peta
-        if os.path.exists(tif_path):
-            add_geotiff_to_map(m, tif_path, thresholds)
-        else:
-            st.warning(f"File GeoTIFF tidak ditemukan: {tif_path}")
+        # Tambahkan PNG ke peta (jauh lebih cepat dari GeoTIFF)
+        png_success = add_png_to_map(m, option, thresholds)
+        if not png_success:
+            st.info("Menampilkan peta tanpa layer LST")
 
         # Cek Ketersediaan AOI, Panggil Function Batas AOI, dan Tampilkan ke Peta
         shapefile_path = "shp/aoi_kpy.json"
