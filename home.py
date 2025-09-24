@@ -136,8 +136,8 @@ with st.expander("Tentang Pengembang"):
 
     with col1:
         # st.image("./assets/foto_profil_1.svg", width=142)
-        # st.image("./assets/foto_profil_1.svg", width=164)
-        st.image("./assets/foto_profil_9.svg", width=164)
+        st.image("./assets/foto_profil_1.svg", width=164)
+        # st.image("./assets/foto_profil_9.svg", width=164)
 
     with col2:
         st.markdown(

@@ -144,6 +144,16 @@ threshold_dict = {
     },
 }
 
+LST_IMAGE_BOUNDS = {
+    "1999": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2004": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2009": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2014": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2019": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2024": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2029": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+}
+
 KECAMATAN_BOUNDS = {
     "Pajangan": {
         "min_lat": -7.910154,
@@ -445,15 +455,6 @@ def load_and_prep_geojson(geojson_path):
 
 
 @st.cache_data
-def load_geotiff_bounds(tif_path):
-    """Fungsi untuk membaca bounds GeoTIFF saja (untuk PNG overlay)."""
-    print(f"CACHE: Membaca bounds dari {tif_path}")
-    with rasterio.open(tif_path) as src:
-        bounds = src.bounds
-    return bounds
-
-
-@st.cache_data
 def load_stats_kec():
     """
     Load CSV Statistik LST tiap Kecamatan.
@@ -597,39 +598,25 @@ def add_legend_to_map(map_obj, thresholds):
 
 def add_png_to_map(map_obj, year, thresholds):
     """
-    Menambahkan PNG preprocessed ke peta instead of processing GeoTIFF.
-    Fungsi ini jauh lebih cepat karena tidak ada processing runtime.
+    Menambahkan PNG preprocessed ke peta.
+    Jauh lebih cepat karena bounds sudah di-hardcode.
     """
     try:
-        # Path ke PNG yang sudah diproses
         png_path = f"static/lst_{year}.png"
-
-        # Check jika PNG file ada
         if not os.path.exists(png_path):
-            st.error(
-                f"File PNG tidak ditemukan: {png_path}. Jalankan preprocessing script dulu!"
-            )
+            st.error(f"File PNG tidak ditemukan: {png_path}.")
             return False
 
-        # Dapatkan bounds dari GeoTIFF asli untuk positioning
-        if year == "2029":
-            tif_path = "tif/output_lst2029kpy_COG.tif"
-        else:
-            tif_path = f"tif/lst{year}kpy_COG.tif"
-
-        if not os.path.exists(tif_path):
-            st.warning(f"File GeoTIFF tidak ditemukan: {tif_path}")
+        # Ambil bounds dari dictionary, BUKAN dari file GeoTIFF
+        if year not in LST_IMAGE_BOUNDS:
+            st.error(f"Bounds untuk tahun {year} tidak ditemukan.")
             return False
 
-        # Load bounds dari GeoTIFF
-        bounds = load_geotiff_bounds(tif_path)
-
-        # Bounds untuk Folium
-        bounds_folium = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]
+        bounds_folium = LST_IMAGE_BOUNDS[year]
 
         # Tambahkan PNG sebagai ImageOverlay
         lst_overlay = folium.raster_layers.ImageOverlay(
-            image=png_path,  # Langsung path ke PNG file
+            image=png_path,
             bounds=bounds_folium,
             opacity=1.0,
             interactive=True,
@@ -639,7 +626,6 @@ def add_png_to_map(map_obj, year, thresholds):
             show=True,
         )
         lst_overlay.add_to(map_obj)
-
         return True
 
     except Exception as e:
@@ -876,7 +862,7 @@ with tab1:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 12
+                zoom_level = 12.4
             else:
                 map_center = [-7.764326411862208, 110.3721676814108]
                 zoom_level = 13
@@ -959,29 +945,26 @@ with tab1:
         # CSS untuk Custom Peta Folium
         css = """
         <style>
-        .leaflet-control-layers label {
-            font-size: 11px !important;
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .leaflet-control-layers-list {
-            font-size: 11px !important;
-        }
-        .leaflet-control-layers-expanded {
-            font-size: 11px !important;
-        }
-        .leaflet-control-attribution {
-            font-size: 11px !important;
-            font-family: 'Poppins', sans-serif !important;
-        }
+            /* CSS untuk memperbaiki ukuran peta */
+            .folium-map {
+                height: 100% !important;
+            }
+
+            /* CSS asli Anda untuk style layer control */
+            .leaflet-control-layers label,
+            .leaflet-control-layers-list,
+            .leaflet-control-layers-expanded,
+            .leaflet-control-attribution {
+                font-size: 11px !important;
+                font-family: 'Poppins', sans-serif !important;
+            }
         </style>
         """
-        m.get_root().html.add_child(folium.Element(css))
+        m.get_root().header.add_child(folium.Element(css))
 
         map_html = m._repr_html_()
 
-        html_with_width = f"<div style='width:100%;'>{map_html}</div>"
-
-        html(html_with_width, height=610, scrolling=False)
+        html(m.get_root().render(), height=600, scrolling=False)
 
 # ==============================================================================
 # SECTION 2: TREN
