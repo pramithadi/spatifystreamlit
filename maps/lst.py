@@ -422,33 +422,23 @@ KECAMATAN_BOUNDS = {
 # ==============================================================================
 @st.cache_data
 def load_and_prep_geojson(geojson_path):
-    """
-    Load GeoJSON langsung tanpa GeoPandas untuk avoid dependency conflict
-    """
     try:
         import json
 
-        # Load langsung sebagai JSON
         with open(geojson_path, "r", encoding="utf-8") as f:
             geojson_data = json.load(f)
-
-        # Tambahkan tooltip_text langsung ke properties
         for feature in geojson_data["features"]:
             props = feature.get("properties", {})
             namobj = props.get("NAMOBJ", "Unknown")
             wadmkk = props.get("WADMKK", "")
-
             if "Sleman" in wadmkk or "Bantul" in wadmkk:
                 tooltip_text = f"Kapanewon {namobj}"
             elif "Yogyakarta" in wadmkk:
                 tooltip_text = f"Kemantren {namobj}"
             else:
                 tooltip_text = namobj
-
             feature["properties"]["tooltip_text"] = tooltip_text
-
         return geojson_data
-
     except Exception as e:
         st.error(f"Error loading GeoJSON: {e}")
         return None
@@ -456,35 +446,21 @@ def load_and_prep_geojson(geojson_path):
 
 @st.cache_data
 def load_stats_kec():
-    """
-    Load CSV Statistik LST tiap Kecamatan.
-    """
     csv_path = "./csv/lstStatsKec.csv"
     try:
         df = pd.read_csv(csv_path)
-        # Kolom Tahun di CSV Harus String
         df["Tahun"] = df["Tahun"].astype(str)
         return df
     except FileNotFoundError:
-        st.error(f"File CSV tidak ditemukan: {csv_path}")
-        return pd.DataFrame()
-    except Exception as e:
-        st.error(f"Error membaca file CSV: {str(e)}")
-        return pd.DataFrame()
+        return None  # Return None agar bisa dihandle
 
 
 def get_kec_by_year(df, year):
-    """
-    Filter LST Kecamatan Berdasarkan Tahun.
-    """
-    if df.empty:
+    if df is None or df.empty:
         return {}
-
     year_data = df[df["Tahun"] == str(year)]
     if year_data.empty:
         return {}
-
-    # Convert Menjadi Dictionary
     kecamatan_dict = {}
     for _, row in year_data.iterrows():
         kecamatan_dict[row["NAMOBJ"]] = {
@@ -493,7 +469,6 @@ def get_kec_by_year(df, year):
             "mean": row["mean"],
             "wadmkk": row["WADMKK"],
         }
-
     return kecamatan_dict
 
 
@@ -516,18 +491,13 @@ def get_kecamatan_bounds_static(namobj):
     return None
 
 
-def add_shp_to_map(map_obj, geojson_path):
+def add_shp_to_map(map_obj, geojson_data):  # Modifikasi: terima data, bukan path
     try:
-        # Load sebagai dict, bukan GeoDataFrame
-        geojson_data = load_and_prep_geojson(geojson_path)
-
         if geojson_data is None:
             st.warning("Batas administrasi tidak dapat dimuat")
             return False
-
-        # Langsung pakai GeoJSON dict
         geojson_layer = folium.GeoJson(
-            geojson_data,  # Dict langsung, bukan GeoDataFrame
+            geojson_data,
             style_function=lambda feature: {
                 "fillColor": "white",
                 "color": "black",
@@ -551,7 +521,6 @@ def add_shp_to_map(map_obj, geojson_path):
         )
         geojson_layer.add_to(map_obj)
         return True
-
     except Exception as e:
         st.error(f"ERROR saat menambahkan GeoJSON: {e}")
         return False
@@ -559,18 +528,7 @@ def add_shp_to_map(map_obj, geojson_path):
 
 def add_legend_to_map(map_obj, thresholds):
     legend_html = f"""
-    <div style="position: fixed; 
-                top: 10px; 
-                right: 10px; 
-                z-index: 1000; 
-                background-color: white; 
-                border: 1px solid #ccc; 
-                border-radius: 1px; 
-                padding: 10px; 
-                font-family: 'Poppins', sans-serif; 
-                font-size: 12px; 
-                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                min-width: 160px;">
+    <div style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: white; border: 1px solid #ccc; border-radius: 1px; padding: 10px; font-family: 'Poppins', sans-serif; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); min-width: 160px;">
         <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">Kelas Suhu Permukaan Lahan (°C)</div>
         <div style="display: flex; flex-direction: column; gap: 4px;">
             <div style="display: flex; align-items: center; gap: 6px;">
@@ -592,29 +550,19 @@ def add_legend_to_map(map_obj, thresholds):
         </div>
     </div>
     """
-
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
 def add_png_to_map(map_obj, year, thresholds):
-    """
-    Menambahkan PNG preprocessed ke peta.
-    Jauh lebih cepat karena bounds sudah di-hardcode.
-    """
     try:
         png_path = f"static/lst_{year}.png"
         if not os.path.exists(png_path):
             st.error(f"File PNG tidak ditemukan: {png_path}.")
             return False
-
-        # Ambil bounds dari dictionary, BUKAN dari file GeoTIFF
         if year not in LST_IMAGE_BOUNDS:
             st.error(f"Bounds untuk tahun {year} tidak ditemukan.")
             return False
-
         bounds_folium = LST_IMAGE_BOUNDS[year]
-
-        # Tambahkan PNG sebagai ImageOverlay
         lst_overlay = folium.raster_layers.ImageOverlay(
             image=png_path,
             bounds=bounds_folium,
@@ -627,7 +575,6 @@ def add_png_to_map(map_obj, year, thresholds):
         )
         lst_overlay.add_to(map_obj)
         return True
-
     except Exception as e:
         st.error(f"Error menambahkan PNG ke peta: {e}")
         return False
@@ -765,6 +712,40 @@ def interpret_regression(r2, p_value, slope, x_var):
     return interpretation, is_influential
 
 
+@st.cache_data  # Cache ini penting agar Streamlit tidak menjalankan ulang fungsi ini
+def pre_cook_map_data():
+    """
+    Fungsi ini memuat semua aset yang dibutuhkan untuk tab Peta.
+    Ini hanya akan berjalan sekali saat pertama kali tab Peta dibuka.
+    """
+    # 1. Muat data statistik kecamatan dari CSV
+    df_kec_stats = load_stats_kec()
+    if df_kec_stats is None:
+        st.error(
+            "Gagal memuat file CSV statistik kecamatan. Pastikan file ada di `csv/lstStatsKec.csv`"
+        )
+
+    # 2. Muat data GeoJSON batas administrasi
+    shapefile_path = "shp/aoi_kpy.json"
+    geojson_data = None
+    if os.path.exists(shapefile_path):
+        geojson_data = load_and_prep_geojson(shapefile_path)
+    else:
+        st.warning(f"File Shapefile tidak ditemukan: {shapefile_path}")
+
+    # 3. (Opsional) Cek ketersediaan semua file PNG
+    all_years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029"]
+    for year in all_years:
+        if not os.path.exists(f"static/lst_{year}.png"):
+            st.warning(f"File PNG untuk tahun {year} tidak ditemukan.")
+
+    # Kembalikan semua data yang sudah dimuat dalam satu dictionary
+    return {
+        "df_kec_stats": df_kec_stats,
+        "geojson_data": geojson_data,
+    }
+
+
 # ==============================================================================
 # MAIN EXECUTION
 # ==============================================================================
@@ -795,176 +776,142 @@ st.header("Suhu Permukaan Lahan")
 # SECTION 1: PETA
 # ==============================================================================
 with tab1:
-    st.badge(
-        "**Peta LST di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
-        color="primary",
-    )
+    # PERUBAHAN UTAMA 2: Inisialisasi Session State
+    if "map_data_ready" not in st.session_state:
+        st.session_state.map_data_ready = False
+        st.session_state.map_assets = None
 
-    col1_peta, col2_peta = st.columns([2.7, 1.3])
-    with col2_peta:
-        # Container Selectbox Tahun
-        with st.container(border=True):
-            option = st.selectbox(
-                "**Pilih Tahun**",
-                ["1999", "2004", "2009", "2014", "2019", "2024", "2029"],
-                index=0,
-                placeholder="Tahun",
-            )
+    # PERUBAHAN UTAMA 3: Logika Pemuatan Data
+    if not st.session_state.map_data_ready:
+        with st.spinner(
+            "🚀 Mempersiapkan data peta untuk Anda... Proses ini hanya terjadi sekali, mohon tunggu."
+        ):
+            # Panggil fungsi "memasak" dan simpan hasilnya ke session state
+            st.session_state.map_assets = pre_cook_map_data()
+            st.session_state.map_data_ready = True
+            st.rerun()  # Paksa refresh untuk menghilangkan spinner dan menampilkan UI
 
-            selected_data = stats_dict[option]
+    # Setelah data siap, jalankan UI seperti biasa
+    else:
+        st.info("✅ Data siap! Semua interaksi pada peta sekarang akan lebih cepat.")
 
-        # Container Metrics LST
-        col1_peta_metric, col2_peta_metric, col3_peta_metric = st.columns([1, 1, 1])
-        with col1_peta_metric:
-            st.metric("LST Min", f"{selected_data['min']:.1f}°C")
-        with col2_peta_metric:
-            st.metric("LST Max", f"{selected_data['max']:.1f}°C")
-        with col3_peta_metric:
-            st.metric("LST Mean", f"{selected_data['mean']:.1f}°C")
+        # Ambil data yang sudah 'matang' dari session state
+        map_assets = st.session_state.map_assets
+        df_kec_stats = map_assets["df_kec_stats"]
+        geojson_data = map_assets["geojson_data"]
 
-        # Container Selectbox Kecamatan
-        with st.container(border=True):
-            # Ambil Data Statistik Kecamatan dari DataFrame
-            kec_year = get_kec_by_year(df_kec_stats, option)
-
-            if kec_year:
-                kecamatan_options = list(kec_year.keys())
-                selected_kecamatan = st.selectbox(
-                    "**Cari Kecamatan**",
-                    [""] + kecamatan_options,
-                    index=0,
-                    placeholder="Ketik atau pilih kecamatan",
-                )
-            else:
-                st.warning(f"Data kecamatan untuk tahun {option} tidak tersedia")
-                selected_kecamatan = ""
-
-        # Container Analisis LST per Kecamatan
-        if selected_kecamatan and selected_kecamatan != "" and kec_year:
-            with st.container(border=True):
-                st.write("💡 **Quick Insight**")
-                kecamatan_data = kec_year[selected_kecamatan]
-                wadmkk = kecamatan_data["wadmkk"]
-                toponim = get_toponim(wadmkk)
-
-                # Pengkondisian Tahun 2029
-                if option == "2029":
-                    description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] **diprediksi** sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
-                else:
-                    description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] memiliki rata-rata suhu sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
-
-                st.write(description)
-
-    with col1_peta:
-        if selected_kecamatan:
-            kec_bounds = get_kecamatan_bounds_static(selected_kecamatan)
-            if kec_bounds:
-                center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
-                center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
-                map_center = [center_lat, center_lon]
-                zoom_level = 12.4
-            else:
-                map_center = [-7.764326411862208, 110.3721676814108]
-                zoom_level = 13
-        else:
-            map_center = [-7.764326411862208, 110.3721676814108]
-            zoom_level = 10.5
-
-        # Buat Peta Folium
-        m = folium.Map(
-            location=map_center,
-            zoom_start=zoom_level,
-            tiles=None,
+        st.badge(
+            "**Peta LST di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
+            color="primary",
         )
 
-        folium.TileLayer(
-            tiles="OpenStreetMap",
-            name="OpenStreetMap",
-            overlay=False,
-            control=True,
-            show=True,
-        ).add_to(m)
+        col1_peta, col2_peta = st.columns([2.7, 1.3])
+        with col2_peta:
+            with st.container(border=True):
+                option = st.selectbox(
+                    "**Pilih Tahun**",
+                    ["1999", "2004", "2009", "2014", "2019", "2024", "2029"],
+                    index=0,
+                    placeholder="Tahun",
+                )
+                selected_data = stats_dict[option]
 
-        # Tambahkan Basemap
-        folium.TileLayer(
-            tiles="CartoDB positron",
-            name="CartoDB Positron",
-            overlay=False,
-            control=True,
-        ).add_to(m)
+            col1_peta_metric, col2_peta_metric, col3_peta_metric = st.columns([1, 1, 1])
+            with col1_peta_metric:
+                st.metric("LST Min", f"{selected_data['min']:.1f}°C")
+            with col2_peta_metric:
+                st.metric("LST Max", f"{selected_data['max']:.1f}°C")
+            with col3_peta_metric:
+                st.metric("LST Mean", f"{selected_data['mean']:.1f}°C")
 
-        folium.TileLayer(
-            tiles="CartoDB dark_matter",
-            name="CartoDB Dark Matter",
-            overlay=False,
-            control=True,
-        ).add_to(m)
+            with st.container(border=True):
+                kec_year = get_kec_by_year(df_kec_stats, option)
+                if kec_year:
+                    kecamatan_options = list(kec_year.keys())
+                    selected_kecamatan = st.selectbox(
+                        "**Cari Kecamatan**",
+                        [""] + kecamatan_options,
+                        index=0,
+                        placeholder="Ketik atau pilih kecamatan",
+                    )
+                else:
+                    st.warning(f"Data kecamatan untuk tahun {option} tidak tersedia")
+                    selected_kecamatan = ""
 
-        folium.TileLayer(
-            tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-            attr="Google Satellite",
-            name="Google Satellite",
-            overlay=False,
-            control=True,
-        ).add_to(m)
+            if selected_kecamatan and selected_kecamatan != "" and kec_year:
+                with st.container(border=True):
+                    st.write("💡 **Quick Insight**")
+                    kecamatan_data = kec_year[selected_kecamatan]
+                    wadmkk = kecamatan_data["wadmkk"]
+                    toponim = get_toponim(wadmkk)
+                    if option == "2029":
+                        description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] **diprediksi** sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
+                    else:
+                        description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] memiliki rata-rata suhu sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
+                    st.write(description)
 
-        folium.TileLayer(
-            tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-            attr="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
-            name="Esri WorldImagery",
-            overlay=False,
-            control=True,
-        ).add_to(m)
+        with col1_peta:
+            if selected_kecamatan:
+                kec_bounds = get_kecamatan_bounds_static(selected_kecamatan)
+                if kec_bounds:
+                    center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
+                    center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
+                    map_center = [center_lat, center_lon]
+                    zoom_level = 12.4
+                else:
+                    map_center = [-7.764326411862208, 110.3721676814108]
+                    zoom_level = 13
+            else:
+                map_center = [-7.764326411862208, 110.3721676814108]
+                zoom_level = 10.5
 
-        # Set Threshold untuk Tahun yang Dipilih
-        thresholds = threshold_dict[option]
+            m = folium.Map(location=map_center, zoom_start=zoom_level, tiles=None)
 
-        # Tambahkan PNG ke peta (jauh lebih cepat dari GeoTIFF)
-        png_success = add_png_to_map(m, option, thresholds)
-        if not png_success:
-            st.info("Menampilkan peta tanpa layer LST")
+            folium.TileLayer(tiles="OpenStreetMap", name="OpenStreetMap").add_to(m)
+            folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(
+                m
+            )
+            folium.TileLayer(
+                tiles="CartoDB dark_matter", name="CartoDB Dark Matter"
+            ).add_to(m)
+            folium.TileLayer(
+                tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+                attr="Google Satellite",
+                name="Google Satellite",
+            ).add_to(m)
+            folium.TileLayer(
+                tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                attr="Esri",
+                name="Esri WorldImagery",
+            ).add_to(m)
 
-        # Cek Ketersediaan AOI, Panggil Function Batas AOI, dan Tampilkan ke Peta
-        shapefile_path = "shp/aoi_kpy.json"
-        boundaries_loaded = False
-        if os.path.exists(shapefile_path):
-            boundaries_loaded = add_shp_to_map(m, shapefile_path)
-            if not boundaries_loaded:
-                st.info("Peta ditampilkan tanpa batas administrasi")
-        else:
-            st.warning(f"File Shapefile tidak ditemukan: {shapefile_path}")
+            thresholds = threshold_dict[option]
+            png_success = add_png_to_map(m, option, thresholds)
+            if not png_success:
+                st.info("Menampilkan peta tanpa layer LST")
 
-        try:
-            add_legend_to_map(m, thresholds)
-        except Exception as e:
-            st.warning("Legenda tidak dapat ditampilkan")
+            # Gunakan geojson_data yang sudah dimuat sebelumnya
+            add_shp_to_map(m, geojson_data)
 
-        # Tambahkan Control Layer ke Peta Setelah Semua Layer Ditambahkan
-        folium.LayerControl(position="topleft", collapsed=True).add_to(m)
+            try:
+                add_legend_to_map(m, thresholds)
+            except Exception as e:
+                st.warning("Legenda tidak dapat ditampilkan")
 
-        # CSS untuk Custom Peta Folium
-        css = """
-        <style>
-            /* CSS untuk memperbaiki ukuran peta */
-            .folium-map {
-                height: 100% !important;
-            }
+            folium.LayerControl(position="topleft", collapsed=True).add_to(m)
 
-            /* CSS asli Anda untuk style layer control */
-            .leaflet-control-layers label,
-            .leaflet-control-layers-list,
-            .leaflet-control-layers-expanded,
-            .leaflet-control-attribution {
+            css = """
+            <style>
+            .folium-map { height: 100% !important; }
+            .leaflet-control-layers label, .leaflet-control-layers-list,
+            .leaflet-control-layers-expanded, .leaflet-control-attribution {
                 font-size: 11px !important;
                 font-family: 'Poppins', sans-serif !important;
             }
-        </style>
-        """
-        m.get_root().header.add_child(folium.Element(css))
-
-        map_html = m._repr_html_()
-
-        html(m.get_root().render(), height=600, scrolling=False)
+            </style>
+            """
+            m.get_root().header.add_child(folium.Element(css))
+            html(m.get_root().render(), height=600, scrolling=False)
 
 # ==============================================================================
 # SECTION 2: TREN
