@@ -547,6 +547,7 @@ def add_shp_to_map(map_obj, geojson_path):
                 sticky=True,
             ),
             name="Batas Administrasi",
+            show=True,
         )
         geojson_layer.add_to(map_obj)
         return True
@@ -891,6 +892,14 @@ with tab1:
             tiles=None,
         )
 
+        folium.TileLayer(
+            tiles="OpenStreetMap",
+            name="OpenStreetMap",
+            overlay=False,
+            control=True,
+            show=True,
+        ).add_to(m)
+
         # Tambahkan Basemap
         folium.TileLayer(
             tiles="CartoDB positron",
@@ -918,13 +927,6 @@ with tab1:
             tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
             attr="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
             name="Esri WorldImagery",
-            overlay=False,
-            control=True,
-        ).add_to(m)
-
-        folium.TileLayer(
-            tiles="OpenStreetMap",  # Letakkan di Bawah Sendiri Supaya Jadi Default
-            name="OpenStreetMap",
             overlay=False,
             control=True,
         ).add_to(m)
