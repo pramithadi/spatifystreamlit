@@ -152,33 +152,35 @@ threshold_dict = {
 @st.cache_data
 def load_and_prep_geojson(geojson_path):
     """
-    Membaca GeoJSON, mengubahnya menjadi GeoDataFrame untuk manipulasi,
-    menambahkan kolom tooltip kustom, lalu mengembalikannya sebagai GeoJSON lagi.
-    Semua proses ini di-cache.
+    Membaca GeoJSON dengan error handling yang robust
     """
-    print(f"CACHE MISS: Memproses GeoJSON dari {geojson_path}")
+    try:
+        # 1. Baca file GeoJSON
+        gdf = gpd.read_file(geojson_path)
 
-    # 1. Baca file GeoJSON menjadi GeoDataFrame
-    gdf = gpd.read_file(geojson_path)
+        # 2. Simplify jika terlalu complex
+        if len(gdf) > 100:
+            gdf["geometry"] = gdf["geometry"].simplify(0.001, preserve_topology=True)
 
-    # 2. Fungsi kustom Anda untuk membuat tooltip (Kapanewon/Kemantren)
-    def create_tooltip_text(row):
-        namobj = row.get("NAMOBJ", "Unknown")
-        wadmkk = row.get("WADMKK", "")
-        if "Sleman" in wadmkk or "Bantul" in wadmkk:
-            return f"Kapanewon {namobj}"
-        elif "Yogyakarta" in wadmkk:
-            return f"Kemantren {namobj}"
-        else:
-            # Fallback jika WADMKK tidak mengandung kata kunci
-            return namobj
+        # 3. Fungsi tooltip (sama seperti asli Anda)
+        def create_tooltip_text(row):
+            namobj = row.get("NAMOBJ", "Unknown")
+            wadmkk = row.get("WADMKK", "")
+            if "Sleman" in wadmkk or "Bantul" in wadmkk:
+                return f"Kapanewon {namobj}"
+            elif "Yogyakarta" in wadmkk:
+                return f"Kemantren {namobj}"
+            else:
+                return namobj
 
-    # 3. Terapkan fungsi tersebut untuk membuat kolom baru
-    gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
+        # 4. Terapkan tooltip
+        gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
 
-    # 4. Kembalikan hasilnya sebagai GeoDataFrame
-    # Folium bisa langsung menerima GeoDataFrame dengan lebih efisien
-    return gdf
+        return gdf
+
+    except Exception as e:
+        st.error(f"Error loading GeoJSON: {e}")
+        return None
 
 
 @st.cache_data
@@ -261,17 +263,22 @@ def get_kecamatan_bounds(namobj):
         else:
             return None
     except Exception as e:
+        st.warning(f"Error getting bounds: {e}")
         return None
 
 
 def add_shp_to_map(map_obj, geojson_path):
     try:
-        # Panggil GeoDataFrame yang sudah diproses & di-cache
+        # Load dengan error handling
         gdf_processed = load_and_prep_geojson(geojson_path)
 
-        # Langsung tambahkan GeoDataFrame ke peta
+        if gdf_processed is None:
+            st.warning("Batas administrasi tidak dapat dimuat")
+            return False
+
+        # Style yang sama seperti asli Anda
         geojson_layer = folium.GeoJson(
-            gdf_processed,  # Gunakan GeoDataFrame langsung
+            gdf_processed,
             style_function=lambda feature: {
                 "fillColor": "white",
                 "color": "black",
@@ -282,10 +289,9 @@ def add_shp_to_map(map_obj, geojson_path):
                 "weight": 3,
                 "fillOpacity": 0.1,
             },
-            # Arahkan tooltip ke kolom kustom "tooltip_text" yang sudah kita buat
             tooltip=folium.features.GeoJsonTooltip(
                 fields=["tooltip_text"],
-                aliases=[""],  # Tidak perlu judul lagi karena sudah lengkap
+                aliases=[""],
                 style=(
                     "background-color: white; color: black; font-family: 'Poppins', sans-serif; font-size: 12px; padding: 8px; border: 1px solid black; border-radius: 3px;"
                 ),
@@ -295,8 +301,9 @@ def add_shp_to_map(map_obj, geojson_path):
         )
         geojson_layer.add_to(map_obj)
         return True
+
     except Exception as e:
-        print(f"ERROR saat menambahkan GeoJSON: {e}")
+        st.error(f"ERROR saat menambahkan GeoJSON: {e}")
         return False
 
 
@@ -711,13 +718,18 @@ with tab1:
 
         # Cek Ketersediaan AOI, Panggil Function Batas AOI, dan Tampilkan ke Peta
         shapefile_path = "shp/aoi_kpy.json"
+        boundaries_loaded = False
         if os.path.exists(shapefile_path):
-            add_shp_to_map(m, shapefile_path)
+            boundaries_loaded = add_shp_to_map(m, shapefile_path)
+            if not boundaries_loaded:
+                st.info("Peta ditampilkan tanpa batas administrasi")
         else:
             st.warning(f"File Shapefile tidak ditemukan: {shapefile_path}")
 
-        # Tambahkan Legenda ke Peta
-        add_legend_to_map(m, thresholds)
+        try:
+            add_legend_to_map(m, thresholds)
+        except Exception as e:
+            st.warning("Legenda tidak dapat ditampilkan")
 
         # Tambahkan Control Layer ke Peta Setelah Semua Layer Ditambahkan
         folium.LayerControl(position="topleft", collapsed=True).add_to(m)
