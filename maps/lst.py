@@ -13,8 +13,7 @@ from matplotlib.patches import Rectangle
 import matplotlib.patches as mpatches
 from datetime import datetime, timedelta
 import folium
-from streamlit_folium import folium_static
-from streamlit_folium import st_folium
+from streamlit.components.v1 import html
 import rasterio
 from rasterio.mask import mask
 from shapely.geometry import mapping
@@ -877,7 +876,7 @@ with tab1:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 14
+                zoom_level = 12
             else:
                 map_center = [-7.764326411862208, 110.3721676814108]
                 zoom_level = 13
@@ -977,7 +976,12 @@ with tab1:
         </style>
         """
         m.get_root().html.add_child(folium.Element(css))
-        st_data = st_folium(m, use_container_width=True, height=600)
+
+        map_html = m._repr_html_()
+
+        html_with_width = f"<div style='width:100%;'>{map_html}</div>"
+
+        html(html_with_width, height=610, scrolling=False)
 
 # ==============================================================================
 # SECTION 2: TREN
