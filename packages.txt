@@ -1,5 +1,3 @@
 libgdal-dev
 proj-bin
-build-essential
-msodbcsql18
-unixodbc-dev
+freetds-dev
