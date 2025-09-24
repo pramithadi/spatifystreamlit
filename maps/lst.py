@@ -152,31 +152,31 @@ threshold_dict = {
 @st.cache_data
 def load_and_prep_geojson(geojson_path):
     """
-    Membaca GeoJSON dengan error handling yang robust
+    Load GeoJSON langsung tanpa GeoPandas untuk avoid dependency conflict
     """
     try:
-        # 1. Baca file GeoJSON
-        gdf = gpd.read_file(geojson_path)
+        import json
 
-        # 2. Simplify jika terlalu complex
-        if len(gdf) > 100:
-            gdf["geometry"] = gdf["geometry"].simplify(0.001, preserve_topology=True)
+        # Load langsung sebagai JSON
+        with open(geojson_path, "r", encoding="utf-8") as f:
+            geojson_data = json.load(f)
 
-        # 3. Fungsi tooltip (sama seperti asli Anda)
-        def create_tooltip_text(row):
-            namobj = row.get("NAMOBJ", "Unknown")
-            wadmkk = row.get("WADMKK", "")
+        # Tambahkan tooltip_text langsung ke properties
+        for feature in geojson_data["features"]:
+            props = feature.get("properties", {})
+            namobj = props.get("NAMOBJ", "Unknown")
+            wadmkk = props.get("WADMKK", "")
+
             if "Sleman" in wadmkk or "Bantul" in wadmkk:
-                return f"Kapanewon {namobj}"
+                tooltip_text = f"Kapanewon {namobj}"
             elif "Yogyakarta" in wadmkk:
-                return f"Kemantren {namobj}"
+                tooltip_text = f"Kemantren {namobj}"
             else:
-                return namobj
+                tooltip_text = namobj
 
-        # 4. Terapkan tooltip
-        gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
+            feature["properties"]["tooltip_text"] = tooltip_text
 
-        return gdf
+        return geojson_data
 
     except Exception as e:
         st.error(f"Error loading GeoJSON: {e}")
@@ -269,16 +269,16 @@ def get_kecamatan_bounds(namobj):
 
 def add_shp_to_map(map_obj, geojson_path):
     try:
-        # Load dengan error handling
-        gdf_processed = load_and_prep_geojson(geojson_path)
+        # Load sebagai dict, bukan GeoDataFrame
+        geojson_data = load_and_prep_geojson(geojson_path)
 
-        if gdf_processed is None:
+        if geojson_data is None:
             st.warning("Batas administrasi tidak dapat dimuat")
             return False
 
-        # Style yang sama seperti asli Anda
+        # Langsung pakai GeoJSON dict
         geojson_layer = folium.GeoJson(
-            gdf_processed,
+            geojson_data,  # Dict langsung, bukan GeoDataFrame
             style_function=lambda feature: {
                 "fillColor": "white",
                 "color": "black",
