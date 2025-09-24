@@ -246,32 +246,22 @@ def get_toponim(wadmkk):
 
 @st.cache_data
 def get_kecamatan_bounds(namobj):
+    shapefile_path = "shp/aoi_kpy.json"
     try:
-        import json
+        gdf = gpd.read_file(shapefile_path)
 
-        # Load GeoJSON langsung
-        with open("shp/aoi_kpy.json", "r", encoding="utf-8") as f:
-            geojson_data = json.load(f)
+        if gdf.crs != "EPSG:4326":
+            gdf = gdf.to_crs("EPSG:4326")
 
-        # Cari feature yang sesuai
-        for feature in geojson_data["features"]:
-            if feature["properties"].get("NAMOBJ") == namobj:
-                # Extract coordinates dari geometry
-                coords = feature["geometry"]["coordinates"][0]  # Polygon coords
+        kec_data = gdf[gdf["NAMOBJ"] == namobj]
 
-                # Hitung bounds manual
-                lons = [coord[0] for coord in coords]
-                lats = [coord[1] for coord in coords]
-
-                min_lon, max_lon = min(lons), max(lons)
-                min_lat, max_lat = min(lats), max(lats)
-
-                return [[min_lat, min_lon], [max_lat, max_lon]]
-
-        return None
-
+        if not kec_data.empty:
+            bounds = kec_data.total_bounds
+            return [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
+        else:
+            return None
     except Exception as e:
-        st.warning(f"Error getting bounds for {namobj}: {e}")
+        st.warning(f"Error getting bounds: {e}")
         return None
 
 
@@ -316,47 +306,42 @@ def add_shp_to_map(map_obj, geojson_path):
 
 
 def add_legend_to_map(map_obj, thresholds):
-    try:
-        legend_html = f"""
-        <div style="position: fixed; 
-                    top: 10px; 
-                    right: 10px; 
-                    z-index: 1000; 
-                    background-color: white; 
-                    border: 1px solid #ccc; 
-                    border-radius: 1px; 
-                    padding: 10px; 
-                    font-family: 'Poppins', sans-serif; 
-                    font-size: 12px; 
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                    min-width: 160px;">
-            <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">Kelas Suhu Permukaan Lahan (°C)</div>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <div style="width: 12px; height: 12px; background-color: #5ca0d3; border: 1px solid #ddd;"></div>
-                    <span style="color: #333;">Sangat Rendah (≤ {thresholds['low']:.2f}°C)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <div style="width: 12px; height: 12px; background-color: #f5ebb1; border: 1px solid #ddd;"></div>
-                    <span style="color: #333;">Rendah ({thresholds['low']:.2f} - {thresholds['medium']:.2f}°C)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <div style="width: 12px; height: 12px; background-color: #dba758; border: 1px solid #ddd;"></div>
-                    <span style="color: #333;">Sedang ({thresholds['medium']:.2f} - {thresholds['high']:.2f}°C)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <div style="width: 12px; height: 12px; background-color: #93220e; border: 1px solid #ddd;"></div>
-                    <span style="color: #333;">Tinggi (> {thresholds['high']:.2f}°C)</span>
-                </div>
+    legend_html = f"""
+    <div style="position: fixed; 
+                top: 10px; 
+                right: 10px; 
+                z-index: 1000; 
+                background-color: white; 
+                border: 1px solid #ccc; 
+                border-radius: 1px; 
+                padding: 10px; 
+                font-family: 'Poppins', sans-serif; 
+                font-size: 12px; 
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                min-width: 160px;">
+        <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">Kelas Suhu Permukaan Lahan (°C)</div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <div style="width: 12px; height: 12px; background-color: #5ca0d3; border: 1px solid #ddd;"></div>
+                <span style="color: #333;">Sangat Rendah (≤ {thresholds['low']:.2f}°C)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <div style="width: 12px; height: 12px; background-color: #f5ebb1; border: 1px solid #ddd;"></div>
+                <span style="color: #333;">Rendah ({thresholds['low']:.2f} - {thresholds['medium']:.2f}°C)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <div style="width: 12px; height: 12px; background-color: #dba758; border: 1px solid #ddd;"></div>
+                <span style="color: #333;">Sedang ({thresholds['medium']:.2f} - {thresholds['high']:.2f}°C)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <div style="width: 12px; height: 12px; background-color: #93220e; border: 1px solid #ddd;"></div>
+                <span style="color: #333;">Tinggi (> {thresholds['high']:.2f}°C)</span>
             </div>
         </div>
-        """
+    </div>
+    """
 
-        map_obj.get_root().html.add_child(folium.Element(legend_html))
-        return True
-    except Exception as e:
-        st.warning(f"Tidak dapat menambahkan legenda: {e}")
-        return False
+    map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
 def add_png_to_map(map_obj, year, thresholds):
@@ -710,14 +695,10 @@ with tab1:
         else:
             st.warning(f"File Shapefile tidak ditemukan: {shapefile_path}")
 
-        # try:
-        #     add_legend_to_map(m, thresholds)
-        # except Exception as e:
-        #     st.warning("Legenda tidak dapat ditampilkan")
-
-        legend_success = add_legend_to_map(m, thresholds)
-        if not legend_success:
-            st.info("Legenda tidak dapat ditampilkan")
+        try:
+            add_legend_to_map(m, thresholds)
+        except Exception as e:
+            st.warning("Legenda tidak dapat ditampilkan")
 
         # Tambahkan Control Layer ke Peta Setelah Semua Layer Ditambahkan
         folium.LayerControl(position="topleft", collapsed=True).add_to(m)
