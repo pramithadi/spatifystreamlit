@@ -385,6 +385,7 @@ def add_png_to_map(map_obj, year, thresholds):
             cross_origin=False,
             zindex=1,
             name="Suhu Permukaan Lahan",
+            show=True,
         )
         lst_overlay.add_to(map_obj)
 
@@ -636,7 +637,7 @@ with tab1:
         m = folium.Map(
             location=map_center,
             zoom_start=zoom_level,
-            tiles=None,
+            tiles=OpenStreetMap,
         )
 
         # Tambahkan Basemap
