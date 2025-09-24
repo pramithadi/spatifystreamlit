@@ -1,3 +1,6 @@
+build-essential
 libgdal-dev
 proj-bin
-freetds-dev
+unixodbc
+unixodbc-dev
+libodbc2
