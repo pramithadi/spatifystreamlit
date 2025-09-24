@@ -1,6 +1,2 @@
-build-essential
 libgdal-dev
 proj-bin
-unixodbc
-unixodbc-dev
-libodbc2
