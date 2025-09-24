@@ -7,3 +7,6 @@ secondaryColor="#ebe5dd"
 [theme.sidebar]
 backgroundColor="#E4EFE7"
 secondaryBackgroundColor="#000000"
+
+[server]
+maxMessageSize = 500
