@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """
-LST COG Preprocessing Script
-Mengubah semua file COG menjadi PNG untuk performa loading yang lebih cepat.
-
+Mengubah semua file COG menjadi PNG untuk loading yang lebih cepat.
 Jalankan script ini SEKALI untuk preprocessing semua file COG.
-Setelah itu, ubah fungsi di lst.py sesuai instruksi.
+Setelah itu, ubah fungsi di ndbi.py.
 """
 
 import numpy as np
@@ -13,21 +11,21 @@ from PIL import Image
 import os
 from io import BytesIO
 
-# Dictionary Threshold yang sama persis dari lst.py
+# Dictionary Threshold
 threshold_dict = {
-    "1999": {"low": 30.499, "medium": 34.531, "high": 38.563},
-    "2004": {"low": 31.412, "medium": 35.481, "high": 39.550},
-    "2009": {"low": 33.243, "medium": 37.745, "high": 42.247},
-    "2014": {"low": 32.168, "medium": 36.630, "high": 41.092},
-    "2019": {"low": 31.923, "medium": 35.739, "high": 39.556},
-    "2024": {"low": 33.207, "medium": 37.262, "high": 41.317},
-    "2029": {"low": 34.041, "medium": 38.378, "high": 42.714},
+    "1999": {"low": -0.283, "medium": -0.168, "high": -0.053},
+    "2004": {"low": -0.309, "medium": -0.188, "high": -0.067},
+    "2009": {"low": -0.28, "medium": -0.154, "high": -0.027},
+    "2014": {"low": -0.302, "medium": -0.179, "high": -0.056},
+    "2019": {"low": -0.301, "medium": -0.161, "high": -0.022},
+    "2024": {"low": -0.309, "medium": -0.162, "high": -0.015},
+    "2029": {"low": -0.300, "medium": -0.156, "high": -0.012},
 }
 
 
-def process_geotiff_to_png(tif_path, thresholds, output_path):
+def process_cog_to_png(tif_path, thresholds, output_path):
     """
-    Proses GeoTIFF dengan logic yang sama persis seperti di lst.py
+    Proses GeoTIFF dengan logic yang sama persis seperti di ndbi.py
     Tapi save langsung sebagai PNG file.
     """
     print(f"Processing: {tif_path}")
@@ -38,14 +36,14 @@ def process_geotiff_to_png(tif_path, thresholds, output_path):
             bounds = src.bounds
             nodata = src.nodata
 
-            # Handle NoData - sama persis dengan logic di lst.py
+            # Handle NoData - sama persis dengan logic di ndbi.py
             if nodata is not None:
                 data = np.where(data == nodata, np.nan, data)
 
             # Set nilai 0 atau negatif sebagai NoData
             data = np.where(data <= 0, np.nan, data)
 
-            # Warna untuk setiap kelas - sama persis dengan lst.py
+            # Warna untuk setiap kelas - sama persis dengan ndbi.py
             colors = {
                 "very_low": [92, 160, 211, 255],  # #5ca0d3
                 "low": [245, 235, 177, 255],  # #f5ebb1
@@ -59,7 +57,7 @@ def process_geotiff_to_png(tif_path, thresholds, output_path):
             # Mask untuk data valid
             valid_mask = ~np.isnan(data)
 
-            # Klasifikasi berdasarkan threshold - sama persis dengan lst.py
+            # Klasifikasi berdasarkan threshold - sama persis dengan ndbi.py
             very_low_mask = valid_mask & (data <= thresholds["low"])
             low_mask = (
                 valid_mask & (data > thresholds["low"]) & (data <= thresholds["medium"])
@@ -92,73 +90,54 @@ def process_geotiff_to_png(tif_path, thresholds, output_path):
         return None
 
 
-def preprocess_all_lst_files():
-    """
-    Preprocessing semua file LST COG.
-    """
-    # Buat folder static jika belum ada
+def convert_all_files():
     os.makedirs("static", exist_ok=True)
 
-    # Years yang akan diproses
     years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029"]
-
-    # Dictionary untuk menyimpan bounds setiap file
     bounds_dict = {}
 
-    print("🚀 Memulai preprocessing LST COG files...")
-    print("=" * 50)
+    print("Memulai konversi NDBI COG -> PNG...")
 
     for year in years:
-        # Tentukan path input
+        # Input
         if year == "2029":
-            tif_path = "tif/output_lst2029kpy_COG.tif"
+            tif_path = "tif/output_ndbi2029kpy_COG.tif"
         else:
-            tif_path = f"tif/lst{year}kpy_COG.tif"
+            tif_path = f"tif/ndbi{year}kpy_COG.tif"
 
-        # Path output PNG
-        output_path = f"static/lst_{year}.png"
+        # Output
+        output_path = f"static/ndbi_{year}.png"
 
-        # Skip jika file input tidak ada
         if not os.path.exists(tif_path):
             print(f"⚠️  File tidak ditemukan: {tif_path}")
             continue
 
-        # Skip jika PNG sudah ada (optional - hapus jika ingin reprocess)
+        # Skip Jika PNG Sudah Ada
         if os.path.exists(output_path):
             print(f"📁 File sudah ada, skip: {output_path}")
             continue
 
-        # Ambil threshold untuk tahun ini
         thresholds = threshold_dict[year]
-
-        # Proses file
-        bounds = process_geotiff_to_png(tif_path, thresholds, output_path)
-
+        bounds = process_cog_to_png(tif_path, thresholds, output_path)
         if bounds:
             bounds_dict[year] = bounds
 
-    print("=" * 50)
-    print("✅ Preprocessing selesai!")
-    print("\n📋 File yang berhasil diproses:")
+    print("✅ Konversi selesai!")
+    print("\n📋 File yang berhasil dikonversi:")
     for year in years:
-        png_path = f"static/lst_{year}.png"
+        png_path = f"static/ndbi_{year}.png"
         if os.path.exists(png_path):
             size_mb = os.path.getsize(png_path) / (1024 * 1024)
-            print(f"   - lst_{year}.png ({size_mb:.1f} MB)")
-
-    print("\n🔧 Langkah selanjutnya:")
-    print("   1. Update fungsi di lst.py sesuai instruksi")
-    print("   2. Test webapp - loading seharusnya jadi super cepat!")
+            print(f"   - ndbi_{year}.png ({size_mb:.1f} MB)")
 
     return bounds_dict
 
 
 if __name__ == "__main__":
-    # Jalankan preprocessing
-    bounds_result = preprocess_all_lst_files()
+    bounds_result = convert_all_files()
 
-    # Optional: Print bounds info
+    # Optional
     if bounds_result:
-        print("\n📊 Bounds info (untuk debugging):")
+        print("\n📊 Bounds Info (Debugging):")
         for year, bounds in bounds_result.items():
             print(f"   {year}: {bounds}")
