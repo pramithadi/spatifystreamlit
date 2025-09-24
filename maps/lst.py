@@ -637,7 +637,7 @@ with tab1:
         m = folium.Map(
             location=map_center,
             zoom_start=zoom_level,
-            tiles=OpenStreetMap,
+            tiles=None,
         )
 
         # Tambahkan Basemap
