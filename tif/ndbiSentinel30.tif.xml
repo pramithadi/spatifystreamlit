@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<metadata xml:lang="en"><Esri><CreaDate>20250726</CreaDate><CreaTime>20102500</CreaTime><ArcGISFormat>1.0</ArcGISFormat><ArcGISstyle>FGDC CSDGM Metadata</ArcGISstyle><SyncOnce>TRUE</SyncOnce><DataProperties><lineage><Process ToolSource="c:\program files (x86)\arcgis\desktop10.8\ArcToolbox\Toolboxes\Spatial Analyst Tools.tbx\ExtractByMask" Date="20250726" Time="201025">ExtractByMask ndbiSentinel30m.tif AOI_PA_KPY_Sekitarnya_OUTLINE D:\final_project\streamlit\tif\ndbiSentinel30.tif</Process></lineage></DataProperties></Esri></metadata>
