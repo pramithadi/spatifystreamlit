@@ -725,7 +725,6 @@ def interpret_regression(r2, p_value, slope, x_var):
 
 @st.cache_data
 def load_all_map_data():
-    """Load semua data yang dibutuhkan untuk peta sekali saja"""
     # 1. Load Statistik Kecamatan
     df_kec_stats = load_stats_kec()
     if df_kec_stats is None:
@@ -1662,7 +1661,6 @@ with tab4:
                     height, width, _ = rgba_array.shape
                     classified = np.full((height, width), np.nan, dtype=np.float32)
 
-                    # Definisi warna yang sama dengan preprocessing
                     colors_rgb = {
                         (92, 160, 211): 0,  # very_low - biru
                         (245, 235, 177): 1,  # low - kuning muda
@@ -1670,15 +1668,13 @@ with tab4:
                         (147, 34, 14): 3,  # high - merah
                     }
 
-                    # Ekstrak RGB channels
+                    # Ekstrak RGB
                     r = rgba_array[:, :, 0]
                     g = rgba_array[:, :, 1]
                     b = rgba_array[:, :, 2]
                     alpha = rgba_array[:, :, 3]
 
-                    # Klasifikasi berdasarkan warna (dengan toleransi)
                     for (target_r, target_g, target_b), class_val in colors_rgb.items():
-                        # Mask untuk pixel dengan warna yang cocok (toleransi ±5)
                         mask = (
                             (np.abs(r - target_r) <= 5)
                             & (np.abs(g - target_g) <= 5)
@@ -1690,15 +1686,10 @@ with tab4:
                     return classified
 
                 data_2024_actual = rgba_to_classification(data_2024_actual)
-                data_2024_actual = np.flipud(
-                    data_2024_actual
-                )  # Flip untuk orientasi benar
+                data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
 
-                # Prediksi LST 2024 - GANTI dengan file yang benar
-                # Asumsi kamu punya file prediksi terpisah, kalau tidak pakai yang sama
-                img_2024_pred = Image.open(
-                    "static/lst_2024.png"
-                )  # GANTI dengan file prediksi yang benar
+                # Prediksi LST 2024
+                img_2024_pred = Image.open("static/lst_2024a.png")
                 data_2024_pred = rgba_to_classification(np.array(img_2024_pred))
                 data_2024_pred = np.flipud(data_2024_pred)
 
@@ -1706,8 +1697,6 @@ with tab4:
                 img_2029_pred = Image.open("static/lst_2029.png")
                 data_2029_pred = rgba_to_classification(np.array(img_2029_pred))
                 data_2029_pred = np.flipud(data_2029_pred)
-
-                # Tidak perlu koordinat, cukup tampilan peta saja
 
                 colorscale = [
                     [0.0, "rgb(92, 160, 211)"],
@@ -1801,7 +1790,7 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=509,
+                    height=512.5,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",

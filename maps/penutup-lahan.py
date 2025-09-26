@@ -1474,43 +1474,52 @@ with tab4:
     with col_peta_perbandingan[0]:
         with st.container(border=True):
             try:
+                from PIL import Image
 
-                def process_raster_data(data):
-                    data = data.astype("float32")
-                    data[data > 3] = np.nan  # Nilai > 3 NoData
-                    data[data < 0] = np.nan  # Nilai < 0 NoData
-                    return data
+                # Aktual LST 2024 - dari PNG
+                img_2024_actual = Image.open("static/pl_2024.png")
+                data_2024_actual = np.array(img_2024_actual)
 
-                with rasterio.open("tif/pl2024kpy_COG.tif") as src:
-                    data_2024_actual = src.read(1)
-                    bounds_actual = src.bounds
-                    height, width = data_2024_actual.shape
-                    x_actual = np.linspace(
-                        bounds_actual.left, bounds_actual.right, width
-                    )
-                    y_actual = np.linspace(
-                        bounds_actual.bottom, bounds_actual.top, height
-                    )
-                    data_2024_actual = np.flipud(data_2024_actual)
-                    data_2024_actual = process_raster_data(data_2024_actual)
+                def rgba_to_classification(rgba_array):
+                    height, width, _ = rgba_array.shape
+                    classified = np.full((height, width), np.nan, dtype=np.float32)
 
-                with rasterio.open("tif/output_prediksi_pl2024kpy_COG.tif") as src:
-                    data_2024_pred = src.read(1)
-                    bounds_pred = src.bounds
-                    height, width = data_2024_pred.shape
-                    x_pred_24 = np.linspace(bounds_pred.left, bounds_pred.right, width)
-                    y_pred_24 = np.linspace(bounds_pred.bottom, bounds_pred.top, height)
-                    data_2024_pred = np.flipud(data_2024_pred)
-                    data_2024_pred = process_raster_data(data_2024_pred)
+                    colors_rgb = {
+                        (41, 75, 41): 0,  # very_low - biru
+                        (105, 195, 221): 1,  # low - kuning muda
+                        (205, 154, 77): 2,  # medium - orange
+                        (250, 245, 217): 3,  # high - merah
+                    }
 
-                with rasterio.open("tif/output_pl2029kpy_COG.tif") as src:
-                    data_2029_pred = src.read(1)
-                    bounds_2029 = src.bounds
-                    height, width = data_2029_pred.shape
-                    x_pred_29 = np.linspace(bounds_2029.left, bounds_2029.right, width)
-                    y_pred_29 = np.linspace(bounds_2029.bottom, bounds_2029.top, height)
-                    data_2029_pred = np.flipud(data_2029_pred)
-                    data_2029_pred = process_raster_data(data_2029_pred)
+                    # Ekstrak RGB
+                    r = rgba_array[:, :, 0]
+                    g = rgba_array[:, :, 1]
+                    b = rgba_array[:, :, 2]
+                    alpha = rgba_array[:, :, 3]
+
+                    for (target_r, target_g, target_b), class_val in colors_rgb.items():
+                        mask = (
+                            (np.abs(r - target_r) <= 5)
+                            & (np.abs(g - target_g) <= 5)
+                            & (np.abs(b - target_b) <= 5)
+                            & (alpha > 0)  # Not transparent
+                        )
+                        classified[mask] = class_val
+
+                    return classified
+
+                data_2024_actual = rgba_to_classification(data_2024_actual)
+                data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
+
+                # Prediksi LST 2024
+                img_2024_pred = Image.open("static/pl_2024a.png")
+                data_2024_pred = rgba_to_classification(np.array(img_2024_pred))
+                data_2024_pred = np.flipud(data_2024_pred)
+
+                # Prediksi LST 2029
+                img_2029_pred = Image.open("static/pl_2029.png")
+                data_2029_pred = rgba_to_classification(np.array(img_2029_pred))
+                data_2029_pred = np.flipud(data_2029_pred)
 
                 colorscale = [
                     [0.0, "rgb(41, 75, 41)"],  # Vegetasi
@@ -1529,8 +1538,6 @@ with tab4:
                 fig.add_trace(
                     go.Heatmap(
                         z=data_2024_actual,
-                        x=x_actual,
-                        y=y_actual,
                         colorscale=colorscale,
                         zmin=0,
                         zmax=3,
@@ -1544,8 +1551,6 @@ with tab4:
                 fig.add_trace(
                     go.Heatmap(
                         z=data_2024_pred,
-                        x=x_pred_24,
-                        y=y_pred_24,
                         colorscale=colorscale,
                         zmin=0,
                         zmax=3,
@@ -1559,8 +1564,6 @@ with tab4:
                 fig.add_trace(
                     go.Heatmap(
                         z=data_2029_pred,
-                        x=x_pred_29,
-                        y=y_pred_29,
                         colorscale=colorscale,
                         zmin=0,
                         zmax=3,
@@ -1594,16 +1597,16 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=462,
+                    height=512.5,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",
                     paper_bgcolor="#fdfaf6",
-                    margin=dict(l=50, r=50, t=30, b=50),
+                    margin=dict(l=50, r=50, t=50, b=100),
                     legend=dict(
                         orientation="h",
                         yanchor="top",
-                        y=-0.1,
+                        y=-0.2,
                         xanchor="center",
                         x=0.5,
                         bgcolor="rgba(0,0,0,0)",
@@ -1617,6 +1620,7 @@ with tab4:
                     fig.update_xaxes(
                         showgrid=False,
                         zeroline=False,
+                        showticklabels=False,
                         row=1,
                         col=i,
                         tickfont=dict(size=12, color="black"),
@@ -1625,6 +1629,7 @@ with tab4:
                     fig.update_yaxes(
                         showgrid=False,
                         zeroline=False,
+                        showticklabels=False,
                         row=1,
                         col=i,
                         tickfont=dict(size=12, color="black"),
@@ -1639,6 +1644,9 @@ with tab4:
 
             except Exception as e:
                 st.error(f"Error: {str(e)}")
+                import traceback
+
+                st.error(f"Traceback: {traceback.format_exc()}")
 
     with st.expander("Lihat Referensi"):
         st.markdown(

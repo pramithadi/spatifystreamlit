@@ -1525,89 +1525,52 @@ with tab4:
     with col_peta_perbandingan[0]:
         with st.container(border=True):
             try:
+                from PIL import Image
 
-                def process_raster_data_with_threshold(data, thresholds):
-                    data = data.astype("float32")
-                    data = np.where((data < -1) | (data > 1), np.nan, data)
+                # Aktual NDVI 2024 PNG
+                img_2024_actual = Image.open("static/ndvi_2024.png")
+                data_2024_actual = np.array(img_2024_actual)
 
-                    colors = {
-                        "very_low": 0,
-                        "low": 1,
-                        "medium": 2,
-                        "high": 3,
+                def rgba_to_classification(rgba_array):
+                    height, width, _ = rgba_array.shape
+                    classified = np.full((height, width), np.nan, dtype=np.float32)
+
+                    colors_rgb = {
+                        (139, 0, 0): 0,  # very_low
+                        (255, 255, 224): 1,  # low
+                        (144, 238, 144): 2,  # medium
+                        (0, 100, 0): 3,  # high
                     }
 
-                    classified_data = np.full(data.shape, np.nan, dtype=np.float32)
-                    valid_mask = ~np.isnan(data)
-                    very_low_mask = valid_mask & (data <= thresholds["low"])
-                    low_mask = (
-                        valid_mask
-                        & (data > thresholds["low"])
-                        & (data <= thresholds["medium"])
-                    )
-                    medium_mask = (
-                        valid_mask
-                        & (data > thresholds["medium"])
-                        & (data <= thresholds["high"])
-                    )
-                    high_mask = valid_mask & (data > thresholds["high"])
+                    # Ekstrak RGB
+                    r = rgba_array[:, :, 0]
+                    g = rgba_array[:, :, 1]
+                    b = rgba_array[:, :, 2]
+                    alpha = rgba_array[:, :, 3]
 
-                    classified_data[very_low_mask] = colors["very_low"]
-                    classified_data[low_mask] = colors["low"]
-                    classified_data[medium_mask] = colors["medium"]
-                    classified_data[high_mask] = colors["high"]
+                    for (target_r, target_g, target_b), class_val in colors_rgb.items():
+                        mask = (
+                            (np.abs(r - target_r) <= 5)
+                            & (np.abs(g - target_g) <= 5)
+                            & (np.abs(b - target_b) <= 5)
+                            & (alpha > 0)  # Not transparent
+                        )
+                        classified[mask] = class_val
 
-                    return classified_data
+                    return classified
 
-                thresholds = {
-                    "aktual_2024": {"low": 0.426, "medium": 0.592, "high": 0.758},
-                    "proyeksi_2024": {
-                        "low": 0.437,
-                        "medium": 0.592,
-                        "high": 0.748,
-                    },
-                    "proyeksi_2029": {"low": 0.421, "medium": 0.585, "high": 0.750},
-                }
+                data_2024_actual = rgba_to_classification(data_2024_actual)
+                data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
 
-                # Aktual NDVI 2024
-                with rasterio.open("tif/ndvi2024kpy_COG.tif") as src:
-                    data_2024_actual = src.read(1)
-                    bounds_actual = src.bounds
-                    height, width = data_2024_actual.shape
-                    x_actual = np.linspace(
-                        bounds_actual.left, bounds_actual.right, width
-                    )
-                    y_actual = np.linspace(
-                        bounds_actual.bottom, bounds_actual.top, height
-                    )
-                    data_2024_actual = np.flipud(data_2024_actual)
-                    data_2024_actual = process_raster_data_with_threshold(
-                        data_2024_actual, thresholds["aktual_2024"]
-                    )
+                # Prediksi NDVI 2024
+                img_2024_pred = Image.open("static/ndvi_2024a.png")
+                data_2024_pred = rgba_to_classification(np.array(img_2024_pred))
+                data_2024_pred = np.flipud(data_2024_pred)
 
-                # Proyeksi NDVI 2024
-                with rasterio.open("tif/output_proyeksi_ndvi2024kpy_COG.tif") as src:
-                    data_2024_pred = src.read(1)
-                    bounds_pred = src.bounds
-                    height, width = data_2024_pred.shape
-                    x_pred_24 = np.linspace(bounds_pred.left, bounds_pred.right, width)
-                    y_pred_24 = np.linspace(bounds_pred.bottom, bounds_pred.top, height)
-                    data_2024_pred = np.flipud(data_2024_pred)
-                    data_2024_pred = process_raster_data_with_threshold(
-                        data_2024_pred, thresholds["proyeksi_2024"]
-                    )
-
-                # Proyeksi NDVI 2029
-                with rasterio.open("tif/output_ndvi2029kpy_COG.tif") as src:
-                    data_2029_pred = src.read(1)
-                    bounds_2029 = src.bounds
-                    height, width = data_2029_pred.shape
-                    x_pred_29 = np.linspace(bounds_2029.left, bounds_2029.right, width)
-                    y_pred_29 = np.linspace(bounds_2029.bottom, bounds_2029.top, height)
-                    data_2029_pred = np.flipud(data_2029_pred)
-                    data_2029_pred = process_raster_data_with_threshold(
-                        data_2029_pred, thresholds["proyeksi_2029"]
-                    )
+                # Prediksi NDVI 2029
+                img_2029_pred = Image.open("static/ndvi_2029.png")
+                data_2029_pred = rgba_to_classification(np.array(img_2029_pred))
+                data_2029_pred = np.flipud(data_2029_pred)
 
                 colorscale = [
                     [0.0, "rgb(139, 0, 0)"],
@@ -1630,8 +1593,6 @@ with tab4:
                 fig.add_trace(
                     go.Heatmap(
                         z=data_2024_actual,
-                        x=x_actual,
-                        y=y_actual,
                         colorscale=colorscale,
                         zmin=0,
                         zmax=3,
@@ -1645,8 +1606,6 @@ with tab4:
                 fig.add_trace(
                     go.Heatmap(
                         z=data_2024_pred,
-                        x=x_pred_24,
-                        y=y_pred_24,
                         colorscale=colorscale,
                         zmin=0,
                         zmax=3,
@@ -1660,8 +1619,6 @@ with tab4:
                 fig.add_trace(
                     go.Heatmap(
                         z=data_2029_pred,
-                        x=x_pred_29,
-                        y=y_pred_29,
                         colorscale=colorscale,
                         zmin=0,
                         zmax=3,
@@ -1707,7 +1664,7 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=507,
+                    height=512.5,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",
@@ -1730,6 +1687,7 @@ with tab4:
                     fig.update_xaxes(
                         showgrid=False,
                         zeroline=False,
+                        showticklabels=False,
                         row=1,
                         col=i,
                         tickfont=dict(size=12, color="black"),
@@ -1738,6 +1696,7 @@ with tab4:
                     fig.update_yaxes(
                         showgrid=False,
                         zeroline=False,
+                        showticklabels=False,
                         row=1,
                         col=i,
                         tickfont=dict(size=12, color="black"),
@@ -1752,6 +1711,9 @@ with tab4:
 
             except Exception as e:
                 st.error(f"Error: {str(e)}")
+                import traceback
+
+                st.error(f"Traceback: {traceback.format_exc()}")
 
     st.badge(
         "**Tabel Perbandingan Sampel Nilai NDVI Aktual dan Proyeksi**",
