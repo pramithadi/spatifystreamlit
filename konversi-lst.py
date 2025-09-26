@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-"""
-Mengubah semua file COG menjadi PNG untuk loading yang lebih cepat.
-Jalankan script ini SEKALI untuk preprocessing semua file COG.
-Setelah itu, ubah fungsi di lst.py.
-"""
 
 import numpy as np
 import rasterio
@@ -11,7 +6,7 @@ from PIL import Image
 import os
 from io import BytesIO
 
-# Dictionary Threshold yang sama persis dari lst.py
+# Dictionary Threshold
 threshold_dict = {
     "1999": {"low": 30.499, "medium": 34.531, "high": 38.563},
     "2004": {"low": 31.412, "medium": 35.481, "high": 39.550},
@@ -24,11 +19,7 @@ threshold_dict = {
 
 
 def process_cog_to_png(tif_path, thresholds, output_path):
-    """
-    Proses GeoTIFF dengan logic yang sama persis seperti di lst.py
-    Tapi save langsung sebagai PNG file.
-    """
-    print(f"Processing: {tif_path}")
+    print(f"Konversi: {tif_path}")
 
     try:
         with rasterio.open(tif_path) as src:
@@ -36,14 +27,11 @@ def process_cog_to_png(tif_path, thresholds, output_path):
             bounds = src.bounds
             nodata = src.nodata
 
-            # Handle NoData - sama persis dengan logic di lst.py
             if nodata is not None:
                 data = np.where(data == nodata, np.nan, data)
 
-            # Set nilai 0 atau negatif sebagai NoData
             data = np.where(data <= 0, np.nan, data)
 
-            # Warna untuk setiap kelas - sama persis dengan lst.py
             colors = {
                 "very_low": [92, 160, 211, 255],  # #5ca0d3
                 "low": [245, 235, 177, 255],  # #f5ebb1
@@ -51,13 +39,10 @@ def process_cog_to_png(tif_path, thresholds, output_path):
                 "high": [147, 34, 14, 255],  # #93220e
             }
 
-            # Buat array warna berdasarkan threshold (RGBA)
             colored_data = np.zeros((data.shape[0], data.shape[1], 4), dtype=np.uint8)
 
-            # Mask untuk data valid
             valid_mask = ~np.isnan(data)
 
-            # Klasifikasi berdasarkan threshold - sama persis dengan lst.py
             very_low_mask = valid_mask & (data <= thresholds["low"])
             low_mask = (
                 valid_mask & (data > thresholds["low"]) & (data <= thresholds["medium"])
@@ -69,21 +54,19 @@ def process_cog_to_png(tif_path, thresholds, output_path):
             )
             high_mask = valid_mask & (data > thresholds["high"])
 
-            # Aplikasi warna berdasarkan klasifikasi
             colored_data[very_low_mask] = colors["very_low"]
             colored_data[low_mask] = colors["low"]
             colored_data[medium_mask] = colors["medium"]
             colored_data[high_mask] = colors["high"]
 
-            # Set area yang tidak valid dengan warna transparan
             colored_data[~valid_mask] = [0, 0, 0, 0]
 
-            # Convert ke PIL Image dan save sebagai PNG
+            # Convert ke PIL Image dan Save sebagai PNG
             img = Image.fromarray(colored_data, "RGBA")
             img.save(output_path, "PNG", optimize=True)
 
             print(f"✅ Saved: {output_path}")
-            return bounds  # Return bounds untuk nanti digunakan di webapp
+            return bounds
 
     except Exception as e:
         print(f"❌ Error processing {tif_path}: {e}")
@@ -109,7 +92,7 @@ def convert_all_files():
         output_path = f"static/lst_{year}.png"
 
         if not os.path.exists(tif_path):
-            print(f"⚠️  File tidak ditemukan: {tif_path}")
+            print(f"⚠️ File tidak ditemukan: {tif_path}")
             continue
 
         # Skip Jika PNG Sudah Ada

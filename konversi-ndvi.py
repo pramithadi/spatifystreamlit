@@ -7,17 +7,17 @@ import os
 
 # Dictionary Threshold
 threshold_dict = {
-    "1999": {"low": -0.283, "medium": -0.168, "high": -0.053},
-    "2004": {"low": -0.309, "medium": -0.188, "high": -0.067},
-    "2009": {"low": -0.28, "medium": -0.154, "high": -0.027},
-    "2014": {"low": -0.302, "medium": -0.179, "high": -0.056},
-    "2019": {"low": -0.301, "medium": -0.161, "high": -0.022},
-    "2024": {"low": -0.309, "medium": -0.162, "high": -0.015},
-    "2029": {"low": -0.300, "medium": -0.156, "high": -0.012},
+    "1999": {"low": 0.407, "medium": 0.535, "high": 0.664},
+    "2004": {"low": 0.454, "medium": 0.592, "high": 0.730},
+    "2009": {"low": 0.411, "medium": 0.554, "high": 0.698},
+    "2014": {"low": 0.445, "medium": 0.596, "high": 0.748},
+    "2019": {"low": 0.429, "medium": 0.587, "high": 0.746},
+    "2024": {"low": 0.426, "medium": 0.592, "high": 0.758},
+    "2029": {"low": 0.421, "medium": 0.585, "high": 0.750},
 }
 
 
-def process_ndbi_to_png(tif_path, thresholds, output_path):
+def process_ndvi_to_png(tif_path, thresholds, output_path):
     """ """
     print(f"Konversi: {tif_path}")
 
@@ -30,14 +30,14 @@ def process_ndbi_to_png(tif_path, thresholds, output_path):
             if nodata is not None:
                 data = np.where(data == nodata, np.nan, data)
 
-            # Filter Nilai NDBI yang Valid (-1 hingga +1)
+            # Filter Nilai NDVI yang Valid (-1 hingga +1)
             data = np.where((data < -1) | (data > 1), np.nan, data)
 
             colors = {
-                "very_low": [0, 100, 0, 255],  # #006400 - Non-terbangun
-                "low": [255, 255, 224, 255],  # #ffffe0 - Rendah
-                "medium": [255, 165, 0, 255],  # #ffa500 - Sedang
-                "high": [59, 6, 10, 255],  # #3b060a - Tinggi
+                "very_low": [139, 0, 0, 255],  # #8b0000
+                "low": [255, 255, 224, 255],  # #ffffe0
+                "medium": [144, 238, 144, 255],  # #90ee90
+                "high": [0, 100, 0, 255],  # #006400
             }
 
             colored_data = np.zeros((data.shape[0], data.shape[1], 4), dtype=np.uint8)
@@ -62,7 +62,7 @@ def process_ndbi_to_png(tif_path, thresholds, output_path):
 
             colored_data[~valid_mask] = [0, 0, 0, 0]
 
-            # Convert ke PIL Image dan Save sebagai PNG
+            # Konversi ke PIL Image dan Save sebagai PNG
             img = Image.fromarray(colored_data, "RGBA")
             img.save(output_path, "PNG", optimize=True)
 
@@ -74,25 +74,22 @@ def process_ndbi_to_png(tif_path, thresholds, output_path):
         return None
 
 
-def preprocess_all_ndbi_files():
-    """
-    Preprocessing semua file NDBI COG.
-    """
+def preprocess_all_ndvi_files():
     os.makedirs("static", exist_ok=True)
 
     years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029"]
 
     bounds_dict = {}
 
-    print("Memulai konversi NDBI COG -> PNG...")
+    print("Memulai konversi NDVI COG -> PNG...")
 
     for year in years:
         if year == "2029":
-            tif_path = "tif/output_ndbi2029kpy_COG.tif"
+            tif_path = "tif/output_ndvi2029kpy_COG.tif"
         else:
-            tif_path = f"tif/ndbi{year}kpy_COG.tif"
+            tif_path = f"tif/ndvi{year}kpy_COG.tif"
 
-        output_path = f"static/ndbi_{year}.png"
+        output_path = f"static/ndvi_{year}.png"
 
         if not os.path.exists(tif_path):
             print(f"⚠️ File tidak ditemukan: {tif_path}")
@@ -104,7 +101,7 @@ def preprocess_all_ndbi_files():
 
         thresholds = threshold_dict[year]
 
-        bounds = process_ndbi_to_png(tif_path, thresholds, output_path)
+        bounds = process_ndvi_to_png(tif_path, thresholds, output_path)
 
         if bounds:
             bounds_dict[year] = bounds
@@ -112,18 +109,18 @@ def preprocess_all_ndbi_files():
     print("✅ Konversi selesai!")
     print("\n📋 File yang berhasil diproses:")
     for year in years:
-        png_path = f"static/ndbi_{year}.png"
+        png_path = f"static/ndvi_{year}.png"
         if os.path.exists(png_path):
             size_mb = os.path.getsize(png_path) / (1024 * 1024)
-            print(f"   - ndbi_{year}.png ({size_mb:.1f} MB)")
+            print(f"   - ndvi_{year}.png ({size_mb:.1f} MB)")
 
     return bounds_dict
 
 
 if __name__ == "__main__":
-    bounds_result = preprocess_all_ndbi_files()
+    bounds_result = preprocess_all_ndvi_files()
 
     if bounds_result:
-        print("\n📊 Bounds info (untuk debugging):")
+        print("\n📊 Bounds Info (Debugging):")
         for year, bounds in bounds_result.items():
             print(f"   {year}: {bounds}")

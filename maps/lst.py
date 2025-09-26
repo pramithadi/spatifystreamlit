@@ -876,6 +876,7 @@ with tab1:
             attr="Google Satellite",
             name="Google Satellite",
         ).add_to(m)
+        folium.TileLayer(tiles="OpenStreetMap", name="OpenStreetMap").add_to(m)
 
         thresholds = threshold_dict[option]
         png_success = add_png_to_map(m, option, thresholds)
