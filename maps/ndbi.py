@@ -443,7 +443,7 @@ def load_stats_kec():
         df["Tahun"] = df["Tahun"].astype(str)
         return df
     except FileNotFoundError:
-        return None  # Return None agar bisa dihandle
+        return None
 
 
 def get_kec_by_year(df, year):
