@@ -8,8 +8,7 @@ from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import folium
-from streamlit_folium import folium_static
-from streamlit_folium import st_folium
+from streamlit.components.v1 import html
 import rasterio
 from rasterio.mask import mask
 from shapely.geometry import mapping
@@ -126,41 +125,333 @@ threshold_dict = {
     "2029": {"low": 0.012, "medium": 0.156, "high": 0.300},
 }
 
+NDMI_IMAGE_BOUNDS = {
+    "1999": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2004": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2009": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2014": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2019": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2024": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2029": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+}
+
+PNG_URLS = {
+    "1999": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndmi_1999.png",
+    "2004": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndmi_2004.png",
+    "2009": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndmi_2009.png",
+    "2014": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndmi_2014.png",
+    "2019": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndmi_2019.png",
+    "2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndmi_2024.png",
+    "2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndmi_2029.png",
+}
+
+KECAMATAN_BOUNDS = {
+    "Pajangan": {
+        "min_lat": -7.910154,
+        "max_lat": -7.834027,
+        "min_lon": 110.256581,
+        "max_lon": 110.324644,
+        "wadmkk": "Bantul",
+    },
+    "Bantul": {
+        "min_lat": -7.920525,
+        "max_lat": -7.861570,
+        "min_lon": 110.309473,
+        "max_lon": 110.363740,
+        "wadmkk": "Bantul",
+    },
+    "Banguntapan": {
+        "min_lat": -7.863121,
+        "max_lat": -7.783162,
+        "min_lon": 110.375198,
+        "max_lon": 110.430849,
+        "wadmkk": "Bantul",
+    },
+    "Pleret": {
+        "min_lat": -7.900738,
+        "max_lat": -7.854634,
+        "min_lon": 110.375855,
+        "max_lon": 110.454720,
+        "wadmkk": "Bantul",
+    },
+    "Piyungan": {
+        "min_lat": -7.872696,
+        "max_lat": -7.817384,
+        "min_lon": 110.420561,
+        "max_lon": 110.521309,
+        "wadmkk": "Bantul",
+    },
+    "Sewon": {
+        "min_lat": -7.887412,
+        "max_lat": -7.823997,
+        "min_lon": 110.317446,
+        "max_lon": 110.382072,
+        "wadmkk": "Bantul",
+    },
+    "Kasihan": {
+        "min_lat": -7.861318,
+        "max_lat": -7.768220,
+        "min_lon": 110.280408,
+        "max_lon": 110.352569,
+        "wadmkk": "Bantul",
+    },
+    "Sedayu": {
+        "min_lat": -7.865454,
+        "max_lat": -7.784616,
+        "min_lon": 110.221201,
+        "max_lon": 110.290698,
+        "wadmkk": "Bantul",
+    },
+    "Gamping": {
+        "min_lat": -7.835228,
+        "max_lat": -7.735666,
+        "min_lon": 110.280362,
+        "max_lon": 110.355014,
+        "wadmkk": "Sleman",
+    },
+    "Godean": {
+        "min_lat": -7.797698,
+        "max_lat": -7.734785,
+        "min_lon": 110.262531,
+        "max_lon": 110.330165,
+        "wadmkk": "Sleman",
+    },
+    "Moyudan": {
+        "min_lat": -7.815200,
+        "max_lat": -7.739029,
+        "min_lon": 110.218705,
+        "max_lon": 110.287664,
+        "wadmkk": "Sleman",
+    },
+    "Minggir": {
+        "min_lat": -7.759545,
+        "max_lat": -7.705374,
+        "min_lon": 110.215910,
+        "max_lon": 110.281926,
+        "wadmkk": "Sleman",
+    },
+    "Seyegan": {
+        "min_lat": -7.765134,
+        "max_lat": -7.694704,
+        "min_lon": 110.271502,
+        "max_lon": 110.326240,
+        "wadmkk": "Sleman",
+    },
+    "Mlati": {
+        "min_lat": -7.774225,
+        "max_lat": -7.700432,
+        "min_lon": 110.304482,
+        "max_lon": 110.385777,
+        "wadmkk": "Sleman",
+    },
+    "Depok": {
+        "min_lat": -7.801695,
+        "max_lat": -7.731390,
+        "min_lon": 110.369320,
+        "max_lon": 110.447550,
+        "wadmkk": "Sleman",
+    },
+    "Berbah": {
+        "min_lat": -7.836623,
+        "max_lat": -7.777257,
+        "min_lon": 110.421167,
+        "max_lon": 110.487754,
+        "wadmkk": "Sleman",
+    },
+    "Kalasan": {
+        "min_lat": -7.785957,
+        "max_lat": -7.700159,
+        "min_lon": 110.438728,
+        "max_lon": 110.491072,
+        "wadmkk": "Sleman",
+    },
+    "Ngemplak": {
+        "min_lat": -7.755650,
+        "max_lat": -7.667755,
+        "min_lon": 110.408553,
+        "max_lon": 110.482772,
+        "wadmkk": "Sleman",
+    },
+    "Ngaglik": {
+        "min_lat": -7.755560,
+        "max_lat": -7.672081,
+        "min_lon": 110.366557,
+        "max_lon": 110.443259,
+        "wadmkk": "Sleman",
+    },
+    "Tegalrejo": {
+        "min_lat": -7.794187,
+        "max_lat": -7.766468,
+        "min_lon": 110.348662,
+        "max_lon": 110.369357,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Gondokusuman": {
+        "min_lat": -7.798199,
+        "max_lat": -7.774690,
+        "min_lon": 110.368024,
+        "max_lon": 110.396002,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Danurejan": {
+        "min_lat": -7.797274,
+        "max_lat": -7.788140,
+        "min_lon": 110.365368,
+        "max_lon": 110.378419,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Gedongtengen": {
+        "min_lat": -7.796348,
+        "max_lat": -7.787196,
+        "min_lon": 110.355268,
+        "max_lon": 110.366438,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Ngampilan": {
+        "min_lat": -7.808621,
+        "max_lat": -7.795570,
+        "min_lon": 110.353681,
+        "max_lon": 110.362159,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Wirobrajan": {
+        "min_lat": -7.813477,
+        "max_lat": -7.792852,
+        "min_lon": 110.344800,
+        "max_lon": 110.355440,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Mantrijeron": {
+        "min_lat": -7.826771,
+        "max_lat": -7.808277,
+        "min_lon": 110.350798,
+        "max_lon": 110.368479,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Kraton": {
+        "min_lat": -7.814891,
+        "max_lat": -7.802875,
+        "min_lon": 110.355851,
+        "max_lon": 110.369373,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Gondomanan": {
+        "min_lat": -7.808194,
+        "max_lat": -7.796072,
+        "min_lon": 110.360510,
+        "max_lon": 110.374300,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Pakualaman": {
+        "min_lat": -7.804580,
+        "max_lat": -7.796715,
+        "min_lon": 110.369749,
+        "max_lon": 110.380511,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Mergangsan": {
+        "min_lat": -7.826884,
+        "max_lat": -7.801539,
+        "min_lon": 110.367476,
+        "max_lon": 110.381472,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Umbulharjo": {
+        "min_lat": -7.840072,
+        "max_lat": -7.788484,
+        "min_lon": 110.374580,
+        "max_lon": 110.398505,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Kotagede": {
+        "min_lat": -7.833535,
+        "max_lat": -7.802250,
+        "min_lon": 110.390140,
+        "max_lon": 110.404935,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Sleman": {
+        "min_lat": -7.728679,
+        "max_lat": -7.662370,
+        "min_lon": 110.306495,
+        "max_lon": 110.381601,
+        "wadmkk": "Sleman",
+    },
+    "Turi": {
+        "min_lat": -7.682863,
+        "max_lat": -7.571829,
+        "min_lon": 110.343410,
+        "max_lon": 110.418494,
+        "wadmkk": "Sleman",
+    },
+    "Pakem": {
+        "min_lat": -7.702673,
+        "max_lat": -7.541162,
+        "min_lon": 110.377110,
+        "max_lon": 110.445520,
+        "wadmkk": "Sleman",
+    },
+    "Cangkringan": {
+        "min_lat": -7.689823,
+        "max_lat": -7.541162,
+        "min_lon": 110.426367,
+        "max_lon": 110.477433,
+        "wadmkk": "Sleman",
+    },
+    "Jetis": {
+        "min_lat": -7.789966,
+        "max_lat": -7.773196,
+        "min_lon": 110.355054,
+        "max_lon": 110.371467,
+        "wadmkk": "Kota Yogyakarta",
+    },
+}
+
 
 # ==============================================================================
 # DEKLARASI FUNGSI
 # ==============================================================================
 @st.cache_data
-def load_kecamatan_stats():
-    """
-    Load CSV Statistik NDMI tiap Kecamatan.
-    """
+def load_and_prep_geojson(geojson_path):
+    try:
+        import json
+
+        with open(geojson_path, "r", encoding="utf-8") as f:
+            geojson_data = json.load(f)
+        for feature in geojson_data["features"]:
+            props = feature.get("properties", {})
+            namobj = props.get("NAMOBJ", "Unknown")
+            wadmkk = props.get("WADMKK", "")
+            if "Sleman" in wadmkk or "Bantul" in wadmkk:
+                tooltip_text = f"Kapanewon {namobj}"
+            elif "Yogyakarta" in wadmkk:
+                tooltip_text = f"Kemantren {namobj}"
+            else:
+                tooltip_text = namobj
+            feature["properties"]["tooltip_text"] = tooltip_text
+        return geojson_data
+    except Exception as e:
+        st.error(f"Error loading GeoJSON: {e}")
+        return None
+
+
+@st.cache_data
+def load_stats_kec():
     csv_path = "./csv/ndmiStatsKec.csv"
     try:
         df = pd.read_csv(csv_path)
-        # Kolom Tahun di CSV Harus String
         df["Tahun"] = df["Tahun"].astype(str)
         return df
     except FileNotFoundError:
-        st.error(f"File CSV tidak ditemukan: {csv_path}")
-        return pd.DataFrame()
-    except Exception as e:
-        st.error(f"Error membaca file CSV: {str(e)}")
-        return pd.DataFrame()
+        return None  # Return None agar bisa dihandle
 
 
-def get_kecamatan_data_by_year(df, year):
-    """
-    Filter NDMI Kecamatan Berdasarkan Tahun.
-    """
-    if df.empty:
+def get_kec_by_year(df, year):
+    if df is None or df.empty:
         return {}
-
     year_data = df[df["Tahun"] == str(year)]
     if year_data.empty:
         return {}
-
-    # Convert ke Dictionary
     kecamatan_dict = {}
     for _, row in year_data.iterrows():
         kecamatan_dict[row["NAMOBJ"]] = {
@@ -169,14 +460,10 @@ def get_kecamatan_data_by_year(df, year):
             "mean": row["mean"],
             "wadmkk": row["WADMKK"],
         }
-
     return kecamatan_dict
 
 
 def get_toponim(wadmkk):
-    """
-    Penentuan Istilah Kapanewon/Kemantren Berdasarkan Kabupaten/Kota (WADMKK).
-    """
     if "Sleman" in wadmkk or "Bantul" in wadmkk:
         return "Kapanewon"
     elif "Yogyakarta" in wadmkk:
@@ -185,57 +472,21 @@ def get_toponim(wadmkk):
         return "Kecamatan"
 
 
-@st.cache_data
-def get_kecamatan_bounds(namobj):
-    shapefile_path = "shp/aoi_kpy.shp"
+def get_kecamatan_bounds_static(namobj):
+    if namobj in KECAMATAN_BOUNDS:
+        bounds = KECAMATAN_BOUNDS[namobj]
+        return [
+            [bounds["min_lat"], bounds["min_lon"]],
+            [bounds["max_lat"], bounds["max_lon"]],
+        ]
+    return None
+
+
+def add_shp_to_map(map_obj, geojson_data):
     try:
-        gdf = gpd.read_file(shapefile_path)
-
-        if gdf.crs != "EPSG:4326":
-            gdf = gdf.to_crs("EPSG:4326")
-
-        kec_data = gdf[gdf["NAMOBJ"] == namobj]
-
-        if not kec_data.empty:
-            bounds = kec_data.total_bounds
-            return [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
-        else:
-            return None
-    except Exception as e:
-        return None
-
-
-def add_shp_to_map(map_obj, shapefile_path):
-    """
-    Menambahkan SHP Batas Administrasi ke Peta Folium.
-    """
-    try:
-        # Geopandas untuk Membaca SHP
-        gdf = gpd.read_file(shapefile_path)
-
-        # Konversi ke WGS84
-        if gdf.crs != "EPSG:4326":
-            gdf = gdf.to_crs("EPSG:4326")
-
-        # Function Tooltip (Toponim) sesuai Kabupaten/Kota
-        def create_tooltip_text(row):
-            namobj = row.get("NAMOBJ", "Unknown")
-            wadmkk = row.get("WADMKK", "")
-
-            if "Sleman" in wadmkk or "Bantul" in wadmkk:
-                return f"Kapanewon {namobj}"
-            elif "Yogyakarta" in wadmkk:
-                return f"Kemantren {namobj}"
-            else:
-                return namobj
-
-        # Tambahkan Kolom Custom Tooltip
-        gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
-
-        # Konversi ke GeoJSON
-        geojson_data = gdf.to_json()
-
-        # Tambahkan GeoJSON ke Peta Folium dengan Custom Tooltip
+        if geojson_data is None:
+            st.warning("Batas administrasi tidak dapat dimuat.")
+            return False
         geojson_layer = folium.GeoJson(
             geojson_data,
             style_function=lambda feature: {
@@ -243,11 +494,10 @@ def add_shp_to_map(map_obj, shapefile_path):
                 "color": "black",
                 "weight": 2,
                 "fillOpacity": 0.05,
-                "opacity": 1,
             },
             highlight_function=lambda feature: {
                 "weight": 3,
-                "fillOpacity": 0.1,  # Hover
+                "fillOpacity": 0.1,
             },
             tooltip=folium.features.GeoJsonTooltip(
                 fields=["tooltip_text"],
@@ -258,12 +508,12 @@ def add_shp_to_map(map_obj, shapefile_path):
                 sticky=True,
             ),
             name="Batas Administrasi",
+            show=True,
         )
-
         geojson_layer.add_to(map_obj)
-
         return True
     except Exception as e:
+        st.error(f"ERROR saat menambahkan GeoJSON: {e}")
         return False
 
 
@@ -306,94 +556,78 @@ def add_legend_to_map(map_obj, thresholds):
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
-def add_geotiff_to_map(map_obj, tif_path, thresholds):
-    """
-    Menambahkan GeoTiff Penutup Lahan ke Peta Folium.
-    """
+def add_png_to_map(map_obj, year, thresholds):
     try:
-        with rasterio.open(tif_path) as src:
-            # Rasterio untuk Membaca Data Raster
-            data = src.read(1)
+        png_url = PNG_URLS.get(year)
+        if not png_url:
+            st.error(f"File PNG untuk tahun: {year} tidak ditemukan.")
+            return False
 
-            # Menegaskan Batas
-            bounds = src.bounds
+        if year not in NDMI_IMAGE_BOUNDS:
+            st.error(f"Bounds untuk tahun {year} tidak ditemukan.")
+            return False
 
-            # Handle NoData dan Outlier Piksel
-            if hasattr(src, "nodata") and src.nodata is not None:
-                data = np.where(data == src.nodata, np.nan, data)
-
-            # Nilai NDMI Berkisar -1 Hingga +1
-            # Maka Hanya Filter Nilai yang Benar-benar Tidak Valid (Outlier Ekstrem)
-            data = np.where((data < -1) | (data > 1), np.nan, data)
-
-            # Warna untuk Setiap Kelas (DIPERBAIKI - Konversi hex ke RGB)
-            colors = {
-                "very_low": [148, 137, 121, 255],  # #948979
-                "low": [255, 255, 224, 255],  # #ffffe0
-                "medium": [173, 216, 230, 255],  # #add8e6
-                "high": [0, 0, 139, 255],  # #00008b
-            }
-
-            # Buat Array Warna Berdasarkan Threshold (RGBA)
-            colored_data = np.zeros((data.shape[0], data.shape[1], 4), dtype=np.uint8)
-
-            # Mask untuk Data Valid
-            valid_mask = ~np.isnan(data)
-
-            # Klasifikasi Berdasarkan Threshold
-            very_low_mask = valid_mask & (data <= thresholds["low"])
-            low_mask = (
-                valid_mask & (data > thresholds["low"]) & (data <= thresholds["medium"])
-            )
-            medium_mask = (
-                valid_mask
-                & (data > thresholds["medium"])
-                & (data <= thresholds["high"])
-            )
-            high_mask = valid_mask & (data > thresholds["high"])
-
-            # Pengaplikasian Warna Berdasarkan Klasifikasi (DIPERBAIKI)
-            colored_data[very_low_mask] = colors["very_low"]
-            colored_data[low_mask] = colors["low"]
-            colored_data[medium_mask] = colors["medium"]
-            colored_data[high_mask] = colors["high"]
-
-            # Set Area yang Tidak Valid dengan Warna Transparan
-            colored_data[~valid_mask] = [0, 0, 0, 0]
-
-            # Konversi ke PIL Image
-            img = Image.fromarray(colored_data, "RGBA")
-
-            # Konversi ke base64
-            buffered = BytesIO()
-            img.save(buffered, format="PNG")
-            img_str = base64.b64encode(buffered.getvalue()).decode()
-
-            # Bounds untuk Folium
-            bounds_folium = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]
-
-            # Tambahkan ke Peta
-            ndmi_overlay = folium.raster_layers.ImageOverlay(
-                image=f"data:image/png;base64,{img_str}",
-                bounds=bounds_folium,
-                opacity=1.0,
-                interactive=True,
-                cross_origin=False,
-                zindex=1,
-                name="NDMI",
-            )
-            ndmi_overlay.add_to(map_obj)
-
+        bounds_folium = NDMI_IMAGE_BOUNDS[year]
+        ndmi_overlay = folium.raster_layers.ImageOverlay(
+            image=png_url,
+            bounds=bounds_folium,
+            opacity=1.0,
+            interactive=True,
+            cross_origin=False,
+            zindex=1,
+            name=f"NDMI {year}",
+            show=True,
+        )
+        ndmi_overlay.add_to(map_obj)
         return True
     except Exception as e:
+        st.error(f"Error menambahkan PNG ke peta: {e}")
         return False
+
+
+@st.cache_data
+def load_all_map_data():
+    # 1. Load Statistik Kecamatan
+    df_kec_stats = load_stats_kec()
+    if df_kec_stats is None:
+        st.error(
+            "Gagal memuat file CSV statistik kecamatan. Pastikan file ada di `csv/ndmiStatsKec.csv`."
+        )
+
+    # 2. Load GeoJSON
+    shapefile_path = "shp/aoi_kpy.json"
+    geojson_data = None
+    if os.path.exists(shapefile_path):
+        geojson_data = load_and_prep_geojson(shapefile_path)
+    else:
+        st.warning(f"File SHP tidak ditemukan: {shapefile_path}")
+
+    return {
+        "df_kec_stats": df_kec_stats,
+        "geojson_data": geojson_data,
+    }
+
+
+@st.cache_resource
+def create_base_map():
+    m = folium.Map(
+        location=[-7.764326411862208, 110.3721676814108],
+        zoom_start=10.5,
+        tiles="OpenStreetMap",
+    )
+
+    folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
+    folium.TileLayer(
+        tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+        attr="Google Satellite",
+        name="Google Satellite",
+    ).add_to(m)
+    return m
 
 
 # ==============================================================================
 # MAIN EXECUTION
 # ==============================================================================
-
-kecamatan_stats_df = load_kecamatan_stats()
 
 st.header("Normalized Difference Moisture Index")
 
@@ -416,12 +650,22 @@ st.header("Normalized Difference Moisture Index")
 # ==============================================================================
 # Peta
 with tab1:
+    if "map_data_loaded" not in st.session_state:
+        with st.spinner("Mempersiapkan data peta..."):
+            map_data = load_all_map_data()
+            st.session_state.map_data = map_data
+            st.session_state.map_data_loaded = True
+
+    map_data = st.session_state.map_data
+    df_kec_stats = map_data["df_kec_stats"]
+    geojson_data = map_data["geojson_data"]
+
     st.badge(
         "**Peta NDMI di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
         color="primary",
     )
 
-    col1_peta, col2_peta = st.columns([2.6, 1.4])
+    col1_peta, col2_peta = st.columns([2.5, 1.5])
 
     with col2_peta:
         with st.container(border=True):
@@ -449,11 +693,11 @@ with tab1:
         # Container Selectbox Kecamatan
         with st.container(border=True):
             # Ambil Data Statistik Kecamatan dari DataFrame
-            kecamatan_data_year = get_kecamatan_data_by_year(kecamatan_stats_df, option)
+            kec_year = get_kec_by_year(df_kec_stats, option)
 
             # Selectbox Cari Kecamatan
-            if kecamatan_data_year:
-                kecamatan_options = list(kecamatan_data_year.keys())
+            if kec_year:
+                kecamatan_options = list(kec_year.keys())
                 selected_kecamatan = st.selectbox(
                     "**Cari Kecamatan**",
                     [""] + kecamatan_options,
@@ -461,7 +705,7 @@ with tab1:
                     placeholder="Ketik atau pilih kecamatan",
                 )
             else:
-                st.warning(f"Data kecamatan untuk tahun {option} tidak tersedia")
+                st.warning(f"Data kecamatan untuk tahun {option} tidak tersedia.")
                 selected_kecamatan = ""
 
         # Function Klasifikasi Deskripsi
@@ -477,10 +721,10 @@ with tab1:
                 return "tinggi", "tinggi"
 
         # Container Analisis NDMI per Kecamatan
-        if selected_kecamatan and selected_kecamatan != "" and kecamatan_data_year:
+        if selected_kecamatan and selected_kecamatan != "" and kec_year:
             with st.container(border=True):
                 st.write("💡 **Quick Insight**")
-                kecamatan_data = kecamatan_data_year[selected_kecamatan]
+                kecamatan_data = kec_year[selected_kecamatan]
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
 
@@ -499,114 +743,55 @@ with tab1:
                 st.write(description)
 
     with col1_peta:
+        map_center = [-7.764326411862208, 110.3721676814108]
+        zoom_level = 10.5
+
         if selected_kecamatan:
-            kec_bounds = get_kecamatan_bounds(selected_kecamatan)
+            kec_bounds = get_kecamatan_bounds_static(selected_kecamatan)
             if kec_bounds:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 14
-            else:
-                map_center = [-7.764326411862208, 110.3721676814108]
-                zoom_level = 13
-        else:
-            map_center = [-7.764326411862208, 110.3721676814108]
-            zoom_level = 10.5
+                zoom_level = 12.4
 
-        # Buat Peta Folium
         m = folium.Map(
-            location=map_center,
-            zoom_start=zoom_level,
-            tiles=None,
+            location=map_center, zoom_start=zoom_level, tiles="OpenStreetMap"
         )
 
-        # Tambahkan Basemap
-        folium.TileLayer(
-            tiles="CartoDB positron",
-            name="CartoDB Positron",
-            overlay=False,
-            control=True,
-        ).add_to(m)
-
-        folium.TileLayer(
-            tiles="CartoDB dark_matter",
-            name="CartoDB Dark Matter",
-            overlay=False,
-            control=True,
-        ).add_to(m)
-
+        folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
         folium.TileLayer(
             tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
             attr="Google Satellite",
             name="Google Satellite",
-            overlay=False,
-            control=True,
         ).add_to(m)
+        folium.TileLayer(tiles="OpenStreetMap", name="OpenStreetMap").add_to(m)
 
-        folium.TileLayer(
-            tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-            attr="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
-            name="Esri WorldImagery",
-            overlay=False,
-            control=True,
-        ).add_to(m)
-
-        folium.TileLayer(
-            tiles="OpenStreetMap",  # Letakkan di Bawah Sendiri Supaya Jadi Default
-            name="OpenStreetMap",
-            overlay=False,
-            control=True,
-        ).add_to(m)
-
-        # Panggil GeoTiff dari Aset Lokal
-        if option == "2029":
-            tif_path = "tif/output_ndmi2029kpy_COG.tif"
-        else:
-            tif_path = f"tif/ndmi{option}kpy_COG.tif"
-
-        # Set Threshold untuk Tahun yang Dipilih
         thresholds = threshold_dict[option]
+        png_success = add_png_to_map(m, option, thresholds)
+        if not png_success:
+            st.info("Menampilkan peta tanpa layer NDBI.")
 
-        # Cek Ketersediaan GeoTiff, Panggil Function GeoTiff, dan Tampilkan ke Peta
-        if os.path.exists(tif_path):
-            add_geotiff_to_map(m, tif_path, thresholds)
-        else:
-            st.warning(f"File GeoTIFF tidak ditemukan: {tif_path}")
+        add_shp_to_map(m, geojson_data)
 
-        # Cek Ketersediaan AOI, Panggil Function Batas AOI, dan Tampilkan ke Peta
-        shapefile_path = "shp/aoi_kpy.shp"
-        if os.path.exists(shapefile_path):
-            add_shp_to_map(m, shapefile_path)
-        else:
-            st.warning(f"File Shapefile tidak ditemukan: {shapefile_path}")
+        try:
+            add_legend_to_map(m, thresholds)
+        except Exception as e:
+            st.warning("Legenda tidak dapat ditampilkan.")
 
-        # Tambahkan Legenda ke Peta
-        add_legend_to_map(m, thresholds)
-
-        # Tambahkan Control Layer ke Peta Setelah Semua Layer Ditambahkan
         folium.LayerControl(position="topleft", collapsed=True).add_to(m)
 
-        # CSS untuk Custom Peta Folium
         css = """
         <style>
-        .leaflet-control-layers label {
-            font-size: 11px !important;
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .leaflet-control-layers-list {
-            font-size: 11px !important;
-        }
-        .leaflet-control-layers-expanded {
-            font-size: 11px !important;
-        }
-        .leaflet-control-attribution {
+        .folium-map { height: 100% !important; }
+        .leaflet-control-layers label, .leaflet-control-layers-list,
+        .leaflet-control-layers-expanded, .leaflet-control-attribution {
             font-size: 11px !important;
             font-family: 'Poppins', sans-serif !important;
         }
         </style>
         """
-        m.get_root().html.add_child(folium.Element(css))
-        st_data = st_folium(m, use_container_width=True, height=597)
+        m.get_root().header.add_child(folium.Element(css))
+        html(m.get_root().render(), height=600, scrolling=False)
 
 # ==============================================================================
 # SECTION 2: TREN
@@ -1056,180 +1241,180 @@ with tab3:
             "Periksa format file CSV dan nama kolom ('ndmiLandsat' dan 'ndmiSentinel')"
         )
 
-    # Row Peta NDMI Landsat 8 dan Sentinel-2
-    # Threshold untuk Peta Validasi
-    validation_thresholds = {
-        "landsat": {"low": 0.015, "medium": 0.162, "high": 0.309},
-        "sentinel": {"low": -0.053, "medium": 0.093, "high": 0.238},
-    }
+    # # Row Peta NDMI Landsat 8 dan Sentinel-2
+    # # Threshold untuk Peta Validasi
+    # validation_thresholds = {
+    #     "landsat": {"low": 0.015, "medium": 0.162, "high": 0.309},
+    #     "sentinel": {"low": -0.053, "medium": 0.093, "high": 0.238},
+    # }
 
-    st.badge(
-        "**Peta NDMI Landsat 8 dan Sentinel-2 (2024)**",
-        color="primary",
-    )
-    with st.container(border=True):
-        st.markdown(
-            """
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div style="font-weight: 600; color: #333; font-size: 14px;">📡 Landsat 8 NDMI (2024)</div>
-                <div style="font-weight: 600; color: #333; font-size: 14px;">🛰️ Sentinel-2 NDMI (2024)</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    # st.badge(
+    #     "**Peta NDMI Landsat 8 dan Sentinel-2 (2024)**",
+    #     color="primary",
+    # )
+    # with st.container(border=True):
+    #     st.markdown(
+    #         """
+    #         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    #             <div style="font-weight: 600; color: #333; font-size: 14px;">📡 Landsat 8 NDMI (2024)</div>
+    #             <div style="font-weight: 600; color: #333; font-size: 14px;">🛰️ Sentinel-2 NDMI (2024)</div>
+    #         </div>
+    #         """,
+    #         unsafe_allow_html=True,
+    #     )
 
-        # Import DualMap Plugin
-        from folium.plugins import DualMap
+    #     # Import DualMap Plugin
+    #     from folium.plugins import DualMap
 
-        # Buat DualMap dengan Synchronized View
-        dual_map = DualMap(
-            location=[-7.764326411862208, 110.3721676814108],
-            zoom_start=10.5,
-            tiles=None,
-        )
+    #     # Buat DualMap dengan Synchronized View
+    #     dual_map = DualMap(
+    #         location=[-7.764326411862208, 110.3721676814108],
+    #         zoom_start=10.5,
+    #         tiles=None,
+    #     )
 
-        # Tambahkan Basemap ke Kedua Sisi
-        # Sisi Kiri (Landsat)
-        folium.TileLayer(
-            tiles="CartoDB positron",
-            name="CartoDB Positron",
-            overlay=False,
-            control=True,
-        ).add_to(dual_map.m1)
+    #     # Tambahkan Basemap ke Kedua Sisi
+    #     # Sisi Kiri (Landsat)
+    #     folium.TileLayer(
+    #         tiles="CartoDB positron",
+    #         name="CartoDB Positron",
+    #         overlay=False,
+    #         control=True,
+    #     ).add_to(dual_map.m1)
 
-        folium.TileLayer(
-            tiles="OpenStreetMap",
-            name="OpenStreetMap",
-            overlay=False,
-            control=True,
-        ).add_to(dual_map.m1)
+    #     folium.TileLayer(
+    #         tiles="OpenStreetMap",
+    #         name="OpenStreetMap",
+    #         overlay=False,
+    #         control=True,
+    #     ).add_to(dual_map.m1)
 
-        # Sisi Kanan (Sentinel)
-        folium.TileLayer(
-            tiles="CartoDB positron",
-            name="CartoDB Positron",
-            overlay=False,
-            control=True,
-        ).add_to(dual_map.m2)
+    #     # Sisi Kanan (Sentinel)
+    #     folium.TileLayer(
+    #         tiles="CartoDB positron",
+    #         name="CartoDB Positron",
+    #         overlay=False,
+    #         control=True,
+    #     ).add_to(dual_map.m2)
 
-        folium.TileLayer(
-            tiles="OpenStreetMap",
-            name="OpenStreetMap",
-            overlay=False,
-            control=True,
-        ).add_to(dual_map.m2)
+    #     folium.TileLayer(
+    #         tiles="OpenStreetMap",
+    #         name="OpenStreetMap",
+    #         overlay=False,
+    #         control=True,
+    #     ).add_to(dual_map.m2)
 
-        # Path untuk File GeoTIFF
-        landsat_tif_path = "tif/ndmi2024kpy_COG.tif"
-        sentinel_tif_path = "tif/ndmiSentinel30_COG.tif"
-        shapefile_path = "shp/aoi_kpy.shp"
+    #     # Path untuk File GeoTIFF
+    #     landsat_tif_path = "tif/ndmi2024kpy_COG.tif"
+    #     sentinel_tif_path = "tif/ndmiSentinel30_COG.tif"
+    #     shapefile_path = "shp/aoi_kpy.shp"
 
-        # Tambahkan GeoTiff Landsat ke Sisi Kiri
-        if os.path.exists(landsat_tif_path):
-            add_geotiff_to_map(
-                dual_map.m1, landsat_tif_path, validation_thresholds["landsat"]
-            )
-        else:
-            st.warning(f"File Landsat GeoTIFF tidak ditemukan: {landsat_tif_path}")
+    #     # Tambahkan GeoTiff Landsat ke Sisi Kiri
+    #     if os.path.exists(landsat_tif_path):
+    #         add_geotiff_to_map(
+    #             dual_map.m1, landsat_tif_path, validation_thresholds["landsat"]
+    #         )
+    #     else:
+    #         st.warning(f"File Landsat GeoTIFF tidak ditemukan: {landsat_tif_path}")
 
-        # Tambahkan GeoTiff Sentinel ke Sisi Kanan
-        if os.path.exists(sentinel_tif_path):
-            add_geotiff_to_map(
-                dual_map.m2, sentinel_tif_path, validation_thresholds["sentinel"]
-            )
-        else:
-            st.warning(f"File Sentinel GeoTIFF tidak ditemukan: {sentinel_tif_path}")
+    #     # Tambahkan GeoTiff Sentinel ke Sisi Kanan
+    #     if os.path.exists(sentinel_tif_path):
+    #         add_geotiff_to_map(
+    #             dual_map.m2, sentinel_tif_path, validation_thresholds["sentinel"]
+    #         )
+    #     else:
+    #         st.warning(f"File Sentinel GeoTIFF tidak ditemukan: {sentinel_tif_path}")
 
-        # Tambahkan Batas Administrasi ke Kedua Peta
-        if os.path.exists(shapefile_path):
-            add_shp_to_map(dual_map.m1, shapefile_path)
-            add_shp_to_map(dual_map.m2, shapefile_path)
+    #     # Tambahkan Batas Administrasi ke Kedua Peta
+    #     if os.path.exists(shapefile_path):
+    #         add_shp_to_map(dual_map.m1, shapefile_path)
+    #         add_shp_to_map(dual_map.m2, shapefile_path)
 
-        # Function untuk Menambahkan Legenda Universal
-        def add_universal_legend_to_map(map_obj, title):
-            legend_html = f"""
-            <div style="position: fixed; 
-                        top: 10px; 
-                        right: 10px; 
-                        z-index: 1000; 
-                        background-color: white; 
-                        border: 1px solid #ccc; 
-                        border-radius: 1px; 
-                        padding: 10px; 
-                        font-family: 'Poppins', sans-serif; 
-                        font-size: 12px; 
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                        min-width: 160px;">
-                <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">{title}</div>
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #948979; border: 1px solid #ddd;"></div>
-                        <span style="color: #333;">Sangat Rendah</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #ffffe0; border: 1px solid #ddd;"></div>
-                        <span style="color: #333;">Rendah</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #add8e6; border: 1px solid #ddd;"></div>
-                        <span style="color: #333;">Sedang</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background-color: #00008b; border: 1px solid #ddd;"></div>
-                        <span style="color: #333;">Tinggi</span>
-                    </div>
-                </div>
-            </div>
-            """
-            map_obj.get_root().html.add_child(folium.Element(legend_html))
+    #     # Function untuk Menambahkan Legenda Universal
+    #     def add_universal_legend_to_map(map_obj, title):
+    #         legend_html = f"""
+    #         <div style="position: fixed;
+    #                     top: 10px;
+    #                     right: 10px;
+    #                     z-index: 1000;
+    #                     background-color: white;
+    #                     border: 1px solid #ccc;
+    #                     border-radius: 1px;
+    #                     padding: 10px;
+    #                     font-family: 'Poppins', sans-serif;
+    #                     font-size: 12px;
+    #                     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    #                     min-width: 160px;">
+    #             <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">{title}</div>
+    #             <div style="display: flex; flex-direction: column; gap: 4px;">
+    #                 <div style="display: flex; align-items: center; gap: 6px;">
+    #                     <div style="width: 12px; height: 12px; background-color: #948979; border: 1px solid #ddd;"></div>
+    #                     <span style="color: #333;">Sangat Rendah</span>
+    #                 </div>
+    #                 <div style="display: flex; align-items: center; gap: 6px;">
+    #                     <div style="width: 12px; height: 12px; background-color: #ffffe0; border: 1px solid #ddd;"></div>
+    #                     <span style="color: #333;">Rendah</span>
+    #                 </div>
+    #                 <div style="display: flex; align-items: center; gap: 6px;">
+    #                     <div style="width: 12px; height: 12px; background-color: #add8e6; border: 1px solid #ddd;"></div>
+    #                     <span style="color: #333;">Sedang</span>
+    #                 </div>
+    #                 <div style="display: flex; align-items: center; gap: 6px;">
+    #                     <div style="width: 12px; height: 12px; background-color: #00008b; border: 1px solid #ddd;"></div>
+    #                     <span style="color: #333;">Tinggi</span>
+    #                 </div>
+    #             </div>
+    #         </div>
+    #         """
+    #         map_obj.get_root().html.add_child(folium.Element(legend_html))
 
-        add_universal_legend_to_map(dual_map.m1, "Kelas NDMI")
+    #     add_universal_legend_to_map(dual_map.m1, "Kelas NDMI")
 
-        # Tambahkan Layer Control ke Kedua Peta
-        folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m1)
-        folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m2)
+    #     # Tambahkan Layer Control ke Kedua Peta
+    #     folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m1)
+    #     folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m2)
 
-        # CSS untuk Custom Peta dan Title
-        css = """
-        <style>
-        .leaflet-control-layers label {
-            font-size: 11px !important;
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .leaflet-control-layers-list {
-            font-size: 11px !important;
-        }
-        .leaflet-control-layers-expanded {
-            font-size: 11px !important;
-        }
-        .leaflet-control-attribution {
-            font-size: 11px !important;
-            font-family: 'Poppins', sans-serif !important;
-        }
-        
-        /* Title untuk peta kiri (Landsat) */
-        .leaflet-left .leaflet-top::after {
-            content: '📡 Landsat 8 NDMI (2024)';
-            position: absolute;
-            top: 50px;
-            left: 0;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 6px 10px;
-            border: 1px solid #333;
-            border-radius: 3px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 12px;
-            font-weight: 600;
-            color: #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            z-index: 1001;
-        }
-        </style>
-        """
-        dual_map.get_root().html.add_child(folium.Element(css))
+    #     # CSS untuk Custom Peta dan Title
+    #     css = """
+    #     <style>
+    #     .leaflet-control-layers label {
+    #         font-size: 11px !important;
+    #         font-family: 'Poppins', sans-serif !important;
+    #     }
+    #     .leaflet-control-layers-list {
+    #         font-size: 11px !important;
+    #     }
+    #     .leaflet-control-layers-expanded {
+    #         font-size: 11px !important;
+    #     }
+    #     .leaflet-control-attribution {
+    #         font-size: 11px !important;
+    #         font-family: 'Poppins', sans-serif !important;
+    #     }
 
-        # Display DualMap
-        st_folium(dual_map, use_container_width=True, height=500)
+    #     /* Title untuk peta kiri (Landsat) */
+    #     .leaflet-left .leaflet-top::after {
+    #         content: '📡 Landsat 8 NDMI (2024)';
+    #         position: absolute;
+    #         top: 50px;
+    #         left: 0;
+    #         background: rgba(255, 255, 255, 0.95);
+    #         padding: 6px 10px;
+    #         border: 1px solid #333;
+    #         border-radius: 3px;
+    #         font-family: 'Poppins', sans-serif;
+    #         font-size: 12px;
+    #         font-weight: 600;
+    #         color: #333;
+    #         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    #         z-index: 1001;
+    #     }
+    #     </style>
+    #     """
+    #     dual_map.get_root().html.add_child(folium.Element(css))
+
+    #     # Display DualMap
+    #     st_folium(dual_map, use_container_width=True, height=500)
 
     with st.expander("Lihat Referensi"):
         st.markdown(

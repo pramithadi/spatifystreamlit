@@ -664,7 +664,7 @@ with tab1:
         color="primary",
     )
 
-    col1_peta, col2_peta = st.columns([2.6, 1.4])
+    col1_peta, col2_peta = st.columns([2.5, 1.5])
     with col2_peta:
         with st.container(border=True):
             option = st.selectbox(
@@ -766,7 +766,7 @@ with tab1:
         thresholds = threshold_dict[option]
         png_success = add_png_to_map(m, option, thresholds)
         if not png_success:
-            st.info("Menampilkan peta tanpa layer LST.")
+            st.info("Menampilkan peta tanpa layer NDBI.")
 
         add_shp_to_map(m, geojson_data)
 
