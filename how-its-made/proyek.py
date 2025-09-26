@@ -112,105 +112,99 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.header("Project Spatify")
-(tab1, tab2) = st.tabs(
-    [
-        "Google Earth Engine",
-        "Google Colaboratory",
-    ]
+st.header("Proyek Google Earth Engine dan Google Colab")
+st.write(
+    "Pilih salah satu proyek di bawah untuk mengakses *source code* dan melihat proses pemodelan."
 )
+col1, col2, col3 = st.columns(3, gap="small")
+with col1:
+    with st.container(border=False):
+        st.badge("**Suhu Permukaan Lahan**", color="primary")
+        st.image("./assets/GEE LST.png")
+        st.link_button(
+            label="Source Code",
+            url="",
+            icon=":material/code_blocks:",
+        )
 
-with tab1:
-    col1, col2, col3 = st.columns(3, gap="small")
-    with col1:
-        with st.container(border=False):
-            st.write("**Suhu Permukaan Lahan**")
-            st.image("./assets/GEE LST.png")
-            st.link_button(
-                label="Source Code",
-                url="",
-                icon=":material/code_blocks:",
-            )
+with col2:
+    with st.container(border=False):
+        st.badge("**NDBI**", color="primary")
+        st.image("./assets/GEE NDBI.png")
+        st.link_button(
+            label="Source Code",
+            url="",
+            icon=":material/code_blocks:",
+        )
 
-    with col2:
-        with st.container(border=False):
-            st.write("**NDBI**")
-            st.image("./assets/GEE NDBI.png")
-            st.link_button(
-                label="Source Code",
-                url="",
-                icon=":material/code_blocks:",
-            )
+with col3:
+    with st.container(border=False):
+        st.badge("**NDMI**", color="primary")
+        st.image("./assets/GEE NDMI.png")
+        st.link_button(
+            label="Source Code",
+            url="",
+            icon=":material/code_blocks:",
+        )
 
-    with col3:
-        with st.container(border=False):
-            st.write("**NDMI**")
-            st.image("./assets/GEE NDMI.png")
-            st.link_button(
-                label="Source Code",
-                url="",
-                icon=":material/code_blocks:",
-            )
+col4, col5, col6 = st.columns(3, gap="small")
+with col4:
+    with st.container(border=False):
+        st.badge("**NDVI**", color="primary")
+        st.image("./assets/GEE NDVI.png")
+        st.link_button(
+            label="Source Code",
+            url="https://code.earthengine.google.com/d11ea47e61998873658e922ad1c8bdef",
+            icon=":material/code_blocks:",
+        )
 
-    col4, col5, col6 = st.columns(3, gap="small")
-    with col4:
-        with st.container(border=False):
-            st.write("**NDVI**")
-            st.image("./assets/GEE NDVI.png")
-            st.link_button(
-                label="Source Code",
-                url="https://code.earthengine.google.com/d11ea47e61998873658e922ad1c8bdef",
-                icon=":material/code_blocks:",
-            )
+with col5:
+    with st.container(border=False):
+        st.badge("**Penutup Lahan**", color="primary")
+        st.image("./assets/GEE PL.png")
+        st.link_button(
+            label="Source Code",
+            url="",
+            icon=":material/code_blocks:",
+        )
 
-    with col5:
-        with st.container(border=False):
-            st.write("**Penutup Lahan**")
-            st.image("./assets/GEE PL.png")
-            st.link_button(
-                label="Source Code",
-                url="",
-                icon=":material/code_blocks:",
-            )
+with col6:
+    with st.container(border=False):
+        st.badge("**Elevasi dan Slope**", color="primary")
+        st.image("./assets/GEE DEM.png")
+        st.link_button(
+            label="Source Code",
+            url="",
+            icon=":material/code_blocks:",
+        )
 
-    with col6:
-        with st.container(border=False):
-            st.write("**Elevasi dan Slope**")
-            st.image("./assets/GEE DEM.png")
-            st.link_button(
-                label="Source Code",
-                url="",
-                icon=":material/code_blocks:",
-            )
+col7, col8, col9 = st.columns(3, gap="small")
+with col7:
+    with st.container(border=False):
+        st.badge("**Prediksi Penutup Lahan 2029**", color="primary")
+        st.image("./assets/Colab PL.png")
+        st.link_button(
+            label="Source Code",
+            url="https://colab.research.google.com/drive/1GFX2mQewl-dUCsahaXoA-7aaG-y_riOx?usp=sharing",
+            icon=":material/code_blocks:",
+        )
 
-with tab2:
-    col1, col2, col3 = st.columns(3, gap="small")
-    with col1:
-        with st.container(border=False):
-            st.write("**Prediksi Penutup Lahan 2029**")
-            st.image("./assets/Colab PL.png")
-            st.link_button(
-                label="Source Code",
-                url="https://colab.research.google.com/drive/1GFX2mQewl-dUCsahaXoA-7aaG-y_riOx?usp=sharing",
-                icon=":material/code_blocks:",
-            )
+with col8:
+    with st.container(border=False):
+        st.badge("**Proyeksi Indeks 2029**", color="primary")
+        st.image("./assets/Colab Indeks.png")
+        st.link_button(
+            label="Source Code",
+            url="https://colab.research.google.com/drive/1IP7hIpnlmVhDgMvDEYCkR3ZUCdNOljUe?usp=sharing",
+            icon=":material/code_blocks:",
+        )
 
-    with col2:
-        with st.container(border=False):
-            st.write("**Proyeksi Indeks 2029**")
-            st.image("./assets/Colab Indeks.png")
-            st.link_button(
-                label="Source Code",
-                url="https://colab.research.google.com/drive/1IP7hIpnlmVhDgMvDEYCkR3ZUCdNOljUe?usp=sharing",
-                icon=":material/code_blocks:",
-            )
-
-    with col3:
-        with st.container(border=False):
-            st.write("**Prediksi LST 2029**")
-            st.image("./assets/Colab LST.png")
-            st.link_button(
-                label="Source Code",
-                url="https://colab.research.google.com/drive/1_fKYHIcwbjP_5B82vQDixqEjy9cDn-s1?usp=sharing",
-                icon=":material/code_blocks:",
-            )
+with col9:
+    with st.container(border=False):
+        st.badge("**Prediksi Suhu Permukaan Lahan 2029**", color="primary")
+        st.image("./assets/Colab LST.png")
+        st.link_button(
+            label="Source Code",
+            url="https://colab.research.google.com/drive/1_fKYHIcwbjP_5B82vQDixqEjy9cDn-s1?usp=sharing",
+            icon=":material/code_blocks:",
+        )

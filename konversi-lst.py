@@ -15,6 +15,7 @@ threshold_dict = {
     "2019": {"low": 31.923, "medium": 35.739, "high": 39.556},
     "2024": {"low": 33.207, "medium": 37.262, "high": 41.317},
     "2029": {"low": 34.041, "medium": 38.378, "high": 42.714},
+    "2024a": {"low": 33.315, "medium": 37.267, "high": 41.218},
 }
 
 
@@ -76,7 +77,7 @@ def process_cog_to_png(tif_path, thresholds, output_path):
 def convert_all_files():
     os.makedirs("static", exist_ok=True)
 
-    years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029"]
+    years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029", "2024a"]
     bounds_dict = {}
 
     print("Memulai konversi LST COG -> PNG...")
@@ -85,6 +86,8 @@ def convert_all_files():
         # Input
         if year == "2029":
             tif_path = "tif/output_lst2029kpy_COG.tif"
+        elif year == "2024a":
+            tif_path = "tif/output_prediksi_lst2024kpy_COG.tif"
         else:
             tif_path = f"tif/lst{year}kpy_COG.tif"
 

@@ -14,6 +14,11 @@ threshold_dict = {
     "2019": {"low": -0.301, "medium": -0.161, "high": -0.022},
     "2024": {"low": -0.309, "medium": -0.162, "high": -0.015},
     "2029": {"low": -0.300, "medium": -0.156, "high": -0.012},
+    "2024a": {
+        "low": -0.299,
+        "medium": -0.162,
+        "high": -0.025,
+    },
 }
 
 
@@ -75,12 +80,9 @@ def process_ndbi_to_png(tif_path, thresholds, output_path):
 
 
 def preprocess_all_ndbi_files():
-    """
-    Preprocessing semua file NDBI COG.
-    """
     os.makedirs("static", exist_ok=True)
 
-    years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029"]
+    years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029", "2024a"]
 
     bounds_dict = {}
 
@@ -89,6 +91,8 @@ def preprocess_all_ndbi_files():
     for year in years:
         if year == "2029":
             tif_path = "tif/output_ndbi2029kpy_COG.tif"
+        elif year == "2024a":
+            tif_path = "tif/output_proyeksi_ndbi2024kpy_COG.tif"
         else:
             tif_path = f"tif/ndbi{year}kpy_COG.tif"
 

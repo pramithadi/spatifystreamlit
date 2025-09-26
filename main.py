@@ -151,9 +151,9 @@ metodologi = st.Page(
     title="Metodologi",
     icon=":material/flowchart:",
 )
-project = st.Page(
+proyek = st.Page(
     "how-its-made/proyek.py",
-    title="Project",
+    title="Proyek",
     icon=":material/code_blocks:",
 )
 
@@ -174,7 +174,7 @@ pg = st.navigation(
     {
         "": [home],
         "Dasbor Analisis": [lst, ndbi, ndmi, ndvi],
-        "Telisik Proses": [alat, dataset, metodologi],
+        "Telisik Proses": [alat, dataset, metodologi, proyek],
         "Eksplorasi Hasil": [download_peta, gee_apps],
     }
 )

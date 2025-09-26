@@ -14,6 +14,11 @@ threshold_dict = {
     "2019": {"low": 0.022, "medium": 0.161, "high": 0.301},
     "2024": {"low": 0.015, "medium": 0.162, "high": 0.309},
     "2029": {"low": 0.012, "medium": 0.156, "high": 0.300},
+    "2024a": {
+        "low": 0.025,
+        "medium": 0.162,
+        "high": 0.299,
+    },
 }
 
 
@@ -62,7 +67,7 @@ def process_ndmi_to_png(tif_path, thresholds, output_path):
 
             colored_data[~valid_mask] = [0, 0, 0, 0]
 
-            # Convert ke PIL Image dan Save sebagai PNG
+            # Konversi ke PIL Image dan Save sebagai PNG
             img = Image.fromarray(colored_data, "RGBA")
             img.save(output_path, "PNG", optimize=True)
 
@@ -77,7 +82,7 @@ def process_ndmi_to_png(tif_path, thresholds, output_path):
 def preprocess_all_ndmi_files():
     os.makedirs("static", exist_ok=True)
 
-    years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029"]
+    years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029", "2024a"]
 
     bounds_dict = {}
 
@@ -86,6 +91,8 @@ def preprocess_all_ndmi_files():
     for year in years:
         if year == "2029":
             tif_path = "tif/output_ndmi2029kpy_COG.tif"
+        elif year == "2024a":
+            tif_path = "tif/output_proyeksi_ndmi2024kpy_COG.tif"
         else:
             tif_path = f"tif/ndmi{year}kpy_COG.tif"
 

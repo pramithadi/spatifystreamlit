@@ -14,13 +14,16 @@ threshold_dict = {
     "2019": {"low": 0.429, "medium": 0.587, "high": 0.746},
     "2024": {"low": 0.426, "medium": 0.592, "high": 0.758},
     "2029": {"low": 0.421, "medium": 0.585, "high": 0.750},
+    "2024a": {
+        "low": 0.437,
+        "medium": 0.592,
+        "high": 0.748,
+    },
 }
 
 
 def process_ndvi_to_png(tif_path, thresholds, output_path):
-    """ """
     print(f"Konversi: {tif_path}")
-
     try:
         with rasterio.open(tif_path) as src:
             data = src.read(1)
@@ -77,7 +80,7 @@ def process_ndvi_to_png(tif_path, thresholds, output_path):
 def preprocess_all_ndvi_files():
     os.makedirs("static", exist_ok=True)
 
-    years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029"]
+    years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029", "2024a"]
 
     bounds_dict = {}
 
@@ -86,6 +89,8 @@ def preprocess_all_ndvi_files():
     for year in years:
         if year == "2029":
             tif_path = "tif/output_ndvi2029kpy_COG.tif"
+        elif year == "2024a":
+            tif_path = "tif/output_proyeksi_ndvi2024kpy_COG.tif"
         else:
             tif_path = f"tif/ndvi{year}kpy_COG.tif"
 
