@@ -8,8 +8,7 @@ from plotly.subplots import make_subplots
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import folium
-from streamlit_folium import folium_static
-from streamlit_folium import st_folium
+from streamlit.components.v1 import html
 import rasterio
 from rasterio.mask import mask
 from shapely.geometry import mapping
@@ -109,10 +108,316 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+PL_IMAGE_BOUNDS = {
+    "1999": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2004": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2009": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2014": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2019": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2024": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2029": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+}
+
+PNG_URLS = {
+    "1999": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_1999.png",
+    "2004": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2004.png",
+    "2009": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2009.png",
+    "2014": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2014.png",
+    "2019": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2019.png",
+    "2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2024.png",
+    "2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2029.png",
+}
+
+KECAMATAN_BOUNDS = {
+    "Pajangan": {
+        "min_lat": -7.910154,
+        "max_lat": -7.834027,
+        "min_lon": 110.256581,
+        "max_lon": 110.324644,
+        "wadmkk": "Bantul",
+    },
+    "Bantul": {
+        "min_lat": -7.920525,
+        "max_lat": -7.861570,
+        "min_lon": 110.309473,
+        "max_lon": 110.363740,
+        "wadmkk": "Bantul",
+    },
+    "Banguntapan": {
+        "min_lat": -7.863121,
+        "max_lat": -7.783162,
+        "min_lon": 110.375198,
+        "max_lon": 110.430849,
+        "wadmkk": "Bantul",
+    },
+    "Pleret": {
+        "min_lat": -7.900738,
+        "max_lat": -7.854634,
+        "min_lon": 110.375855,
+        "max_lon": 110.454720,
+        "wadmkk": "Bantul",
+    },
+    "Piyungan": {
+        "min_lat": -7.872696,
+        "max_lat": -7.817384,
+        "min_lon": 110.420561,
+        "max_lon": 110.521309,
+        "wadmkk": "Bantul",
+    },
+    "Sewon": {
+        "min_lat": -7.887412,
+        "max_lat": -7.823997,
+        "min_lon": 110.317446,
+        "max_lon": 110.382072,
+        "wadmkk": "Bantul",
+    },
+    "Kasihan": {
+        "min_lat": -7.861318,
+        "max_lat": -7.768220,
+        "min_lon": 110.280408,
+        "max_lon": 110.352569,
+        "wadmkk": "Bantul",
+    },
+    "Sedayu": {
+        "min_lat": -7.865454,
+        "max_lat": -7.784616,
+        "min_lon": 110.221201,
+        "max_lon": 110.290698,
+        "wadmkk": "Bantul",
+    },
+    "Gamping": {
+        "min_lat": -7.835228,
+        "max_lat": -7.735666,
+        "min_lon": 110.280362,
+        "max_lon": 110.355014,
+        "wadmkk": "Sleman",
+    },
+    "Godean": {
+        "min_lat": -7.797698,
+        "max_lat": -7.734785,
+        "min_lon": 110.262531,
+        "max_lon": 110.330165,
+        "wadmkk": "Sleman",
+    },
+    "Moyudan": {
+        "min_lat": -7.815200,
+        "max_lat": -7.739029,
+        "min_lon": 110.218705,
+        "max_lon": 110.287664,
+        "wadmkk": "Sleman",
+    },
+    "Minggir": {
+        "min_lat": -7.759545,
+        "max_lat": -7.705374,
+        "min_lon": 110.215910,
+        "max_lon": 110.281926,
+        "wadmkk": "Sleman",
+    },
+    "Seyegan": {
+        "min_lat": -7.765134,
+        "max_lat": -7.694704,
+        "min_lon": 110.271502,
+        "max_lon": 110.326240,
+        "wadmkk": "Sleman",
+    },
+    "Mlati": {
+        "min_lat": -7.774225,
+        "max_lat": -7.700432,
+        "min_lon": 110.304482,
+        "max_lon": 110.385777,
+        "wadmkk": "Sleman",
+    },
+    "Depok": {
+        "min_lat": -7.801695,
+        "max_lat": -7.731390,
+        "min_lon": 110.369320,
+        "max_lon": 110.447550,
+        "wadmkk": "Sleman",
+    },
+    "Berbah": {
+        "min_lat": -7.836623,
+        "max_lat": -7.777257,
+        "min_lon": 110.421167,
+        "max_lon": 110.487754,
+        "wadmkk": "Sleman",
+    },
+    "Kalasan": {
+        "min_lat": -7.785957,
+        "max_lat": -7.700159,
+        "min_lon": 110.438728,
+        "max_lon": 110.491072,
+        "wadmkk": "Sleman",
+    },
+    "Ngemplak": {
+        "min_lat": -7.755650,
+        "max_lat": -7.667755,
+        "min_lon": 110.408553,
+        "max_lon": 110.482772,
+        "wadmkk": "Sleman",
+    },
+    "Ngaglik": {
+        "min_lat": -7.755560,
+        "max_lat": -7.672081,
+        "min_lon": 110.366557,
+        "max_lon": 110.443259,
+        "wadmkk": "Sleman",
+    },
+    "Tegalrejo": {
+        "min_lat": -7.794187,
+        "max_lat": -7.766468,
+        "min_lon": 110.348662,
+        "max_lon": 110.369357,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Gondokusuman": {
+        "min_lat": -7.798199,
+        "max_lat": -7.774690,
+        "min_lon": 110.368024,
+        "max_lon": 110.396002,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Danurejan": {
+        "min_lat": -7.797274,
+        "max_lat": -7.788140,
+        "min_lon": 110.365368,
+        "max_lon": 110.378419,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Gedongtengen": {
+        "min_lat": -7.796348,
+        "max_lat": -7.787196,
+        "min_lon": 110.355268,
+        "max_lon": 110.366438,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Ngampilan": {
+        "min_lat": -7.808621,
+        "max_lat": -7.795570,
+        "min_lon": 110.353681,
+        "max_lon": 110.362159,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Wirobrajan": {
+        "min_lat": -7.813477,
+        "max_lat": -7.792852,
+        "min_lon": 110.344800,
+        "max_lon": 110.355440,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Mantrijeron": {
+        "min_lat": -7.826771,
+        "max_lat": -7.808277,
+        "min_lon": 110.350798,
+        "max_lon": 110.368479,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Kraton": {
+        "min_lat": -7.814891,
+        "max_lat": -7.802875,
+        "min_lon": 110.355851,
+        "max_lon": 110.369373,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Gondomanan": {
+        "min_lat": -7.808194,
+        "max_lat": -7.796072,
+        "min_lon": 110.360510,
+        "max_lon": 110.374300,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Pakualaman": {
+        "min_lat": -7.804580,
+        "max_lat": -7.796715,
+        "min_lon": 110.369749,
+        "max_lon": 110.380511,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Mergangsan": {
+        "min_lat": -7.826884,
+        "max_lat": -7.801539,
+        "min_lon": 110.367476,
+        "max_lon": 110.381472,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Umbulharjo": {
+        "min_lat": -7.840072,
+        "max_lat": -7.788484,
+        "min_lon": 110.374580,
+        "max_lon": 110.398505,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Kotagede": {
+        "min_lat": -7.833535,
+        "max_lat": -7.802250,
+        "min_lon": 110.390140,
+        "max_lon": 110.404935,
+        "wadmkk": "Kota Yogyakarta",
+    },
+    "Sleman": {
+        "min_lat": -7.728679,
+        "max_lat": -7.662370,
+        "min_lon": 110.306495,
+        "max_lon": 110.381601,
+        "wadmkk": "Sleman",
+    },
+    "Turi": {
+        "min_lat": -7.682863,
+        "max_lat": -7.571829,
+        "min_lon": 110.343410,
+        "max_lon": 110.418494,
+        "wadmkk": "Sleman",
+    },
+    "Pakem": {
+        "min_lat": -7.702673,
+        "max_lat": -7.541162,
+        "min_lon": 110.377110,
+        "max_lon": 110.445520,
+        "wadmkk": "Sleman",
+    },
+    "Cangkringan": {
+        "min_lat": -7.689823,
+        "max_lat": -7.541162,
+        "min_lon": 110.426367,
+        "max_lon": 110.477433,
+        "wadmkk": "Sleman",
+    },
+    "Jetis": {
+        "min_lat": -7.789966,
+        "max_lat": -7.773196,
+        "min_lon": 110.355054,
+        "max_lon": 110.371467,
+        "wadmkk": "Kota Yogyakarta",
+    },
+}
+
 
 # ==============================================================================
 # DEKLARASI FUNGSI
 # ==============================================================================
+@st.cache_data
+def load_and_prep_geojson(geojson_path):
+    try:
+        import json
+
+        with open(geojson_path, "r", encoding="utf-8") as f:
+            geojson_data = json.load(f)
+        for feature in geojson_data["features"]:
+            props = feature.get("properties", {})
+            namobj = props.get("NAMOBJ", "Unknown")
+            wadmkk = props.get("WADMKK", "")
+            if "Sleman" in wadmkk or "Bantul" in wadmkk:
+                tooltip_text = f"Kapanewon {namobj}"
+            elif "Yogyakarta" in wadmkk:
+                tooltip_text = f"Kemantren {namobj}"
+            else:
+                tooltip_text = namobj
+            feature["properties"]["tooltip_text"] = tooltip_text
+        return geojson_data
+    except Exception as e:
+        st.error(f"Error loading GeoJSON: {e}")
+        return None
+
+
 @st.cache_data
 def load_aoi_data():
     """
@@ -235,50 +540,21 @@ def get_kec_list(df):
     return sorted(df["NAMOBJ"].unique().tolist())
 
 
-@st.cache_data
-def get_kecamatan_bounds(namobj):
-    shapefile_path = "shp/aoi_kpy.shp"
+def get_kecamatan_bounds_static(namobj):
+    if namobj in KECAMATAN_BOUNDS:
+        bounds = KECAMATAN_BOUNDS[namobj]
+        return [
+            [bounds["min_lat"], bounds["min_lon"]],
+            [bounds["max_lat"], bounds["max_lon"]],
+        ]
+    return None
+
+
+def add_shp_to_map(map_obj, geojson_data):
     try:
-        gdf = gpd.read_file(shapefile_path)
-
-        if gdf.crs != "EPSG:4326":
-            gdf = gdf.to_crs("EPSG:4326")
-
-        kec_data = gdf[gdf["NAMOBJ"] == namobj]
-
-        if not kec_data.empty:
-            bounds = kec_data.total_bounds
-            return [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
-        else:
-            return None
-    except Exception as e:
-        return None
-
-
-def add_shp_to_map(map_obj, shapefile_path):
-    """
-    Menambahkan SHP Batas Administrasi ke Peta Folium.
-    """
-    try:
-        gdf = gpd.read_file(shapefile_path)
-
-        if gdf.crs != "EPSG:4326":
-            gdf = gdf.to_crs("EPSG:4326")
-
-        def create_tooltip_text(row):
-            namobj = row.get("NAMOBJ", "Unknown")
-            wadmkk = row.get("WADMKK", "")
-
-            if "Sleman" in wadmkk or "Bantul" in wadmkk:
-                return f"Kapanewon {namobj}"
-            elif "Yogyakarta" in wadmkk:
-                return f"Kemantren {namobj}"
-            else:
-                return namobj
-
-        gdf["tooltip_text"] = gdf.apply(create_tooltip_text, axis=1)
-        geojson_data = gdf.to_json()
-
+        if geojson_data is None:
+            st.warning("Batas administrasi tidak dapat dimuat.")
+            return False
         geojson_layer = folium.GeoJson(
             geojson_data,
             style_function=lambda feature: {
@@ -286,7 +562,6 @@ def add_shp_to_map(map_obj, shapefile_path):
                 "color": "black",
                 "weight": 2,
                 "fillOpacity": 0.05,
-                "opacity": 1,
             },
             highlight_function=lambda feature: {
                 "weight": 3,
@@ -301,11 +576,12 @@ def add_shp_to_map(map_obj, shapefile_path):
                 sticky=True,
             ),
             name="Batas Administrasi",
+            show=True,
         )
-
         geojson_layer.add_to(map_obj)
         return True
     except Exception as e:
+        st.error(f"ERROR saat menambahkan GeoJSON: {e}")
         return False
 
 
@@ -351,57 +627,74 @@ def add_legend(map_obj):
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
-def add_tiff_to_map(map_obj, tif_path):
-    """
-    Menambahkan GeoTiff Penutup Lahan ke Peta Folium.
-    """
+def add_png_to_map(map_obj, year):
     try:
-        with rasterio.open(tif_path) as src:
-            data = src.read(1)
-            bounds = src.bounds
+        png_url = PNG_URLS.get(year)
+        if not png_url:
+            st.error(f"File PNG untuk tahun: {year} tidak ditemukan.")
+            return False
 
-            if hasattr(src, "nodata") and src.nodata is not None:
-                data = np.where(data == src.nodata, np.nan, data)
+        if year not in PL_IMAGE_BOUNDS:
+            st.error(f"Bounds untuk tahun {year} tidak ditemukan.")
+            return False
 
-            # Warna Penutup Lahan (RGBA)
-            colors = {
-                0: [41, 75, 41, 255],  # 294b29 - Vegetasi
-                1: [105, 195, 221, 255],  # 69c3dd - Tubuh Air
-                2: [205, 154, 77, 255],  # cd9a4d - Lahan Terbangun
-                3: [250, 245, 217, 255],  # faf5d9 - Lahan Terbuka
-            }
-
-            colored_data = np.zeros((data.shape[0], data.shape[1], 4), dtype=np.uint8)
-            valid_mask = ~np.isnan(data)
-
-            for class_value, color in colors.items():
-                class_mask = valid_mask & (data == class_value)
-                colored_data[class_mask] = color
-
-            colored_data[~valid_mask] = [0, 0, 0, 0]
-
-            img = Image.fromarray(colored_data, "RGBA")
-
-            buffered = BytesIO()
-            img.save(buffered, format="PNG")
-            img_str = base64.b64encode(buffered.getvalue()).decode()
-
-            bounds_folium = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]
-
-            pl_overlay = folium.raster_layers.ImageOverlay(
-                image=f"data:image/png;base64,{img_str}",
-                bounds=bounds_folium,
-                opacity=1.0,
-                interactive=True,
-                cross_origin=False,
-                zindex=1,
-                name="Penutup Lahan",
-            )
-            pl_overlay.add_to(map_obj)
-
+        bounds_folium = PL_IMAGE_BOUNDS[year]
+        pl_overlay = folium.raster_layers.ImageOverlay(
+            image=png_url,
+            bounds=bounds_folium,
+            opacity=1.0,
+            interactive=True,
+            cross_origin=False,
+            zindex=1,
+            name=f"Penutup Lahan {year}",
+            show=True,
+        )
+        pl_overlay.add_to(map_obj)
         return True
     except Exception as e:
+        st.error(f"Error menambahkan PNG ke peta: {e}")
         return False
+
+
+@st.cache_data
+def load_all_map_data():
+    """Load semua data yang dibutuhkan untuk peta sekali saja"""
+    # 1. Load Data AOI
+    df_aoi = load_aoi_data()
+
+    # 2. Load Data Kecamatan
+    df_kec = load_kec_data()
+
+    # 3. Load GeoJSON
+    shapefile_path = "shp/aoi_kpy.json"
+    geojson_data = None
+    if os.path.exists(shapefile_path):
+        geojson_data = load_and_prep_geojson(shapefile_path)
+    else:
+        st.warning(f"File SHP tidak ditemukan: {shapefile_path}")
+
+    return {
+        "df_aoi": df_aoi,
+        "df_kec": df_kec,
+        "geojson_data": geojson_data,
+    }
+
+
+@st.cache_resource
+def create_base_map():
+    m = folium.Map(
+        location=[-7.764326411862208, 110.3721676814108],
+        zoom_start=10.5,
+        tiles="OpenStreetMap",
+    )
+
+    folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
+    folium.TileLayer(
+        tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+        attr="Google Satellite",
+        name="Google Satellite",
+    ).add_to(m)
+    return m
 
 
 @st.cache_data
@@ -470,9 +763,6 @@ def generate_quick_insight(penutup_lahan_df):
 # MAIN EXECUTION
 # ==============================================================================
 
-penutup_lahan_df = load_aoi_data()
-penutup_lahan_kec_df = load_kec_data()
-
 st.header("Penutup Lahan")
 (
     tab1,
@@ -492,13 +782,24 @@ st.header("Penutup Lahan")
 # SECTION 1: PETA
 # ==============================================================================
 with tab1:
+    if "map_data_loaded" not in st.session_state:
+        with st.spinner("Mempersiapkan data peta..."):
+            map_data = load_all_map_data()
+            st.session_state.map_data = map_data
+            st.session_state.map_data_loaded = True
+
+    map_data = st.session_state.map_data
+    df_aoi = map_data["df_aoi"]
+    df_kec = map_data["df_kec"]
+    geojson_data = map_data["geojson_data"]
+
     st.badge(
         "**Peta Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
         color="primary",
     )
 
-    col1_peta, col2_peta_query = st.columns([3, 1])
-    with col2_peta_query:
+    col1_peta, col2_peta = st.columns([2.6, 1.4])
+    with col2_peta:
         with st.container(border=True):
             option = st.selectbox(
                 "**Pilih Tahun**",
@@ -507,10 +808,10 @@ with tab1:
                 placeholder="Tahun",
             )
 
-            selected_data = get_aoi_by_year(penutup_lahan_df, option)
+            selected_data = get_aoi_by_year(df_aoi, option)
 
         with st.container(border=True):
-            list_kec = get_kec_list(penutup_lahan_kec_df)
+            list_kec = get_kec_list(df_kec)
 
             selected_kecamatan = st.selectbox(
                 "**Cari Kecamatan**",
@@ -524,9 +825,7 @@ with tab1:
             with st.container(border=True):
                 st.write("💡 **Quick Insight**")
 
-                kec_data = get_kec_by_year_name(
-                    penutup_lahan_kec_df, option, selected_kecamatan
-                )
+                kec_data = get_kec_by_year_name(df_kec, option, selected_kecamatan)
 
                 if kec_data:
                     jenis_kec = get_region_type(kec_data["wadmkk"])
@@ -552,7 +851,7 @@ with tab1:
                     }
                     dominan_kec = max(classes_kec, key=classes_kec.get)
 
-                    # Pengkondisian untuk tahun 2029
+                    # Pengkondisian untuk Tahun 2029
                     if str(option) == "2029":
                         st.write(
                             f"**Kesimpulan**: {jenis_kec} {selected_kecamatan} **diprediksi** akan **didominasi** oleh :green-background[**{dominan_kec}**]."
@@ -567,101 +866,54 @@ with tab1:
                     )
 
     with col1_peta:
+        map_center = [-7.764326411862208, 110.3721676814108]
+        zoom_level = 10.5
+
         if selected_kecamatan:
-            kec_bounds = get_kecamatan_bounds(selected_kecamatan)
+            kec_bounds = get_kecamatan_bounds_static(selected_kecamatan)
             if kec_bounds:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 14
-            else:
-                map_center = [-7.764326411862208, 110.3721676814108]
-                zoom_level = 13
-        else:
-            map_center = [-7.764326411862208, 110.3721676814108]
-            zoom_level = 10.5
+                zoom_level = 12.4
 
-        # Buat Peta Folium
         m = folium.Map(
-            location=map_center,
-            zoom_start=zoom_level,
-            tiles=None,
+            location=map_center, zoom_start=zoom_level, tiles="OpenStreetMap"
         )
 
-        folium.TileLayer(
-            tiles="CartoDB positron",
-            name="CartoDB Positron",
-            overlay=False,
-            control=True,
-        ).add_to(m)
-
-        folium.TileLayer(
-            tiles="CartoDB dark_matter",
-            name="CartoDB Dark Matter",
-            overlay=False,
-            control=True,
-        ).add_to(m)
-
+        folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
         folium.TileLayer(
             tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
             attr="Google Satellite",
             name="Google Satellite",
-            overlay=False,
-            control=True,
         ).add_to(m)
+        folium.TileLayer(tiles="OpenStreetMap", name="OpenStreetMap").add_to(m)
 
-        folium.TileLayer(
-            tiles="OpenStreetMap",
-            name="OpenStreetMap",
-            overlay=False,
-            control=True,
-        ).add_to(m)
+        png_success = add_png_to_map(m, option)
+        if not png_success:
+            st.info("Menampilkan peta tanpa layer Penutup Lahan.")
 
-        # Panggil GeoTiff Penutup Lahan
-        if option == "2029":
-            tif_path = "tif/output_pl2029kpy_COG.tif"
-        else:
-            tif_path = f"tif/pl{option}kpy_COG.tif"
+        add_shp_to_map(m, geojson_data)
 
-        # Cek Ketersediaan Data kemudian Tampilkan ke Peta
-        if os.path.exists(tif_path):
-            add_tiff_to_map(m, tif_path)
-        else:
-            st.warning(f"File GeoTIFF tidak ditemukan: {tif_path}")
-
-        # Cek Ketersediaan Shapefile Batas AOI
-        shapefile_path = "shp/aoi_kpy.shp"
-        if os.path.exists(shapefile_path):
-            add_shp_to_map(m, shapefile_path)
-        else:
-            st.warning(f"File Shapefile tidak ditemukan: {shapefile_path}")
-
-        # Tambahkan Legenda ke Peta
-        add_legend(m)
+        try:
+            add_legend(m)
+        except Exception as e:
+            st.warning("Legenda tidak dapat ditampilkan.")
 
         folium.LayerControl(position="topleft", collapsed=True).add_to(m)
 
-        # Custom CSS Peta Folium
         css = """
         <style>
-        .leaflet-control-layers label {
-            font-size: 11px !important;
-            font-family: 'Poppins', sans-serif !important;
-        }
-        .leaflet-control-layers-list {
-            font-size: 11px !important;
-        }
-        .leaflet-control-layers-expanded {
-            font-size: 11px !important;
-        }
-        .leaflet-control-attribution {
+        .folium-map { height: 100% !important; }
+        .leaflet-control-layers label, .leaflet-control-layers-list,
+        .leaflet-control-layers-expanded, .leaflet-control-attribution {
             font-size: 11px !important;
             font-family: 'Poppins', sans-serif !important;
         }
         </style>
         """
-        m.get_root().html.add_child(folium.Element(css))
-        st_data = st_folium(m, use_container_width=True, height=800)
+        m.get_root().header.add_child(folium.Element(css))
+        html(m.get_root().render(), height=600, scrolling=False)
 
 # ==============================================================================
 # SECTION 2: TREN
@@ -671,7 +923,7 @@ with tab2:
     tren_data = []
 
     for year in years:
-        year_data = get_aoi_by_year(penutup_lahan_df, str(year))
+        year_data = get_aoi_by_year(df_aoi, str(year))
         if year_data:
             tren_data.append(
                 {
@@ -773,7 +1025,7 @@ with tab2:
     with col2_tren_main:
         # Container Analisis Tren
         with st.container(border=True):
-            st.markdown(generate_quick_insight(penutup_lahan_df))
+            st.markdown(generate_quick_insight(df_aoi))
 
 # ==============================================================================
 # SECTION 3: VALIDASI
