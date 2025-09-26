@@ -107,6 +107,7 @@ def column_download_section(title):
     st.badge(f"**{title}**", color="primary")
 
 
+@st.cache_data
 def create_download_section(title, image_path, file_path, file_name, key_suffix):
     st.image(image_path)
 

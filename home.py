@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Selamat Datang di Spatify",
-    layout="wide",  # centered # wide
+    layout="centered",  # centered # wide
     initial_sidebar_state="expanded",  # collapsed
 )
 
@@ -132,12 +132,14 @@ with st.expander("Tentang Aplikasi"):
     )
 
 with st.expander("Tentang Pengembang"):
-    col1, col2 = st.columns([0.9, 3.1])
+    col1, col2 = st.columns([0.6, 3.4])
 
     with col1:
         # st.image("./assets/foto_profil_1.svg", width=142)
-        st.image("./assets/foto_profil_1.svg", width=164)
+        # st.image("./assets/foto_profil_1.svg", width=164)
         # st.image("./assets/foto_profil_9.svg", width=164)
+        # st.image("./assets/foto_profil_1.svg", width=90)
+        st.image("./assets/foto_profil_2.svg", width=90)
 
     with col2:
         st.markdown(
@@ -145,11 +147,7 @@ with st.expander("Tentang Pengembang"):
             ##### Halo! Saya Pramitha 👋
 
             Terima kasih telah menggunakan **Spatify**! Setiap saran untuk pengembangan aplikasi sangat berarti. **Mari terhubung melalui**:
-
-            - **Email**: [pramitha.dewi@mail.ugm.ac.id](mailto:pramitha.dewi@mail.ugm.ac.id)  
-            - **LinkedIn**: [linkedin.com/in/pramithadi](https://linkedin.com/in/pramithadi)  
-            - **GitHub**: [github.com/pramithadi](https://github.com/pramithadi) 
-            - **Instagram**: [instagram.com/pramithadi](https://instagram.com/pramithadi)
+            [Email](mailto:pramitha.dewi@mail.ugm.ac.id) | [LinkedIn](https://linkedin.com/in/pramithadi) | [GitHub](https://github.com/pramithadi) | [Instagram](https://instagram.com/pramithadi)
 
             """,
             unsafe_allow_html=True,

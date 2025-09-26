@@ -4,7 +4,6 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-import pickle
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -504,7 +503,7 @@ def get_kecamatan_bounds_static(namobj):
 def add_shp_to_map(map_obj, geojson_data):
     try:
         if geojson_data is None:
-            st.warning("Batas administrasi tidak dapat dimuat")
+            st.warning("Batas administrasi tidak dapat dimuat.")
             return False
         geojson_layer = folium.GeoJson(
             geojson_data,
@@ -727,7 +726,7 @@ def interpret_regression(r2, p_value, slope, x_var):
 @st.cache_data
 def load_all_map_data():
     """Load semua data yang dibutuhkan untuk peta sekali saja"""
-    # 1. Load statistik kecamatan
+    # 1. Load Statistik Kecamatan
     df_kec_stats = load_stats_kec()
     if df_kec_stats is None:
         st.error(
@@ -740,7 +739,7 @@ def load_all_map_data():
     if os.path.exists(shapefile_path):
         geojson_data = load_and_prep_geojson(shapefile_path)
     else:
-        st.warning(f"File Shapefile tidak ditemukan: {shapefile_path}")
+        st.warning(f"File SHP tidak ditemukan: {shapefile_path}")
 
     return {
         "df_kec_stats": df_kec_stats,
@@ -748,16 +747,14 @@ def load_all_map_data():
     }
 
 
-# OPTIMISASI 4: Simplified map creation
 @st.cache_resource
 def create_base_map():
-    """Create base map dengan minimal tiles untuk mengurangi beban"""
     m = folium.Map(
         location=[-7.764326411862208, 110.3721676814108],
         zoom_start=10.5,
         tiles="OpenStreetMap",
     )
-    # Hanya tambahkan tile layers yang penting
+
     folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
     folium.TileLayer(
         tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
@@ -771,7 +768,6 @@ def create_base_map():
 # MAIN EXECUTION
 # ==============================================================================
 
-# Judul Halaman
 st.header("Suhu Permukaan Lahan")
 
 (
@@ -809,7 +805,7 @@ with tab1:
         color="primary",
     )
 
-    col1_peta, col2_peta = st.columns([2.7, 1.3])
+    col1_peta, col2_peta = st.columns([2.6, 1.4])
     with col2_peta:
         with st.container(border=True):
             option = st.selectbox(
@@ -839,7 +835,7 @@ with tab1:
                     placeholder="Ketik atau pilih kecamatan",
                 )
             else:
-                st.warning(f"Data kecamatan untuk tahun {option} tidak tersedia")
+                st.warning(f"Data kecamatan untuk tahun {option} tidak tersedia.")
                 selected_kecamatan = ""
 
         if selected_kecamatan and selected_kecamatan != "" and kec_year:
@@ -881,15 +877,14 @@ with tab1:
         thresholds = threshold_dict[option]
         png_success = add_png_to_map(m, option, thresholds)
         if not png_success:
-            st.info("Menampilkan peta tanpa layer LST")
+            st.info("Menampilkan peta tanpa layer LST.")
 
-        # Gunakan geojson_data yang sudah dimuat sebelumnya
         add_shp_to_map(m, geojson_data)
 
         try:
             add_legend_to_map(m, thresholds)
         except Exception as e:
-            st.warning("Legenda tidak dapat ditampilkan")
+            st.warning("Legenda tidak dapat ditampilkan.")
 
         folium.LayerControl(position="topleft", collapsed=True).add_to(m)
 
@@ -1663,8 +1658,6 @@ with tab4:
                 img_2024_actual = Image.open("static/lst_2024.png")
                 data_2024_actual = np.array(img_2024_actual)
 
-                # Convert RGBA ke single channel berdasarkan warna
-                # Ekstrak klasifikasi dari warna RGB
                 def rgba_to_classification(rgba_array):
                     height, width, _ = rgba_array.shape
                     classified = np.full((height, width), np.nan, dtype=np.float32)
