@@ -563,14 +563,17 @@ def add_png_to_map(map_obj, year, thresholds):
             st.error(f"Bounds untuk tahun {year} tidak ditemukan.")
             return False
         bounds_folium = LST_IMAGE_BOUNDS[year]
+
+        url = f"https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_{year}.png"
+
         lst_overlay = folium.raster_layers.ImageOverlay(
-            image=png_path,
+            image=url,
             bounds=bounds_folium,
             opacity=1.0,
             interactive=True,
             cross_origin=False,
             zindex=1,
-            name="Suhu Permukaan Lahan",
+            name=f"Suhu Permukaan Lahan {year}",
             show=True,
         )
         lst_overlay.add_to(map_obj)
