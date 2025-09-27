@@ -32,14 +32,14 @@ st.set_page_config(
 st.markdown(
     """
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
     .main {
         padding-top: 0rem !important;
     }
-    .block-container {
-        padding-top: 0.5rem !important;
-    }
+    # .block-container {
+    #     padding-top: 0.5rem !important;
+    # }
     .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
         font-family: 'Poppins', sans-serif !important;
     }
@@ -67,23 +67,23 @@ st.markdown(
     .stMarkdown {
         color: #000000 !important;
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 12px !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1)
-        !important;
-        border-radius: 1px !important;
-        padding: 12px !important;
-        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-        transition: all 0.3s ease !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-        transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
-        border-color: #fdfaf6 !important;
-    }           
+    # div[data-testid="stVerticalBlockBorderWrapper"] {
+    #     padding: 12px !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+    #     border: 0.5px solid rgba(0, 0, 0, 0.1)
+    #     !important;
+    #     border-radius: 1px !important;
+    #     padding: 12px !important;
+    #     # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+    #     # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+    #     transition: all 0.3s ease !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+    #     transform: translateY(-4px) !important;
+    #     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+    #     border-color: #fdfaf6 !important;
+    # }
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -707,9 +707,12 @@ with tab1:
             st.session_state.map_data = map_data
             st.session_state.map_data_loaded = True
 
-    map_data = st.session_state.map_data
-    df_kec_stats = map_data["df_kec_stats"]
-    geojson_data = map_data["geojson_data"]
+    map_data = st.session_state.get("map_data", {})
+
+    df_aoi = map_data.get("df_aoi")
+    df_kec = map_data.get("df_kec")
+    df_kec_stats = map_data.get("df_kec_stats")
+    geojson_data = map_data.get("geojson_data")
 
     st.badge(
         "**Peta NDBI di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",

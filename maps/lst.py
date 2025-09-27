@@ -847,9 +847,12 @@ with tab1:
             st.session_state.map_data = map_data
             st.session_state.map_data_loaded = True
 
-    map_data = st.session_state.map_data
-    df_kec_stats = map_data["df_kec_stats"]
-    geojson_data = map_data["geojson_data"]
+    map_data = st.session_state.get("map_data", {})
+
+    df_aoi = map_data.get("df_aoi")
+    df_kec = map_data.get("df_kec")
+    df_kec_stats = map_data.get("df_kec_stats")
+    geojson_data = map_data.get("geojson_data")
 
     st.badge(
         "**Peta LST di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
