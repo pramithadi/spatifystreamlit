@@ -78,22 +78,22 @@ st.markdown(
     .stMarkdown {
         color: #000000 !important;
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 12px !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-        border-radius: 1px !important;
-        padding: 12px !important;
-        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-        transition: all 0.3s ease !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-        transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
-        border-color: #fdfaf6 !important;
-    }     
+    # div[data-testid="stVerticalBlockBorderWrapper"] {
+    #     padding: 12px !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+    #     border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+    #     border-radius: 1px !important;
+    #     padding: 12px !important;
+    #     # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+    #     # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+    #     transition: all 0.3s ease !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+    #     transform: translateY(-4px) !important;
+    #     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+    #     border-color: #fdfaf6 !important;
+    # }     
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -859,7 +859,7 @@ with tab1:
         color="primary",
     )
 
-    col1_peta, col2_peta = st.columns([2.6, 1.4])
+    col1_peta, col2_peta = st.columns([2.45, 1.55])
     with col2_peta:
         with st.container(border=True):
             option = st.selectbox(
@@ -872,11 +872,14 @@ with tab1:
 
         col1_peta_metric, col2_peta_metric, col3_peta_metric = st.columns([1, 1, 1])
         with col1_peta_metric:
-            st.metric("LST Min", f"{selected_data['min']:.1f}°C")
+            with st.container(border=True):
+                st.metric("LST Min", f"{selected_data['min']:.1f}°C")
         with col2_peta_metric:
-            st.metric("LST Max", f"{selected_data['max']:.1f}°C")
+            with st.container(border=True):
+                st.metric("LST Max", f"{selected_data['max']:.1f}°C")
         with col3_peta_metric:
-            st.metric("LST Mean", f"{selected_data['mean']:.1f}°C")
+            with st.container(border=True):
+                st.metric("LST Mean", f"{selected_data['mean']:.1f}°C")
 
         with st.container(border=True):
             kec_year = get_kec_by_year(df_kec_stats, option)
@@ -1074,7 +1077,7 @@ with tab2:
                 """
                 💡 **Quick Insight**
                 - :green-background[**Kawasan perkotaan**] Yogyakarta secara konsisten menunjukkan suhu permukaan yang **jauh lebih tinggi** dibandingkan :green-background[**kawasan non-perkotaan**] yang menjadi sebuah indikasi dari fenomena *urban heat island*.
-                - **Suhu di kawasan perkotaan** menunjukkan **tren pemanasan** dalam jangka panjang yang diprediksi akan mencapai puncaknya pada tahun 2029 dengan rata-rata LST sebesar :green-background[**43.56°C**].
+                - **Suhu** di kawasan **perkotaan** menunjukkan **tren pemanasan** dalam jangka panjang yang diprediksi akan mencapai puncaknya pada tahun 2029 dengan rata-rata LST sebesar :green-background[**43.56°C**].
                 - Meskipun lebih sejuk, kawasan **non-perkotaan** juga tidak luput dari **tren pemanasan** serupa dan diprediksi akan terus meningkat dengan rata-rata LST sebesar :green-background[**37.40°C**] pada tahun 2029.
                 """
             )
@@ -1116,71 +1119,72 @@ with tab2:
             {"Urban": "Perkotaan", "Rural": "Non-Perkotaan"}
         )
 
-        # Buat Bar
-        fig = px.bar(
-            df_ranking,
-            x="Mean_LST",
-            y="Y_Label",
-            color="Zona",
-            color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
-            orientation="h",
-            labels={
-                "Mean_LST": "LST Mean (°C)",
-                "Y_Label": "",
-                "Zona": "Kawasan",
-            },
-            # Isi Hover
-            hover_data={"Mean_LST": ":.2f", "Zona": False, "Y_Label": False},
-            custom_data=["Zona_Label", "Mean_LST"],
-        )
+        with st.container(border=True):
+            # Buat Bar
+            fig = px.bar(
+                df_ranking,
+                x="Mean_LST",
+                y="Y_Label",
+                color="Zona",
+                color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
+                orientation="h",
+                labels={
+                    "Mean_LST": "LST Mean (°C)",
+                    "Y_Label": "",
+                    "Zona": "Kawasan",
+                },
+                # Isi Hover
+                hover_data={"Mean_LST": ":.2f", "Zona": False, "Y_Label": False},
+                custom_data=["Zona_Label", "Mean_LST"],
+            )
 
-        # Update Hover Template
-        fig.update_traces(
-            hovertemplate="<b>%{y}</b><br>"
-            + "Kawasan: %{customdata[0]}<br>"
-            + "LST Mean: %{customdata[1]:.2f}°C<extra></extra>",
-            texttemplate="%{x:.2f}°C",
-            textposition="outside",
-            textfont_size=14,
-            textfont_color="black",
-        )
+            # Update Hover Template
+            fig.update_traces(
+                hovertemplate="<b>%{y}</b><br>"
+                + "Kawasan: %{customdata[0]}<br>"
+                + "LST Mean: %{customdata[1]:.2f}°C<extra></extra>",
+                texttemplate="%{x:.2f}°C",
+                textposition="outside",
+                textfont_size=14,
+                textfont_color="black",
+            )
 
-        # Update dan Styling Bar Plot
-        fig.update_layout(
-            height=800,
-            font=dict(family="Poppins", size=12),
-            title_font_size=12,
-            xaxis_title_font_size=12,
-            yaxis_title_font_size=12,
-            showlegend=True,
-            legend=dict(
-                orientation="v",
-                yanchor="bottom",
-                y=0.02,
-                xanchor="right",
-                x=0.98,
-                font=dict(family="Poppins"),
-            ),
-            yaxis=dict(
-                categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
-            ),
-            title="",
-            margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
-        )
+            # Update dan Styling Bar Plot
+            fig.update_layout(
+                height=800,
+                font=dict(family="Poppins", size=12),
+                title_font_size=12,
+                xaxis_title_font_size=12,
+                yaxis_title_font_size=12,
+                showlegend=True,
+                legend=dict(
+                    orientation="v",
+                    yanchor="bottom",
+                    y=0.02,
+                    xanchor="right",
+                    x=0.98,
+                    font=dict(family="Poppins"),
+                ),
+                yaxis=dict(
+                    categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
+                ),
+                title="",
+                margin=dict(t=10, b=20),  # Mengurangi Margin Top Supaya Tidak Ada Gap
+            )
 
-        # Sumbu Warna Hitam
-        fig.update_xaxes(title_font_color="black", tickfont_color="black")
-        fig.update_yaxes(title_font_color="black", tickfont_color="black")
+            # Sumbu Warna Hitam
+            fig.update_xaxes(title_font_color="black", tickfont_color="black")
+            fig.update_yaxes(title_font_color="black", tickfont_color="black")
 
-        # Update Legenda
-        for trace in fig.data:
-            if trace.name == "Urban":
-                trace.name = "Perkotaan"
-            elif trace.name == "Rural":
-                trace.name = "Non-Perkotaan"
+            # Update Legenda
+            for trace in fig.data:
+                if trace.name == "Urban":
+                    trace.name = "Perkotaan"
+                elif trace.name == "Rural":
+                    trace.name = "Non-Perkotaan"
 
-        # Display Bar Plot
-        st.plotly_chart(fig, use_container_width=True)
+            # Display Bar Plot
+            st.plotly_chart(fig, use_container_width=True)
 
 # ==============================================================================
 # SECTION 3: VALIDASI
@@ -1223,7 +1227,7 @@ with tab3:
             color="primary",
         )
 
-        col1_validate, col2_validate = st.columns([2.2, 1.8])
+        col1_validate, col2_validate = st.columns([2.3, 1.7])
         with col1_validate:
             with st.container(border=True):
                 # Buat Scatterplot (X = Satelit, Y = Lapangan)
@@ -1253,7 +1257,7 @@ with tab3:
 
                 # Update Layout
                 fig.update_layout(
-                    height=412,
+                    height=419,
                     showlegend=True,
                     template="plotly_white",
                     font=dict(
@@ -1261,7 +1265,7 @@ with tab3:
                         size=12,
                         color="black",
                     ),
-                    margin=dict(t=30, b=30, l=20, r=20),
+                    margin=dict(t=30, b=20, l=20, r=20),
                     xaxis=dict(
                         title=dict(
                             text="LST Landsat 8 (°C)",
@@ -1279,7 +1283,7 @@ with tab3:
                     legend={
                         "orientation": "h",
                         "yanchor": "top",
-                        "y": -0.25,
+                        "y": -0.17,
                         "xanchor": "center",
                         "x": 0.5,
                         "font": {"family": "Poppins", "size": 14, "color": "black"},
@@ -1322,7 +1326,7 @@ with tab3:
                     st.metric(
                         label="RMSE",
                         value=f"{rmse:.2f}",
-                        help="Root Mean Square Error",
+                        help="*Root Mean Square Error*",
                     )
 
             with col3_metric:
@@ -1330,7 +1334,7 @@ with tab3:
                     st.metric(
                         label="MAE",
                         value=f"{mae:.2f}",
-                        help="Mean Absolute Error",
+                        help="*Mean Absolute Error*",
                     )
 
             # Container Analisis Validasi
@@ -1345,7 +1349,7 @@ with tab3:
                 )
 
                 # Status Validasi
-                st.success("✅ VALID! Data LST layak digunakan!")
+                st.success("✅ VALID! Data LST layak digunakan.")
 
     except FileNotFoundError:
         st.error("❌ File 'csv/lstSampelValidasi.csv' tidak ditemukan!")
@@ -1534,6 +1538,9 @@ with tab4:
             )
             st.success("✅ Model **LAYAK** untuk memprediksi LST 2029!")
 
+    # Baris Kosong
+    st.write("")
+
     # Plot SHAP
     st.badge(
         "**Analisis SHAP: Kontribusi Fitur pada Prediksi LST 2024**",
@@ -1614,6 +1621,9 @@ with tab4:
                 unsafe_allow_html=True,
             )
 
+    # Baris Kosong
+    st.write("")
+
     st.badge(
         "**Analisis SHAP: Kontribusi Fitur pada Prediksi LST 2029**",
         color="primary",
@@ -1692,6 +1702,9 @@ with tab4:
                 """,
                 unsafe_allow_html=True,
             )
+
+    # Baris Kosong
+    st.write("")
 
     # Peta Perbandingan
     st.badge(
@@ -1825,16 +1838,16 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=512.5,
+                    height=487,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",
                     paper_bgcolor="#fdfaf6",
-                    margin=dict(l=50, r=50, t=50, b=100),
+                    margin=dict(l=50, r=50, t=50, b=70),
                     legend=dict(
                         orientation="h",
                         yanchor="top",
-                        y=-0.2,
+                        y=-0.05,
                         xanchor="center",
                         x=0.5,
                         bgcolor="rgba(0,0,0,0)",
@@ -1875,6 +1888,9 @@ with tab4:
                 import traceback
 
                 st.error(f"Traceback: {traceback.format_exc()}")
+
+    # Baris Kosong
+    st.write("")
 
     st.badge(
         "**Tabel Perbandingan Sampel Nilai LST Aktual dan Prediksi**",
@@ -1955,6 +1971,9 @@ with tab4:
             st.error(f"File '{csv_path}' tidak ditemukan!")
         except Exception as e:
             st.error(f"Error dalam menampilkan tabel sampel LST: {str(e)}")
+
+    # Baris Kosong
+    st.write("")
 
     with st.expander("Lihat Referensi"):
         st.markdown(
