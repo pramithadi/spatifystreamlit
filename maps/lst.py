@@ -1082,6 +1082,9 @@ with tab2:
                 """
             )
 
+    # Baris Kosong
+    st.write("")
+
     # Row Diagram Garis & Ranking LST
     st.badge(
         "**Peringkat Kecamatan Berdasarkan Rata-rata LST (1999-2024)**",
@@ -1363,6 +1366,9 @@ with tab3:
             "Periksa format file CSV dan nama kolom ('LST Aktual' dan 'LST Referensi')"
         )
 
+    # Baris Kosong
+    st.write("")
+
     st.badge(
         "**Tabel Perbandingan Nilai LST Landsat 8 dan LST Aktual**",
         color="primary",
@@ -1441,6 +1447,9 @@ with tab3:
             st.error(f"File '{csv_path}' tidak ditemukan!")
         except Exception as e:
             st.error(f"Error dalam menampilkan tabel sampel LST: {str(e)}")
+
+    # Baris Kosong
+    st.write("")
 
     with st.expander("Lihat Referensi"):
         st.markdown(
@@ -2033,6 +2042,9 @@ with tab5:
                     else:
                         st.warning("❌ NDBI tidak berpengaruh terhadap LST!")
 
+        # Baris Kosong
+        st.write("")
+
         # Row Diagram Garis & Ranking LST
         st.badge(
             "**Scatter Plot Regresi Linier LST dan NDMI**",
@@ -2070,6 +2082,9 @@ with tab5:
                         st.success("✅ NDMI berpengaruh  signifikan terhadap LST!")
                     else:
                         st.warning("❌ NDMI tidak berpengaruh terhadap LST!")
+
+        # Baris Kosong
+        st.write("")
 
         # Row Diagram Garis & Ranking LST
         st.badge(
@@ -2115,6 +2130,9 @@ with tab5:
         )
     except Exception as e:
         st.error(f"Terjadi kesalahan: {str(e)}")
+
+    # Baris Kosong
+    st.write("")
 
     with st.expander("Lihat Referensi"):
         st.markdown(

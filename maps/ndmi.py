@@ -970,6 +970,9 @@ with tab2:
                 """
             )
 
+    # Baris Kosong
+    st.write("")
+
     # Row Diagram Garis & Ranking NDMI
     st.badge(
         "**Peringkat Kecamatan Berdasarkan Rata-rata NDMI (1999-2024)**",
@@ -1262,6 +1265,9 @@ with tab3:
             "Periksa format file CSV dan nama kolom ('ndmiLandsat' dan 'ndmiSentinel')"
         )
 
+    # Baris Kosong
+    st.write("")
+
     with st.expander("Lihat Referensi"):
         st.markdown(
             """
@@ -1362,6 +1368,9 @@ with tab4:
             st.success(
                 "✅ Data proyeksi NDMI 2029 **VALID** untuk memprediksi LST 2029!"
             )
+
+    # Baris Kosong
+    st.write("")
 
     st.badge(
         "**Perbandingan Visual Peta NDMI Aktual dan Proyeksi**",
@@ -1549,6 +1558,9 @@ with tab4:
 
                 st.error(f"Traceback: {traceback.format_exc()}")
 
+    # Baris Kosong
+    st.write("")
+
     st.badge(
         "**Tabel Perbandingan Sampel Nilai NDMI Aktual dan Proyeksi**",
         color="primary",
@@ -1628,6 +1640,9 @@ with tab4:
             st.error(f"File '{csv_path}' tidak ditemukan!")
         except Exception as e:
             st.error(f"Error dalam menampilkan tabel sampel NDMI: {str(e)}")
+
+    # Baris Kosong
+    st.write("")
 
     with st.expander("Lihat Referensi"):
         st.markdown(

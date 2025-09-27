@@ -1245,6 +1245,9 @@ def display_validation_content(year):
         except Exception as e:
             st.error(f"Error dalam membuat matriks konfusi: {str(e)}")
 
+    # Baris Kosong
+    st.write("")
+
     # Expander Tabel
     with st.expander(f"**📍 Tabel Sampel Penutup Lahan {year}**"):
         try:
@@ -1400,6 +1403,9 @@ with tab4:
             )
             st.success("✅ Model **LAYAK** untuk memprediksi penutup lahan tahun 2029.")
 
+    # Baris Kosong
+    st.write("")
+
     st.badge(
         "**Classification Report**",
         color="primary",
@@ -1515,6 +1521,9 @@ with tab4:
                 """,
                 unsafe_allow_html=True,
             )
+
+    # Baris Kosong
+    st.write("")
 
     st.badge(
         "**Perbandingan Visual Peta Penutup Lahan Aktual dan Prediksi**",
@@ -1684,6 +1693,9 @@ with tab4:
                 import traceback
 
                 st.error(f"Traceback: {traceback.format_exc()}")
+
+    # Baris Kosong
+    st.write("")
 
     with st.expander("Lihat Referensi"):
         st.markdown(
