@@ -892,7 +892,9 @@ with tab1:
                     placeholder="Ketik atau pilih kecamatan",
                 )
             else:
-                st.warning(f"Data kecamatan untuk tahun {option} tidak tersedia.")
+                st.info(
+                    f"Menghubungkan dengan data kecamatan untuk tahun {option}. Silakan *refresh* halaman."
+                )
                 selected_kecamatan = ""
 
         if selected_kecamatan and selected_kecamatan != "" and kec_year:

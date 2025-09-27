@@ -100,21 +100,21 @@ st.markdown(
 
     ---
 
-    ### Telisik Proses
+    ### Eksplorasi Hasil
+    *Akses hasil akhir penelitian dengan unduh peta atau jalankan aplikasi Google Earth Engine.*
+
+    - **Earth Engine Apps**: Bandingkan peta antar tahun secara langsung menggunakan fitur *split panel* di Google Earth Engine.
+    - **Unduh Peta**: Unduh peta analisis dalam format PDF di sini.
+
+    ---
+    
+     ### Telisik Proses
     *Lihat lebih dalam bagaimana data diolah dan penelitian ini dilakukan.*
 
     - **Alat**: Temukan alat, *software*, *platform*, dan *library* yang digunakan.
     - **Dataset**: Lihat sumber data (citra satelit, citra radar, dan *shapefile*) beserta *link* dan cuplikan kodenya.
     - **Metodologi**: Amati seluruh proses penelitian, mulai dari diagram alir, prapengolahan, ekstraksi, validasi, hingga pemodelan data.
     - **Proyek**: Akses *source code* pengolahan data di Google Earth Engine dan pemodelan prediksi berbasis *machine learning* di Google Colab yang dilakukan dalam penelitian ini.
-
-    ---
-
-    ### Eksplorasi Hasil
-    *Akses hasil akhir penelitian dengan unduh peta atau jalankan aplikasi Google Earth Engine.*
-
-    - **Unduh Peta**: Unduh peta analisis dalam format PDF di sini.
-    - **Earth Engine Apps**: Bandingkan peta antar tahun secara langsung menggunakan fitur *split panel* di Google Earth Engine.
 
     ---
     """
