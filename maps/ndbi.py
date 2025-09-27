@@ -37,9 +37,9 @@ st.markdown(
     .main {
         padding-top: 0rem !important;
     }
-    # .block-container {
-    #     padding-top: 0.5rem !important;
-    # }
+    .block-container {
+        padding-top: 0.5rem !important;
+    }
     .stMarkdown, .stText, .stTitle, .stHeader, .stSubheader, .stDataFrame {
         font-family: 'Poppins', sans-serif !important;
     }
@@ -565,7 +565,6 @@ def add_legend_to_map(map_obj, thresholds):
 
 @st.cache_data
 def load_image_from_url(url):
-    """Load image from URL and cache it to avoid repeated downloads"""
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -577,7 +576,6 @@ def load_image_from_url(url):
 
 
 def rgba_to_classification_ndbi(rgba_array):
-    """Convert RGBA array to NDBI classification values"""
     if rgba_array is None:
         return None
 
@@ -602,7 +600,7 @@ def rgba_to_classification_ndbi(rgba_array):
             (np.abs(r - target_r) <= 5)
             & (np.abs(g - target_g) <= 5)
             & (np.abs(b - target_b) <= 5)
-            & (alpha > 0)  # Not transparent
+            & (alpha > 0)
         )
         classified[mask] = class_val
 
@@ -643,7 +641,7 @@ def load_all_map_data():
     df_kec_stats = load_stats_kec()
     if df_kec_stats is None:
         st.error(
-            "Gagal memuat file CSV statistik kecamatan. Pastikan file ada di `csv/ndbiStatsKec.csv`"
+            "Gagal memuat file CSV statistik kecamatan. Pastikan file ada di `csv/ndbiStatsKec.csv`."
         )
 
     # 2. Load GeoJSON
@@ -1115,7 +1113,7 @@ with tab3:
             color="primary",
         )
 
-        col1_validate, col2_validate = st.columns([2.5, 1.5])
+        col1_validate, col2_validate = st.columns([2.3, 1.7])
         with col1_validate:
             # Container Grafik Korelasi Pearson
             with st.container(border=True):
@@ -1144,11 +1142,11 @@ with tab3:
 
                 # Update Layout
                 fig.update_layout(
-                    height=526,
+                    height=451,
                     showlegend=True,
                     template="plotly_white",
                     font=dict(
-                        family="Poppins, sans-serif",  # Font Poppins
+                        family="Poppins, sans-serif",
                         size=12,
                         color="black",
                     ),
@@ -1241,7 +1239,7 @@ with tab3:
                 # Status Validasi
                 abs_corr = abs(correlation_coef)
                 if abs_corr >= 0.7 and rmse <= 0.1:
-                    st.success("✅ VALID! Data NDBI layak untuk memprediksi LST!")
+                    st.success("✅ VALID! Data NDBI layak untuk memprediksi LST.")
                 elif abs_corr >= 0.5 and rmse <= 0.15:
                     st.warning(
                         "⚠️ CUKUP VALID — Data NDBI dapat digunakan dengan catatan."
@@ -1499,7 +1497,7 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=490,
+                    height=487,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",

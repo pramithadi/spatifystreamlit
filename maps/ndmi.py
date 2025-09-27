@@ -67,23 +67,23 @@ st.markdown(
     .stMarkdown {
         color: #000000 !important;
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 12px !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1)
-        !important;
-        border-radius: 1px !important;
-        padding: 12px !important;
-        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-        transition: all 0.3s ease !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-        transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
-        border-color: #fdfaf6 !important;
-    }           
+    # div[data-testid="stVerticalBlockBorderWrapper"] {
+    #     padding: 12px !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+    #     border: 0.5px solid rgba(0, 0, 0, 0.1)
+    #     !important;
+    #     border-radius: 1px !important;
+    #     padding: 12px !important;
+    #     # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+    #     # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+    #     transition: all 0.3s ease !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+    #     transform: translateY(-4px) !important;
+    #     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+    #     border-color: #fdfaf6 !important;
+    # }
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -565,7 +565,6 @@ def add_legend_to_map(map_obj, thresholds):
 
 @st.cache_data
 def load_image_from_url(url):
-    """Load image from URL and cache it to avoid repeated downloads"""
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -577,7 +576,6 @@ def load_image_from_url(url):
 
 
 def rgba_to_classification_ndmi(rgba_array):
-    """Convert RGBA array to NDMI classification values"""
     if rgba_array is None:
         return None
 
@@ -585,10 +583,10 @@ def rgba_to_classification_ndmi(rgba_array):
     classified = np.full((height, width), np.nan, dtype=np.float32)
 
     colors_rgb = {
-        (148, 137, 121): 0,  # very_low - coklat muda
-        (255, 255, 224): 1,  # low - kuning muda
-        (173, 216, 230): 2,  # medium - biru muda
-        (0, 0, 139): 3,  # high - biru tua
+        (148, 137, 121): 0,
+        (255, 255, 224): 1,
+        (173, 216, 230): 2,
+        (0, 0, 139): 3,
     }
 
     # Ekstrak RGB
@@ -602,7 +600,7 @@ def rgba_to_classification_ndmi(rgba_array):
             (np.abs(r - target_r) <= 5)
             & (np.abs(g - target_g) <= 5)
             & (np.abs(b - target_b) <= 5)
-            & (alpha > 0)  # Not transparent
+            & (alpha > 0)
         )
         classified[mask] = class_val
 
@@ -720,7 +718,7 @@ with tab1:
         color="primary",
     )
 
-    col1_peta, col2_peta = st.columns([2.5, 1.5])
+    col1_peta, col2_peta = st.columns([2.6, 1.4])
 
     with col2_peta:
         with st.container(border=True):
@@ -862,7 +860,7 @@ with tab2:
         index="Tahun", columns="Zona", values="mean"
     )
 
-    # Row Diagram Garis & Ranking NDMI
+    # Grafik Garis Tren NDMI
     st.badge(
         "**Tren NDMI di Kawasan Perkotaan dan Non-Perkotaan Yogyakarta (1999-2029)**",
         color="primary",
@@ -942,7 +940,7 @@ with tab2:
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=10, r=10, t=10, b=10),
-                height=319,
+                height=329,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -1009,71 +1007,72 @@ with tab2:
             {"Urban": "Perkotaan", "Rural": "Non-Perkotaan"}
         )
 
-        # Buat Bar
-        fig = px.bar(
-            df_ranking,
-            x="Mean_NDMI",
-            y="Y_Label",
-            color="Zona",
-            color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
-            orientation="h",
-            labels={
-                "Mean_NDMI": "NDMI Mean",
-                "Y_Label": "",
-                "Zona": "Kawasan",
-            },
-            # Isi Hover
-            hover_data={"Mean_NDMI": ":.3f", "Zona": False, "Y_Label": False},
-            custom_data=["Zona_Label", "Mean_NDMI"],
-        )
+        with st.container(border=True):
+            # Buat Bar
+            fig = px.bar(
+                df_ranking,
+                x="Mean_NDMI",
+                y="Y_Label",
+                color="Zona",
+                color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
+                orientation="h",
+                labels={
+                    "Mean_NDMI": "NDMI Mean",
+                    "Y_Label": "",
+                    "Zona": "Kawasan",
+                },
+                # Isi Hover
+                hover_data={"Mean_NDMI": ":.3f", "Zona": False, "Y_Label": False},
+                custom_data=["Zona_Label", "Mean_NDMI"],
+            )
 
-        # Update Hover Template
-        fig.update_traces(
-            hovertemplate="<b>%{y}</b><br>"
-            + "Kawasan: %{customdata[0]}<br>"
-            + "NDMI Mean: %{customdata[1]:.3f}<extra></extra>",
-            texttemplate="%{x:.3f}",
-            textposition="outside",
-            textfont_size=12,
-            textfont_color="black",
-        )
+            # Update Hover Template
+            fig.update_traces(
+                hovertemplate="<b>%{y}</b><br>"
+                + "Kawasan: %{customdata[0]}<br>"
+                + "NDMI Mean: %{customdata[1]:.3f}<extra></extra>",
+                texttemplate="%{x:.3f}",
+                textposition="outside",
+                textfont_size=12,
+                textfont_color="black",
+            )
 
-        # Update dan Styling Bar Plot
-        fig.update_layout(
-            height=800,
-            font=dict(family="Poppins", size=12),
-            title_font_size=12,
-            xaxis_title_font_size=12,
-            yaxis_title_font_size=12,
-            showlegend=True,
-            legend=dict(
-                orientation="v",
-                yanchor="bottom",
-                y=0.02,
-                xanchor="right",
-                x=0.98,
-                font=dict(family="Poppins"),
-            ),
-            yaxis=dict(
-                categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
-            ),
-            title="",
-            margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
-        )
+            # Update dan Styling Bar Plot
+            fig.update_layout(
+                height=800,
+                font=dict(family="Poppins", size=12),
+                title_font_size=12,
+                xaxis_title_font_size=12,
+                yaxis_title_font_size=12,
+                showlegend=True,
+                legend=dict(
+                    orientation="v",
+                    yanchor="bottom",
+                    y=0.02,
+                    xanchor="right",
+                    x=0.98,
+                    font=dict(family="Poppins"),
+                ),
+                yaxis=dict(
+                    categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
+                ),
+                title="",
+                margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
+            )
 
-        # Sumbu Warna Hitam
-        fig.update_xaxes(title_font_color="black", tickfont_color="black")
-        fig.update_yaxes(title_font_color="black", tickfont_color="black")
+            # Sumbu Warna Hitam
+            fig.update_xaxes(title_font_color="black", tickfont_color="black")
+            fig.update_yaxes(title_font_color="black", tickfont_color="black")
 
-        # Update Legenda
-        for trace in fig.data:
-            if trace.name == "Urban":
-                trace.name = "Perkotaan"
-            elif trace.name == "Rural":
-                trace.name = "Non-Perkotaan"
+            # Update Legenda
+            for trace in fig.data:
+                if trace.name == "Urban":
+                    trace.name = "Perkotaan"
+                elif trace.name == "Rural":
+                    trace.name = "Non-Perkotaan"
 
-        # Display Bar Plot
-        st.plotly_chart(fig, use_container_width=True)
+            # Display Bar Plot
+            st.plotly_chart(fig, use_container_width=True)
 
 # ==============================================================================
 # SECTION 3: VALIDASI
@@ -1117,7 +1116,7 @@ with tab3:
             color="primary",
         )
 
-        col1_validate, col2_validate = st.columns([2.2, 1.8])
+        col1_validate, col2_validate = st.columns([2.3, 1.7])
         with col1_validate:
             # Container Grafik Korelasi Pearson
             with st.container(border=True):
@@ -1146,11 +1145,11 @@ with tab3:
 
                 # Update Layout
                 fig.update_layout(
-                    height=445,
+                    height=451,
                     showlegend=True,
                     template="plotly_white",
                     font=dict(
-                        family="Poppins, sans-serif",  # Font Poppins
+                        family="Poppins, sans-serif",
                         size=12,
                         color="black",
                     ),
@@ -1173,7 +1172,7 @@ with tab3:
                     legend={
                         "orientation": "h",
                         "yanchor": "top",
-                        "y": -0.25,
+                        "y": -0.17,
                         "xanchor": "center",
                         "x": 0.5,
                         "font": {"family": "Poppins", "size": 14, "color": "black"},
@@ -1217,7 +1216,7 @@ with tab3:
                     st.metric(
                         label="RMSE",
                         value=f"{rmse:.3f}",
-                        help="Root Mean Square Error",
+                        help="*Root Mean Square Error*",
                     )
 
             with col3_validate_metric:
@@ -1225,45 +1224,12 @@ with tab3:
                     st.metric(
                         label="MAE",
                         value=f"{mae:.3f}",
-                        help="Mean Absolute Error",
+                        help="*Mean Absolute Error*",
                     )
 
             # Container Analisis Tren
             with st.container(border=True):
                 st.markdown("💡 **Quick Insight**")
-
-                # Interpretasi Korelasi
-                if correlation_coef == 0:
-                    corr_interpretation = "Tidak Ada Korelasi"
-                    corr_color = "🔴"
-                elif correlation_coef == 1:
-                    corr_interpretation = "Korelasi Positif Sempurna"
-                    corr_color = "🔵"
-                elif correlation_coef == -1:
-                    corr_interpretation = "Korelasi Negatif Sempurna"
-                    corr_color = "🔵"
-                elif 0 < correlation_coef < 0.3:
-                    corr_interpretation = "Korelasi Positif Lemah"
-                    corr_color = "🟡"
-                elif -0.3 < correlation_coef < 0:
-                    corr_interpretation = "Korelasi Negatif Lemah"
-                    corr_color = "🟡"
-                elif 0.3 <= correlation_coef < 0.7:
-                    corr_interpretation = "Korelasi Positif Sedang"
-                    corr_color = "🟠"
-                elif -0.7 < correlation_coef <= -0.3:
-                    corr_interpretation = "Korelasi Negatif Sedang"
-                    corr_color = "🟠"
-                elif 0.7 <= correlation_coef < 1:
-                    corr_interpretation = "Korelasi Positif Kuat"
-                    corr_color = "🟢"
-                elif -1 < correlation_coef <= -0.7:
-                    corr_interpretation = "Korelasi Negatif Kuat"
-                    corr_color = "🟢"
-                else:
-                    corr_interpretation = "Tidak Terdefinisi"
-                    corr_color = "🔴"
-
                 st.markdown(
                     f"""
                     - **Korelasi Sangat Kuat**: NDMI Landsat 8 dan Sentinel-2 memiliki hubungan kuat (:green-background[**r**] = :green-background[**{correlation_coef:.3f}**])<sup>[1]</sup>.
@@ -1276,7 +1242,7 @@ with tab3:
                 # Status Validasi
                 abs_corr = abs(correlation_coef)
                 if abs_corr >= 0.7 and rmse <= 0.1:
-                    st.success("✅ VALID! Data NDMI layak untuk memprediksi LST!")
+                    st.success("✅ VALID! Data NDMI layak untuk memprediksi LST.")
                 elif abs_corr >= 0.5 and rmse <= 0.15:
                     st.warning("⚠️ CUKUP VALID — Data dapat digunakan dengan catatan.")
                 elif abs_corr >= 0.3 and rmse <= 0.2:
@@ -1372,7 +1338,7 @@ with tab4:
                 plot_bgcolor="#fdfaf6",
                 paper_bgcolor="#fdfaf6",
                 margin=dict(l=0, r=0, t=10, b=30),
-                height=341.5,
+                height=316,
                 showlegend=True,
             )
 
@@ -1406,7 +1372,6 @@ with tab4:
     with col_peta_perbandingan[0]:
         with st.container(border=True):
             try:
-                # Load images from GitHub URLs instead of local files
                 with st.spinner("Memuat plot..."):
                     # Aktual NDMI 2024
                     data_2024_actual_raw = load_image_from_url(
@@ -1442,10 +1407,10 @@ with tab4:
                         st.stop()
 
                 colorscale = [
-                    [0.0, "rgb(148, 137, 121)"],  # Sangat Rendah - Coklat muda
-                    [0.33, "rgb(255, 255, 224)"],  # Rendah - Kuning muda
-                    [0.67, "rgb(173, 216, 230)"],  # Sedang - Biru muda
-                    [1.0, "rgb(0, 0, 139)"],  # Tinggi - Biru tua
+                    [0.0, "rgb(148, 137, 121)"],
+                    [0.33, "rgb(255, 255, 224)"],
+                    [0.67, "rgb(173, 216, 230)"],
+                    [1.0, "rgb(0, 0, 139)"],
                 ]
 
                 fig = make_subplots(
@@ -1533,16 +1498,16 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=512.5,
+                    height=487,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",
                     paper_bgcolor="#fdfaf6",
-                    margin=dict(l=50, r=50, t=50, b=100),
+                    margin=dict(l=50, r=50, t=50, b=70),
                     legend=dict(
                         orientation="h",
                         yanchor="top",
-                        y=-0.2,
+                        y=-0.05,
                         xanchor="center",
                         x=0.5,
                         bgcolor="rgba(0,0,0,0)",
