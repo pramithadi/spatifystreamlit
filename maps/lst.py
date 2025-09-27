@@ -19,6 +19,7 @@ from shapely.geometry import mapping
 import os
 import base64
 from io import BytesIO
+import requests
 from PIL import Image
 from scipy import stats
 from sklearn.linear_model import LinearRegression
@@ -161,6 +162,12 @@ PNG_URLS = {
     "2019": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2019.png",
     "2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2024.png",
     "2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2029.png",
+}
+
+PLOT_VIZ_URLS = {
+    "lst_2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2024.png",
+    "lst_2024a": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2024a.png",
+    "lst_2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2029.png",
 }
 
 KECAMATAN_BOUNDS = {
@@ -724,6 +731,51 @@ def interpret_regression(r2, p_value, slope, x_var):
 
 
 @st.cache_data
+def load_image_from_url(url):
+    """Load image from URL and cache it to avoid repeated downloads"""
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        img = Image.open(BytesIO(response.content))
+        return np.array(img)
+    except Exception as e:
+        st.error(f"Error loading image from {url}: {str(e)}")
+        return None
+
+
+def rgba_to_classification(rgba_array):
+    """Convert RGBA array to classification values"""
+    if rgba_array is None:
+        return None
+
+    height, width, _ = rgba_array.shape
+    classified = np.full((height, width), np.nan, dtype=np.float32)
+
+    colors_rgb = {
+        (92, 160, 211): 0,  # very_low - biru
+        (245, 235, 177): 1,  # low - kuning muda
+        (219, 167, 88): 2,  # medium - orange
+        (147, 34, 14): 3,  # high - merah
+    }
+
+    # Ekstrak RGB
+    r = rgba_array[:, :, 0]
+    g = rgba_array[:, :, 1]
+    b = rgba_array[:, :, 2]
+    alpha = rgba_array[:, :, 3]
+
+    for (target_r, target_g, target_b), class_val in colors_rgb.items():
+        mask = (
+            (np.abs(r - target_r) <= 5)
+            & (np.abs(g - target_g) <= 5)
+            & (np.abs(b - target_b) <= 5)
+            & (alpha > 0)  # Not transparent
+        )
+        classified[mask] = class_val
+
+    return classified
+
+
 def load_all_map_data():
     # 1. Load Statistik Kecamatan
     df_kec_stats = load_stats_kec()
@@ -859,7 +911,7 @@ with tab1:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 12.4
+                zoom_level = 15
 
         m = folium.Map(
             location=map_center, zoom_start=zoom_level, tiles="OpenStreetMap"
@@ -1648,55 +1700,35 @@ with tab4:
     with col_peta_perbandingan[0]:
         with st.container(border=True):
             try:
-                from PIL import Image
+                with st.spinner("Memuat gambar dari GitHub..."):
+                    # Aktual LST 2024 - dari URL GitHub
+                    data_2024_actual_raw = load_image_from_url(
+                        PLOT_VIZ_URLS["lst_2024"]
+                    )
+                    if data_2024_actual_raw is not None:
+                        data_2024_actual = rgba_to_classification(data_2024_actual_raw)
+                        data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
+                    else:
+                        st.error("Gagal memuat data aktual LST 2024")
+                        st.stop()
 
-                # Baca PNG menggunakan PIL, bukan rasterio
-                # PNG sudah dalam format RGBA dengan klasifikasi warna
+                    # Prediksi LST 2024 - dari URL GitHub
+                    data_2024_pred_raw = load_image_from_url(PLOT_VIZ_URLS["lst_2024a"])
+                    if data_2024_pred_raw is not None:
+                        data_2024_pred = rgba_to_classification(data_2024_pred_raw)
+                        data_2024_pred = np.flipud(data_2024_pred)
+                    else:
+                        st.error("Gagal memuat data prediksi LST 2024")
+                        st.stop()
 
-                # Aktual LST 2024 - dari PNG
-                img_2024_actual = Image.open("static/lst_2024.png")
-                data_2024_actual = np.array(img_2024_actual)
-
-                def rgba_to_classification(rgba_array):
-                    height, width, _ = rgba_array.shape
-                    classified = np.full((height, width), np.nan, dtype=np.float32)
-
-                    colors_rgb = {
-                        (92, 160, 211): 0,  # very_low - biru
-                        (245, 235, 177): 1,  # low - kuning muda
-                        (219, 167, 88): 2,  # medium - orange
-                        (147, 34, 14): 3,  # high - merah
-                    }
-
-                    # Ekstrak RGB
-                    r = rgba_array[:, :, 0]
-                    g = rgba_array[:, :, 1]
-                    b = rgba_array[:, :, 2]
-                    alpha = rgba_array[:, :, 3]
-
-                    for (target_r, target_g, target_b), class_val in colors_rgb.items():
-                        mask = (
-                            (np.abs(r - target_r) <= 5)
-                            & (np.abs(g - target_g) <= 5)
-                            & (np.abs(b - target_b) <= 5)
-                            & (alpha > 0)  # Not transparent
-                        )
-                        classified[mask] = class_val
-
-                    return classified
-
-                data_2024_actual = rgba_to_classification(data_2024_actual)
-                data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
-
-                # Prediksi LST 2024
-                img_2024_pred = Image.open("static/lst_2024a.png")
-                data_2024_pred = rgba_to_classification(np.array(img_2024_pred))
-                data_2024_pred = np.flipud(data_2024_pred)
-
-                # Prediksi LST 2029
-                img_2029_pred = Image.open("static/lst_2029.png")
-                data_2029_pred = rgba_to_classification(np.array(img_2029_pred))
-                data_2029_pred = np.flipud(data_2029_pred)
+                    # Prediksi LST 2029 - dari URL GitHub
+                    data_2029_pred_raw = load_image_from_url(PLOT_VIZ_URLS["lst_2029"])
+                    if data_2029_pred_raw is not None:
+                        data_2029_pred = rgba_to_classification(data_2029_pred_raw)
+                        data_2029_pred = np.flipud(data_2029_pred)
+                    else:
+                        st.error("Gagal memuat data prediksi LST 2029")
+                        st.stop()
 
                 colorscale = [
                     [0.0, "rgb(92, 160, 211)"],

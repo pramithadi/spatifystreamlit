@@ -15,6 +15,7 @@ from shapely.geometry import mapping
 import os
 import base64
 from io import BytesIO
+import requests
 from PIL import Image
 from scipy import stats
 from sklearn.metrics import mean_squared_error, mean_absolute_error
@@ -143,6 +144,12 @@ PNG_URLS = {
     "2019": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2019.png",
     "2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2024.png",
     "2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2029.png",
+}
+
+PLOT_VIZ_URLS = {
+    "ndvi_2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2024.png",
+    "ndvi_2024a": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2024a.png",
+    "ndvi_2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2029.png",
 }
 
 KECAMATAN_BOUNDS = {
@@ -556,6 +563,52 @@ def add_legend_to_map(map_obj, thresholds):
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
+@st.cache_data
+def load_image_from_url(url):
+    """Load image from URL and cache it to avoid repeated downloads"""
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        img = Image.open(BytesIO(response.content))
+        return np.array(img)
+    except Exception as e:
+        st.error(f"Error loading image from {url}: {str(e)}")
+        return None
+
+
+def rgba_to_classification_ndvi(rgba_array):
+    """Convert RGBA array to NDVI classification values"""
+    if rgba_array is None:
+        return None
+
+    height, width, _ = rgba_array.shape
+    classified = np.full((height, width), np.nan, dtype=np.float32)
+
+    colors_rgb = {
+        (139, 0, 0): 0,  # very_low - merah gelap (tanah kosong/bangunan)
+        (255, 255, 224): 1,  # low - kuning muda (vegetasi sparse)
+        (144, 238, 144): 2,  # medium - hijau muda (vegetasi sedang)
+        (0, 100, 0): 3,  # high - hijau tua (vegetasi lebat)
+    }
+
+    # Ekstrak RGB
+    r = rgba_array[:, :, 0]
+    g = rgba_array[:, :, 1]
+    b = rgba_array[:, :, 2]
+    alpha = rgba_array[:, :, 3]
+
+    for (target_r, target_g, target_b), class_val in colors_rgb.items():
+        mask = (
+            (np.abs(r - target_r) <= 5)
+            & (np.abs(g - target_g) <= 5)
+            & (np.abs(b - target_b) <= 5)
+            & (alpha > 0)  # Not transparent
+        )
+        classified[mask] = class_val
+
+    return classified
+
+
 def add_png_to_map(map_obj, year, thresholds):
     try:
         png_url = PNG_URLS.get(year)
@@ -585,7 +638,6 @@ def add_png_to_map(map_obj, year, thresholds):
         return False
 
 
-@st.cache_data
 def load_all_map_data():
     # 1. Load Statistik Kecamatan
     df_kec_stats = load_stats_kec()
@@ -751,7 +803,7 @@ with tab1:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 12.4
+                zoom_level = 15
 
         m = folium.Map(
             location=map_center, zoom_start=zoom_level, tiles="OpenStreetMap"
@@ -1240,181 +1292,6 @@ with tab3:
             "Periksa format file CSV dan nama kolom ('ndviLandsat' dan 'ndviSentinel')"
         )
 
-    # # Row Peta NDVI Landsat 8 dan Sentinel-2
-    # # Threshold untuk Peta Validasi
-    # validation_thresholds = {
-    #     "landsat": {"low": 0.426, "medium": 0.592, "high": 0.758},
-    #     "sentinel": {"low": 0.345, "medium": 0.530, "high": 0.714},
-    # }
-
-    # st.badge(
-    #     "**Peta NDVI: Landsat 8 dan Sentinel-2 (2024)**",
-    #     color="primary",
-    # )
-    # with st.container(border=True):
-    #     st.markdown(
-    #         """
-    #         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-    #             <div style="font-weight: 600; color: #333; font-size: 14px;">📡 Landsat 8 NDVI (2024)</div>
-    #             <div style="font-weight: 600; color: #333; font-size: 14px;">🛰️ Sentinel-2 NDVI (2024)</div>
-    #         </div>
-    #         """,
-    #         unsafe_allow_html=True,
-    #     )
-
-    #     # Import DualMap Plugin
-    #     from folium.plugins import DualMap
-
-    #     # Buat DualMap dengan Synchronized View
-    #     dual_map = DualMap(
-    #         location=[-7.764326411862208, 110.3721676814108],
-    #         zoom_start=10.5,
-    #         tiles=None,
-    #     )
-
-    #     # Tambahkan Basemap ke Kedua Sisi
-    #     # Sisi Kiri (Landsat)
-    #     folium.TileLayer(
-    #         tiles="CartoDB positron",
-    #         name="CartoDB Positron",
-    #         overlay=False,
-    #         control=True,
-    #     ).add_to(dual_map.m1)
-
-    #     folium.TileLayer(
-    #         tiles="OpenStreetMap",
-    #         name="OpenStreetMap",
-    #         overlay=False,
-    #         control=True,
-    #     ).add_to(dual_map.m1)
-
-    #     # Sisi Kanan (Sentinel)
-    #     folium.TileLayer(
-    #         tiles="CartoDB positron",
-    #         name="CartoDB Positron",
-    #         overlay=False,
-    #         control=True,
-    #     ).add_to(dual_map.m2)
-
-    #     folium.TileLayer(
-    #         tiles="OpenStreetMap",
-    #         name="OpenStreetMap",
-    #         overlay=False,
-    #         control=True,
-    #     ).add_to(dual_map.m2)
-
-    #     # Path untuk File GeoTIFF
-    #     landsat_tif_path = "tif/ndvi2024kpy_COG.tif"
-    #     sentinel_tif_path = "tif/ndviSentinel30_COG.tif"
-    #     shapefile_path = "shp/aoi_kpy.shp"
-
-    #     # Tambahkan GeoTiff Landsat ke Sisi Kiri
-    #     if os.path.exists(landsat_tif_path):
-    #         add_geotiff_to_map(
-    #             dual_map.m1, landsat_tif_path, validation_thresholds["landsat"]
-    #         )
-    #     else:
-    #         st.warning(f"File Landsat GeoTIFF tidak ditemukan: {landsat_tif_path}")
-
-    #     # Tambahkan GeoTiff Sentinel ke Sisi Kanan
-    #     if os.path.exists(sentinel_tif_path):
-    #         add_geotiff_to_map(
-    #             dual_map.m2, sentinel_tif_path, validation_thresholds["sentinel"]
-    #         )
-    #     else:
-    #         st.warning(f"File Sentinel GeoTIFF tidak ditemukan: {sentinel_tif_path}")
-
-    #     # Tambahkan Batas Administrasi ke Kedua Peta
-    #     if os.path.exists(shapefile_path):
-    #         add_shp_to_map(dual_map.m1, shapefile_path)
-    #         add_shp_to_map(dual_map.m2, shapefile_path)
-
-    #     # Function untuk Menambahkan Legenda Universal
-    #     def add_universal_legend_to_map(map_obj, title):
-    #         legend_html = f"""
-    #         <div style="position: fixed;
-    #                     top: 10px;
-    #                     right: 10px;
-    #                     z-index: 1000;
-    #                     background-color: white;
-    #                     border: 1px solid #ccc;
-    #                     border-radius: 1px;
-    #                     padding: 10px;
-    #                     font-family: 'Poppins', sans-serif;
-    #                     font-size: 12px;
-    #                     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    #                     min-width: 160px;">
-    #             <div style="margin: 0 0 8px 0; color: #333; font-weight: 600; font-size: 12px;">{title}</div>
-    #             <div style="display: flex; flex-direction: column; gap: 4px;">
-    #                 <div style="display: flex; align-items: center; gap: 6px;">
-    #                     <div style="width: 12px; height: 12px; background-color: #8b0000; border: 1px solid #ddd;"></div>
-    #                     <span style="color: #333;">Non-vegetasi</span>
-    #                 </div>
-    #                 <div style="display: flex; align-items: center; gap: 6px;">
-    #                     <div style="width: 12px; height: 12px; background-color: #ffffe0; border: 1px solid #ddd;"></div>
-    #                     <span style="color: #333;">Rendah</span>
-    #                 </div>
-    #                 <div style="display: flex; align-items: center; gap: 6px;">
-    #                     <div style="width: 12px; height: 12px; background-color: #90ee90; border: 1px solid #ddd;"></div>
-    #                     <span style="color: #333;">Sedang</span>
-    #                 </div>
-    #                 <div style="display: flex; align-items: center; gap: 6px;">
-    #                     <div style="width: 12px; height: 12px; background-color: #006400; border: 1px solid #ddd;"></div>
-    #                     <span style="color: #333;">Tinggi</span>
-    #                 </div>
-    #             </div>
-    #         </div>
-    #         """
-    #         map_obj.get_root().html.add_child(folium.Element(legend_html))
-
-    #     add_universal_legend_to_map(dual_map.m1, "Kelas NDVI")
-
-    #     # Tambahkan Layer Control ke Kedua Peta
-    #     folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m1)
-    #     folium.LayerControl(position="topleft", collapsed=True).add_to(dual_map.m2)
-
-    #     # CSS untuk Custom Peta dan Title
-    #     css = """
-    #     <style>
-    #     .leaflet-control-layers label {
-    #         font-size: 11px !important;
-    #         font-family: 'Poppins', sans-serif !important;
-    #     }
-    #     .leaflet-control-layers-list {
-    #         font-size: 11px !important;
-    #     }
-    #     .leaflet-control-layers-expanded {
-    #         font-size: 11px !important;
-    #     }
-    #     .leaflet-control-attribution {
-    #         font-size: 11px !important;
-    #         font-family: 'Poppins', sans-serif !important;
-    #     }
-
-    #     /* Title untuk peta kiri (Landsat) */
-    #     .leaflet-left .leaflet-top::after {
-    #         content: '📡 Landsat 8 NDVI (2024)';
-    #         position: absolute;
-    #         top: 50px;
-    #         left: 0;
-    #         background: rgba(255, 255, 255, 0.95);
-    #         padding: 6px 10px;
-    #         border: 1px solid #333;
-    #         border-radius: 3px;
-    #         font-family: 'Poppins', sans-serif;
-    #         font-size: 12px;
-    #         font-weight: 600;
-    #         color: #333;
-    #         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    #         z-index: 1001;
-    #     }
-    #     </style>
-    #     """
-    #     dual_map.get_root().html.add_child(folium.Element(css))
-
-    #     # Display DualMap
-    #     st_folium(dual_map, use_container_width=True, height=500)
-
     with st.expander("Lihat Referensi"):
         st.markdown(
             """
@@ -1525,58 +1402,45 @@ with tab4:
     with col_peta_perbandingan[0]:
         with st.container(border=True):
             try:
-                from PIL import Image
-
-                # Aktual NDVI 2024 PNG
-                img_2024_actual = Image.open("static/ndvi_2024.png")
-                data_2024_actual = np.array(img_2024_actual)
-
-                def rgba_to_classification(rgba_array):
-                    height, width, _ = rgba_array.shape
-                    classified = np.full((height, width), np.nan, dtype=np.float32)
-
-                    colors_rgb = {
-                        (139, 0, 0): 0,  # very_low
-                        (255, 255, 224): 1,  # low
-                        (144, 238, 144): 2,  # medium
-                        (0, 100, 0): 3,  # high
-                    }
-
-                    # Ekstrak RGB
-                    r = rgba_array[:, :, 0]
-                    g = rgba_array[:, :, 1]
-                    b = rgba_array[:, :, 2]
-                    alpha = rgba_array[:, :, 3]
-
-                    for (target_r, target_g, target_b), class_val in colors_rgb.items():
-                        mask = (
-                            (np.abs(r - target_r) <= 5)
-                            & (np.abs(g - target_g) <= 5)
-                            & (np.abs(b - target_b) <= 5)
-                            & (alpha > 0)  # Not transparent
+                with st.spinner("Memuat gambar NDVI dari GitHub..."):
+                    # Aktual NDVI 2024 - dari URL GitHub
+                    data_2024_actual_raw = load_image_from_url(
+                        PLOT_VIZ_URLS["ndvi_2024"]
+                    )
+                    if data_2024_actual_raw is not None:
+                        data_2024_actual = rgba_to_classification_ndvi(
+                            data_2024_actual_raw
                         )
-                        classified[mask] = class_val
+                        data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
+                    else:
+                        st.error("Gagal memuat data aktual NDVI 2024")
+                        st.stop()
 
-                    return classified
+                    # Prediksi NDVI 2024 - dari URL GitHub
+                    data_2024_pred_raw = load_image_from_url(
+                        PLOT_VIZ_URLS["ndvi_2024a"]
+                    )
+                    if data_2024_pred_raw is not None:
+                        data_2024_pred = rgba_to_classification_ndvi(data_2024_pred_raw)
+                        data_2024_pred = np.flipud(data_2024_pred)
+                    else:
+                        st.error("Gagal memuat data proyeksi NDVI 2024")
+                        st.stop()
 
-                data_2024_actual = rgba_to_classification(data_2024_actual)
-                data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
-
-                # Prediksi NDVI 2024
-                img_2024_pred = Image.open("static/ndvi_2024a.png")
-                data_2024_pred = rgba_to_classification(np.array(img_2024_pred))
-                data_2024_pred = np.flipud(data_2024_pred)
-
-                # Prediksi NDVI 2029
-                img_2029_pred = Image.open("static/ndvi_2029.png")
-                data_2029_pred = rgba_to_classification(np.array(img_2029_pred))
-                data_2029_pred = np.flipud(data_2029_pred)
+                    # Prediksi NDVI 2029 - dari URL GitHub
+                    data_2029_pred_raw = load_image_from_url(PLOT_VIZ_URLS["ndvi_2029"])
+                    if data_2029_pred_raw is not None:
+                        data_2029_pred = rgba_to_classification_ndvi(data_2029_pred_raw)
+                        data_2029_pred = np.flipud(data_2029_pred)
+                    else:
+                        st.error("Gagal memuat data proyeksi NDVI 2029")
+                        st.stop()
 
                 colorscale = [
-                    [0.0, "rgb(139, 0, 0)"],
-                    [0.33, "rgb(255, 255, 224)"],
-                    [0.67, "rgb(144, 238, 144)"],
-                    [1.0, "rgb(0, 100, 0)"],
+                    [0.0, "rgb(139, 0, 0)"],  # Sangat Rendah - Merah gelap
+                    [0.33, "rgb(255, 255, 224)"],  # Rendah - Kuning muda
+                    [0.67, "rgb(144, 238, 144)"],  # Sedang - Hijau muda
+                    [1.0, "rgb(0, 100, 0)"],  # Tinggi - Hijau tua
                 ]
 
                 fig = make_subplots(

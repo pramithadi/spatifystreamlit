@@ -656,7 +656,6 @@ def add_png_to_map(map_obj, year):
         return False
 
 
-@st.cache_data
 def load_all_map_data():
     """Load semua data yang dibutuhkan untuk peta sekali saja"""
     # 1. Load Data AOI
@@ -875,7 +874,7 @@ with tab1:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 12.4
+                zoom_level = 15
 
         m = folium.Map(
             location=map_center, zoom_start=zoom_level, tiles="OpenStreetMap"
