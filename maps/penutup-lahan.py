@@ -73,22 +73,22 @@ st.markdown(
     .stMarkdown {
         color: #000000 !important;
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 12px !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-        border-radius: 1px !important;
-        padding: 12px !important;
-        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-        transition: all 0.3s ease !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-        transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
-        border-color: #fdfaf6 !important;
-    }     
+    # div[data-testid="stVerticalBlockBorderWrapper"] {
+    #     padding: 12px !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+    #     border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+    #     border-radius: 1px !important;
+    #     padding: 12px !important;
+    #     # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+    #     # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+    #     transition: all 0.3s ease !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+    #     transform: translateY(-4px) !important;
+    #     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+    #     border-color: #fdfaf6 !important;
+    # }     
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -996,7 +996,7 @@ with tab2:
         "**Tren Perubahan Penutup Lahan di Kawasan Perkotaan Yogyakarta dan Sekitarnya (1999-2029)**",
         color="primary",
     )
-    col1_tren_main, col2_tren_main = st.columns([2.5, 1.5])
+    col1_tren_main, col2_tren_main = st.columns([2.3, 1.7])
 
     with col1_tren_main:
         # Container Grafik Tren
@@ -1066,7 +1066,7 @@ with tab2:
                     font=dict(family="Poppins", size=12, color="black"),
                 ),
                 margin=dict(l=20, r=20, t=20, b=80),
-                height=345,
+                height=319,
                 font=dict(family="Poppins", size=12),
             )
 
@@ -1331,7 +1331,7 @@ with tab4:
         color="primary",
     )
 
-    col1_metrik_img, col2_metrik_insight = st.columns([1.8, 2.2])
+    col1_metrik_img, col2_metrik_insight = st.columns([1.9, 2.1])
     with col1_metrik_img:
         with st.container(border=True):
             fig = go.Figure(
@@ -1378,7 +1378,7 @@ with tab4:
                 font={"family": "Poppins"},
                 plot_bgcolor="#fdfaf6",
                 paper_bgcolor="#fdfaf6",
-                margin=dict(l=20, r=20, t=20, b=30),
+                margin=dict(l=70, r=50, t=20, b=30),
                 height=241,
                 showlegend=True,
             )
@@ -1398,7 +1398,7 @@ with tab4:
                 """,
                 unsafe_allow_html=True,
             )
-            st.success("✅ Model **LAYAK** untuk memprediksi penutup lahan tahun 2029!")
+            st.success("✅ Model **LAYAK** untuk memprediksi penutup lahan tahun 2029.")
 
     st.badge(
         "**Classification Report**",
@@ -1486,7 +1486,7 @@ with tab4:
                 margin=dict(l=40, r=40, t=40, b=80),
                 showlegend=True,
                 barmode="group",
-                height=407,
+                height=413,
             )
 
             fig.update_xaxes(showgrid=False)
@@ -1634,16 +1634,16 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=512.5,
+                    height=487.5,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",
                     paper_bgcolor="#fdfaf6",
-                    margin=dict(l=50, r=50, t=50, b=100),
+                    margin=dict(l=50, r=50, t=50, b=70),
                     legend=dict(
                         orientation="h",
                         yanchor="top",
-                        y=-0.2,
+                        y=-0.05,
                         xanchor="center",
                         x=0.5,
                         bgcolor="rgba(0,0,0,0)",

@@ -583,10 +583,10 @@ def rgba_to_classification_ndbi(rgba_array):
     classified = np.full((height, width), np.nan, dtype=np.float32)
 
     colors_rgb = {
-        (0, 100, 0): 0,  # very_low - hijau tua
-        (255, 255, 224): 1,  # low - kuning muda
-        (255, 165, 0): 2,  # medium - orange
-        (59, 6, 10): 3,  # high - merah gelap
+        (0, 100, 0): 0,
+        (255, 255, 224): 1,
+        (255, 165, 0): 2,
+        (59, 6, 10): 3,
     }
 
     # Ekstrak RGB
