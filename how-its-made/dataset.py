@@ -47,22 +47,22 @@ st.markdown(
     .stMarkdown {
         color: #000000 !important;
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 12px !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-        border-radius: 1px !important;
-        padding: 12px !important;
-        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-        transition: all 0.3s ease !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-        transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
-        border-color: #fdfaf6 !important;
-    }     
+    # div[data-testid="stVerticalBlockBorderWrapper"] {
+    #     padding: 12px !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+    #     border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+    #     border-radius: 1px !important;
+    #     padding: 12px !important;
+    #     # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+    #     # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+    #     transition: all 0.3s ease !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+    #     transform: translateY(-4px) !important;
+    #     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+    #     border-color: #fdfaf6 !important;
+    # }     
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -119,7 +119,7 @@ with tab1:
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         st.badge("**Citra Landsat 5 TM**", color="primary")
-        with st.container(border=False):
+        with st.container(border=True):
             st.image("./assets/landsat5cover.png")
             st.write(
                 "**Koleksi:** *Collection* 2 *Level* 2 *Tier* 1 *(Surface Reflectance)*"
@@ -177,6 +177,7 @@ with tab1:
                 icon=":material/touch_double:",
             )
 
+    st.write("")
     col4, col5, col6 = st.columns(3, gap="small")
     with col4:
         st.badge("**Citra Radar NASA SRTM**", color="primary")

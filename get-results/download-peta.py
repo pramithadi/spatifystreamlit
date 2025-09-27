@@ -3,7 +3,7 @@ import os
 import requests
 
 st.set_page_config(
-    page_title="Download Peta — Spatify",
+    page_title="Unduh Peta — Spatify",
     layout="wide",
     initial_sidebar_state="expanded",  # collapsed
 )
@@ -49,22 +49,22 @@ st.markdown(
     .stMarkdown {
         color: #000000 !important;
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 12px !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-        border-radius: 1px !important;
-        padding: 12px !important;
-        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-        transition: all 0.3s ease !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-        transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
-        border-color: #fdfaf6 !important;
-    }     
+    # div[data-testid="stVerticalBlockBorderWrapper"] {
+    #     padding: 12px !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+    #     border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+    #     border-radius: 1px !important;
+    #     padding: 12px !important;
+    #     # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+    #     # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+    #     transition: all 0.3s ease !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+    #     transform: translateY(-4px) !important;
+    #     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+    #     border-color: #fdfaf6 !important;
+    # }     
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -141,7 +141,7 @@ def create_download_section(title, image_file, pdf_file, file_name, key_suffix):
         st.button("❌ Error", disabled=True, key=f"error_{key_suffix}")
 
 
-st.header("Download Peta")
+st.header("Unduh Peta")
 (
     tab1,
     tab2,
@@ -165,7 +165,7 @@ with tab1:
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         column_download_section("LST 1999")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "LST 1999",
                 "LST%201999.png",
@@ -175,7 +175,7 @@ with tab1:
             )
     with col2:
         column_download_section("LST 2004")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "LST 2004",
                 "LST%202004.png",
@@ -185,7 +185,7 @@ with tab1:
             )
     with col3:
         column_download_section("LST 2009")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "LST 2009",
                 "LST%202009.png",
@@ -197,7 +197,7 @@ with tab1:
     col4, col5, col6, col7 = st.columns(4, gap="small")
     with col4:
         column_download_section("LST 2014")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "LST 2014",
                 "LST%202014.png",
@@ -207,7 +207,7 @@ with tab1:
             )
     with col5:
         column_download_section("LST 2019")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "LST 2019",
                 "LST%202019.png",
@@ -217,7 +217,7 @@ with tab1:
             )
     with col6:
         column_download_section("LST 2024")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "LST 2024",
                 "LST%202024.png",
@@ -227,7 +227,7 @@ with tab1:
             )
     with col7:
         column_download_section("LST 2029")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "LST 2029",
                 "LST%202029.png",
@@ -243,7 +243,7 @@ with tab2:
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         column_download_section("NDBI 1999")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDBI 1999",
                 "NDBI%201999.png",
@@ -253,7 +253,7 @@ with tab2:
             )
     with col2:
         column_download_section("NDBI 2004")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDBI 2004",
                 "NDBI%202004.png",
@@ -263,7 +263,7 @@ with tab2:
             )
     with col3:
         column_download_section("NDBI 2009")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDBI 2009",
                 "NDBI%202009.png",
@@ -275,7 +275,7 @@ with tab2:
     col4, col5, col6, col7 = st.columns(4, gap="small")
     with col4:
         column_download_section("NDBI 2014")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDBI 2014",
                 "NDBI%202014.png",
@@ -285,7 +285,7 @@ with tab2:
             )
     with col5:
         column_download_section("NDBI 2019")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDBI 2019",
                 "NDBI%202019.png",
@@ -295,7 +295,7 @@ with tab2:
             )
     with col6:
         column_download_section("NDBI 2024")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDBI 2024",
                 "NDBI%202024.png",
@@ -305,7 +305,7 @@ with tab2:
             )
     with col7:
         column_download_section("NDBI 2029")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDBI 2029",
                 "NDBI%202029.png",
@@ -321,7 +321,7 @@ with tab3:
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         column_download_section("NDMI 1999")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDMI 1999",
                 "NDMI%201999.png",
@@ -331,7 +331,7 @@ with tab3:
             )
     with col2:
         column_download_section("NDMI 2004")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDMI 2004",
                 "NDMI%202004.png",
@@ -341,7 +341,7 @@ with tab3:
             )
     with col3:
         column_download_section("NDMI 2009")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDMI 2009",
                 "NDMI%202009.png",
@@ -353,7 +353,7 @@ with tab3:
     col4, col5, col6, col7 = st.columns(4, gap="small")
     with col4:
         column_download_section("NDMI 2014")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDMI 2014",
                 "NDMI%202014.png",
@@ -363,7 +363,7 @@ with tab3:
             )
     with col5:
         column_download_section("NDMI 2019")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDMI 2019",
                 "NDMI%202019.png",
@@ -373,7 +373,7 @@ with tab3:
             )
     with col6:
         column_download_section("NDMI 2024")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDMI 2024",
                 "NDMI%202024.png",
@@ -383,7 +383,7 @@ with tab3:
             )
     with col7:
         column_download_section("NDMI 2029")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDMI 2029",
                 "NDMI%202029.png",
@@ -399,7 +399,7 @@ with tab4:
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         column_download_section("NDVI 1999")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDVI 1999",
                 "NDVI%201999.png",
@@ -409,7 +409,7 @@ with tab4:
             )
     with col2:
         column_download_section("NDVI 2004")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDVI 2004",
                 "NDVI%202004.png",
@@ -419,7 +419,7 @@ with tab4:
             )
     with col3:
         column_download_section("NDVI 2009")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDVI 2009",
                 "NDVI%202009.png",
@@ -431,7 +431,7 @@ with tab4:
     col4, col5, col6, col7 = st.columns(4, gap="small")
     with col4:
         column_download_section("NDVI 2014")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDVI 2014",
                 "NDVI%202014.png",
@@ -441,7 +441,7 @@ with tab4:
             )
     with col5:
         column_download_section("NDVI 2019")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDVI 2019",
                 "NDVI%202019.png",
@@ -451,7 +451,7 @@ with tab4:
             )
     with col6:
         column_download_section("NDVI 2024")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDVI 2024",
                 "NDVI%202024.png",
@@ -461,7 +461,7 @@ with tab4:
             )
     with col7:
         column_download_section("NDVI 2029")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "NDVI 2029",
                 "NDVI%202029.png",
@@ -477,7 +477,7 @@ with tab5:
     col1, col2, col3 = st.columns(3, gap="small")
     with col1:
         column_download_section("Penutup Lahan 1999")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "Penutup Lahan 1999",
                 "Penutup%20Lahan%201999.png",
@@ -487,7 +487,7 @@ with tab5:
             )
     with col2:
         column_download_section("Penutup Lahan 2004")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "Penutup Lahan 2004",
                 "Penutup%20Lahan%202004.png",
@@ -497,7 +497,7 @@ with tab5:
             )
     with col3:
         column_download_section("Penutup Lahan 2009")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "Penutup Lahan 2009",
                 "Penutup%20Lahan%202009.png",
@@ -509,7 +509,7 @@ with tab5:
     col4, col5, col6, col7 = st.columns(4, gap="small")
     with col4:
         column_download_section("Penutup Lahan 2014")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "Penutup Lahan 2014",
                 "Penutup%20Lahan%202014.png",
@@ -519,7 +519,7 @@ with tab5:
             )
     with col5:
         column_download_section("Penutup Lahan 2019")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "Penutup Lahan 2019",
                 "Penutup%20Lahan%202019.png",
@@ -529,7 +529,7 @@ with tab5:
             )
     with col6:
         column_download_section("Penutup Lahan 2024")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "Penutup Lahan 2024",
                 "Penutup%20Lahan%202024.png",
@@ -539,7 +539,7 @@ with tab5:
             )
     with col7:
         column_download_section("Penutup Lahan 2029")
-        with st.container(border=False):
+        with st.container(border=True):
             create_download_section(
                 "Penutup Lahan 2029",
                 "Penutup%20Lahan%202029.png",

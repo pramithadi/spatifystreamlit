@@ -38,22 +38,22 @@ st.markdown(
         color: #000000 !important;
         font-weight: 600 !important;
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 12px !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-        border-radius: 1px !important;
-        padding: 12px !important;
-        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-        transition: all 0.3s ease !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-        transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
-        border-color: #fdfaf6 !important;
-    }   
+    # div[data-testid="stVerticalBlockBorderWrapper"] {
+    #     padding: 12px !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+    #     border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+    #     border-radius: 1px !important;
+    #     padding: 12px !important;
+    #     # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+    #     # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+    #     transition: all 0.3s ease !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+    #     transform: translateY(-4px) !important;
+    #     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+    #     border-color: #fdfaf6 !important;
+    # }   
     .stLinkButton > a {
         background-color: #E4EFE7 !important;
         color: black !important;
@@ -85,10 +85,10 @@ st.markdown(
 
 
 st.header("Google Earth Engine Applications")
-st.write("Temukan berbagai visualisasi data interaktif melalui GEE Apps berikut.")
-col1, col2, col3, col4, col5 = st.columns(5, gap="small")
+st.write("Temukan berbagai visualisasi data interaktif melalui GEE *Apps* berikut.")
+col1, col2 = st.columns(2, gap="small")
 with col1:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**LST**", color="primary")
         st.image("./assets/GEE Apps LST.png")
         st.link_button(
@@ -98,7 +98,7 @@ with col1:
         )
 
 with col2:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**NDBI**", color="primary")
         st.image("./assets/GEE Apps NDBI.png")
         st.link_button(
@@ -107,8 +107,9 @@ with col2:
             icon=":material/map:",
         )
 
+col3, col4 = st.columns(2, gap="small")
 with col3:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**NDMI**", color="primary")
         st.image("./assets/GEE Apps NDMI.png")
         st.link_button(
@@ -118,7 +119,7 @@ with col3:
         )
 
 with col4:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**NDVI**", color="primary")
         st.image("./assets/GEE Apps NDVI.png")
         st.link_button(
@@ -127,8 +128,9 @@ with col4:
             icon=":material/map:",
         )
 
+col5, col6 = st.columns(2, gap="small")
 with col5:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**Penutup Lahan**", color="primary")
         st.image("./assets/GEE Apps PL.png")
         st.link_button(

@@ -47,22 +47,22 @@ st.markdown(
     .stMarkdown {
         color: #000000 !important;
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 12px !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-        border-radius: 1px !important;
-        padding: 12px !important;
-        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-        transition: all 0.3s ease !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-        transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
-        border-color: #fdfaf6 !important;
-    }     
+    # div[data-testid="stVerticalBlockBorderWrapper"] {
+    #     padding: 12px !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+    #     border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+    #     border-radius: 1px !important;
+    #     padding: 12px !important;
+    #     # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+    #     # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+    #     transition: all 0.3s ease !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+    #     transform: translateY(-4px) !important;
+    #     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+    #     border-color: #fdfaf6 !important;
+    # }     
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -116,10 +116,12 @@ st.header("Alat")
 st.write(
     "Berikut ini adalah serangkaian alat, *platform*, dan *software* yang digunakan untuk pengolahan, pemodelan, validasi, dan penyimpanan data."
 )
+st.write("")
+
 col1, col2, col3, col4, col5 = st.columns(5, gap="small")
 with col1:
     st.badge("**Laptop**", color="primary")
-    with st.container(border=False):
+    with st.container(border=True):
         st.image("./logo/logo_laptop.svg")
 
 with col2:
@@ -155,7 +157,7 @@ with col7:
 
 with col8:
     st.badge("**Google Drive**", color="primary")
-    with st.container(border=False):
+    with st.container(border=True):
         st.image("./logo/logo_drive.svg")
 
 with col9:
@@ -200,11 +202,12 @@ st.markdown(
     """
 )
 
-
 st.header("Library")
 st.write(
     "Berikut ini adalah *library* dan *framework* dalam ekosistem Python yang digunakan untuk analisis data, pemodelan *machine learning*, visualisasi, hingga pembangunan aplikasi *web* interaktif."
 )
+st.write("")
+
 col16, col17, col18, col19, col20 = st.columns(5, gap="small")
 with col16:
     st.badge("**Rasterio**", color="primary")

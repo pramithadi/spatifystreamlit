@@ -47,22 +47,22 @@ st.markdown(
     .stMarkdown {
         color: #000000 !important;
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 12px !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
-        border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-        border-radius: 1px !important;
-        padding: 12px !important;
-        # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
-        # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
-        transition: all 0.3s ease !important;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
-        transform: translateY(-4px) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
-        border-color: #fdfaf6 !important;
-    }     
+    # div[data-testid="stVerticalBlockBorderWrapper"] {
+    #     padding: 12px !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]) {
+    #     border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+    #     border-radius: 1px !important;
+    #     padding: 12px !important;
+    #     # box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) !important;
+    #     # background: linear-gradient(135deg, #fdfaf6 0%, #f8fafc 100%) !important;
+    #     transition: all 0.3s ease !important;
+    # }
+    # div[data-testid="stVerticalBlockBorderWrapper"]:has(div[data-testid="stVerticalBlock"]):hover {
+    #     transform: translateY(-4px) !important;
+    #     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important; # Shadow Hover
+    #     border-color: #fdfaf6 !important;
+    # }     
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #705c53 !important;
     }
@@ -112,13 +112,16 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.header("Proyek Google Earth Engine dan Google Colab")
+st.header("Proyek")
 st.write(
     "Pilih salah satu proyek di bawah untuk mengakses *source code* dan melihat proses pemodelan."
 )
+
+st.write("")
+st.badge("**Google Earth Engine**", color="blue")
 col1, col2, col3 = st.columns(3, gap="small")
 with col1:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**Suhu Permukaan Lahan**", color="primary")
         st.image("./assets/GEE LST.png")
         st.link_button(
@@ -128,7 +131,7 @@ with col1:
         )
 
 with col2:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**NDBI**", color="primary")
         st.image("./assets/GEE NDBI.png")
         st.link_button(
@@ -138,7 +141,7 @@ with col2:
         )
 
 with col3:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**NDMI**", color="primary")
         st.image("./assets/GEE NDMI.png")
         st.link_button(
@@ -147,9 +150,11 @@ with col3:
             icon=":material/code_blocks:",
         )
 
+st.write("")
+
 col4, col5, col6 = st.columns(3, gap="small")
 with col4:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**NDVI**", color="primary")
         st.image("./assets/GEE NDVI.png")
         st.link_button(
@@ -159,7 +164,7 @@ with col4:
         )
 
 with col5:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**Penutup Lahan**", color="primary")
         st.image("./assets/GEE PL.png")
         st.link_button(
@@ -169,7 +174,7 @@ with col5:
         )
 
 with col6:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**Elevasi dan Slope**", color="primary")
         st.image("./assets/GEE DEM.png")
         st.link_button(
@@ -178,9 +183,17 @@ with col6:
             icon=":material/code_blocks:",
         )
 
+st.markdown(
+    """
+    ---
+    """
+)
+
+st.badge("**Google Colab**", color="orange")
+
 col7, col8, col9 = st.columns(3, gap="small")
 with col7:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**Prediksi Penutup Lahan 2029**", color="primary")
         st.image("./assets/Colab PL.png")
         st.link_button(
@@ -190,7 +203,7 @@ with col7:
         )
 
 with col8:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**Proyeksi Indeks 2029**", color="primary")
         st.image("./assets/Colab Indeks.png")
         st.link_button(
@@ -200,7 +213,7 @@ with col8:
         )
 
 with col9:
-    with st.container(border=False):
+    with st.container(border=True):
         st.badge("**Prediksi Suhu Permukaan Lahan 2029**", color="primary")
         st.image("./assets/Colab LST.png")
         st.link_button(

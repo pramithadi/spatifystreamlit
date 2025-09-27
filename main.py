@@ -174,8 +174,8 @@ pg = st.navigation(
     {
         "": [home],
         "Dasbor Analisis": [lst, ndbi, ndmi, ndvi, lulc],
+        "Eksplorasi Hasil": [gee_apps, download_peta],
         "Telisik Proses": [alat, dataset, metodologi, proyek],
-        "Eksplorasi Hasil": [download_peta, gee_apps],
     }
 )
 pg.run()
