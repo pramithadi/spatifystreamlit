@@ -1402,8 +1402,8 @@ with tab4:
     with col_peta_perbandingan[0]:
         with st.container(border=True):
             try:
-                with st.spinner("Memuat gambar NDVI dari GitHub..."):
-                    # Aktual NDVI 2024 - dari URL GitHub
+                with st.spinner("Memuat plot..."):
+                    # Aktual NDVI 2024
                     data_2024_actual_raw = load_image_from_url(
                         PLOT_VIZ_URLS["ndvi_2024"]
                     )
@@ -1416,7 +1416,7 @@ with tab4:
                         st.error("Gagal memuat data aktual NDVI 2024")
                         st.stop()
 
-                    # Prediksi NDVI 2024 - dari URL GitHub
+                    # Prediksi NDVI 2024
                     data_2024_pred_raw = load_image_from_url(
                         PLOT_VIZ_URLS["ndvi_2024a"]
                     )
@@ -1427,7 +1427,7 @@ with tab4:
                         st.error("Gagal memuat data proyeksi NDVI 2024")
                         st.stop()
 
-                    # Prediksi NDVI 2029 - dari URL GitHub
+                    # Prediksi NDVI 2029
                     data_2029_pred_raw = load_image_from_url(PLOT_VIZ_URLS["ndvi_2029"])
                     if data_2029_pred_raw is not None:
                         data_2029_pred = rgba_to_classification_ndvi(data_2029_pred_raw)
@@ -1437,10 +1437,10 @@ with tab4:
                         st.stop()
 
                 colorscale = [
-                    [0.0, "rgb(139, 0, 0)"],  # Sangat Rendah - Merah gelap
-                    [0.33, "rgb(255, 255, 224)"],  # Rendah - Kuning muda
-                    [0.67, "rgb(144, 238, 144)"],  # Sedang - Hijau muda
-                    [1.0, "rgb(0, 100, 0)"],  # Tinggi - Hijau tua
+                    [0.0, "rgb(139, 0, 0)"],
+                    [0.33, "rgb(255, 255, 224)"],
+                    [0.67, "rgb(144, 238, 144)"],
+                    [1.0, "rgb(0, 100, 0)"],
                 ]
 
                 fig = make_subplots(

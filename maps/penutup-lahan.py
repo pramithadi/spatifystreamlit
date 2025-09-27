@@ -15,6 +15,7 @@ from shapely.geometry import mapping
 import os
 import base64
 from io import BytesIO
+import requests
 from PIL import Image
 from scipy import stats
 from sklearn.metrics import (
@@ -127,6 +128,13 @@ PNG_URLS = {
     "2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2024.png",
     "2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2029.png",
 }
+
+PLOT_VIZ_URLS = {
+    "pl_2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2024.png",
+    "pl_2024a": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2024a.png",
+    "pl_2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/pl_2029.png",
+}
+
 
 KECAMATAN_BOUNDS = {
     "Pajangan": {
@@ -627,6 +635,50 @@ def add_legend(map_obj):
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
+@st.cache_data
+def load_image_from_url(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        img = Image.open(BytesIO(response.content))
+        return np.array(img)
+    except Exception as e:
+        st.error(f"Error loading image from {url}: {str(e)}")
+        return None
+
+
+def rgba_to_classification(rgba_array):
+    if rgba_array is None:
+        return None
+
+    height, width, _ = rgba_array.shape
+    classified = np.full((height, width), np.nan, dtype=np.float32)
+
+    colors_rgb = {
+        (41, 75, 41): 0,
+        (105, 195, 221): 1,
+        (205, 154, 77): 2,
+        (250, 245, 217): 3,
+    }
+
+    # Ekstrak RGB
+    r = rgba_array[:, :, 0]
+    g = rgba_array[:, :, 1]
+    b = rgba_array[:, :, 2]
+    alpha = rgba_array[:, :, 3]
+
+    for (target_r, target_g, target_b), class_val in colors_rgb.items():
+        mask = (
+            (np.abs(r - target_r) <= 5)
+            & (np.abs(g - target_g) <= 5)
+            & (np.abs(b - target_b) <= 5)
+            & (alpha > 0)  # Not transparent
+        )
+        classified[mask] = class_val
+
+    return classified
+
+
 def add_png_to_map(map_obj, year):
     try:
         png_url = PNG_URLS.get(year)
@@ -657,7 +709,6 @@ def add_png_to_map(map_obj, year):
 
 
 def load_all_map_data():
-    """Load semua data yang dibutuhkan untuk peta sekali saja"""
     # 1. Load Data AOI
     df_aoi = load_aoi_data()
 
@@ -1473,52 +1524,34 @@ with tab4:
     with col_peta_perbandingan[0]:
         with st.container(border=True):
             try:
-                from PIL import Image
+                with st.spinner("Memuat plot..."):
 
-                # Aktual LST 2024 - dari PNG
-                img_2024_actual = Image.open("static/pl_2024.png")
-                data_2024_actual = np.array(img_2024_actual)
+                    # Aktual Penutup Lahan 2024
+                    data_2024_actual_raw = load_image_from_url(PLOT_VIZ_URLS["pl_2024"])
+                    if data_2024_actual_raw is not None:
+                        data_2024_actual = rgba_to_classification(data_2024_actual_raw)
+                        data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
+                    else:
+                        st.error("Gagal memuat data aktual Penutup Lahan 2024")
+                        st.stop()
 
-                def rgba_to_classification(rgba_array):
-                    height, width, _ = rgba_array.shape
-                    classified = np.full((height, width), np.nan, dtype=np.float32)
+                    # Prediksi Penutup Lahan 2024
+                    data_2024_pred_raw = load_image_from_url(PLOT_VIZ_URLS["pl_2024a"])
+                    if data_2024_pred_raw is not None:
+                        data_2024_pred = rgba_to_classification(data_2024_pred_raw)
+                        data_2024_pred = np.flipud(data_2024_pred)
+                    else:
+                        st.error("Gagal memuat data prediksi Penutup Lahan 2024")
+                        st.stop()
 
-                    colors_rgb = {
-                        (41, 75, 41): 0,  # very_low - biru
-                        (105, 195, 221): 1,  # low - kuning muda
-                        (205, 154, 77): 2,  # medium - orange
-                        (250, 245, 217): 3,  # high - merah
-                    }
-
-                    # Ekstrak RGB
-                    r = rgba_array[:, :, 0]
-                    g = rgba_array[:, :, 1]
-                    b = rgba_array[:, :, 2]
-                    alpha = rgba_array[:, :, 3]
-
-                    for (target_r, target_g, target_b), class_val in colors_rgb.items():
-                        mask = (
-                            (np.abs(r - target_r) <= 5)
-                            & (np.abs(g - target_g) <= 5)
-                            & (np.abs(b - target_b) <= 5)
-                            & (alpha > 0)  # Not transparent
-                        )
-                        classified[mask] = class_val
-
-                    return classified
-
-                data_2024_actual = rgba_to_classification(data_2024_actual)
-                data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
-
-                # Prediksi LST 2024
-                img_2024_pred = Image.open("static/pl_2024a.png")
-                data_2024_pred = rgba_to_classification(np.array(img_2024_pred))
-                data_2024_pred = np.flipud(data_2024_pred)
-
-                # Prediksi LST 2029
-                img_2029_pred = Image.open("static/pl_2029.png")
-                data_2029_pred = rgba_to_classification(np.array(img_2029_pred))
-                data_2029_pred = np.flipud(data_2029_pred)
+                    # Prediksi Penutup Lahan 2029
+                    data_2029_pred_raw = load_image_from_url(PLOT_VIZ_URLS["pl_2029"])
+                    if data_2029_pred_raw is not None:
+                        data_2029_pred = rgba_to_classification(data_2029_pred_raw)
+                        data_2029_pred = np.flipud(data_2029_pred)
+                    else:
+                        st.error("Gagal memuat data prediksi Penutup Lahan 2029")
+                        st.stop()
 
                 colorscale = [
                     [0.0, "rgb(41, 75, 41)"],  # Vegetasi
@@ -1530,7 +1563,11 @@ with tab4:
                 fig = make_subplots(
                     rows=1,
                     cols=3,
-                    subplot_titles=["Aktual 2024", "Prediksi 2024", "Prediksi 2029"],
+                    subplot_titles=[
+                        "Aktual Penutup Lahan 2024",
+                        "Prediksi Penutup Lahan 2024",
+                        "Prediksi Penutup Lahan 2029",
+                    ],
                     horizontal_spacing=0.08,
                 )
 

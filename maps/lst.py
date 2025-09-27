@@ -1701,7 +1701,7 @@ with tab4:
         with st.container(border=True):
             try:
                 with st.spinner("Memuat gambar dari GitHub..."):
-                    # Aktual LST 2024 - dari URL GitHub
+                    # Aktual LST 2024
                     data_2024_actual_raw = load_image_from_url(
                         PLOT_VIZ_URLS["lst_2024"]
                     )
@@ -1712,7 +1712,7 @@ with tab4:
                         st.error("Gagal memuat data aktual LST 2024")
                         st.stop()
 
-                    # Prediksi LST 2024 - dari URL GitHub
+                    # Prediksi LST 2024
                     data_2024_pred_raw = load_image_from_url(PLOT_VIZ_URLS["lst_2024a"])
                     if data_2024_pred_raw is not None:
                         data_2024_pred = rgba_to_classification(data_2024_pred_raw)
@@ -1721,7 +1721,7 @@ with tab4:
                         st.error("Gagal memuat data prediksi LST 2024")
                         st.stop()
 
-                    # Prediksi LST 2029 - dari URL GitHub
+                    # Prediksi LST 2029
                     data_2029_pred_raw = load_image_from_url(PLOT_VIZ_URLS["lst_2029"])
                     if data_2029_pred_raw is not None:
                         data_2029_pred = rgba_to_classification(data_2029_pred_raw)

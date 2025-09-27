@@ -1370,8 +1370,8 @@ with tab4:
         with st.container(border=True):
             try:
                 # Load images from GitHub URLs instead of local files
-                with st.spinner("Memuat gambar NDBI dari GitHub..."):
-                    # Aktual NDBI 2024 - dari URL GitHub
+                with st.spinner("Memuat plot..."):
+                    # Aktual NDBI 2024
                     data_2024_actual_raw = load_image_from_url(
                         PLOT_VIZ_URLS["ndbi_2024"]
                     )
@@ -1384,7 +1384,7 @@ with tab4:
                         st.error("Gagal memuat data aktual NDBI 2024")
                         st.stop()
 
-                    # Prediksi NDBI 2024 - dari URL GitHub
+                    # Prediksi NDBI 2024
                     data_2024_pred_raw = load_image_from_url(
                         PLOT_VIZ_URLS["ndbi_2024a"]
                     )
@@ -1395,7 +1395,7 @@ with tab4:
                         st.error("Gagal memuat data proyeksi NDBI 2024")
                         st.stop()
 
-                    # Prediksi NDBI 2029 - dari URL GitHub
+                    # Prediksi NDBI 2029
                     data_2029_pred_raw = load_image_from_url(PLOT_VIZ_URLS["ndbi_2029"])
                     if data_2029_pred_raw is not None:
                         data_2029_pred = rgba_to_classification_ndbi(data_2029_pred_raw)

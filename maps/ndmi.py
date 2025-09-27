@@ -1404,8 +1404,8 @@ with tab4:
         with st.container(border=True):
             try:
                 # Load images from GitHub URLs instead of local files
-                with st.spinner("Memuat gambar NDMI dari GitHub..."):
-                    # Aktual NDMI 2024 - dari URL GitHub
+                with st.spinner("Memuat plot..."):
+                    # Aktual NDMI 2024
                     data_2024_actual_raw = load_image_from_url(
                         PLOT_VIZ_URLS["ndmi_2024"]
                     )
@@ -1418,7 +1418,7 @@ with tab4:
                         st.error("Gagal memuat data aktual NDMI 2024")
                         st.stop()
 
-                    # Prediksi NDMI 2024 - dari URL GitHub
+                    # Prediksi NDMI 2024
                     data_2024_pred_raw = load_image_from_url(
                         PLOT_VIZ_URLS["ndmi_2024a"]
                     )
@@ -1429,7 +1429,7 @@ with tab4:
                         st.error("Gagal memuat data proyeksi NDMI 2024")
                         st.stop()
 
-                    # Prediksi NDMI 2029 - dari URL GitHub
+                    # Prediksi NDMI 2029
                     data_2029_pred_raw = load_image_from_url(PLOT_VIZ_URLS["ndmi_2029"])
                     if data_2029_pred_raw is not None:
                         data_2029_pred = rgba_to_classification_ndmi(data_2029_pred_raw)
