@@ -84,7 +84,7 @@ st.success(
 st.subheader("Mulai Eksplorasi!")
 st.markdown(
     """
-    👈 **Gunakan menu di *sidebar* kiri** untuk memulai eksplorasi Anda ke tiga bagian utama aplikasi.
+    👈 **Gunakan menu di *sidebar* kiri** untuk memulai eksplorasi ke tiga bagian utama aplikasi.
 
     ---
 
@@ -103,10 +103,11 @@ st.markdown(
     ### Telisik Proses
     *Lihat lebih dalam bagaimana data diolah dan penelitian ini dilakukan.*
 
-    - **Alat**: Temukan alat, *software*, *platform*, dan *library* yang digunakan dalam penelitian ini.
+    - **Alat**: Temukan alat, *software*, *platform*, dan *library* yang digunakan.
     - **Dataset**: Lihat sumber data (citra satelit, citra radar, dan *shapefile*) beserta *link* dan cuplikan kodenya.
     - **Metodologi**: Amati seluruh proses penelitian, mulai dari diagram alir, prapengolahan, ekstraksi, validasi, hingga pemodelan data.
-    
+    - **Proyek**: Akses *source code* pengolahan data di Google Earth Engine dan pemodelan prediksi berbasis *machine learning* di Google Colab yang dilakukan dalam penelitian ini.
+
     ---
 
     ### Eksplorasi Hasil
@@ -124,7 +125,7 @@ with st.expander("Tentang Aplikasi"):
         """
         **Spatify** dirancang dan dikembangkan oleh **Pramitha Dewi** di bawah bimbingan Bapak **Karen Slamet Hardjo, S.Si., M.Sc.** sebagai bagian dari Proyek Akhir di Program Studi **Sarjana Terapan Sistem Informasi Geografis, Sekolah Vokasi, Universitas Gadjah Mada** tahun 2025.
         
-        Spatify dikembangkan untuk mencapai beberapa tujuan dalam Proyek Akhir ini, yaitu:
+        Spatify dikembangkan untuk mencapai tujuan dalam Proyek Akhir ini, yaitu:
         - **Memetakan kondisi historis** (1999-2024) berbagai parameter (LST, penutup lahan, dan indeks spektral) di Kawasan Perkotaan Yogyakarta dan sekitarnya menggunakan  Google Earth Engine.
         - **Memprediksi** kondisi penutup lahan dan LST untuk tahun 2029 dengan model *machine learning* (XGBoost dan CA-Markov).
         - **Menyajikan seluruh data** historis dan prediksi dalam sebuah *web app* dan Earth Engine Apps yang interaktif.
@@ -137,9 +138,12 @@ with st.expander("Tentang Pengembang"):
     with col1:
         # st.image("./assets/foto_profil_1.svg", width=142)
         # st.image("./assets/foto_profil_1.svg", width=164)
-        # st.image("./assets/foto_profil_9.svg", width=164)
+        # st.image("./assets/foto_profil_3.svg", width=164)
         # st.image("./assets/foto_profil_1.svg", width=90)
-        st.image("./assets/foto_profil_2.svg", width=90)
+        # st.image("./assets/foto_profil_2.svg", width=90)
+        # st.image("./assets/foto_profil_3.svg", width=90)
+        # st.image("./assets/foto_profil_4.svg", width=90)
+        st.image("./assets/foto_profil_5.svg", width=90)
 
     with col2:
         st.markdown(
