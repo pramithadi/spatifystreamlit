@@ -1054,7 +1054,7 @@ with tab2:
                     categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
                 ),
                 title="",
-                margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
+                margin=dict(t=10, b=20),  # Mengurangi Margin Top Supaya Tidak Ada Gap
             )
 
             # Sumbu Warna Hitam
