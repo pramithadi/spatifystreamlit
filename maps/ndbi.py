@@ -719,7 +719,7 @@ with tab1:
         color="primary",
     )
 
-    col1_peta, col2_peta = st.columns([2.5, 1.5])
+    col1_peta, col2_peta = st.columns([2.6, 1.4])
     with col2_peta:
         with st.container(border=True):
             option = st.selectbox(
@@ -1006,71 +1006,72 @@ with tab2:
             {"Urban": "Perkotaan", "Rural": "Non-Perkotaan"}
         )
 
-        # Buat Bar
-        fig = px.bar(
-            df_ranking,
-            x="Mean_NDBI",
-            y="Y_Label",
-            color="Zona",
-            color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
-            orientation="h",
-            labels={
-                "Mean_NDBI": "NDBI Mean",
-                "Y_Label": "",
-                "Zona": "Kawasan",
-            },
-            # Isi Hover
-            hover_data={"Mean_NDBI": ":.3f", "Zona": False, "Y_Label": False},
-            custom_data=["Zona_Label", "Mean_NDBI"],
-        )
+        with st.container(border=True):
+            # Buat Bar
+            fig = px.bar(
+                df_ranking,
+                x="Mean_NDBI",
+                y="Y_Label",
+                color="Zona",
+                color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
+                orientation="h",
+                labels={
+                    "Mean_NDBI": "NDBI Mean",
+                    "Y_Label": "",
+                    "Zona": "Kawasan",
+                },
+                # Isi Hover
+                hover_data={"Mean_NDBI": ":.3f", "Zona": False, "Y_Label": False},
+                custom_data=["Zona_Label", "Mean_NDBI"],
+            )
 
-        # Update Hover Template
-        fig.update_traces(
-            hovertemplate="<b>%{y}</b><br>"
-            + "Kawasan: %{customdata[0]}<br>"
-            + "NDBI Mean: %{customdata[1]:.3f}<extra></extra>",
-            texttemplate="%{x:.3f}",
-            textposition="outside",
-            textfont_size=12,
-            textfont_color="black",
-        )
+            # Update Hover Template
+            fig.update_traces(
+                hovertemplate="<b>%{y}</b><br>"
+                + "Kawasan: %{customdata[0]}<br>"
+                + "NDBI Mean: %{customdata[1]:.3f}<extra></extra>",
+                texttemplate="%{x:.3f}",
+                textposition="outside",
+                textfont_size=12,
+                textfont_color="black",
+            )
 
-        # Update dan Styling Bar Plot
-        fig.update_layout(
-            height=800,
-            font=dict(family="Poppins", size=12),
-            title_font_size=12,
-            xaxis_title_font_size=12,
-            yaxis_title_font_size=12,
-            showlegend=True,
-            legend=dict(
-                orientation="v",
-                yanchor="bottom",
-                y=0.02,
-                xanchor="right",
-                x=0.98,
-                font=dict(family="Poppins"),
-            ),
-            yaxis=dict(
-                categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
-            ),
-            title="",
-            margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
-        )
+            # Update dan Styling Bar Plot
+            fig.update_layout(
+                height=800,
+                font=dict(family="Poppins", size=12),
+                title_font_size=12,
+                xaxis_title_font_size=12,
+                yaxis_title_font_size=12,
+                showlegend=True,
+                legend=dict(
+                    orientation="v",
+                    yanchor="bottom",
+                    y=0.02,
+                    xanchor="right",
+                    x=0.98,
+                    font=dict(family="Poppins"),
+                ),
+                yaxis=dict(
+                    categoryorder="array", categoryarray=df_ranking["Y_Label"][::-1]
+                ),
+                title="",
+                margin=dict(t=10),  # Mengurangi Margin Top Supaya Tidak Ada Gap
+            )
 
-        # Sumbu Warna Hitam
-        fig.update_xaxes(title_font_color="black", tickfont_color="black")
-        fig.update_yaxes(title_font_color="black", tickfont_color="black")
+            # Sumbu Warna Hitam
+            fig.update_xaxes(title_font_color="black", tickfont_color="black")
+            fig.update_yaxes(title_font_color="black", tickfont_color="black")
 
-        # Update Legenda
-        for trace in fig.data:
-            if trace.name == "Urban":
-                trace.name = "Perkotaan"
-            elif trace.name == "Rural":
-                trace.name = "Non-Perkotaan"
+            # Update Legenda
+            for trace in fig.data:
+                if trace.name == "Urban":
+                    trace.name = "Perkotaan"
+                elif trace.name == "Rural":
+                    trace.name = "Non-Perkotaan"
 
-        # Display Bar Plot
-        st.plotly_chart(fig, use_container_width=True)
+            # Display Bar Plot
+            st.plotly_chart(fig, use_container_width=True)
 
 # ==============================================================================
 # SECTION 3: VALIDASI
@@ -1114,7 +1115,7 @@ with tab3:
             color="primary",
         )
 
-        col1_validate, col2_validate = st.columns([2.2, 1.8])
+        col1_validate, col2_validate = st.columns([2.5, 1.5])
         with col1_validate:
             # Container Grafik Korelasi Pearson
             with st.container(border=True):
@@ -1143,7 +1144,7 @@ with tab3:
 
                 # Update Layout
                 fig.update_layout(
-                    height=445,
+                    height=526,
                     showlegend=True,
                     template="plotly_white",
                     font=dict(
@@ -1170,7 +1171,7 @@ with tab3:
                     legend={
                         "orientation": "h",
                         "yanchor": "top",
-                        "y": -0.25,
+                        "y": -0.17,
                         "xanchor": "center",
                         "x": 0.5,
                         "font": {"family": "Poppins", "size": 14, "color": "black"},
@@ -1214,7 +1215,7 @@ with tab3:
                     st.metric(
                         label="RMSE",
                         value=f"{rmse:.3f}",
-                        help="Root Mean Square Error",
+                        help="*Root Mean Square Error*",
                     )
 
             with col3_validate_metric:
@@ -1222,7 +1223,7 @@ with tab3:
                     st.metric(
                         label="MAE",
                         value=f"{mae:.3f}",
-                        help="Mean Absolute Error",
+                        help="*Mean Absolute Error*",
                     )
 
             # Container Analisis Tren
@@ -1338,7 +1339,7 @@ with tab4:
                 plot_bgcolor="#fdfaf6",
                 paper_bgcolor="#fdfaf6",
                 margin=dict(l=0, r=0, t=10, b=30),
-                height=341.5,
+                height=316,
                 showlegend=True,
             )
 
@@ -1372,7 +1373,6 @@ with tab4:
     with col_peta_perbandingan[0]:
         with st.container(border=True):
             try:
-                # Load images from GitHub URLs instead of local files
                 with st.spinner("Memuat plot..."):
                     # Aktual NDBI 2024
                     data_2024_actual_raw = load_image_from_url(
@@ -1408,10 +1408,10 @@ with tab4:
                         st.stop()
 
                 colorscale = [
-                    [0.0, "rgb(0, 100, 0)"],  # Sangat Rendah - Hijau tua
-                    [0.33, "rgb(255, 255, 224)"],  # Rendah - Kuning muda
-                    [0.67, "rgb(255, 165, 0)"],  # Sedang - Orange
-                    [1.0, "rgb(59, 6, 10)"],  # Tinggi - Merah gelap
+                    [0.0, "rgb(0, 100, 0)"],
+                    [0.33, "rgb(255, 255, 224)"],
+                    [0.67, "rgb(255, 165, 0)"],
+                    [1.0, "rgb(59, 6, 10)"],
                 ]
 
                 fig = make_subplots(
@@ -1499,16 +1499,16 @@ with tab4:
                     )
 
                 fig.update_layout(
-                    height=512.5,
+                    height=490,
                     showlegend=True,
                     font=dict(family="Poppins, sans-serif", size=12, color="black"),
                     plot_bgcolor="#fdfaf6",
                     paper_bgcolor="#fdfaf6",
-                    margin=dict(l=50, r=50, t=50, b=100),
+                    margin=dict(l=50, r=50, t=50, b=70),
                     legend=dict(
                         orientation="h",
                         yanchor="top",
-                        y=-0.2,
+                        y=-0.05,
                         xanchor="center",
                         x=0.5,
                         bgcolor="rgba(0,0,0,0)",
