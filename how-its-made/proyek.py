@@ -194,6 +194,16 @@ st.badge("**Google Colab**", color="orange")
 col7, col8, col9 = st.columns(3, gap="small")
 with col7:
     with st.container(border=True):
+        st.badge("**Prediksi Suhu Permukaan Lahan 2029**", color="primary")
+        st.image("./assets/Colab LST.png")
+        st.link_button(
+            label="Source Code",
+            url="https://colab.research.google.com/drive/1_fKYHIcwbjP_5B82vQDixqEjy9cDn-s1?usp=sharing",
+            icon=":material/code_blocks:",
+        )
+
+with col8:
+    with st.container(border=True):
         st.badge("**Prediksi Penutup Lahan 2029**", color="primary")
         st.image("./assets/Colab PL.png")
         st.link_button(
@@ -202,22 +212,12 @@ with col7:
             icon=":material/code_blocks:",
         )
 
-with col8:
+with col9:
     with st.container(border=True):
         st.badge("**Proyeksi Indeks 2029**", color="primary")
         st.image("./assets/Colab Indeks.png")
         st.link_button(
             label="Source Code",
             url="https://colab.research.google.com/drive/1IP7hIpnlmVhDgMvDEYCkR3ZUCdNOljUe?usp=sharing",
-            icon=":material/code_blocks:",
-        )
-
-with col9:
-    with st.container(border=True):
-        st.badge("**Prediksi Suhu Permukaan Lahan 2029**", color="primary")
-        st.image("./assets/Colab LST.png")
-        st.link_button(
-            label="Source Code",
-            url="https://colab.research.google.com/drive/1_fKYHIcwbjP_5B82vQDixqEjy9cDn-s1?usp=sharing",
             icon=":material/code_blocks:",
         )
