@@ -237,7 +237,7 @@ with tab3:
         st.markdown(
             """
         <div class="justified-text">
-        <b>Nilai radiansi spektral</b> pada citra Landsat <i>Surface Reflectance</i> <b>telah dikalibrasi</b> secara otomatis melalui pengaplikasian <i>function</i> <b>Scaling Factor</b>. Dengan demikian, nilai radiansi spektral dari saluran termal di dataset ini dapat langsung digunakan dalam perhitungan LST.
+        <b>Nilai radiansi spektral</b> pada citra Landsat <i>Surface Reflectance</i> <b>telah dikalibrasi</b> secara otomatis melalui pengaplikasian <i>function</i> <b><i>scaling factor</i></b>. Dengan demikian, nilai radiansi spektral dari saluran termal di dataset ini dapat langsung digunakan dalam perhitungan LST.
         </div>
         """,
             unsafe_allow_html=True,
