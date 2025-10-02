@@ -945,7 +945,7 @@ with tab2:
             2014: {"mean": -0.179},
             2019: {"mean": -0.161},
             2024: {"mean": -0.162},
-            2029: {"mean": -0.156},
+            2029: {"mean": -0.161},
         }
 
         # Container Analisis Tren

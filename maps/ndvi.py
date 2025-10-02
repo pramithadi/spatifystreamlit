@@ -667,11 +667,7 @@ def create_base_map():
     )
 
     folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
-    folium.TileLayer(
-        tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        attr="Google Satellite",
-        name="Google Satellite",
-    ).add_to(m)
+
     return m
 
 
@@ -813,12 +809,6 @@ with tab1:
         )
 
         folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
-        folium.TileLayer(
-            tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-            attr="Google Satellite",
-            name="Google Satellite",
-        ).add_to(m)
-        folium.TileLayer(tiles="OpenStreetMap", name="OpenStreetMap").add_to(m)
 
         thresholds = threshold_dict[option]
         png_success = add_png_to_map(m, option, thresholds)
@@ -957,7 +947,7 @@ with tab2:
             2014: {"mean": 0.596},
             2019: {"mean": 0.587},
             2024: {"mean": 0.592},
-            2029: {"mean": 0.585},
+            2029: {"mean": 0.593},
         }
 
         # Container Analisis Tren
@@ -1265,6 +1255,93 @@ with tab3:
         st.info(
             "Periksa format file CSV dan nama kolom ('ndviLandsat' dan 'ndviSentinel')"
         )
+
+    # Baris Kosong
+    st.write("")
+
+    st.badge(
+        "**Tabel Perbandingan Sampel Nilai NDVI Landsat 8 dan NDVI Sentinel-2**",
+        color="primary",
+    )
+
+    col_sampel_perbandingan = st.columns(1)
+    with col_sampel_perbandingan[0]:
+        csv_path = "csv/ndviSampelValidasi.csv"
+
+        try:
+            df = pd.read_csv(csv_path)
+            df_top10 = df.head(10)
+
+            df_top10 = df_top10.rename(
+                columns={
+                    "ndviLandsat": "NDVI Landsat 8",
+                    "ndviSentinel": "NDVI Sentinel-2",
+                }
+            )
+
+            def format_ndvi_value(value):
+                try:
+                    return f"{float(value):.3f}"
+                except:
+                    return str(value)
+
+            def convert_df_to_html_ndvi(input_df):
+                formatters = {}
+                for col in input_df.columns:
+                    if "ndviLandsat" in col.lower() or "ndviSentinel" in col.lower():
+                        formatters[col] = format_ndvi_value
+
+                return input_df.to_html(
+                    escape=False,
+                    formatters=formatters,
+                    table_id="ndvi-sample-table",
+                    classes="table table-striped",
+                    index=False,
+                )
+
+            html_table = convert_df_to_html_ndvi(df_top10)
+
+            st.markdown(
+                """
+                <style>
+                #ndvi-sample-table { 
+                    width: 100%; 
+                    border-collapse: collapse; 
+                    margin: 0px 0 10px 0; 
+                    font-family: 'Poppins', sans-serif;
+                    margin-top: -15px;
+                    margin-bottom: 15px;
+                }
+                #ndvi-sample-table th, #ndvi-sample-table td { 
+                    border: 1px solid #ddd; 
+                    padding: 8px; 
+                    text-align: center; 
+                    vertical-align: middle; 
+                    font-size: 14px;
+                }
+                #ndvi-sample-table th { 
+                    background-color: #E4EFE7; 
+                    font-weight: bold; 
+                    color: #333;
+                }
+                #ndvi-sample-table td:not(:first-child) {
+                    font-family: 'Courier New', monospace;
+                }
+                .stContainer > div > div > div > div { 
+                    padding-top: 0rem !important; 
+                }
+                </style>
+                <div style="margin-top: -25px;"></div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+            st.markdown(html_table, unsafe_allow_html=True)
+
+        except FileNotFoundError:
+            st.error(f"File '{csv_path}' tidak ditemukan!")
+        except Exception as e:
+            st.error(f"Error dalam menampilkan tabel sampel validasi NDVI: {str(e)}")
 
     # Baris Kosong
     st.write("")
