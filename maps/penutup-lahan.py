@@ -739,6 +739,7 @@ def create_base_map():
     )
 
     folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
+
     folium.TileLayer(
         tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
         attr="Google Satellite",
@@ -932,7 +933,6 @@ with tab1:
             location=map_center,
             zoom_start=zoom_level,
             tiles="OpenStreetMap",
-            name="OpenStreetMap",
         )
 
         folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)

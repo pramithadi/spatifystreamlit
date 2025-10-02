@@ -112,7 +112,7 @@ stats_by_year = {
     "2014": {"min": -0.819, "max": 0.564, "mean": 0.179},
     "2019": {"min": -0.940, "max": 0.581, "mean": 0.161},
     "2024": {"min": -0.454, "max": 0.604, "mean": 0.162},
-    "2029": {"min": -0.230, "max": 0.477, "mean": 0.156},
+    "2029": {"min": -0.230, "max": 0.477, "mean": 0.161},
 }
 
 # Dictionary Threshold
@@ -123,7 +123,7 @@ threshold_dict = {
     "2014": {"low": 0.056, "medium": 0.179, "high": 0.302},
     "2019": {"low": 0.022, "medium": 0.161, "high": 0.301},
     "2024": {"low": 0.015, "medium": 0.162, "high": 0.309},
-    "2029": {"low": 0.012, "medium": 0.156, "high": 0.300},
+    "2029": {"low": 0.017, "medium": 0.161, "high": 0.305},
 }
 
 NDMI_IMAGE_BOUNDS = {
@@ -667,11 +667,7 @@ def create_base_map():
     )
 
     folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
-    folium.TileLayer(
-        tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        attr="Google Satellite",
-        name="Google Satellite",
-    ).add_to(m)
+
     return m
 
 
@@ -814,12 +810,6 @@ with tab1:
         )
 
         folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
-        folium.TileLayer(
-            tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-            attr="Google Satellite",
-            name="Google Satellite",
-        ).add_to(m)
-        folium.TileLayer(tiles="OpenStreetMap", name="OpenStreetMap").add_to(m)
 
         thresholds = threshold_dict[option]
         png_success = add_png_to_map(m, option, thresholds)
@@ -1266,6 +1256,93 @@ with tab3:
         st.info(
             "Periksa format file CSV dan nama kolom ('ndmiLandsat' dan 'ndmiSentinel')"
         )
+
+    # Baris Kosong
+    st.write("")
+
+    st.badge(
+        "**Tabel Perbandingan Sampel Nilai NDMI Landsat 8 dan NDMI Sentinel-2**",
+        color="primary",
+    )
+
+    col_sampel_perbandingan = st.columns(1)
+    with col_sampel_perbandingan[0]:
+        csv_path = "csv/ndmiSampelValidasi.csv"
+
+        try:
+            df = pd.read_csv(csv_path)
+            df_top10 = df.head(10)
+
+            df_top10 = df_top10.rename(
+                columns={
+                    "ndmiLandsat": "NDMI Landsat 8",
+                    "ndmiSentinel": "NDMI Sentinel-2",
+                }
+            )
+
+            def format_ndmi_value(value):
+                try:
+                    return f"{float(value):.3f}"
+                except:
+                    return str(value)
+
+            def convert_df_to_html_ndmi(input_df):
+                formatters = {}
+                for col in input_df.columns:
+                    if "ndmiLandsat" in col.lower() or "ndmiSentinel" in col.lower():
+                        formatters[col] = format_ndmi_value
+
+                return input_df.to_html(
+                    escape=False,
+                    formatters=formatters,
+                    table_id="ndmi-sample-table",
+                    classes="table table-striped",
+                    index=False,
+                )
+
+            html_table = convert_df_to_html_ndmi(df_top10)
+
+            st.markdown(
+                """
+                <style>
+                #ndmi-sample-table { 
+                    width: 100%; 
+                    border-collapse: collapse; 
+                    margin: 0px 0 10px 0; 
+                    font-family: 'Poppins', sans-serif;
+                    margin-top: -15px;
+                    margin-bottom: 15px;
+                }
+                #ndmi-sample-table th, #ndmi-sample-table td { 
+                    border: 1px solid #ddd; 
+                    padding: 8px; 
+                    text-align: center; 
+                    vertical-align: middle; 
+                    font-size: 14px;
+                }
+                #ndmi-sample-table th { 
+                    background-color: #E4EFE7; 
+                    font-weight: bold; 
+                    color: #333;
+                }
+                #ndmi-sample-table td:not(:first-child) {
+                    font-family: 'Courier New', monospace;
+                }
+                .stContainer > div > div > div > div { 
+                    padding-top: 0rem !important; 
+                }
+                </style>
+                <div style="margin-top: -25px;"></div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+            st.markdown(html_table, unsafe_allow_html=True)
+
+        except FileNotFoundError:
+            st.error(f"File '{csv_path}' tidak ditemukan!")
+        except Exception as e:
+            st.error(f"Error dalam menampilkan tabel sampel validasi NDMI: {str(e)}")
 
     # Baris Kosong
     st.write("")
