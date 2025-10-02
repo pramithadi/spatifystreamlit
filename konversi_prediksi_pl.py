@@ -49,19 +49,17 @@ def process_pl_to_png(tif_path, output_path):
 def preprocess_all_pl_files():
     os.makedirs("static", exist_ok=True)
 
-    years = ["1999", "2004", "2009", "2014", "2019", "2024", "2029", "2024a"]
+    years = ["2029", "2024a"]
 
     bounds_dict = {}
 
-    print("Memulai konversi NDVI COG -> PNG...")
+    print("Memulai konversi Prediksi PL -> PNG...")
 
     for year in years:
         if year == "2029":
             tif_path = "tif/prediksi_pl_2029_TERBARU.tif"
         elif year == "2024a":
             tif_path = "tif/prediksi_pl_2024_TERBARU.tif"
-        else:
-            tif_path = f"tif/pl{year}kpy_COG.tif"
 
         output_path = f"static/pl_{year}.png"
 
