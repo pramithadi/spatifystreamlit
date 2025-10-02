@@ -77,14 +77,14 @@ st.title("Spatify — Spatial Information of Yogyakarta City")
 st.write("---")
 st.success(
     """
-    Selamat datang di **Spatify**! Aplikasi *web* interaktif ini mengajak Anda untuk melihat bagaimana **suhu permukaan, penutup lahan, kerapatan area terbangun** dan **vegetasi** hingga **kelembapannya** di Kawasan Perkotaan Yogyakarta dan sekitarnya **telah berubah** selama 25 tahun terakhir (1999-2024). Temukan polanya dan lihat seperti apa prediksi kondisi di tahun 2029!
+    Selamat datang di **Spatify**! Aplikasi *web* interaktif ini mengajak Anda untuk melihat bagaimana **suhu permukaan lahan** di Kawasan Perkotaan Yogyakarta dan sekitarnya beserta **penutup lahan, kerapatan area terbangun**, dan juga **kerapatan** hingga **kelembapan vegetasi** telah berubah selama 25 tahun terakhir (1999-2024). Temukan polanya dan lihat seperti apa prediksi kondisi di tahun 2029!
     """
 )
 
 st.subheader("Mulai Eksplorasi!")
 st.markdown(
     """
-    👈 **Gunakan menu di *sidebar* kiri** untuk memulai eksplorasi ke tiga bagian utama aplikasi.
+    👈 **Gunakan menu di *sidebar* kiri** untuk memulai eksplorasi ke dua bagian utama aplikasi.
 
     ---
 
@@ -105,16 +105,6 @@ st.markdown(
 
     - **Earth Engine Apps**: Bandingkan peta antar tahun secara langsung menggunakan fitur *split panel* di Google Earth Engine.
     - **Unduh Peta**: Unduh peta analisis dalam format PDF di sini.
-
-    ---
-    
-     ### Telisik Proses
-    *Lihat lebih dalam bagaimana data diolah dan penelitian ini dilakukan.*
-
-    - **Alat**: Temukan alat, *software*, *platform*, dan *library* yang digunakan.
-    - **Dataset**: Lihat sumber data (citra satelit, citra radar, dan *shapefile*) beserta *link* dan cuplikan kodenya.
-    - **Metodologi**: Amati seluruh proses penelitian, mulai dari diagram alir, prapengolahan, ekstraksi, validasi, hingga pemodelan data.
-    - **Proyek**: Akses *source code* pengolahan data di Google Earth Engine dan pemodelan prediksi berbasis *machine learning* di Google Colab yang dilakukan dalam penelitian ini.
 
     ---
     """

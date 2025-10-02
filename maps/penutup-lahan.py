@@ -929,16 +929,13 @@ with tab1:
                 zoom_level = 15
 
         m = folium.Map(
-            location=map_center, zoom_start=zoom_level, tiles="OpenStreetMap"
+            location=map_center,
+            zoom_start=zoom_level,
+            tiles="OpenStreetMap",
+            name="OpenStreetMap",
         )
 
         folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
-        folium.TileLayer(
-            tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-            attr="Google Satellite",
-            name="Google Satellite",
-        ).add_to(m)
-        folium.TileLayer(tiles="OpenStreetMap", name="OpenStreetMap").add_to(m)
 
         png_success = add_png_to_map(m, option)
         if not png_success:
@@ -1330,7 +1327,7 @@ with tab3:
 
 with tab4:
     st.badge(
-        "**Evaluasi Model Terintegrasi Cellular Automata-Markov Chain dan XGBoost untuk Prediksi Penutup Lahan**",
+        "**Evaluasi Model XGBoost Terintegrasi dengan Cellular Automata-Markov Chain untuk Prediksi Penutup Lahan**",
         color="primary",
     )
 
@@ -1342,8 +1339,8 @@ with tab4:
                     go.Bar(
                         name="Akurasi Keseluruhan",
                         x=["Akurasi Keseluruhan"],
-                        y=[0.8963],
-                        text=["0.8963"],
+                        y=[0.8941],
+                        text=["0.8941"],
                         textposition="outside",
                         marker_color="#1C352D",
                         textfont=dict(family="Poppins", size=12, color="black"),
@@ -1351,8 +1348,8 @@ with tab4:
                     go.Bar(
                         name="Koefisien Kappa",
                         x=["Koefisien Kappa"],
-                        y=[0.8351],
-                        text=["0.8351"],
+                        y=[0.8324],
+                        text=["0.8324"],
                         textposition="outside",
                         marker_color="#F5C9B0",
                         textfont=dict(family="Poppins", size=12, color="black"),
@@ -1396,8 +1393,8 @@ with tab4:
             st.write("💡 **Quick Insight**")
             st.markdown(
                 f"""
-                - Model prediksi penutup lahan menunjukkan **akurasi tinggi** sebesar :green-background[**89.63%**] setelah divalidasi dengan data aktual terkini.
-                - Koefisien kappa sebesar :green-background[**83.51%**] masuk ke dalam kategori *almost perfect agreement* yang menunjukkan tingkat kesepakatan **sangat baik**<sup>[1]</sup>.
+                - Model prediksi penutup lahan menunjukkan **akurasi tinggi** sebesar :green-background[**89.41%**] setelah divalidasi dengan data aktual terkini.
+                - Koefisien kappa sebesar :green-background[**83.24%**] masuk ke dalam kategori *almost perfect agreement* yang menunjukkan tingkat kesepakatan **sangat baik**<sup>[1]</sup>.
                 """,
                 unsafe_allow_html=True,
             )
@@ -1414,9 +1411,9 @@ with tab4:
     with col2_classification_report:
         with st.container(border=True):
             classes = ["Vegetasi", "Tubuh Air", "Lahan Terbangun", "Lahan Terbuka"]
-            precision = [0.83, 0.30, 0.77, 0.44]
-            recall = [0.94, 0.44, 0.78, 0.08]
-            f1_score = [0.88, 0.36, 0.77, 0.14]
+            precision = [0.84, 0.30, 0.72, 0.44]
+            recall = [0.92, 0.43, 0.82, 0.08]
+            f1_score = [0.88, 0.35, 0.77, 0.14]
 
             colors = {
                 "precision": "#1C352D",
