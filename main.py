@@ -161,9 +161,6 @@ proyek = st.Page(
 download_peta = st.Page(
     "get-results/download-peta.py", title="Unduh Peta", icon=":material/download:"
 )
-galeri = st.Page(
-    "get-results/galeri.py", title="Galeri", icon=":material/gallery_thumbnail:"
-)
 gee_apps = st.Page(
     "get-results/gee-apps.py",
     title="Earth Engine Apps",
