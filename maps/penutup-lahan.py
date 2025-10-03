@@ -826,7 +826,7 @@ st.header("Penutup Lahan")
 # ==============================================================================
 with tab1:
     if "map_data_loaded" not in st.session_state:
-        with st.spinner("Mempersiapkan data peta..."):
+        with st.spinner("⏳ Memuat tiles peta... Mohon tunggu 15-30 detik."):
             map_data = load_all_map_data()
             st.session_state.map_data = map_data
             st.session_state.map_data_loaded = True
@@ -911,7 +911,7 @@ with tab1:
 
     with col1_peta:
         map_center = [-7.764326411862208, 110.3721676814108]
-        zoom_level = 10.5
+        zoom_level = 11
 
         if selected_kecamatan:
             kec_bounds = get_kecamatan_bounds_static(selected_kecamatan)
@@ -919,7 +919,7 @@ with tab1:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 15
+                zoom_level = 14
 
         m = folium.Map(
             location=map_center,
