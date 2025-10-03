@@ -679,32 +679,24 @@ def rgba_to_classification(rgba_array):
     return classified
 
 
-def add_png_to_map(map_obj, year):
+def add_tiles_to_map(map_obj, year):
     try:
-        png_url = PNG_URLS.get(year)
-        if not png_url:
-            st.error(f"File PNG untuk tahun: {year} tidak ditemukan.")
-            return False
+        tiles_url = f"https://pramithadi.github.io/spatify2tiles/pl/{year}/{{z}}/{{x}}/{{y}}.png"
 
-        if year not in PL_IMAGE_BOUNDS:
-            st.error(f"Bounds untuk tahun {year} tidak ditemukan.")
-            return False
-
-        bounds_folium = PL_IMAGE_BOUNDS[year]
-        pl_overlay = folium.raster_layers.ImageOverlay(
-            image=png_url,
-            bounds=bounds_folium,
-            opacity=1.0,
-            interactive=True,
-            cross_origin=False,
-            zindex=1,
+        folium.TileLayer(
+            tiles=tiles_url,
+            attr=f"Penutup Lahan {year}",
             name=f"Penutup Lahan {year}",
+            overlay=True,
+            control=True,
             show=True,
-        )
-        pl_overlay.add_to(map_obj)
+            min_zoom=10,
+            max_zoom=15,
+            opacity=1.0,
+        ).add_to(map_obj)
         return True
     except Exception as e:
-        st.error(f"Error menambahkan PNG ke peta: {e}")
+        st.error(f"Error menambahkan tiles ke peta: {e}")
         return False
 
 
@@ -937,8 +929,8 @@ with tab1:
 
         folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
 
-        png_success = add_png_to_map(m, option)
-        if not png_success:
+        tiles_success = add_tiles_to_map(m, option)
+        if not tiles_success:
             st.info("Menampilkan peta tanpa layer Penutup Lahan.")
 
         add_shp_to_map(m, geojson_data)
