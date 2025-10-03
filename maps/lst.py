@@ -807,11 +807,7 @@ def create_base_map():
     )
 
     folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
-    folium.TileLayer(
-        tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        attr="Google Satellite",
-        name="Google Satellite",
-    ).add_to(m)
+
     return m
 
 
@@ -904,9 +900,9 @@ with tab1:
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
                 if option == "2029":
-                    description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] **diprediksi** sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
+                    description = f"Rata-rata suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] **diprediksi** sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
                 else:
-                    description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] memiliki rata-rata suhu sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
+                    description = f"Rata-rata suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] memiliki rata-rata suhu sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
                 st.write(description)
 
     with col1_peta:
@@ -926,12 +922,6 @@ with tab1:
         )
 
         folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
-        folium.TileLayer(
-            tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-            attr="Google Satellite",
-            name="Google Satellite",
-        ).add_to(m)
-        folium.TileLayer(tiles="OpenStreetMap", name="OpenStreetMap").add_to(m)
 
         thresholds = threshold_dict[option]
         png_success = add_png_to_map(m, option, thresholds)
@@ -1079,8 +1069,8 @@ with tab2:
                 """
                 💡 **Quick Insight**
                 - :green-background[**Kawasan perkotaan**] Yogyakarta secara konsisten menunjukkan suhu permukaan yang **jauh lebih tinggi** dibandingkan :green-background[**kawasan non-perkotaan**] yang menjadi sebuah indikasi dari fenomena *urban heat island*.
-                - **Suhu** di kawasan **perkotaan** menunjukkan **tren pemanasan** dalam jangka panjang yang diprediksi akan mencapai puncaknya pada tahun 2029 dengan rata-rata LST sebesar :green-background[**43.56°C**].
-                - Meskipun lebih sejuk, kawasan **non-perkotaan** juga tidak luput dari **tren pemanasan** serupa dan diprediksi akan terus meningkat dengan rata-rata LST sebesar :green-background[**37.40°C**] pada tahun 2029.
+                - **Suhu** di kawasan **perkotaan** menunjukkan **tren pemanasan** dalam jangka panjang yang diprediksi akan mencapai puncaknya pada tahun 2029 dengan rata-rata LST sebesar :green-background[**43.54°C**].
+                - Meskipun lebih sejuk, kawasan **non-perkotaan** juga tidak luput dari **tren pemanasan** serupa dan diprediksi akan terus meningkat dengan rata-rata LST sebesar :green-background[**37.37°C**] pada tahun 2029.
                 """
             )
 
@@ -1288,7 +1278,7 @@ with tab3:
                     legend={
                         "orientation": "h",
                         "yanchor": "top",
-                        "y": -0.17,
+                        "y": -0.22,
                         "xanchor": "center",
                         "x": 0.5,
                         "font": {"family": "Poppins", "size": 14, "color": "black"},
@@ -1542,7 +1532,7 @@ with tab4:
             st.write("💡 **Quick Insight**")
             st.markdown(
                 f"""
-                - Model prediksi memiliki **tingkat akurasi sangat tinggi** dibuktikan dengan nilai *error* :green-background[**RMSE (0.7894)**] dan :green-background[**MAE (0.6162)**] yang rendah<sup>[1]</sup>. *Error* prediksi **dianggap wajar** karena masih berada dalam rentang toleransi yang diizinkan untuk pemodelan LST (:green-background[**± 2°C**])<sup>[2]</sup>.
+                - Model prediksi memiliki **tingkat akurasi sangat tinggi** dibuktikan dengan nilai *error* :green-background[**RMSE (0.7994)**] dan :green-background[**MAE (0.6162)**] yang rendah<sup>[1]</sup>. *Error* prediksi **dianggap wajar** karena masih berada dalam rentang toleransi yang diizinkan untuk pemodelan LST (:green-background[**± 2°C**])<sup>[2]</sup>.
                 - **Koefisien determinasi (R²)** menunjukkan nilai :green-background[**96.09%**] artinya model mampu **menjelaskan mayoritas variasi** data LST dengan **sangat baik**<sup>[3]</sup>.
                 """,
                 unsafe_allow_html=True,
