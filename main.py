@@ -73,16 +73,16 @@ st.markdown(
         color: #000000 !important;
     }
     
-    div[data-testid="stVerticalBlock"] p,
-    div[data-testid="stVerticalBlock"] div,
-    div[data-testid="stVerticalBlock"] h1,
-    div[data-testid="stVerticalBlock"] h2,
-    div[data-testid="stVerticalBlock"] h3,
-    div[data-testid="stVerticalBlock"] h4,
-    div[data-testid="stVerticalBlock"] h5,
-    div[data-testid="stVerticalBlock"] h6 {
-        color: #000000 !important;
-    }
+    # div[data-testid="stVerticalBlock"] p,
+    # div[data-testid="stVerticalBlock"] div,
+    # div[data-testid="stVerticalBlock"] h1,
+    # div[data-testid="stVerticalBlock"] h2,
+    # div[data-testid="stVerticalBlock"] h3,
+    # div[data-testid="stVerticalBlock"] h4,
+    # div[data-testid="stVerticalBlock"] h5,
+    # div[data-testid="stVerticalBlock"] h6 {
+    #     color: #000000 !important;
+    # }
     
     div[data-testid="column"] p,
     div[data-testid="column"] div,
@@ -169,12 +169,3 @@ gee_apps = st.Page(
     title="Earth Engine Apps",
     icon=":material/globe_location_pin:",
 )
-
-pg = st.navigation(
-    {
-        "": [home],
-        "Dasbor Analisis": [lst, ndbi, ndmi, ndvi, lulc],
-        "Eksplorasi Hasil": [gee_apps, download_peta],
-    }
-)
-pg.run()
