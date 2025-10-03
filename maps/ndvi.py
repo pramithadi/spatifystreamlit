@@ -418,7 +418,7 @@ KECAMATAN_BOUNDS = {
 # ==============================================================================
 # DEKLARASI FUNGSI
 # ==============================================================================
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_and_prep_geojson(geojson_path):
     try:
         import json
@@ -442,7 +442,7 @@ def load_and_prep_geojson(geojson_path):
         return None
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_stats_kec():
     csv_path = "./csv/ndviStatsKec.csv"
     try:
@@ -563,7 +563,7 @@ def add_legend_to_map(map_obj, thresholds):
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_image_from_url(url):
     try:
         response = requests.get(url)
@@ -658,7 +658,7 @@ def load_all_map_data():
     }
 
 
-@st.cache_resource
+@st.cache_resource(ttl=3600)
 def create_base_map():
     m = folium.Map(
         location=[-7.764326411862208, 110.3721676814108],

@@ -436,7 +436,7 @@ KECAMATAN_BOUNDS = {
 # ==============================================================================
 # DEKLARASI FUNGSI
 # ==============================================================================
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_and_prep_geojson(geojson_path):
     try:
         import json
@@ -460,7 +460,7 @@ def load_and_prep_geojson(geojson_path):
         return None
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_stats_kec():
     csv_path = "./csv/lstStatsKec.csv"
     try:
@@ -730,7 +730,7 @@ def interpret_regression(r2, p_value, slope, x_var):
     return interpretation, is_influential
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_image_from_url(url):
     """Load image from URL and cache it to avoid repeated downloads"""
     try:
@@ -798,7 +798,7 @@ def load_all_map_data():
     }
 
 
-@st.cache_resource
+@st.cache_resource(ttl=3600)
 def create_base_map():
     m = folium.Map(
         location=[-7.764326411862208, 110.3721676814108],
@@ -900,9 +900,9 @@ with tab1:
                 wadmkk = kecamatan_data["wadmkk"]
                 toponim = get_toponim(wadmkk)
                 if option == "2029":
-                    description = f"Rata-rata suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] **diprediksi** sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
+                    description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] **diprediksi** sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
                 else:
-                    description = f"Rata-rata suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] memiliki rata-rata suhu sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
+                    description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] memiliki rata-rata suhu sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
                 st.write(description)
 
     with col1_peta:

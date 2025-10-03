@@ -402,7 +402,7 @@ KECAMATAN_BOUNDS = {
 # ==============================================================================
 # DEKLARASI FUNGSI
 # ==============================================================================
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_and_prep_geojson(geojson_path):
     try:
         import json
@@ -426,7 +426,7 @@ def load_and_prep_geojson(geojson_path):
         return None
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_aoi_data():
     """
     Load CSV Statistik Penutup Lahan di AOI (KPY dan Sekitarnya).
@@ -443,7 +443,7 @@ def load_aoi_data():
         return pd.DataFrame()
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_kec_data():
     """
     Load CSV Statistik Penutup Lahan tiap Kecamatan.
@@ -472,7 +472,7 @@ def get_region_type(wadmkk):
         return ""
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def get_aoi_by_year(df, year):
     """
     Filter Penutup Lahan AOI Berdasarkan Tahun.
@@ -513,7 +513,7 @@ def get_aoi_by_year(df, year):
     }
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def get_kec_by_year_name(df, year, namobj):
     """
     Filter Penutup Lahan Kecamatan Berdasarkan Tahun dan Nama.
@@ -537,7 +537,7 @@ def get_kec_by_year_name(df, year, namobj):
     }
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def get_kec_list(df):
     """
     Get List Nama Kecamatan Berdasarkan NAMOBJ.
@@ -635,7 +635,7 @@ def add_legend(map_obj):
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_image_from_url(url):
     try:
         response = requests.get(url)
@@ -730,7 +730,7 @@ def load_all_map_data():
     }
 
 
-@st.cache_resource
+@st.cache_resource(ttl=3600)
 def create_base_map():
     m = folium.Map(
         location=[-7.764326411862208, 110.3721676814108],
@@ -748,7 +748,7 @@ def create_base_map():
     return m
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def generate_quick_insight(penutup_lahan_df):
     """
     Menambahkan Quick Insight Berdasarkan DataFrame.
