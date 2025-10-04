@@ -1427,11 +1427,6 @@ with tab4:
     st.write("")
 
     st.badge(
-        "**Perbandingan Visual Peta NDBI Aktual dan Proyeksi**",
-        color="primary",
-    )
-
-    st.badge(
         "**Tabel Perbandingan Sampel Nilai NDBI Aktual dan Proyeksi**",
         color="primary",
     )
