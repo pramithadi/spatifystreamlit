@@ -1219,68 +1219,6 @@ def display_validation_content(year):
         except Exception as e:
             st.error(f"Error dalam membuat matriks konfusi: {str(e)}")
 
-    # Baris Kosong
-    st.write("")
-
-    # Expander Tabel
-    with st.expander(f"**📍 Tabel Sampel Penutup Lahan {year}**"):
-        try:
-
-            def path_to_image_html(path):
-                img_width, img_height = (80, 100) if year == "2024" else (100, 80)
-
-                base64_img = get_base64_encoded_image(path)
-                if base64_img:
-                    mime_type = (
-                        "jpeg" if path.lower().endswith((".jpg", ".jpeg")) else "png"
-                    )
-                    return f'<img src="data:image/{mime_type};base64,{base64_img}" width="{img_width}" height="{img_height}" style="object-fit: cover; border-radius: 2px;">'
-                return "❌ Foto tidak ditemukan."
-
-            def convert_df_to_html_local(input_df):
-                return input_df.to_html(
-                    escape=False,
-                    formatters=dict(Foto=path_to_image_html),
-                    table_id="validasi-table",
-                    classes="table table-striped",
-                    index=False,
-                )
-
-            df = pd.read_csv(csv_path)
-
-            def create_image_path(kode):
-                kode_prefix = kode[:5].lower()
-                if year == "2024":
-                    return f"img/img_val_{year}/{kode_prefix}24.JPG"
-                elif year == "2019":
-                    return f"img/img_val_{year}/{kode_prefix}19.png"
-                else:
-                    return f"img/img_val_{year}/{kode_prefix}14.png"
-
-            df["Foto"] = df["Kode"].apply(create_image_path)
-            html_table = convert_df_to_html_local(df)
-
-            st.markdown(
-                """
-                <style>
-                #validasi-table { width: 100%; border-collapse: collapse; margin: 0px 0 10px 0; }
-                #validasi-table th, #validasi-table td { border: 1px solid #ddd; padding: 8px; text-align: center; vertical-align: middle; }
-                #validasi-table th { background-color: #E4EFE7; font-weight: bold; }
-                #validasi-table img { margin: 0 auto; border-radius: 4px; display: block; }
-                .stExpander > div > div > div > div { padding-top: 0rem !important; }
-                </style>
-                <div style="margin-top: -20px;"></div>
-            """,
-                unsafe_allow_html=True,
-            )
-
-            st.markdown(html_table, unsafe_allow_html=True)
-
-        except FileNotFoundError:
-            st.error(f"File '{csv_path}' tidak ditemukan!")
-        except Exception as e:
-            st.error(f"Terjadi kesalahan: {str(e)}")
-
 
 with tab3:
     st.badge(
