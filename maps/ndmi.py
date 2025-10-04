@@ -779,7 +779,7 @@ with tab1:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 15
+                zoom_level = 13
 
         m = folium.Map(
             location=map_center, zoom_start=zoom_level, tiles="OpenStreetMap"
