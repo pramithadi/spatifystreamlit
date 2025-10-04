@@ -136,22 +136,6 @@ NDVI_IMAGE_BOUNDS = {
     "2029": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
 }
 
-PNG_URLS = {
-    "1999": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_1999.png",
-    "2004": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2004.png",
-    "2009": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2009.png",
-    "2014": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2014.png",
-    "2019": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2019.png",
-    "2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2024.png",
-    "2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2029.png",
-}
-
-PLOT_VIZ_URLS = {
-    "ndvi_2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2024.png",
-    "ndvi_2024a": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2024a.png",
-    "ndvi_2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/ndvi_2029.png",
-}
-
 KECAMATAN_BOUNDS = {
     "Pajangan": {
         "min_lat": -7.910154,
@@ -607,32 +591,24 @@ def rgba_to_classification_ndvi(rgba_array):
     return classified
 
 
-def add_png_to_map(map_obj, year, thresholds):
+def add_tiles_to_map(map_obj, year):
     try:
-        png_url = PNG_URLS.get(year)
-        if not png_url:
-            st.error(f"File PNG untuk tahun: {year} tidak ditemukan.")
-            return False
+        tiles_url = f"https://pramithadi.github.io/spatify2tiles/ndvi/{year}/{{z}}/{{x}}/{{y}}.png"
 
-        if year not in NDVI_IMAGE_BOUNDS:
-            st.error(f"Bounds untuk tahun {year} tidak ditemukan.")
-            return False
-
-        bounds_folium = NDVI_IMAGE_BOUNDS[year]
-        ndvi_overlay = folium.raster_layers.ImageOverlay(
-            image=png_url,
-            bounds=bounds_folium,
-            opacity=1.0,
-            interactive=True,
-            cross_origin=False,
-            zindex=1,
+        folium.TileLayer(
+            tiles=tiles_url,
+            attr=f"NDVI {year}",
             name=f"NDVI {year}",
+            overlay=True,
+            control=True,
             show=True,
-        )
-        ndvi_overlay.add_to(map_obj)
+            min_zoom=10,
+            max_zoom=13,
+            opacity=1.0,
+        ).add_to(map_obj)
         return True
     except Exception as e:
-        st.error(f"Error menambahkan PNG ke peta: {e}")
+        st.error(f"Error menambahkan tiles ke peta: {e}")
         return False
 
 
@@ -811,9 +787,9 @@ with tab1:
         folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
 
         thresholds = threshold_dict[option]
-        png_success = add_png_to_map(m, option, thresholds)
-        if not png_success:
-            st.info("⏳ Menampilkan peta tanpa layer NDVI. Silakan *refresh* Spatify.")
+        tiles_success = add_tiles_to_map(m, option)
+        if not tiles_success:
+            st.info("⏳ Menampilkan peta tanpa layer NDVI. Silakan *refresh* Spatify!")
 
         add_shp_to_map(m, geojson_data)
 
@@ -1446,195 +1422,6 @@ with tab4:
             st.success(
                 "✅ Data proyeksi NDVI 2029 **VALID** untuk memprediksi LST 2029!"
             )
-
-    # Baris Kosong
-    st.write("")
-
-    st.badge(
-        "**Perbandingan Visual Peta NDVI Aktual dan Proyeksi**",
-        color="primary",
-    )
-
-    col_peta_perbandingan = st.columns(1)
-    with col_peta_perbandingan[0]:
-        with st.container(border=True):
-            try:
-                with st.spinner("Memuat plot..."):
-                    # Aktual NDVI 2024
-                    data_2024_actual_raw = load_image_from_url(
-                        PLOT_VIZ_URLS["ndvi_2024"]
-                    )
-                    if data_2024_actual_raw is not None:
-                        data_2024_actual = rgba_to_classification_ndvi(
-                            data_2024_actual_raw
-                        )
-                        data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
-                    else:
-                        st.error("Gagal memuat data aktual NDVI 2024")
-                        st.stop()
-
-                    # Prediksi NDVI 2024
-                    data_2024_pred_raw = load_image_from_url(
-                        PLOT_VIZ_URLS["ndvi_2024a"]
-                    )
-                    if data_2024_pred_raw is not None:
-                        data_2024_pred = rgba_to_classification_ndvi(data_2024_pred_raw)
-                        data_2024_pred = np.flipud(data_2024_pred)
-                    else:
-                        st.error("Gagal memuat data proyeksi NDVI 2024")
-                        st.stop()
-
-                    # Prediksi NDVI 2029
-                    data_2029_pred_raw = load_image_from_url(PLOT_VIZ_URLS["ndvi_2029"])
-                    if data_2029_pred_raw is not None:
-                        data_2029_pred = rgba_to_classification_ndvi(data_2029_pred_raw)
-                        data_2029_pred = np.flipud(data_2029_pred)
-                    else:
-                        st.error("Gagal memuat data proyeksi NDVI 2029")
-                        st.stop()
-
-                colorscale = [
-                    [0.0, "rgb(139, 0, 0)"],
-                    [0.33, "rgb(255, 255, 224)"],
-                    [0.67, "rgb(144, 238, 144)"],
-                    [1.0, "rgb(0, 100, 0)"],
-                ]
-
-                fig = make_subplots(
-                    rows=1,
-                    cols=3,
-                    subplot_titles=[
-                        "Aktual NDVI 2024",
-                        "Proyeksi NDVI 2024",
-                        "Proyeksi NDVI 2029",
-                    ],
-                    horizontal_spacing=0.08,
-                )
-
-                fig.add_trace(
-                    go.Heatmap(
-                        z=data_2024_actual,
-                        colorscale=colorscale,
-                        zmin=0,
-                        zmax=3,
-                        showscale=False,
-                        hovertemplate="<extra></extra>",
-                    ),
-                    row=1,
-                    col=1,
-                )
-
-                fig.add_trace(
-                    go.Heatmap(
-                        z=data_2024_pred,
-                        colorscale=colorscale,
-                        zmin=0,
-                        zmax=3,
-                        showscale=False,
-                        hovertemplate="<extra></extra>",
-                    ),
-                    row=1,
-                    col=2,
-                )
-
-                fig.add_trace(
-                    go.Heatmap(
-                        z=data_2029_pred,
-                        colorscale=colorscale,
-                        zmin=0,
-                        zmax=3,
-                        showscale=False,
-                        hovertemplate="<extra></extra>",
-                    ),
-                    row=1,
-                    col=3,
-                )
-
-                legend_data = [
-                    {
-                        "name": "Sangat Rendah",
-                        "color": "rgb(139, 0, 0)",
-                    },
-                    {
-                        "name": "Rendah",
-                        "color": "rgb(255, 255, 224)",
-                    },
-                    {
-                        "name": "Sedang",
-                        "color": "rgb(144, 238, 144)",
-                    },
-                    {
-                        "name": "Tinggi",
-                        "color": "rgb(0, 100, 0)",
-                    },
-                ]
-
-                for i, legend_item in enumerate(legend_data):
-                    fig.add_trace(
-                        go.Scatter(
-                            x=[None],
-                            y=[None],
-                            mode="markers",
-                            marker=dict(
-                                size=11, color=legend_item["color"], symbol="square"
-                            ),
-                            name=legend_item["name"],
-                            showlegend=True,
-                            hovertemplate="<extra></extra>",
-                        )
-                    )
-
-                fig.update_layout(
-                    height=487,
-                    showlegend=True,
-                    font=dict(family="Poppins, sans-serif", size=12, color="black"),
-                    # plot_bgcolor="#fdfaf6",
-                    # paper_bgcolor="#fdfaf6",
-                    margin=dict(l=50, r=50, t=50, b=70),
-                    legend=dict(
-                        orientation="h",
-                        yanchor="top",
-                        y=-0.05,
-                        xanchor="center",
-                        x=0.5,
-                        bgcolor="rgba(0,0,0,0)",
-                        bordercolor="rgba(0,0,0,0)",
-                        borderwidth=0,
-                        font=dict(size=12, color="black"),
-                    ),
-                )
-
-                for i in range(1, 4):
-                    fig.update_xaxes(
-                        showgrid=False,
-                        zeroline=False,
-                        showticklabels=False,
-                        row=1,
-                        col=i,
-                        tickfont=dict(size=12, color="black"),
-                        title_font=dict(size=12, color="black"),
-                    )
-                    fig.update_yaxes(
-                        showgrid=False,
-                        zeroline=False,
-                        showticklabels=False,
-                        row=1,
-                        col=i,
-                        tickfont=dict(size=12, color="black"),
-                        title_font=dict(size=12, color="black"),
-                    )
-
-                for annotation in fig.layout.annotations:
-                    annotation.font.size = 12
-                    annotation.font.color = "black"
-
-                st.plotly_chart(fig, use_container_width=True)
-
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
-                import traceback
-
-                st.error(f"Traceback: {traceback.format_exc()}")
 
     # Baris Kosong
     st.write("")

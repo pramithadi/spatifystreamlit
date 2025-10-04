@@ -170,7 +170,7 @@ gee_apps = st.Page(
 pg = st.navigation(
     {
         "": [home],
-        "Dasbor Analisis": [lst, ndbi, lulc],
+        "Dasbor Analisis": [lst, ndbi, ndmi, lulc],
         "Eksplorasi Hasil": [gee_apps, download_peta],
     }
 )
