@@ -109,16 +109,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-PL_IMAGE_BOUNDS = {
-    "1999": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
-    "2004": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
-    "2009": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
-    "2014": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
-    "2019": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
-    "2024": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
-    "2029": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
-}
-
 KECAMATAN_BOUNDS = {
     "Pajangan": {
         "min_lat": -7.910154,
@@ -674,7 +664,7 @@ def add_tiles_to_map(map_obj, year):
             control=True,
             show=True,
             min_zoom=10,
-            max_zoom=15,
+            max_zoom=13,
             opacity=1.0,
         ).add_to(map_obj)
         return True
@@ -809,7 +799,7 @@ st.header("Penutup Lahan")
 # ==============================================================================
 with tab1:
     if "map_data_loaded" not in st.session_state:
-        with st.spinner("⏳ Memuat tiles peta... Mohon tunggu 15-30 detik."):
+        with st.spinner("Mempersiapkan data peta..."):
             map_data = load_all_map_data()
             st.session_state.map_data = map_data
             st.session_state.map_data_loaded = True
@@ -894,7 +884,7 @@ with tab1:
 
     with col1_peta:
         map_center = [-7.764326411862208, 110.3721676814108]
-        zoom_level = 11
+        zoom_level = 10.5
 
         if selected_kecamatan:
             kec_bounds = get_kecamatan_bounds_static(selected_kecamatan)
@@ -902,7 +892,7 @@ with tab1:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 14
+                zoom_level = 15
 
         m = folium.Map(
             location=map_center,
@@ -1351,8 +1341,8 @@ with tab4:
                     "font": {"family": "Poppins", "size": 12, "color": "black"},
                 },
                 font={"family": "Poppins"},
-                plot_bgcolor="#fdfaf6",
-                paper_bgcolor="#fdfaf6",
+                # plot_bgcolor="#fdfaf6",
+                # paper_bgcolor="#fdfaf6",
                 margin=dict(l=70, r=50, t=20, b=30),
                 height=241,
                 showlegend=True,
@@ -1459,8 +1449,8 @@ with tab4:
                     "font": {"family": "Poppins", "size": 12, "color": "black"},
                 },
                 font={"family": "Poppins"},
-                plot_bgcolor="#fdfaf6",
-                paper_bgcolor="#fdfaf6",
+                # plot_bgcolor="#fdfaf6",
+                # paper_bgcolor="#fdfaf6",
                 margin=dict(l=40, r=40, t=40, b=80),
                 showlegend=True,
                 barmode="group",
@@ -1492,6 +1482,21 @@ with tab4:
                 - Sebaliknya, model menunjukkan **performa yang lebih rendah** dalam mengidentifikasi kelas **tubuh air** dan **lahan terbuka**. Nilai **F1-Score rendah** menunjukkan model kesulitan membedakan kedua kelas tersebut. Hal ini dapat disebabkan oleh :green-background[**keterbatasan sampel training**] atau :green-background[**kemiripan spektral**] dengan kelas lain.
                 """,
                 unsafe_allow_html=True,
+            )
+
+    # Baris Kosong
+    st.write("")
+
+    st.badge(
+        "**Perbandingan Visual Peta Penutup Lahan Aktual dan Prediksi**",
+        color="primary",
+    )
+
+    col_peta_perbandingan = st.columns(1)
+    with col_peta_perbandingan[0]:
+        with st.container(border=True):
+            st.write(
+                "Perbandingan visual antara peta penutup lahan aktual tahun 2019 dan peta prediksi penutup lahan tahun 2024."
             )
 
     # Baris Kosong

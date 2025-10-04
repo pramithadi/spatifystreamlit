@@ -154,22 +154,6 @@ LST_IMAGE_BOUNDS = {
     "2029": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
 }
 
-PNG_URLS = {
-    "1999": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_1999.png",
-    "2004": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2004.png",
-    "2009": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2009.png",
-    "2014": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2014.png",
-    "2019": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2019.png",
-    "2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2024.png",
-    "2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2029.png",
-}
-
-PLOT_VIZ_URLS = {
-    "lst_2024": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2024.png",
-    "lst_2024a": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2024a.png",
-    "lst_2029": "https://raw.githubusercontent.com/pramithadi/spatifystreamlit/main/static/lst_2029.png",
-}
-
 KECAMATAN_BOUNDS = {
     "Pajangan": {
         "min_lat": -7.910154,
@@ -569,32 +553,24 @@ def add_legend_to_map(map_obj, thresholds):
     map_obj.get_root().html.add_child(folium.Element(legend_html))
 
 
-def add_png_to_map(map_obj, year, thresholds):
+def add_tiles_to_map(map_obj, year, thresholds):
     try:
-        png_url = PNG_URLS.get(year)
-        if not png_url:
-            st.error(f"File PNG untuk tahun: {year} tidak ditemukan.")
-            return False
+        tiles_url = f"https://pramithadi.github.io/spatify2tiles/lst/{year}/{{z}}/{{x}}/{{y}}.png"
 
-        if year not in LST_IMAGE_BOUNDS:
-            st.error(f"Bounds untuk tahun {year} tidak ditemukan.")
-            return False
-
-        bounds_folium = LST_IMAGE_BOUNDS[year]
-        lst_overlay = folium.raster_layers.ImageOverlay(
-            image=png_url,
-            bounds=bounds_folium,
-            opacity=1.0,
-            interactive=True,
-            cross_origin=False,
-            zindex=1,
+        folium.TileLayer(
+            tiles=tiles_url,
+            attr=f"Suhu Permukaan Lahan {year}",
             name=f"Suhu Permukaan Lahan {year}",
+            overlay=True,
+            control=True,
             show=True,
-        )
-        lst_overlay.add_to(map_obj)
+            min_zoom=10,
+            max_zoom=13,
+            opacity=1.0,
+        ).add_to(map_obj)
         return True
     except Exception as e:
-        st.error(f"Error menambahkan PNG ke peta: {e}")
+        st.error(f"Error menambahkan tiles ke peta: {e}")
         return False
 
 
@@ -915,7 +891,7 @@ with tab1:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 15
+                zoom_level = 13
 
         m = folium.Map(
             location=map_center, zoom_start=zoom_level, tiles="OpenStreetMap"
@@ -924,8 +900,8 @@ with tab1:
         folium.TileLayer(tiles="CartoDB positron", name="CartoDB Positron").add_to(m)
 
         thresholds = threshold_dict[option]
-        png_success = add_png_to_map(m, option, thresholds)
-        if not png_success:
+        tiles_success = add_tiles_to_map(m, option, thresholds)
+        if not tiles_success:
             st.info("Menampilkan peta tanpa layer LST.")
 
         add_shp_to_map(m, geojson_data)
@@ -1515,8 +1491,8 @@ with tab4:
                     "font": {"family": "Poppins", "size": 12, "color": "black"},
                 },
                 font={"family": "Poppins"},
-                plot_bgcolor="#fdfaf6",
-                paper_bgcolor="#fdfaf6",
+                # plot_bgcolor="#fdfaf6",
+                # paper_bgcolor="#fdfaf6",
                 margin=dict(l=0, r=0, t=20, b=30),
                 height=324,
                 showlegend=True,
@@ -1716,179 +1692,7 @@ with tab4:
     col_peta_perbandingan = st.columns(1)
     with col_peta_perbandingan[0]:
         with st.container(border=True):
-            try:
-                with st.spinner("Memuat gambar dari GitHub..."):
-                    # Aktual LST 2024
-                    data_2024_actual_raw = load_image_from_url(
-                        PLOT_VIZ_URLS["lst_2024"]
-                    )
-                    if data_2024_actual_raw is not None:
-                        data_2024_actual = rgba_to_classification(data_2024_actual_raw)
-                        data_2024_actual = np.flipud(data_2024_actual)  # Flip Orientasi
-                    else:
-                        st.error("Gagal memuat data aktual LST 2024")
-                        st.stop()
-
-                    # Prediksi LST 2024
-                    data_2024_pred_raw = load_image_from_url(PLOT_VIZ_URLS["lst_2024a"])
-                    if data_2024_pred_raw is not None:
-                        data_2024_pred = rgba_to_classification(data_2024_pred_raw)
-                        data_2024_pred = np.flipud(data_2024_pred)
-                    else:
-                        st.error("Gagal memuat data prediksi LST 2024")
-                        st.stop()
-
-                    # Prediksi LST 2029
-                    data_2029_pred_raw = load_image_from_url(PLOT_VIZ_URLS["lst_2029"])
-                    if data_2029_pred_raw is not None:
-                        data_2029_pred = rgba_to_classification(data_2029_pred_raw)
-                        data_2029_pred = np.flipud(data_2029_pred)
-                    else:
-                        st.error("Gagal memuat data prediksi LST 2029")
-                        st.stop()
-
-                colorscale = [
-                    [0.0, "rgb(92, 160, 211)"],
-                    [0.33, "rgb(245, 235, 177)"],
-                    [0.67, "rgb(219, 167, 88)"],
-                    [1.0, "rgb(147, 34, 14)"],
-                ]
-
-                fig = make_subplots(
-                    rows=1,
-                    cols=3,
-                    subplot_titles=[
-                        "Aktual LST 2024",
-                        "Prediksi LST 2024",
-                        "Prediksi LST 2029",
-                    ],
-                    horizontal_spacing=0.08,
-                )
-
-                fig.add_trace(
-                    go.Heatmap(
-                        z=data_2024_actual,
-                        colorscale=colorscale,
-                        zmin=0,
-                        zmax=3,
-                        showscale=False,
-                        hovertemplate="<extra></extra>",
-                    ),
-                    row=1,
-                    col=1,
-                )
-
-                fig.add_trace(
-                    go.Heatmap(
-                        z=data_2024_pred,
-                        colorscale=colorscale,
-                        zmin=0,
-                        zmax=3,
-                        showscale=False,
-                        hovertemplate="<extra></extra>",
-                    ),
-                    row=1,
-                    col=2,
-                )
-
-                fig.add_trace(
-                    go.Heatmap(
-                        z=data_2029_pred,
-                        colorscale=colorscale,
-                        zmin=0,
-                        zmax=3,
-                        showscale=False,
-                        hovertemplate="<extra></extra>",
-                    ),
-                    row=1,
-                    col=3,
-                )
-
-                legend_data = [
-                    {
-                        "name": "Sangat Rendah",
-                        "color": "rgb(92, 160, 211)",
-                    },
-                    {
-                        "name": "Rendah",
-                        "color": "rgb(245, 235, 177)",
-                    },
-                    {
-                        "name": "Sedang",
-                        "color": "rgb(219, 167, 88)",
-                    },
-                    {
-                        "name": "Tinggi",
-                        "color": "rgb(147, 34, 14)",
-                    },
-                ]
-
-                for i, legend_item in enumerate(legend_data):
-                    fig.add_trace(
-                        go.Scatter(
-                            x=[None],
-                            y=[None],
-                            mode="markers",
-                            marker=dict(
-                                size=11, color=legend_item["color"], symbol="square"
-                            ),
-                            name=legend_item["name"],
-                            showlegend=True,
-                            hovertemplate="<extra></extra>",
-                        )
-                    )
-
-                fig.update_layout(
-                    height=487,
-                    showlegend=True,
-                    font=dict(family="Poppins, sans-serif", size=12, color="black"),
-                    plot_bgcolor="#fdfaf6",
-                    paper_bgcolor="#fdfaf6",
-                    margin=dict(l=50, r=50, t=50, b=70),
-                    legend=dict(
-                        orientation="h",
-                        yanchor="top",
-                        y=-0.05,
-                        xanchor="center",
-                        x=0.5,
-                        bgcolor="rgba(0,0,0,0)",
-                        bordercolor="rgba(0,0,0,0)",
-                        borderwidth=0,
-                        font=dict(size=12, color="black"),
-                    ),
-                )
-
-                for i in range(1, 4):
-                    fig.update_xaxes(
-                        showgrid=False,
-                        zeroline=False,
-                        showticklabels=False,
-                        row=1,
-                        col=i,
-                        tickfont=dict(size=12, color="black"),
-                        title_font=dict(size=12, color="black"),
-                    )
-                    fig.update_yaxes(
-                        showgrid=False,
-                        zeroline=False,
-                        showticklabels=False,
-                        row=1,
-                        col=i,
-                        tickfont=dict(size=12, color="black"),
-                        title_font=dict(size=12, color="black"),
-                    )
-
-                for annotation in fig.layout.annotations:
-                    annotation.font.size = 12
-                    annotation.font.color = "black"
-
-                st.plotly_chart(fig, use_container_width=True)
-
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
-                import traceback
-
-                st.error(f"Traceback: {traceback.format_exc()}")
+            st.write("Hahaha")
 
     # Baris Kosong
     st.write("")
