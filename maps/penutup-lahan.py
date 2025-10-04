@@ -109,6 +109,16 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+PL_IMAGE_BOUNDS = {
+    "1999": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2004": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2009": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2014": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2019": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2024": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+    "2029": [[-7.94631734026, 110.215739513], [-7.54099748407, 110.521346373]],
+}
+
 KECAMATAN_BOUNDS = {
     "Pajangan": {
         "min_lat": -7.910154,
@@ -450,7 +460,7 @@ def get_aoi_by_year(df, year):
     """
     Filter Penutup Lahan AOI Berdasarkan Tahun.
     """
-    if df.empty:
+    if df is None or df.empty:
         return {}
 
     year_to_index = {
@@ -515,7 +525,7 @@ def get_kec_list(df):
     """
     Get List Nama Kecamatan Berdasarkan NAMOBJ.
     """
-    if df.empty:
+    if df is None or df.empty:
         return []
 
     return sorted(df["NAMOBJ"].unique().tolist())
@@ -892,7 +902,7 @@ with tab1:
                 center_lat = (kec_bounds[0][0] + kec_bounds[1][0]) / 2
                 center_lon = (kec_bounds[0][1] + kec_bounds[1][1]) / 2
                 map_center = [center_lat, center_lon]
-                zoom_level = 15
+                zoom_level = 13
 
         m = folium.Map(
             location=map_center,
@@ -904,7 +914,9 @@ with tab1:
 
         tiles_success = add_tiles_to_map(m, option)
         if not tiles_success:
-            st.info("Menampilkan peta tanpa layer Penutup Lahan.")
+            st.info(
+                "⏳ Menampilkan peta tanpa layer Penutup Lahan. Silakan *refresh* Spatify!"
+            )
 
         add_shp_to_map(m, geojson_data)
 
@@ -1482,21 +1494,6 @@ with tab4:
                 - Sebaliknya, model menunjukkan **performa yang lebih rendah** dalam mengidentifikasi kelas **tubuh air** dan **lahan terbuka**. Nilai **F1-Score rendah** menunjukkan model kesulitan membedakan kedua kelas tersebut. Hal ini dapat disebabkan oleh :green-background[**keterbatasan sampel training**] atau :green-background[**kemiripan spektral**] dengan kelas lain.
                 """,
                 unsafe_allow_html=True,
-            )
-
-    # Baris Kosong
-    st.write("")
-
-    st.badge(
-        "**Perbandingan Visual Peta Penutup Lahan Aktual dan Prediksi**",
-        color="primary",
-    )
-
-    col_peta_perbandingan = st.columns(1)
-    with col_peta_perbandingan[0]:
-        with st.container(border=True):
-            st.write(
-                "Perbandingan visual antara peta penutup lahan aktual tahun 2019 dan peta prediksi penutup lahan tahun 2024."
             )
 
     # Baris Kosong

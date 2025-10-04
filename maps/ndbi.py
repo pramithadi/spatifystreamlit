@@ -753,7 +753,7 @@ with tab1:
                 )
             else:
                 st.info(
-                    f"Menghubungkan dengan data kecamatan untuk tahun {option}. Silakan *refresh* halaman."
+                    f"⏳ Menyiapkan data kecamatan untuk tahun {option}. Silakan *refresh* Spatify!"
                 )
                 selected_kecamatan = ""
 
@@ -811,7 +811,7 @@ with tab1:
         thresholds = threshold_dict[option]
         png_success = add_png_to_map(m, option, thresholds)
         if not png_success:
-            st.info("Menampilkan peta tanpa layer NDBI.")
+            st.info("⏳ Menampilkan peta tanpa layer NDBI. Silakan *refresh* Spatify!")
 
         add_shp_to_map(m, geojson_data)
 
@@ -1247,13 +1247,13 @@ with tab3:
     except FileNotFoundError:
         st.error("❌ File 'csv/ndbiSampelValidasi.csv' tidak ditemukan!")
         st.info(
-            "Pastikan file CSV hasil sampling dari GEE sudah tersedia di folder 'stats/'"
+            "Memastikan file CSV hasil sampling dari GEE sudah tersedia di folder 'stats/'"
         )
 
     except Exception as e:
         st.error(f"❌ Error dalam memproses data: {str(e)}")
         st.info(
-            "Periksa format file CSV dan nama kolom ('ndbiLandsat' dan 'ndbiSentinel')"
+            "Memeriksa format file CSV dan nama kolom ('ndbiLandsat' dan 'ndbiSentinel')"
         )
 
     # Baris Kosong

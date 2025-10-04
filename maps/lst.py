@@ -865,7 +865,7 @@ with tab1:
                 )
             else:
                 st.info(
-                    f"Menghubungkan dengan data kecamatan untuk tahun {option}. Silakan *refresh* halaman."
+                    f"⏳ Menyiapkan data kecamatan untuk tahun {option}. Silakan *refresh* Spatify!"
                 )
                 selected_kecamatan = ""
 
@@ -902,7 +902,7 @@ with tab1:
         thresholds = threshold_dict[option]
         tiles_success = add_tiles_to_map(m, option, thresholds)
         if not tiles_success:
-            st.info("Menampilkan peta tanpa layer LST.")
+            st.info("⏳ Menampilkan peta tanpa layer LST. Silakan *refresh* Spatify!")
 
         add_shp_to_map(m, geojson_data)
 
@@ -1325,13 +1325,13 @@ with tab3:
     except FileNotFoundError:
         st.error("❌ File 'csv/lstSampelValidasi.csv' tidak ditemukan!")
         st.info(
-            "Pastikan file CSV hasil sampling sudah tersedia dengan kolom 'LST Aktual' dan 'LST Referensi'"
+            "Memastikan file CSV hasil sampling sudah tersedia dengan kolom 'LST Aktual' dan 'LST Referensi'"
         )
 
     except Exception as e:
         st.error(f"❌ Error dalam memproses data: {str(e)}")
         st.info(
-            "Periksa format file CSV dan nama kolom ('LST Aktual' dan 'LST Referensi')"
+            "Memeriksa format file CSV dan nama kolom ('LST Aktual' dan 'LST Referensi')"
         )
 
     # Baris Kosong
@@ -1679,20 +1679,6 @@ with tab4:
                 """,
                 unsafe_allow_html=True,
             )
-
-    # Baris Kosong
-    st.write("")
-
-    # Peta Perbandingan
-    st.badge(
-        "**Perbandingan Visual Peta LST Aktual dan Prediksi**",
-        color="primary",
-    )
-
-    col_peta_perbandingan = st.columns(1)
-    with col_peta_perbandingan[0]:
-        with st.container(border=True):
-            st.write("Hahaha")
 
     # Baris Kosong
     st.write("")
