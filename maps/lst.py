@@ -1169,10 +1169,10 @@ with tab3:
         validation_data = validation_data.dropna()
 
         # Ekstraksi Nilai dari Field
-        lstAktual_values = validation_data["LST Aktual (°C)"].values  # X: Satelit
+        lstAktual_values = validation_data["LST Aktual (°C)"].values  # X = satelit
         lstReferensi_values = validation_data[
             "LST Landsat 8 (°C)"
-        ].values  # Y: Lapangan
+        ].values  # Y = lapangan
 
         # Hitung Metrik Regresi (X = satelit, Y = lapangan)
         slope, intercept, r_value, p_val, std_err = stats.linregress(
@@ -1182,7 +1182,7 @@ with tab3:
         # R-squared (Koefisien Determinasi)
         r_squared = r_value**2
 
-        # RMSE & MAE (Y = referensi, X = prediksi)
+        # RMSE & MAE
         rmse = np.sqrt(mean_squared_error(lstReferensi_values, lstAktual_values))
         mae = mean_absolute_error(lstReferensi_values, lstAktual_values)
 
@@ -1786,6 +1786,47 @@ with tab5:
     try:
         df_regression = pd.read_csv("csv/sampelRegresi.csv")
 
+        # Regresi Linier NDVI
+        st.badge(
+            "**Scatter Plot Regresi Linier LST dan NDVI**",
+            color="primary",
+        )
+
+        col1_regresi_ndvi, col2_regresi_ndvi = st.columns([2, 2])
+        with col1_regresi_ndvi:
+            with st.container(border=True):
+                # Membuat plot regresi LST dan NDVI
+                fig_ndvi, r2_ndvi, p_val_ndvi, slope_ndvi = create_regression_plot(
+                    df_regression,
+                    "NDVI",
+                    "LST",
+                    "Regresi Linier: LST dan NDVI",
+                    "NDVI",
+                    "LST (°C)",
+                )
+
+                if fig_ndvi is not None:
+                    st.plotly_chart(fig_ndvi, use_container_width=True)
+                else:
+                    st.error("Data tidak dapat diproses untuk NDVI")
+
+        with col2_regresi_ndvi:
+            with st.container(border=True):
+                st.markdown("💡 **Quick Insight**")
+                if fig_ndvi is not None:
+                    insight_ndvi, is_influential_ndvi = interpret_regression(
+                        r2_ndvi, p_val_ndvi, slope_ndvi, "NDVI"
+                    )
+                    st.markdown(insight_ndvi, unsafe_allow_html=True)
+
+                    if is_influential_ndvi:
+                        st.success("✅ NDVI berpengaruh signifikan terhadap LST!")
+                    else:
+                        st.warning("❌ NDVI tidak berpengaruh terhadap LST!")
+
+        # Baris Kosong
+        st.write("")
+
         # Row Diagram Garis & Ranking LST
         st.badge(
             "**Scatter Plot Regresi Linier LST dan NDBI**",
@@ -1870,41 +1911,84 @@ with tab5:
 
         # Row Diagram Garis & Ranking LST
         st.badge(
-            "**Scatter Plot Regresi Linier LST dan NDVI**",
+            "**Scatter Plot Regresi Linier LST dan Elevasi**",
             color="primary",
         )
 
-        col1_regresi_ndvi, col2_regresi_ndvi = st.columns([2, 2])
-        with col1_regresi_ndvi:
+        col1_regresi_elevasi, col2_regresi_elevasi = st.columns([2, 2])
+        with col1_regresi_elevasi:
             with st.container(border=True):
-                # Membuat plot LST dan NDVI
-                fig_ndvi, r2_ndvi, p_val_ndvi, slope_ndvi = create_regression_plot(
+                # Membuat plot LST dan Elevasi
+                fig_elevasi, r2_elevasi, p_val_elevasi, slope_elevasi = (
+                    create_regression_plot(
+                        df_regression,
+                        "Elevasi",
+                        "LST",
+                        "Regresi Linier: LST dan Elevasi",
+                        "Elevasi",
+                        "LST (°C)",
+                    )
+                )
+
+                if fig_elevasi is not None:
+                    st.plotly_chart(fig_elevasi, use_container_width=True)
+                else:
+                    st.error("Data tidak dapat diproses untuk Elevasi")
+
+        with col2_regresi_elevasi:
+            with st.container(border=True):
+                st.markdown("💡 **Quick Insight**")
+                if fig_elevasi is not None:
+                    insight_elevasi, is_influential_elevasi = interpret_regression(
+                        r2_elevasi, p_val_elevasi, slope_elevasi, "Elevasi"
+                    )
+                    st.markdown(insight_elevasi, unsafe_allow_html=True)
+
+                    if is_influential_elevasi:
+                        st.success("✅ Elevasi berpengaruh  signifikan terhadap LST!")
+                    else:
+                        st.warning("❌ Elevasi tidak berpengaruh terhadap LST!")
+
+        # Baris Kosong
+        st.write("")
+
+        # Row Diagram Garis & Ranking LST
+        st.badge(
+            "**Scatter Plot Regresi Linier LST dan Slope**",
+            color="primary",
+        )
+
+        col1_regresi_slope, col2_regresi_slope = st.columns([2, 2])
+        with col1_regresi_slope:
+            with st.container(border=True):
+                # Membuat plot LST dan Slope
+                fig_slope, r2_slope, p_val_slope, slope_slope = create_regression_plot(
                     df_regression,
-                    "NDVI",
+                    "Slope",
                     "LST",
-                    "Regresi Linier: LST dan NDVI",
-                    "NDVI",
+                    "Regresi Linier: LST dan Slope",
+                    "Slope",
                     "LST (°C)",
                 )
 
-                if fig_ndvi is not None:
-                    st.plotly_chart(fig_ndvi, use_container_width=True)
+                if fig_slope is not None:
+                    st.plotly_chart(fig_slope, use_container_width=True)
                 else:
-                    st.error("Data tidak dapat diproses untuk NDVI")
+                    st.error("Data tidak dapat diproses untuk Slope")
 
-        with col2_regresi_ndvi:
+        with col2_regresi_slope:
             with st.container(border=True):
                 st.markdown("💡 **Quick Insight**")
-                if fig_ndvi is not None:
-                    insight_ndvi, is_influential_ndvi = interpret_regression(
-                        r2_ndvi, p_val_ndvi, slope_ndvi, "NDVI"
+                if fig_slope is not None:
+                    insight_slope, is_influential_slope = interpret_regression(
+                        r2_slope, p_val_slope, slope_slope, "Slope"
                     )
-                    st.markdown(insight_ndvi, unsafe_allow_html=True)
+                    st.markdown(insight_slope, unsafe_allow_html=True)
 
-                    if is_influential_ndvi:
-                        st.success("✅ NDVI berpengaruh signifikan terhadap LST!")
+                    if is_influential_slope:
+                        st.success("✅ Slope berpengaruh  signifikan terhadap LST!")
                     else:
-                        st.warning("❌ NDVI tidak berpengaruh terhadap LST!")
+                        st.warning("❌ Slope tidak berpengaruh terhadap LST!")
 
     except FileNotFoundError:
         st.error(

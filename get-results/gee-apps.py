@@ -93,38 +93,38 @@ with col1:
         st.image("./assets/GEE Apps LST.png")
         st.link_button(
             label="GEE Apps",
-            url="https://ee-pramithadi.projects.earthengine.app/view/spatify-lst",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatifylst",
             icon=":material/map:",
         )
 
 with col2:
     with st.container(border=True):
-        st.badge("**NDBI**", color="primary")
-        st.image("./assets/GEE Apps NDBI.png")
+        st.badge("**NDVI**", color="primary")
+        st.image("./assets/GEE Apps NDVI.png")
         st.link_button(
             label="GEE Apps",
-            url="https://ee-pramithadi.projects.earthengine.app/view/spatify-ndbi",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatifyndvi",
             icon=":material/map:",
         )
 
 col3, col4 = st.columns(2, gap="small")
 with col3:
     with st.container(border=True):
-        st.badge("**NDMI**", color="primary")
-        st.image("./assets/GEE Apps NDMI.png")
+        st.badge("**NDBI**", color="primary")
+        st.image("./assets/GEE Apps NDBI.png")
         st.link_button(
             label="GEE Apps",
-            url="https://ee-pramithadi.projects.earthengine.app/view/spatify-ndmi",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatifyndbi",
             icon=":material/map:",
         )
 
 with col4:
     with st.container(border=True):
-        st.badge("**NDVI**", color="primary")
-        st.image("./assets/GEE Apps NDVI.png")
+        st.badge("**NDMI**", color="primary")
+        st.image("./assets/GEE Apps NDMI.png")
         st.link_button(
             label="GEE Apps",
-            url="https://ee-pramithadi.projects.earthengine.app/view/spatify-ndvi",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatifyndmi",
             icon=":material/map:",
         )
 
@@ -135,6 +135,6 @@ with col5:
         st.image("./assets/GEE Apps PL.png")
         st.link_button(
             label="GEE Apps",
-            url="https://ee-pramithadi.projects.earthengine.app/view/spatify-pl",
+            url="https://ee-pramithadi.projects.earthengine.app/view/spatifypl",
             icon=":material/map:",
         )

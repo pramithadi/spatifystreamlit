@@ -124,13 +124,13 @@ st.markdown(
 st.logo(
     "assets/logorec.png",
     link=None,
-    icon_image="assets/logorec.png",  # ikon kecil (favicon di sidebar)
+    icon_image="assets/logorec.png",
 )
 
-# Home Page
+# Beranda
 home = st.Page("home.py", title="Beranda", icon=":material/home:", default=True)
 
-# Section Analisis
+# Dasbor Analisis
 lst = st.Page(
     "maps/lst.py", title="Suhu Permukaan Lahan", icon=":material/thermometer:"
 )
@@ -141,7 +141,7 @@ ndbi = st.Page("maps/ndbi.py", title="NDBI", icon=":material/apartment:")
 ndmi = st.Page("maps/ndmi.py", title="NDMI", icon=":material/water_voc:")
 ndvi = st.Page("maps/ndvi.py", title="NDVI", icon=":material/psychiatry:")
 
-# Section How It's Made
+# How It's Made
 dataset = st.Page(
     "how-its-made/dataset.py", title="Dataset", icon=":material/database:"
 )
@@ -157,7 +157,7 @@ proyek = st.Page(
     icon=":material/code_blocks:",
 )
 
-# Get Results Section
+# Eksplorasi Hasil
 download_peta = st.Page(
     "get-results/download-peta.py", title="Unduh Peta", icon=":material/download:"
 )
