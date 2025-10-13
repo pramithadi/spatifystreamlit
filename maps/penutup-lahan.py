@@ -417,12 +417,10 @@ def load_aoi_data():
     csv_path = "./csv/luasPenutupLahanAOI.csv"
     try:
         df = pd.read_csv(csv_path)
+        if df.empty:
+            return pd.DataFrame()
         return df
-    except FileNotFoundError:
-        st.error(f"File CSV tidak ditemukan: {csv_path}")
-        return pd.DataFrame()
-    except Exception as e:
-        st.error(f"Error membaca file CSV: {str(e)}")
+    except:
         return pd.DataFrame()
 
 
@@ -944,6 +942,10 @@ with tab1:
 # SECTION 2: TREN
 # ==============================================================================
 with tab2:
+    if df_aoi is None or df_aoi.empty:
+        st.error("Data tidak tersedia")
+        st.stop()
+
     years = [1999, 2004, 2009, 2014, 2019, 2024, 2029]
     tren_data = []
 
