@@ -1169,28 +1169,13 @@ with tab3:
         validation_data = validation_data.dropna()
 
         # Ekstraksi Nilai dari Field
-        lstAktual_values = validation_data["LST Aktual (°C)"].values  # X = satelit
-        lstReferensi_values = validation_data[
-            "LST Landsat 8 (°C)"
-        ].values  # Y = lapangan
+        lstAktual_values = validation_data["LST Aktual (°C)"].values  # y true
+        lstLandsat_values = validation_data["LST Landsat 8 (°C)"].values  # y pred
 
-        # Hitung Metrik Regresi (X = satelit, Y = lapangan)
-        slope, intercept, r_value, p_val, std_err = stats.linregress(
-            lstAktual_values, lstReferensi_values
-        )
-
-        # R-squared (Koefisien Determinasi)
-        r_squared = r_value**2
-
-        # RMSE & MAE
-        rmse = np.sqrt(mean_squared_error(lstReferensi_values, lstAktual_values))
-        mae = mean_absolute_error(lstReferensi_values, lstAktual_values)
-
-        # Buat Persamaan
-        if intercept >= 0:
-            equation = f"y = {slope:.2f}x + {intercept:.2f}"
-        else:
-            equation = f"y = {slope:.2f}x - {abs(intercept):.2f}"
+        # Hitung Metrik dengan sklearn (konsisten)
+        r_squared = r2_score(lstAktual_values, lstLandsat_values)
+        rmse = np.sqrt(mean_squared_error(lstAktual_values, lstLandsat_values))
+        mae = mean_absolute_error(lstAktual_values, lstLandsat_values)
 
         # Row Diagram Garis dan Validasi LST
         st.badge(
@@ -1198,123 +1183,82 @@ with tab3:
             color="primary",
         )
 
-        col1_validate, col2_validate = st.columns([2.3, 1.7])
+        col1_validate, col2_validate = st.columns([2.1, 1.9])
         with col1_validate:
             with st.container(border=True):
-                # Buat Scatterplot (X = Satelit, Y = Lapangan)
-                fig = px.scatter(
-                    x=lstAktual_values,
-                    y=lstReferensi_values,
-                    labels={"x": "LST Landsat 8 (°C)", "y": "LST Aktual (°C)"},
-                    opacity=0.6,
-                    color_discrete_sequence=["#1f77b4"],
+                fig = go.Figure(
+                    data=[
+                        go.Bar(
+                            name="RMSE",
+                            x=["RMSE"],
+                            y=[rmse],
+                            text=[f"{rmse:.4f}"],
+                            textposition="outside",
+                            marker_color="#F5C9B0",
+                            textfont=dict(family="Poppins", size=12, color="black"),
+                        ),
+                        go.Bar(
+                            name="MAE",
+                            x=["MAE"],
+                            y=[mae],
+                            text=[f"{mae:.4f}"],
+                            textposition="outside",
+                            marker_color="#A6B28B",
+                            textfont=dict(family="Poppins", size=12, color="black"),
+                        ),
+                        go.Bar(
+                            name="R²",
+                            x=["R²"],
+                            y=[r_squared],
+                            text=[f"{r_squared:.4f}"],
+                            textposition="outside",
+                            marker_color="#1C352D",
+                            textfont=dict(family="Poppins", size=12, color="black"),
+                        ),
+                    ]
                 )
 
-                # Garis Regresi Linear
-                x_range = np.linspace(
-                    lstAktual_values.min(), lstAktual_values.max(), 100
-                )
-                y_regression = slope * x_range + intercept
-
-                fig.add_trace(
-                    go.Scatter(
-                        x=x_range,
-                        y=y_regression,
-                        mode="lines",
-                        name="Garis Regresi",
-                        line=dict(color="red", width=2),
-                    )
-                )
-
-                # Update Layout
                 fig.update_layout(
-                    height=419,
-                    showlegend=True,
-                    template="plotly_white",
-                    font=dict(
-                        family="Poppins, sans-serif",
-                        size=12,
-                        color="black",
-                    ),
-                    margin=dict(t=30, b=20, l=20, r=20),
-                    xaxis=dict(
-                        title=dict(
-                            text="LST Landsat 8 (°C)",
-                            font=dict(color="black", family="Poppins, sans-serif"),
-                        ),
-                        tickfont=dict(color="black", family="Poppins, sans-serif"),
-                    ),
-                    yaxis=dict(
-                        title=dict(
-                            text="LST Aktual (°C)",
-                            font=dict(color="black", family="Poppins, sans-serif"),
-                        ),
-                        tickfont=dict(color="black", family="Poppins, sans-serif"),
-                    ),
+                    xaxis={
+                        "tickfont": {"family": "Poppins", "size": 12, "color": "black"}
+                    },
+                    yaxis={
+                        "title": {
+                            "text": "Nilai",
+                            "font": {"family": "Poppins", "size": 12, "color": "black"},
+                        },
+                        "tickfont": {"family": "Poppins", "size": 12, "color": "black"},
+                        "range": [0, max(rmse, mae, r_squared) * 1.2],
+                    },
                     legend={
                         "orientation": "h",
                         "yanchor": "top",
-                        "y": -0.22,
+                        "y": -0.15,
                         "xanchor": "center",
                         "x": 0.5,
-                        "font": {"family": "Poppins", "size": 14, "color": "black"},
+                        "font": {"family": "Poppins", "size": 12, "color": "black"},
                     },
+                    font={"family": "Poppins"},
+                    margin=dict(l=0, r=0, t=20, b=30),
+                    height=266,
+                    showlegend=True,
                 )
 
-                # Box Info Persamaan
-                fig.add_annotation(
-                    x=0.02,
-                    y=0.98,
-                    xref="paper",
-                    yref="paper",
-                    text=f"<b>{equation}</b>",
-                    showarrow=False,
-                    font=dict(size=12, color="black", family="Poppins, sans-serif"),
-                    bgcolor="#fdfaf6",
-                    bordercolor="black",
-                    borderwidth=1,
-                    borderpad=7,
-                    xanchor="left",
-                    yanchor="top",
+                fig.update_xaxes(showgrid=False)
+                fig.update_yaxes(
+                    showgrid=True, gridwidth=1, gridcolor="rgba(0,0,0,0.1)"
                 )
 
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2_validate:
-            # Row Metrics
-            col1_metric, col2_metric, col3_metric = st.columns([1, 1, 1])
-
-            with col1_metric:
-                with st.container(border=True):
-                    st.metric(
-                        label="R²",
-                        value=f"{r_squared:.2f}",
-                        help="Koefisien Determinasi (0-1)",
-                    )
-
-            with col2_metric:
-                with st.container(border=True):
-                    st.metric(
-                        label="RMSE",
-                        value=f"{rmse:.2f}",
-                        help="*Root Mean Square Error*",
-                    )
-
-            with col3_metric:
-                with st.container(border=True):
-                    st.metric(
-                        label="MAE",
-                        value=f"{mae:.2f}",
-                        help="*Mean Absolute Error*",
-                    )
-
             # Container Analisis Validasi
             with st.container(border=True):
                 st.write("💡 **Quick Insight**")
                 st.markdown(
                     f"""
-                    - Nilai *error* khususnya MAE (1.70°C) masih berada dalam **batas yang dapat diterima** karena toleransi kesalahan pada pemodelan LST adalah :green-background[**± 2°C**]<sup>[1]</sup>.
-                    - Sebanyak :green-background[**75%**] variasi LST aktual **dapat dijelaskan** oleh LST Landsat 8 yang menunjukkan **hubungan cukup kuat** (:green-background[**r = 0.87**])<sup>[2]</sup>.
+                    - Nilai *error* khususnya :green-background[**MAE ({mae:.2f}°C)**] masih berada dalam **batas yang dapat diterima** karena toleransi kesalahan pada pemodelan LST adalah :green-background[**± 2°C**]<sup>[1]</sup>.
+                    - Sebanyak :green-background[**{r_squared*100:.0f}%**] variasi nilai LST aktual hasil pengukuran lapangan **dapat dijelaskan** oleh LST Landsat 8, sedangkan sisanya dijelaskan oleh faktor lain.
                 """,
                     unsafe_allow_html=True,
                 )
@@ -1422,8 +1366,7 @@ with tab3:
     with st.expander("Lihat Referensi"):
         st.markdown(
             """
-        - [1] Arunab, K. S., & Mathew, A. (2024). Exploring Spatial Machine Learning Techniques for Improving Land Surface Temperature Prediction. *Kuwait Journal of Science*, 51. https://doi.org/10.1016/j.kjs.2024.100242 
-        - [2] Ratner, B. (2009). The Correlation Coefficient: Its Values Range Between +1/-1, or Do They?. *Journal of Targeting, Measurement and Analysis for Marketing*, 17. 139-142. https://doi.org/10.1057/jt.2009.5
+        - [1] Arunab, K. S., & Mathew, A. (2024). Exploring Spatial Machine Learning Techniques for Improving Land Surface Temperature Prediction. *Kuwait Journal of Science*, 51. https://doi.org/10.1016/j.kjs.2024.100242
         """
         )
 
