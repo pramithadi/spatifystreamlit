@@ -735,6 +735,16 @@ with tab1:
                 )
                 selected_kecamatan = ""
 
+        # Disclaimer untuk peta tahun 2004. Hanya muncul jika belum memilih kecamatan.
+        if option == "2004" and (not selected_kecamatan or selected_kecamatan == ""):
+            with st.container(border=True):
+                st.write("⚠️ **Quick Note**")
+                st.warning(
+                    ""
+                    "Peta tahun 2004 berasal dari citra Landsat 7 ETM+ yang mengalami kegagalan ***Scan Line Corrector* (SLC-*off*)** sejak 31 Mei 2003. Hal tersebut menyebabkan adanya **pola garis-garis (*striping*)** di beberapa bagian citra. Fenomena ini merupakan **keterbatasan data asli dari sensor** dan bukan kesalahan pada proses pengolahan data maupun visualisasi. Meskipun demikian, menurut **USGS**, **citra Landsat 7 tetap dapat digunakan** untuk analisis selama interpretasi dilakukan dengan mempertimbangkan keterbatasan tersebut."
+                    ""
+                )
+
         # Function Klasifikasi Deskripsi
         def classify_ndmi(mean_value, thresholds):
 
@@ -850,7 +860,7 @@ with tab2:
                         y=ndmi_urban_rural_pivot["Urban"],
                         mode="lines+markers",
                         name="Perkotaan",
-                        line=dict(color="#FF90BB", width=3),
+                        line=dict(color="#79746B", width=3),
                         marker=dict(size=8, symbol="circle"),
                         hovertemplate="<b>Perkotaan</b><br>Tahun: %{x}<br>NDMI Mean: %{y:.3f}<extra></extra>",
                     )
@@ -863,7 +873,7 @@ with tab2:
                         y=ndmi_urban_rural_pivot["Rural"],
                         mode="lines+markers",
                         name="Non-Perkotaan",
-                        line=dict(color="#096B68", width=3),
+                        line=dict(color="#84c2d6", width=3),
                         marker=dict(size=8, symbol="square"),
                         hovertemplate="<b>Non-Perkotaan</b><br>Tahun: %{x}<br>NDMI Mean: %{y:.3f}<extra></extra>",
                     )
@@ -985,7 +995,7 @@ with tab2:
                 x="Mean_NDMI",
                 y="Y_Label",
                 color="Zona",
-                color_discrete_map={"Urban": "#FF90BB", "Rural": "#096B68"},
+                color_discrete_map={"Urban": "#948979", "Rural": "#add8e6"},
                 orientation="h",
                 labels={
                     "Mean_NDMI": "NDMI Mean",

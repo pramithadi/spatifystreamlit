@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Project — Spatify",
+    page_title="Proyek — Spatify",
     layout="wide",
     initial_sidebar_state="expanded",  # collapsed
 )
@@ -198,7 +198,7 @@ with col7:
         st.image("./assets/Colab LST.png")
         st.link_button(
             label="Source Code",
-            url="https://colab.research.google.com/drive/1rrMcMVWlQcpqy-NFUf0cQeIKmd4uWjhA?usp=sharing",
+            url="https://github.com/pramithadi/spatifyprediction",
             icon=":material/code_blocks:",
         )
 
@@ -208,7 +208,7 @@ with col8:
         st.image("./assets/Colab PL.png")
         st.link_button(
             label="Source Code",
-            url="https://colab.research.google.com/drive/14ZqVdo-GDFBnRXpx1GIVthxeduIXpEfp?usp=sharing",
+            url="https://github.com/pramithadi/spatifyprediction",
             icon=":material/code_blocks:",
         )
 
@@ -218,6 +218,6 @@ with col9:
         st.image("./assets/Colab Indeks.png")
         st.link_button(
             label="Source Code",
-            url="https://colab.research.google.com/drive/17qZCeWXODz7oDnSGS1vN5hHcbbY4k_Dk?usp=sharing",
+            url="https://github.com/pramithadi/spatifyprediction",
             icon=":material/code_blocks:",
         )

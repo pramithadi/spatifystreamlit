@@ -845,6 +845,16 @@ with tab1:
                 placeholder="Ketik atau pilih kecamatan",
             )
 
+        # Disclaimer untuk peta tahun 2004. Hanya muncul jika belum memilih kecamatan.
+        if option == "2004" and (not selected_kecamatan or selected_kecamatan == ""):
+            with st.container(border=True):
+                st.write("⚠️ **Quick Note**")
+                st.warning(
+                    ""
+                    "Peta tahun 2004 berasal dari citra Landsat 7 ETM+ yang mengalami kegagalan ***Scan Line Corrector* (SLC-*off*)** sejak 31 Mei 2003. Hal tersebut menyebabkan adanya **pola garis-garis (*striping*)** di beberapa bagian citra. Fenomena ini merupakan **keterbatasan data asli dari sensor** dan bukan kesalahan pada proses pengolahan data maupun visualisasi. Meskipun demikian, menurut **USGS**, **citra Landsat 7 tetap dapat digunakan** untuk analisis selama interpretasi dilakukan dengan mempertimbangkan keterbatasan tersebut."
+                    ""
+                )
+
         # Container Quick Insight
         if selected_kecamatan:
             with st.container(border=True):

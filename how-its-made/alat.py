@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Dataset — Spatify",
+    page_title="Alat — Spatify",
     layout="wide",
     initial_sidebar_state="expanded",  # collapsed
 )
@@ -114,7 +114,7 @@ st.markdown(
 
 st.header("Alat")
 st.write(
-    "Berikut ini adalah serangkaian alat, *platform*, dan *software* yang digunakan untuk pengolahan, pemodelan, validasi, dan penyimpanan data."
+    "Serangkaian alat, *platform*, dan *software* untuk ekstraksi, pemodelan, validasi, dan visualisasi data."
 )
 st.write("")
 
@@ -204,7 +204,7 @@ st.markdown(
 
 st.header("Library")
 st.write(
-    "Berikut ini adalah *library* dan *framework* dalam ekosistem Python yang digunakan untuk analisis data, pemodelan *machine learning*, visualisasi, hingga pembangunan aplikasi *web* interaktif."
+    "*Framework* dan *library* Python untuk pemodelan *machine learning* dan pembangunan *web app* interaktif."
 )
 st.write("")
 

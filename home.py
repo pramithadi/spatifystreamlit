@@ -73,38 +73,57 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.title("Spatify — Spatial Information of Yogyakarta City")
+st.title("Selamat datang di Spatify!")
 st.write("---")
 st.success(
     """
-    Selamat datang di **Spatify**! Aplikasi *web* interaktif ini mengajak Anda untuk melihat bagaimana **suhu permukaan lahan** di Kawasan Perkotaan Yogyakarta dan sekitarnya beserta **penutup lahan, kerapatan area terbangun**, dan juga **kerapatan** hingga **kelembapan vegetasi** telah berubah selama 25 tahun terakhir (1999-2024). Temukan polanya dan lihat seperti apa prediksi kondisi di tahun 2029!
+    **Spatial Information of Yogyakarta City (Spatify)** membantu Anda menelusuri bagaimana **suhu permukaan lahan, penutup lahan, kerapatan dan kelembapan vegetasi, serta persebaran area terbangun** di Kawasan Perkotaan Yogyakarta dan sekitarnya telah berubah dalam **25 tahun terakhir (1999-2024)**.
+    
+    Temukan polanya dan lihat juga **prediksi kondisi tahun 2029** untuk memahami dinamika lingkungan di masa mendatang!
     """
 )
 
 st.subheader("Mulai Eksplorasi!")
 st.markdown(
     """
-    👈 **Gunakan menu di *sidebar* kiri** untuk memulai eksplorasi ke dua bagian utama aplikasi.
+    👈 **Gunakan menu di *sidebar* kiri** untuk memulai eksplorasi Anda ke berbagai fitur utama Spatify.
+    """
+)
 
+st.video(
+    "https://youtu.be/__LQumLg-Y8?si=ilBU1OIyljDzb_KK",
+    start_time=80,
+    end_time=90,
+    format="video/mp4",
+)
+st.caption("Video Panduan Penggunaan Web App Spatify")
+st.markdown(
+    """
     ---
 
-    ### Dasbor Analisis
-    *Apa yang ingin Anda ketahui? Mulai analisis Anda dari sini.*
+    ### Dasbor Visualisasi
+    *Apa yang ingin Anda ketahui? Jelajahi dari sini.*
 
     Untuk memulai, silakan pilih parameter pada *sidebar*, lalu jelajahi lebih dalam melalui *tab* interaktif:
     - **Peta**: Visualisasikan sebaran spasial data secara interaktif dari tahun ke tahun.
     - **Tren**: Amati perubahan nilai rata-rata dari waktu ke waktu dalam bentuk grafik.
     - **Validasi**: Bandingkan data hasil ekstraksi dengan data observasi.
-    - **Model**: Lihat akurasi model *machine learning* untuk prediksi masa depan.
-    - **Regresi**: Analisis hubungan statistik yang terjadi antar parameter.
+    - **Model**: Lihat akurasi model *machine learning* dan hasil prediksinya.
+    - **Regresi**: Tinjau hubungan statistik yang terjadi antarparameter.
 
     ---
 
     ### Eksplorasi Hasil
-    *Akses hasil akhir penelitian dengan unduh peta atau jalankan aplikasi Google Earth Engine.*
+    *Akses hasil akhir penelitian melalui peta yang telah disusun dan siap diunduh.*
+    - **Unduh Peta**: Dapatkan peta hasil visualisasi dalam format PDF.
 
-    - **Earth Engine Apps**: Bandingkan peta antar tahun secara langsung menggunakan fitur *split panel* di Google Earth Engine.
-    - **Unduh Peta**: Unduh peta analisis dalam format PDF di sini.
+    ---
+    
+    ### Aset
+    *Temukan berbagai sumber data dan alat yang digunakan dalam proses pemetaan dan pengolahan informasi.*
+    - **Dataset**: Jelajahi dataset yang digunakan melalui pintasan kode.
+    - **Alat**: Lihat serangkaian alat untuk ekstraksi, pemodelan prediksi, hingga visualisasi.
+    - **Proyek**: Akses source code dalam proyek Google Earth Engine dan Google Colab. 
 
     ---
     """
@@ -113,12 +132,14 @@ st.markdown(
 with st.expander("Tentang Aplikasi"):
     st.markdown(
         """
-        **Spatify** dirancang dan dikembangkan oleh **Pramitha Dewi** di bawah bimbingan Bapak **Karen Slamet Hardjo, S.Si., M.Sc.** sebagai bagian dari Proyek Akhir di Program Studi **Sarjana Terapan Sistem Informasi Geografis, Sekolah Vokasi, Universitas Gadjah Mada** tahun 2025.
+        **Spatify** dirancang dan dikembangkan oleh **Pramitha Dewi** di bawah bimbingan Bapak **Karen Slamet Hardjo, S.Si., M.Sc.** sebagai bagian dari proyek akhir di Program Studi **Sarjana Terapan Sistem Informasi Geografis, Departemen Teknologi Kebumian, Sekolah Vokasi, Universitas Gadjah Mada** tahun 2025. 
         
-        Spatify dikembangkan untuk mencapai tujuan dalam Proyek Akhir ini, yaitu:
-        - **Memetakan kondisi historis** (1999-2024) berbagai parameter (LST, penutup lahan, dan indeks spektral) di Kawasan Perkotaan Yogyakarta dan sekitarnya menggunakan  Google Earth Engine.
-        - **Memprediksi** kondisi penutup lahan dan LST untuk tahun 2029 dengan model *machine learning* (XGBoost dan CA-Markov).
-        - **Menyajikan seluruh data** historis dan prediksi dalam sebuah *web app* dan Earth Engine Apps yang interaktif.
+        Spatify dikembangkan untuk mencapai tujuan dalam proyek akhir ini, yaitu:
+        - **Memetakan kondisi historis (1999-2024)** dari berbagai parameter—LST, penutup lahan, NDVI, NDBI, dan NDMI—di Kawasan Perkotaan Yogyakarta dan sekitarnya menggunakan Google Earth Engine.
+        - **Memprediksi perubahan** penutup lahan, indeks, dan LST pada tahun 2029 menggunakan model *machine learning* (XGBoost dan Cellular Automata-Markov Chain).
+        - **Menyajikan data historis dan hasil prediksi** ke dalam sebuah *web app* interaktif.
+
+        Spatify dibangun menggunakan **Streamlit** dan dihosting secara gratis melalui **Streamlit Community Cloud**. Beberapa konten ditampilkan dalam bentuk yang disederhanakan untuk menyesuaikan batas kapasitas server. Namun, penyesuaian ini tidak memengaruhi inti informasi maupun hasil analisis yang disajikan.
         """
     )
 
@@ -126,14 +147,8 @@ with st.expander("Tentang Pengembang"):
     col1, col2 = st.columns([0.6, 3.4])
 
     with col1:
-        # st.image("./assets/foto_profil_1.svg", width=142)
-        # st.image("./assets/foto_profil_1.svg", width=164)
-        # st.image("./assets/foto_profil_3.svg", width=164)
-        # st.image("./assets/foto_profil_1.svg", width=90)
-        # st.image("./assets/foto_profil_2.svg", width=90)
-        # st.image("./assets/foto_profil_3.svg", width=90)
-        # st.image("./assets/foto_profil_4.svg", width=90)
-        st.image("./assets/foto_profil_5.svg", width=90)
+        # st.image("./assets/foto_profil_5.svg", width=90)
+        st.image("./assets/sidang2.svg", width=90)
 
     with col2:
         st.markdown(
