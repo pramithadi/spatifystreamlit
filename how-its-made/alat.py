@@ -144,16 +144,16 @@ with col5:
     with st.container(border=True):
         st.image("./logo/logo_arcgis.svg")
 
-with col5:
-    st.badge("**QGIS**", color="primary")
-    with st.container(border=True):
-        st.image("./logo/logo_qgis.svg")
-
 col6, col7, col8, col9, col10 = st.columns(5, gap="small")
 with col6:
     st.badge("**Google Spreadsheet**", color="primary")
     with st.container(border=True):
         st.image("./logo/logo_sheets.svg")
+
+with col7:
+    st.badge("**QGIS**", color="primary")
+    with st.container(border=True):
+        st.image("./logo/logo_qgis.svg")
 
 with col8:
     st.badge("**Google Drive**", color="primary")
