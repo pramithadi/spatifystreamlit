@@ -91,9 +91,9 @@ st.markdown(
 )
 
 st.video(
-    "https://youtu.be/__LQumLg-Y8?si=ilBU1OIyljDzb_KK",
-    start_time=80,
-    end_time=90,
+    "https://youtu.be/1LbI5FbKMHs",
+    start_time=70,
+    end_time=80,
     format="video/mp4",
 )
 st.caption("Video Panduan Penggunaan Web App Spatify")
