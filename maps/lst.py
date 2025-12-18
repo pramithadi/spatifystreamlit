@@ -871,12 +871,9 @@ with tab1:
 
         # Disclaimer untuk peta tahun 2004. Hanya muncul jika belum memilih kecamatan.
         if option == "2004" and (not selected_kecamatan or selected_kecamatan == ""):
-            with st.container(border=True):
-                st.write("⚠️ **Quick Note**")
+            with st.expander("⚠️ **Quick Note**", expanded=False):
                 st.warning(
-                    ""
                     "Peta tahun 2004 berasal dari citra Landsat 7 ETM+ yang mengalami kegagalan ***Scan Line Corrector* (SLC-*off*)** sejak 31 Mei 2003. Hal tersebut menyebabkan adanya **pola garis-garis (*striping*)** di beberapa bagian citra. Fenomena ini merupakan **keterbatasan data asli dari sensor** dan bukan kesalahan pada proses pengolahan data maupun visualisasi. Meskipun demikian, menurut **USGS**, **citra Landsat 7 tetap dapat digunakan** untuk analisis selama interpretasi dilakukan dengan mempertimbangkan keterbatasan tersebut."
-                    ""
                 )
 
         if selected_kecamatan and selected_kecamatan != "" and kec_year:
@@ -890,6 +887,49 @@ with tab1:
                 else:
                     description = f"Suhu permukaan lahan di :green-background[**{toponim} {selected_kecamatan}**] pada tahun :green-background[**{option}**] memiliki rata-rata suhu sebesar :green-background[**{kecamatan_data['mean']:.2f}°C**] dengan suhu terendah yakni :green-background[**{kecamatan_data['min']:.2f}°C**] dan suhu tertinggi adalah :green-background[**{kecamatan_data['max']:.2f}°C**]."
                 st.write(description)
+
+        # Sumber Data
+        if option == "1999" or option == "2009":
+            with st.container(border=True):
+                st.write("**Sumber Data**")
+                st.info(
+                    f"""
+                    - Citra Landsat 5 TM (Thematic Mapper) Surface Reflectance resolusi 30 meter tahun {option} dari United States Geological Survey (USGS).
+                    - Batas administrasi Kota Yogyakarta, Kabupaten Sleman, dan Kabupaten Bantul skala 1:25.000 tahun 2022 format shapefile dari Badan Informasi Geospasial (BIG).
+                    """
+                )
+
+        elif option == "2004":
+            with st.container(border=True):
+                st.write("**Sumber Data**")
+                st.info(
+                    f"""
+                    - Citra Landsat 7 ETM+ (Enhanced Thematic Mapper Plus) Surface Reflectance resolusi 30 meter tahun {option} dari United States Geological Survey (USGS).
+                    - Batas administrasi Kota Yogyakarta, Kabupaten Sleman, dan Kabupaten Bantul skala 1:25.000 tahun 2022 format shapefile dari Badan Informasi Geospasial (BIG).
+                    """
+                )
+
+        elif option == "2014" or option == "2019" or option == "2024":
+            with st.container(border=True):
+                st.write("**Sumber Data**")
+                st.info(
+                    f"""
+                    - Citra Landsat 8 OLI/TIRS (Operational Land Imager/Thermal Infrared Sensor) Surface Reflectance resolusi 30 meter tahun {option} dari United States Geological Survey (USGS).
+                    - Batas administrasi Kota Yogyakarta, Kabupaten Sleman, dan Kabupaten Bantul skala 1:25.000 tahun 2022 format shapefile dari Badan Informasi Geospasial (BIG).
+                    """
+                )
+
+        elif option == "2029":
+            with st.container(border=True):
+                st.write("**Sumber Data**")
+                st.info(
+                    """
+                    Hasil prediksi LST berbasis machine learning (XGBoost) menggunakan data hasil ekstraksi:
+                    - LST, NDVI, NDBI, NDMI, dan penutup lahan dari citra Landsat 5 TM, Landsat 7 ETM+, dan Landsat 8 OLI/TIRS Surface Reflectance resolusi 30 meter tahun 1999, 2004, 2009, 2014, 2019, dan 2024 dari USGS.
+                    - Elevasi dan slope dari citra radar NASA SRTM Digital Elevation resolusi 30 meter tahun 2000 dari NASA/USGS/JPL-Caltech.
+                    - Batas administrasi Kota Yogyakarta, Kabupaten Sleman, dan Kabupaten Bantul skala 1:25.000 tahun 2022 format shapefile dari Badan Informasi Geospasial (BIG).
+                    """
+                )
 
     with col1_peta:
         map_center = [-7.764326411862208, 110.3721676814108]

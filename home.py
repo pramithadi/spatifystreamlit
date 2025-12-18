@@ -144,17 +144,16 @@ with st.expander("Tentang Aplikasi"):
     )
 
 with st.expander("Tentang Pengembang"):
-    col1, col2 = st.columns([0.6, 3.4])
+    col1, col2 = st.columns([0.8, 4.1])
 
     with col1:
         # st.image("./assets/foto_profil_5.svg", width=90)
-        st.image("./assets/sidang2.svg", width=90)
+        st.image("./assets/sidang2.svg", width=100)
 
     with col2:
         st.markdown(
             """
-            ##### Halo! Saya Pramitha 👋
-
+            ###### Halo! Saya Pramitha, mahasiswa Sistem Informasi Geografis Sekolah Vokasi Universitas Gadjah Mada 👋
             Terima kasih telah menggunakan **Spatify**! Setiap saran untuk pengembangan aplikasi sangat berarti. **Mari terhubung melalui**:
             [Email](mailto:pramitha.dewi@mail.ugm.ac.id) | [LinkedIn](https://linkedin.com/in/pramithadi) | [GitHub](https://github.com/pramithadi) | [Instagram](https://instagram.com/pramithadi)
 
