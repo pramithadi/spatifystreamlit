@@ -198,7 +198,7 @@ with col7:
         st.image("./assets/Colab LST.png")
         st.link_button(
             label="Source Code",
-            url="https://github.com/pramithadi/spatifyprediction",
+            url="",
             icon=":material/code_blocks:",
         )
 
@@ -208,7 +208,7 @@ with col8:
         st.image("./assets/Colab PL.png")
         st.link_button(
             label="Source Code",
-            url="https://github.com/pramithadi/spatifyprediction",
+            url="",
             icon=":material/code_blocks:",
         )
 
@@ -218,6 +218,6 @@ with col9:
         st.image("./assets/Colab Indeks.png")
         st.link_button(
             label="Source Code",
-            url="https://github.com/pramithadi/spatifyprediction",
+            url="",
             icon=":material/code_blocks:",
         )
